@@ -1,0 +1,15 @@
+% layout 'defaultlight', title => 'Sme server 2 - Error D';
+
+% content_for 'module' => begin
+
+<div id="central" class="sme-error">
+    <p><br>dev<br> Oups !!! 
+        The page you were requesting
+        "<%= $self->req->url->path || '/' %>"
+        could not be found.
+    <br>dev<br>
+    	%= link_to Initial => '/Initial'
+    </p>
+</div>
+
+% end

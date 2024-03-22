@@ -1,0 +1,43 @@
+<div id='prt_net'>
+
+    % 	my $btn = l('ADD');
+
+    %= form_for '/printers2' => (method => 'POST') => begin
+	<p>
+	<h2>
+	%=l 'prt_CREATE_NETWORK_PRINTER'
+	</h2>
+	
+	<br><br>
+	%=l 'prt_CREATE_NETWORK_DESC'
+	</p>
+	
+	<p>
+	<span class=label>
+	%=l 'prt_HOSTNAME_OR_IP', class => 'label'
+	</span><span class=data>
+	%= text_field 'Address', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'prt_REMOTE_NAME_DESC', class => 'label'
+	</span><span class=data>
+	%= text_field 'RemoteName' => 'raw', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<br><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $prt_datas->{trt}
+	%= hidden_field 'Name' => $prt_datas->{name}
+	%= hidden_field 'Description' => $prt_datas->{description}
+	%= hidden_field 'Location' => $prt_datas->{location}
+	
+    % end
+
+</div>

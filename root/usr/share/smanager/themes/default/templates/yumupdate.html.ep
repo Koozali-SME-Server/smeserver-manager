@@ -1,0 +1,44 @@
+% layout 'default', title => "Sme server 2 - yum_update";
+
+% content_for 'module' => begin
+
+<div id='module' class='module yumupdate-panel'>
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $yum_datas
+	</p>
+    % }
+    
+    <h1><%= $title%></h1>
+
+    % if ( $notif ) {
+	<br><div class=sme-error>
+	%= $notif
+	</div>
+    %}
+
+    %= form_for 'yumd' => (method => 'POST') => begin
+
+	%=l 'yum_DESC_AVAILABLE_UPDATES'
+
+	<p><span class=label>
+	%=l 'yum_LABEL_AVAILABLE_UPDATES'
+	</span><span class=data>
+	% param 'SelectedPackages' => $c->get_names2('updates','package') unless param 'SelectedPackages';
+	%= select_field 'SelectedPackages' => $c->get_options2('updates', 'package'), class => 'input', multiple => "1"
+	</span></p>
+
+        <!-- $c->print_skip_header() -->
+
+    	%=  hidden_field 'trt' => 'UPDT'
+	<br>
+    <div class='center'>
+	%= submit_button $c->l('yum_INSTALL_UPDATES'), class => 'action'
+    </div>
+
+    % end
+
+</div>
+
+% end

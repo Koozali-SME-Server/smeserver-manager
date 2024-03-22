@@ -1,0 +1,65 @@
+<div id='ln_del'>
+
+    % my $btn = l('REMOVE');
+    % my $proto = $pf_datas->{proto};
+    % my $sport = $pf_datas->{sport};
+    % my $dport = $pf_datas->{dport};
+    % my $dhost = $pf_datas->{dhost};
+    % my $cmmnt = $pf_datas->{cmmnt};
+    % my $allow = $pf_datas->{allow};
+    
+   % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $c->stash("ret")
+    %= dumper %$pf_datas
+	</p>
+    % }
+     
+    %= form_for '/portforwardinge' => (method => 'POST') => begin
+        <br>
+		%= l "pf_SUMMARY_REMOVE_DESC"
+			</p><br>
+			<span class=label>
+				%=l "pf_LABEL_PROTOCOL"
+			</span><span class=data>
+				%=$proto
+			</span><br><br>
+			<span class=label>
+				%=l "pf_LABEL_SOURCE_PORT"
+			</span><span class=data>
+				%=$sport
+			</span><br><br>
+			<span class=label>
+				%=l "pf_LABEL_DESTINATION_HOST"
+			</span>
+			<span class=data>
+				%=$dport
+			</span><br><br>
+			<span class=label>
+				%=l "pf_LABEL_DESTINATION_PORT"
+			</span>
+			<span class=data>
+				%=$dhost
+			</span><br><br>
+			<span class=label>
+				%=l "pf_RULE_COMMENT"
+			</span>
+			<span class=data>
+				%=$cmmnt
+			</span><br><br>
+			<span class=label>
+				%=l "pf_ALLOW_HOSTS"
+			</span>
+			<span class=data>
+				%=$allow
+			</span><br><br>
+		%#}
+			%= hidden_field sport=>$sport
+			%= hidden_field proto=>$proto
+	        <div class='center'>
+		%= submit_button "$btn", class => 'action'
+		</div>
+	%end
+
+</div>

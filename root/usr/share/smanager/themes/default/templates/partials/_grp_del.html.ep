@@ -1,0 +1,63 @@
+<div id='grp_del'>
+
+    %	my $btn = l('REMOVE');
+    %= form_for '/groups2' => (method => 'POST') => begin
+	<p><h2>
+	%=l 'REMOVE_USER_GROUP'
+	</h2>
+
+	<p>
+	%=l('grp_DELETE_DESCRIPTION', $grp_datas->{group}) 
+	</p>
+
+	<p>
+    %	my $size = keys %$members;
+    %	if ( ! $size ){
+        %=l 'ACCOUNT_GROUP_NONE'
+    %	} else {
+	%=l 'grp_GROUP_HAS_MEMBERS'
+	<br>
+	<ul>
+    %    foreach my $key ( keys %$members)
+    %    {
+        <li>
+            %=$key
+            (
+            %=$members->{$key}
+            )
+    	</li>
+    %    }
+    	</ul>
+    %	}
+	</p>
+
+	<p>
+    %	$size = keys %$ibays;
+    %	if ( $size ) {
+    	    %=l 'grp_IBAYS_WILL_BE_CHANGED'
+	    <br>
+	    <ul>
+    %		foreach my $key (sort ( keys %$ibays ))
+    %    	{
+    		    <li>
+        	    %=$key
+        	    (
+        	    %=$ibays->{$key}
+        	    )
+    		    </li>
+    %    	}
+    	    </ul>
+    % 	}
+	</p>
+	
+	<p>
+	<br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+        %= hidden_field 'trt' => $grp_datas->{trt}
+        %= hidden_field 'groupName' => $grp_datas->{group}
+
+    % end    
+
+</div>

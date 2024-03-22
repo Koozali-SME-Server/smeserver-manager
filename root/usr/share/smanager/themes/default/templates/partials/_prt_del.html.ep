@@ -1,0 +1,32 @@
+<div id='prt_del'>
+
+
+    % 	my $btn = l('REMOVE');
+    %= form_for '/printers2' => (method => 'POST') => begin
+	<p>
+	<h2>
+	%=l 'prt_REMOVE_PRINTER'
+	</h2>
+	<br><br>
+
+	<%=l 'prt_ABOUT_TO_REMOVE'%> <%=$prt_datas->{printer}%>
+	(<%=$prt_datas->{description}%>)
+	<br>
+
+	%=l 'prt_SPOOL_FILE_WARNING'
+	<br>
+
+	%=l 'prt_ARE_YOU_SURE'
+	</p>
+
+	<p>
+	<br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+        %= hidden_field 'trt' => $prt_datas->{trt}
+        %= hidden_field 'printer' => $prt_datas->{printer}
+
+    % end    
+
+</div>

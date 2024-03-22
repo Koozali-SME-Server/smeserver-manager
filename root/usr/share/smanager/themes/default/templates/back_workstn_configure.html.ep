@@ -1,0 +1,55 @@
+% layout 'default', title => "Sme server 2 - backup";
+
+% content_for 'module' => begin
+
+<div id='module' class='module back_workstn_configure-panel'>
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $bac_datas
+	</p>
+    % }
+
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+
+    <h1><%= $title%></h1>
+
+    %= form_for '/backup' => (method => 'POST') => begin
+
+	<h2>
+	%=l 'bac_CONFIGURE_WORKSTN_BACKUP'
+	</h2>
+
+	%= $c->render_to_string(inline => (l 'bac_WORKSTN_BACKUP_DESC'))
+
+	%=l 'bac_WORKSTN_BACKUP_ENABLED'
+	<span class=data>
+	%= $bac_datas->{status}
+	</span><br>
+
+	%= $c->render_to_string(inline => $c->workstnBackupConfig())
+
+	<p><h3>
+	%= l 'bac_WORKSTATION_BACKUP_SETCONF'
+	</h3><br>
+	<span class=label>
+	%=l 'bac_SELECT_VFS_TYPE'
+	</span><span class=data>
+	% param 'VFSType' => $bac_datas->{vfstype} unless param 'VFSType';
+	%= select_field 'VFSType' => $c->get_VFSType_options(), class => 'input'
+	</span></p>
+
+	%= hidden_field 'Function' => $bac_datas->{'function'} . '1'
+    <div class='center'>
+	%= submit_button $c->l('NEXT'), class => 'action'
+    </div>
+
+    % end
+
+</div>
+
+% end

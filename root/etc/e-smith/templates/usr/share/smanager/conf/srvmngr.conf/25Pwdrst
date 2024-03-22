@@ -1,0 +1,4 @@
+    # password reset disabled by default
+    pwdreset => { ($smanager{'PwdReset'} eq 'enabled' ? '1' : '0') || '0' },
+    # reset delay in hours
+    pwdreset_delay => 2,

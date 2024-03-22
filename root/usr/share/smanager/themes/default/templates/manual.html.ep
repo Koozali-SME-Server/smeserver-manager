@@ -1,0 +1,9 @@
+% layout 'default', title => 'Sme server 2 - Manual';
+
+% content_for 'module' => begin
+<div id='module' class='module manual-panel'>
+    <p><h1><%= $title %></h1></p>
+    %= $c->render_to_string( inline => stash 'modul' )
+</div>
+
+% end

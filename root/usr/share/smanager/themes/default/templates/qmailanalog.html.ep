@@ -1,0 +1,27 @@
+% layout 'default', title => "Sme server 2 - qmailanalog";
+
+% content_for 'module' => begin
+<div id='module' class='module qmailanalog-panel'>
+    %if ($config->{debug} == 1) {
+	<p>
+	(DBG)route: <%= $c->current_route %><br>
+	</p>
+    %}
+    <h1><%= $title %></h1>
+    <br>
+    <%= $modul %>
+    <% 	my $btn = l('qma_GENERATE_REPORT'); %>
+
+    %= form_for 'qmailanalog' => (method => 'POST') => begin
+	<p>
+	<span class=label>
+	%=l 'qma_REPORT_TYPE'
+	</span><span class=data>
+	<!-- (to be sorted) -->
+	%= select_field 'report_type' => $c->reportType_list()
+	</span>
+	</p>
+	%= submit_button "$btn", class => 'action'
+    % end
+</div>
+%end

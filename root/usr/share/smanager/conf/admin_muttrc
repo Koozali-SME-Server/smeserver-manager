@@ -1,0 +1,5 @@
+set from = "admin"
+set realname = "Administrator"
+set record = "/usr/share/smanager/log/mail_sent"
+##set content_type = "text/html"
+

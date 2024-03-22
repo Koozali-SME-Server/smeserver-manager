@@ -1,0 +1,33 @@
+#! /usr/bin/perl -wT
+
+# mojo-app server-manager v3 mab974 2020
+
+use strict;
+use warnings;
+use esmith::util;
+
+BEGIN
+{
+    $0 =~ /^(.+)$/ms; $0 = $1; # Untaint script name
+    $ENV{'PATH'} = '/bin:/usr/bin:/usr/local/bin';
+    $ENV{'SHELL'} = '/bin/bash';
+    $ENV{'HOME'} = '/usr/share/smanager';
+    delete $ENV{'ENV'};
+    esmith::util::setRealToEffective();
+} 
+
+
+use FindBin;
+#use lib "$FindBin::Bin/lib";
+use lib "$FindBin::Bin/../lib";
+#BEGIN { unshift @INC, "$FindBin::Bin/../lib" }
+
+#Application
+$ENV{MOJO_APP} ||= 'SrvMngr';
+$ENV{MOJO_REVERSE_PROXY} ||= '/smanager';
+$ENV{MOJO_SMANAGER_DEBUG} ||= 0;
+$ENV{SRVMNGR_HOME} ||= "$FindBin::Bin/..";
+
+# Start command
+require Mojolicious::Commands;
+Mojolicious::Commands->start_app('SrvMngr');

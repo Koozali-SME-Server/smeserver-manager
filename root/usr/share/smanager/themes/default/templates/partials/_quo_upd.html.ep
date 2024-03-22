@@ -1,0 +1,84 @@
+<div id='quo_upd'>
+
+    % 	my $btn = l('SAVE');
+
+    %= form_for '/quota2' => (method => 'POST') => begin
+	<p>
+	<h2>
+	%=l 'quo_MODIFY_USER_TITLE'
+	</h2>
+	</p>
+
+    %    my $userid = $quo_datas->{user};
+    %    my $user = $quo_datas->{userRec};
+<!--
+    	 for my $user @$userAccounts
+        {
+           unless ( $user->key eq $userid) {
+    		warn(l('USER_DIFFERENT'),$user->key);
+    		next;
+    	    }
+	}
+-->
+    %	my $uid = getpwnam($user->key);
+    %    unless ($uid) {
+    %		warn(l('COULD_NOT_GET_UID'),$user->key);
+    %		next;
+    %	 }
+
+    %	  my $name = $user->prop("FirstName") . " " . $user->prop("LastName");
+    %	  my $dev = Quota::getqcarg('/home/e-smith/files');
+    %	  my ($bc, $bs, $bh, $bt, $ic, $is, $ih, $it) = Quota::query($dev, $uid);
+
+	<p>
+	%=l 'quo_USER' 
+	%= "$name (\"$userid\")" 
+	%=l 'quo_CURRENTLY_HAS' 
+	%= $ic 
+        %=l 'quo_FILES' 
+	%=l 'quo_OCCUPYING' 
+	%= $bc 
+	%=l 'quo_MEGABYTES'
+	</p>
+	
+	<p>
+	%=l 'quo_INSTRUCTIONS'
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'quo_USER', class => 'label'
+	</span><span class=data>
+	%= $name, class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'quo_LIMIT_WITH_GRACE', class => 'label'
+	</span><span class=data>
+	% param 'Soft' => $quo_datas->{softlim} unless param 'Soft';
+	%= text_field 'Soft', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'quo_ABS_LIMIT', class => 'label'
+	</span><span class=data>
+	% param 'Hard' => $quo_datas->{hardlim} unless param 'Hard';
+	%= text_field 'Hard', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<br><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $quo_datas->{trt}
+        %= hidden_field 'user' => $quo_datas->{user}
+	
+    % end    
+
+</div>

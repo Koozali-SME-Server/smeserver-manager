@@ -1,0 +1,82 @@
+#!/usr/bin/perl -w
+
+#----------------------------------------------------------------------
+# copyright (C) 1999-2006 Mitel Networks Corporation
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 		
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 		
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+# 
+#----------------------------------------------------------------------
+package esmith;
+
+use strict;
+
+use esmith::ConfigDB;
+
+use constant WEBFUNCTIONS => '/usr/share/smanager/lib/SrvMngr/Controller';
+
+my $rtdb ||= esmith::ConfigDB->open('routes') or
+    die "Couldn't create Routes DB\n";
+
+opendir DIR, WEBFUNCTIONS or 
+    die "Couldn't open ", WEBFUNCTIONS, "\n";
+
+my @files = grep (/^[A-Z].*\.pm$/, readdir (DIR));
+
+closedir DIR;
+
+foreach my $file (@files) {
+
+    next if (-d WEBFUNCTIONS . "/$file");
+
+    my $file2 = lc($file);
+    $file2 =~ s/\.pm$//;
+
+    #-------------------------------------------------- 
+    # extract method, url, action, name from controllers script
+    #-------------------------------------------------- 
+    open(SCRIPT, WEBFUNCTIONS . "/$file");
+    my $routes	= undef;
+    my $method	= undef;
+    my $url	= undef;
+    my $ctlact	= undef;
+    my $name	= undef;
+
+    while ( <SCRIPT> ) {
+
+	# name   : contrib,     method : get,   url : /contrib,   ctlact : contrib#main
+	($name, $method, $url, $ctlact) = ($1, $2, $3, $4)
+	    if (/^#\s*name\s*:\s*(.+?),\s*method\s*:\s*(.+?),\s*url\s*:\s*(.+?),\s*ctlact\s*:\s*(.+?)\s*$/);
+
+	# routes : end
+	$routes = $1 if (/^\s*#\s*routes\s*:\s*(.+?)\s*$/);
+	last if (defined $routes and $routes eq 'end');
+
+	if (defined $method and defined $url and
+		defined $ctlact and defined $name) {
+	    my $key = $file2.'+'.$name;
+	    my $rec = $rtdb->get($key) || 
+    		$rtdb->new_record($key, { type => 'route' } );
+
+ 	    $rec->merge_props(
+		Url => $url,
+		Method => $method,
+		Ctlact => $ctlact
+	    )
+	}
+    }
+    close SCRIPT;
+}
+
+

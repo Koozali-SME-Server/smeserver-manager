@@ -1,0 +1,4 @@
+*.rpm
+*.log
+*spec-20*
+*.tar.xz

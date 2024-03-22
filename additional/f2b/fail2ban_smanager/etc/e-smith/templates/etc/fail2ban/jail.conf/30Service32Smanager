@@ -1,0 +1,25 @@
+{
+my $port = (${'httpd-e-smith'}{'TCPPort'} || '80') .','. 
+	    ($modSSL{'TCPPort'} || '443');
+my $status = $smanager{'status'} || 'disabled';
+my $f2b = $smanager{'Fail2Ban'} || 'enabled';
+return "" if (($status ne 'enabled') || ($f2b ne 'enabled'));
+
+$OUT .=<<"EOF";
+
+[smanager]
+enabled  = true
+port     = $port
+filter   = smanager
+logpath  = /usr/share/smanager/log/production.log
+maxretry = 3
+findtime = 300
+bantime  = 1800
+action   = smeserver-iptables[port="$port",protocol=tcp,bantime=$bantime]
+
+EOF
+
+$OUT .= "           smeserver-sendmail[name=\"SManager\",dest=$maildest]\n"
+    	if ($mail eq 'enabled');
+
+}

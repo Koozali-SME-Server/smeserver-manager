@@ -1,0 +1,58 @@
+% layout 'default', title => "Sme server 2 - yum_update";
+
+% content_for 'module' => begin
+
+<div id='module' class='module yumremove-panel'>
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $yum_datas
+	</p>
+    % }
+    
+    <h1><%= $title%></h1>
+    <br>
+    
+    % if ( $notif ) {
+	<br><div class=sme-error>
+	%= $notif
+	</div>
+    %}
+
+    %= form_for 'yumd' => (method => 'POST') => begin
+
+	%=l 'yum_HEADER_INSTALLED_SOFTWARE'
+
+	<br>
+    % if ($c->non_empty('installed','group')) {
+	%=l 'yum_DESC_INSTALLED_GROUPS'
+	<p><span class=label>
+	%=l 'yum_LABEL_INSTALLED_GROUPS'
+	</span><span class=data>
+	%= select_field 'SelectedGroups' => $c->get_options2('installed', 'group'), class => 'input', multiple => "1"
+	</span></p>
+    %}
+	<br>
+    % if ($c->non_empty('installed','packages')) {
+	%=l 'yum_DESC_INSTALLED_PACKAGES'
+	<p><span class=label>
+	%=l 'yum_LABEL_INSTALLED_PACKAGES'
+	</span><span class=data>
+	%= select_field 'SelectedPackages' => $c->get_options2('installed', 'package'), class => 'input', multiple => "1"
+	</span></p>
+    %}
+
+        <!--subroutine src="print_skip_header()" /-->
+
+    	%=  hidden_field 'trt' => 'REMO'
+	<br>
+    <div class='center'>
+	%= submit_button $c->l('REMOVE'), class => 'action'
+    </div>
+
+    % end
+
+</div>
+
+% end
+

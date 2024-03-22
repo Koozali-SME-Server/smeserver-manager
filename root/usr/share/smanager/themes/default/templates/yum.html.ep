@@ -1,0 +1,100 @@
+% layout 'default', title => "Sme server 2 - yum";
+
+% content_for 'module' => begin
+
+<div id='module' class='module yum-panel'>
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $yum_datas
+	</p>
+    % }
+    
+    <h1><%= $title%></h1>
+
+    % if ( $notif ) {
+	<br><span class=sme-error>
+	%= $notif
+	</span>
+    %}
+
+    % if ( $c->is_empty('updates') ) {
+	<br><div class=success><h2>
+	%=l 'yum_TITLE_UPTODATE'
+	</h2>
+	%=l 'yum_DESC_UPTODATE'
+	</div><br>
+    %}
+
+    % if ( $c->non_empty('updates') ) {
+	<br><div class=success><h2>
+	%=l 'yum_TITLE_UPDATES_AVAILABLE'
+	</h2>
+	%=l 'yum_DESC_UPDATES_AVAILABLE'
+	</div><br>
+
+	%= form_for 'yum' => (method => 'POST') => begin
+    	    %=  hidden_field 'trt' => 'UPDT'
+	    %= submit_button $c->l('yum_BUTTON_INSTALL_UPDATES'), class => 'action'
+	% end
+    %}
+
+    % if ( $c->non_empty('available') ) {
+	%= form_for 'yum' => (method => 'POST') => begin
+	    <br>
+    	    %=  hidden_field 'trt' => 'INST'
+	    %= submit_button $c->l('yum_BUTTON_INSTALL_AVAILABLE'), class => 'action'
+	% end
+    %}
+
+    % if ( $c->non_empty('installed') ) {
+	%= form_for 'yum' => (method => 'POST') => begin
+	    <br>
+    	    %=  hidden_field 'trt' => 'REMO'
+	    %= submit_button $c->l('yum_BUTTON_REMOVE'), class => 'action'
+	% end
+    %}
+
+    <br><hr class=sectionbar /><br>
+
+    %= form_for 'yum' => (method => 'POST') => begin
+
+	<p><span class=label>
+	%=l 'yum_LABEL_YUM_STATUS'
+	</span><span class=data2>
+	%= $c->get_status('status', 'localise')
+	</span></p>
+
+	<p><span class=label>
+	%=l 'yum_LABEL_YUM_PACKAGEFUNCTIONS'
+	</span><span class=data2>
+	%= $c->get_status('PackageFunctions', 'localise')
+	</span></p>
+
+	<p><span class=label>
+	%=l 'yum_LABEL_YUM_DELTARPMPROCESS'
+	</span><span class=data2>
+	%= $c->get_status('DeltaRpmProcess', 'localise')
+	</span></p>
+
+	<p><span class=label>
+	%=l 'yum_LABEL_YUM_DOWNLOADONLY'
+	</span><span class=data2>
+	%= $c->get_status('DownloadOnly', 'localise')
+	</span></p>
+
+	<p><span class=label>
+	%=l 'yum_LABEL_YUM_AUTOINSTALLUPDATES'
+	</span><span class=data2>
+	%= $c->get_status('AutoInstallUpdates', 'localise')
+	</span></p>
+
+    	%=  hidden_field 'trt' => 'CONF'
+	<br>
+	%= submit_button $c->l('yum_BUTTON_CONFIGURATION'), class => 'action'
+
+    % end
+
+</div>
+
+% end

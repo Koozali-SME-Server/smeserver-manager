@@ -1,0 +1,88 @@
+% layout 'default', title => "Sme server 2 - directory";
+
+% content_for 'module' => begin
+<div id='module' class='module directory-panel'>
+
+    %if ($config->{debug} == 1) {
+	<p>
+	(DBG)route: <%= $c->current_route %><br>
+	(DBG)dir. access: <%= $dir_datas->{access}%><br>
+	</p>
+    %}
+    
+    <h1><%= $title %></h1>
+    <br>
+    <%= $modul %>
+    <% 	my $btn = l('SAVE');
+     %>
+
+
+    %= form_for 'directory' => (method => 'POST') => begin
+	<br>
+	<p>
+	<span class=label>
+	%= l('dir_LABEL_ROOT'), class => 'label'
+	</span>	<span class=data>
+	%= $dir_datas->{root}, class => 'data' 
+	</span>
+	</p>
+	<p>
+	%=l 'dir_DESC_DIRECTORY_ACCESS', class => 'desc'
+	<br>
+	<span class=label>
+	%=l 'dir_DIRECTORY_ACCESS', class => 'label'
+	</span><span class=data>
+	% param 'access' => $dir_datas->{access} unless param 'access';
+	%= select_field 'access' =>  [[ (l 'NETWORKS_ALLOW_LOCAL') => 'private'], [ (l 'NETWORKS_ALLOW_PUBLIC') => 'public']], class => 'input', id => 'access'
+	</span>
+	</p>
+	<p>
+	%=l 'dir_DESC_DEPARTMENT', class => 'desc'
+	<br><br>
+	<span class=label>
+	%=l 'dir_DEPARTMENT', class => 'label'
+	</span><span class=data>
+	%= text_field 'department' =>  $dir_datas->{department}, class => 'input'
+	</span>
+	</p>
+	<span class=label>
+	%=l 'dir_COMPANY', class => 'label'
+	</span><span class=data>
+	%= text_field 'company', $dir_datas->{company}, class => 'input'
+	</span>
+	</p>
+	<span class=label>
+	%=l 'dir_STREET', class => 'label'
+	</span><span class=data>
+	%= text_field 'street' =>  $dir_datas->{street}, class => 'input'
+	</span>
+	</p>
+	<span class=label>
+	%=l 'dir_CITY', class => 'label'
+	</span><span class=data>
+	%= text_field 'city', $dir_datas->{city}, class => 'input'
+	</span>
+	</p>
+	<span class=label>
+	%=l 'dir_PHONENUMBER', class => 'label'
+	</span><span class=data>
+	%= text_field 'phonenumber', $dir_datas->{phonenumber}, class => 'input'
+	</span>
+	</p>
+	<p>
+	%=l 'dir_DESC_EXISTING', class => 'desc'
+	<br><br>
+	<span class=label>
+	%=l 'dir_EXISTING', class => 'label'
+	</span><span class=data>
+	%= select_field 'existing'=> [[ (l 'dir_LEAVE') => 'leave'], [ (l 'dir_UPDATE') => 'update' ]], class => 'input'
+	</span>
+	</p>
+	<p>
+	<br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+    % end    
+
+</div>
+%end

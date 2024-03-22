@@ -1,0 +1,229 @@
+{
+    $OUT = <<'EOF';
+
+/*	from e-smith-manager to smanager (smeserver_manager2)  */
+
+/*----------------------------------------------------------------------
+ * copyright (C) 1999-2003 Mitel Networks Corporation
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *
+ * Technical support for this program is available from Mitel Networks
+ * Please visit our web site www.mitel.com for details.
+ *----------------------------------------------------------------------
+ */
+
+/* This is the stylesheet used in the navigation panel only
+
+   This file inherits the styles use in sme_core in the "navigation" section,
+   and as noted in the code below. Note that some of the styles here are empty.
+   This is because the style definition has moved safely to sme_core.css and
+   the placeholder is left here for reference or future use.
+
+   There are a lot of styles in here, so read carefully.  Each one is
+   documented.
+
+   Styles that were in the old stylesheets, but are not used in the UI are at
+   the bottom, commented out.  These can be removed at the end of the 6.0
+   cycle */
+
+/* Sets the general page properties */
+body, body.menu { 
+    margin-top: 0px; 
+    margin-right: 0px; 
+    margin-bottom: 0px; 
+    margin-left: 2px; 
+}
+
+/* This is the section heading style */
+.section {
+}
+
+td.menu-cell {
+    margin-top: 0px; 
+    margin-right: 0px; 
+    margin-bottom: 0px; 
+    margin-left: 0px; 
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+}
+
+/*
+All the a links use pseudoclasses to control the two visual link styles.
+For example:
+  a.item:link             the general link item
+  a.item-current:link:    the active link item
+
+The switch from item to item-current is done with a javascript script in the head of the
+navigation page, using the onClick event.
+
+We are making heavy use of the cascade with these.
+*/    
+
+/* a:link controls the look of a link when the mouse is nowhere near it */
+a.item:link, a.item-current:link, 
+a.warn:link, a.warn-current:link { 
+    display: block;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px; 
+    color: black; 
+    background: #e8f3e1; 
+    text-decoration: none;
+    text-align: left; 
+    border-color: #e8f3e1; 
+    margin-top: 0px; 
+    margin-right: 0px; 
+    margin-bottom: 0px; 
+    margin-left: 0px; 
+    border-style: solid; 
+    border-top-width: 1px; 
+    border-right-width: 1px; 
+    border-bottom-width: 1px; 
+    border-left-width: 1px;
+    padding-right: 10px; 
+    padding-left: 10px; 
+    padding-top: 0px; 
+    padding-bottom: 2px; 
+ }
+
+/* a:visited controls the look of a visited link (one that has been clicked) */
+a.item:visited, a.item-current:visited, 
+a.warn:visited, a.warn-current:visited { 
+    display: block;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px; 
+    color: black; 
+    background: #e8f3e1; 
+    text-decoration: none; 
+    border-color: #e8f3e1; 
+    margin-top: 0px; 
+    margin-right: 0px; 
+    margin-bottom: 0px; 
+    margin-left: 0px; 
+    border-style: solid; 
+    border-top-width: 1px; 
+    border-right-width: 1px; 
+    border-bottom-width: 1px; 
+    border-left-width: 1px;
+    padding-right: 10px; 
+    padding-left: 10px; 
+    padding-bottom: 2px; 
+    text-align: left; 
+}
+
+/* a:hover controls the look of a link under the curser*/
+a.item:hover, a.item-current:hover,
+a.warn:hover, a.warn-current:hover { 
+    display: block;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px; 
+    color: black; 
+    text-decoration: none; 
+    background: #cccccc; 
+    border-color: #888888; 
+    margin-top: 0px; 
+    margin-right: 0px;
+    margin-bottom: 0px; 
+    margin-left: 0px; 
+    border-style: solid; 
+    border-top-width: 1px; 
+    border-right-width: 1px; 
+    border-bottom-width: 1px; 
+    border-left-width: 1px; 
+    padding-right: 10px; 
+    padding-left: 10px; 
+    padding-bottom: 2px; 
+    text-align: left; 
+}
+
+/* a:active controls the look of a link as it is selected*/
+a.item:active, a.item-current:active, 
+a.warn:active, a.warn-current:active { 
+    display: block;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px; 
+    color: white; 
+    background: black; 
+    text-decoration: none ; 
+    border-color: #000000; 
+    margin-top: 0px; 
+    margin-right: 0px; 
+    margin-bottom: 0px; 
+    margin-left: 0px; 
+    border-style: solid; 
+    border-top-width: 1px; 
+    border-right-width: 1px; 
+    border-bottom-width: 1px; 
+    border-left-width: 1px;
+    padding-right: 10px; 
+    padding-left: 10px; 
+    padding-bottom: 2px; 
+    text-align: left; 
+}
+
+/* 
+These styles are to ensure that a selected link appears selected, even if the link
+opens in another frame.  This uses a javascript chunk in the head of the navigation 
+frame to change the style using the onClick event.
+*/
+a.item-current:link,    a.warn-current:link,
+a.item-current:visited, a.warn-current:visited, 
+a.item-current:active,  a.warn-current:active,
+a.item-current:hover,   a.warn-current:hover { 
+    display: block;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px; 
+    color: black; 
+    text-decoration: none; 
+    background: #ffffff; 
+    border-color: #888888; 
+    margin-top: 0px; 
+    margin-right: 0px;
+    margin-bottom: 0px; 
+    margin-left: 0px; 
+    border-style: solid; 
+    border-top-width: 1px; 
+    border-right-width: 1px; 
+    border-bottom-width: 1px; 
+    border-left-width: 1px; 
+    padding-right: 10px; 
+    padding-left: 10px; 
+    padding-bottom: 2px; 
+    text-align: left; 
+}
+
+/* these two add a border on the styles defined directly above when
+the mouse is hovering over them */
+a.item-current:hover,   a.warn-current:hover { 
+    border-color: #888888; 
+}
+
+/* These redefine a few elements to make room for the icon to the left of the warn class*/
+a.warn:link,    a.warn-current:link, 
+a.warn:visited, a.warn-current:visited, 
+a.warn:active,  a.warn-current:active,
+a.warn:hover,   a.warn-current:hover { 
+    background-image: url(/server-common/warn.gif);
+    background-repeat: no-repeat;
+    background-position: 10px; 
+    padding-left: 25px; 
+}
+/*end*/
+
+EOF
+}

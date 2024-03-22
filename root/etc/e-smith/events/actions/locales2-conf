@@ -1,0 +1,109 @@
+#!/usr/bin/perl -w
+
+#----------------------------------------------------------------------
+# copyright (C) 1999-2006 Mitel Networks Corporation
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 		
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 		
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+# 
+#----------------------------------------------------------------------
+package esmith;
+use strict;
+
+use constant DEBUG => 0;
+
+use constant I18NMODULES => '/usr/share/smanager/lib/SrvMngr/I18N/Modules';
+
+    #-------------------------
+    # get locale modules list 
+    #-------------------------
+opendir DIR, I18NMODULES or die "Couldn't open ", I18NMODULES, "\n";
+my @dirs = grep (/^[A-Z]/, readdir (DIR));
+closedir DIR;
+
+# put 'General' lexicon first
+unshift @dirs, 'General';
+
+foreach my $module (@dirs) {
+
+    next if (-f I18NMODULES . "/$module");
+
+    #-------------------------
+    # get lexicons list 
+    #-------------------------
+    opendir DIR, I18NMODULES . "/$module" or die "Couldn't open ", I18NMODULES, "\n";
+    my @lexs = grep (/_.*\.lex$/, readdir (DIR));
+    closedir DIR;
+
+    foreach my $lex (@lexs) {
+	my $long_lex = I18NMODULES . "/$module/$lex";
+
+	next if (-d $long_lex);
+
+	# my ($mod, $lang) = split /[_.]/, $lex; # module name without '_'
+	my @elements = split /[_.]/, $lex;
+	next if ( scalar @elements < 3 );
+
+	my $mod = join( '_', @elements[0..(scalar @elements - 3)] );
+	my $lang = @elements[scalar @elements - 2];
+
+	next if ( $mod ne lc($module) );
+
+	$lang =~ s/-/_/;
+	my $long_pm = I18NMODULES . "/$module/$lang". '.pm';
+	if ( -f $long_pm ) {
+	    # .pm file not newer than .lex
+	    next if ((stat($long_lex))[9] < (stat($long_pm))[9]);
+	    print "locales2: error cp\n" unless system("cp -f $long_pm ${long_pm}.svg") == 0; 
+	}
+
+	open(FIL, '>:encoding(UTF-8)', $long_pm)
+	     or die "Couldn't open ", $long_pm, " for writing.\n";
+	
+	print FIL "package SrvMngr::I18N::Modules::${module}::${lang};\n";
+	print FIL "use strict;\nuse warnings;\nuse utf8;\nuse Mojo::Base 'SrvMngr::I18N';\n\n";
+	print FIL "use SrvMngr::I18N::Modules::General::${lang};\n\nmy %lexicon = (\n";
+
+    #--------------------
+    # copy lexicon to pm
+    #--------------------
+	open(FIL2, '<:encoding(UTF-8)', $long_lex)
+	     or die "Couldn't open ", $long_lex, " for reading.\n";
+	while ( <FIL2> ) {
+	    print FIL $_;
+	}
+	close FIL2;
+
+	print FIL ");\n\nour %Lexicon = (\n";
+	print FIL "	%\{ SrvMngr::I18N::Modules::General::${lang}::Lexicon \},\n" unless $module eq 'General';
+	print FIL "	%lexicon\n);\n\n\n1;\n";
+
+	close FIL;
+	
+    #-------------------------
+    # eval and restore if NOT OK
+    #-------------------------
+	if ( eval "use lib '".I18NMODULES."/../../../'; require '$long_pm';" ) {
+	    print "Lexicon $lang for $module ($lex) written to ${lang}.pm\n" if DEBUG;
+	    if ( -f ${long_pm}.'.svg' ) { 
+		print "locales2: error rm" unless system("rm -f ${long_pm}.svg") == 0; 
+	    } 
+	} else {
+	    print "ERROR: Lexicon $lang for $module ($lex) NOT written to ${lang}.pm\n$@\n";
+	    if ( -f ${long_pm}.'.svg' ) { 
+		print "locales2: error mv" unless system("mv -f ${long_pm}.svg $long_pm") == 0; 
+	    } 
+	}
+    }
+}

@@ -1,0 +1,28 @@
+% layout 'default', title => 'Sme server 2 - Bug report 2';
+
+% content_for 'module' => begin
+
+<div id='module' class='module bugreport2-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	(DBG)route: <%= $c->current_route %><br>
+	(DBG)trt: <%= $bugr_datas->{trt} %><br>
+	</p>
+    % }
+
+    <h1><%= $title %></h1>
+
+    <br><%= $modul %><br>
+
+    <p>
+    <% my $btn = l('bugr_Download this report'); %>
+
+    %= form_for 'bugreportD' => (method => 'POST') => begin
+	%= submit_button "$btn", class => 'action'
+	%= hidden_field 'trt' => $bugr_datas->{trt}
+    % end    
+
+</div>
+
+%end

@@ -1,0 +1,69 @@
+<div id='prt_list'>
+
+
+    % my $btn = l('prt_INITIAL_BTN');
+
+    %= form_for '/printers' => (method => 'POST') => begin
+
+        %= hidden_field 'trt' => 'ADD'
+
+	<p>
+	<br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+   % end    
+
+	<p>
+	<h2>
+	%=l 'prt_CURRENT_LIST'
+	</h2>
+	<br><br>
+    % 	my $numPrinters = @$printerDrivers;
+    %	if ($numPrinters == 0){
+        %=l 'prt_NO_PRINTERS'
+    %	} else {
+	<table class="sme-border TableSort"><thead>
+	<tr>
+    	    <th class='sme-border'>
+    	    %=l 'NAME'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'DESCRIPTION'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'LOCATION'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'prt_REMOTE_ADDRESS'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'prt_REMOTE_NAME'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'ACTION'
+    	    </th>
+    	</tr>
+    	</thead><tbody>
+    %    foreach my $printer (@$printerDrivers)
+    %    {
+    %        my $address = ($printer->prop('Location') eq 'remote')
+    %        ? $printer->prop('Address') : 'N/A';
+    %        my $remoteName = ($printer->prop('Location') eq 'remote')
+    %        ? $printer->prop('RemoteName') : 'N/A';
+    %        $remoteName = 'raw' unless ($remoteName);
+        <tr>
+            %= t td => (class => 'sme-border') => $printer->key
+            %= t td => (class => 'sme-border') => $printer->prop('Description')
+            %= t td => (class => 'sme-border') => $printer->prop('Location')
+            %= t td => (class => 'sme-border') => $address
+            %= t td => (class => 'sme-border') => $remoteName
+	    <td class='sme-border'><a href="printers2?CsrfDef=TOKEN&trt=DEL&printer=<%= $printer->key%>"><button class='sme-remove-button' title="<%=l('REMOVE')%>"><%=l('REMOVE') %></button></a></td>
+    	</tr>
+    %    }
+    	</tbody>
+    	</table>
+	<%} %>
+	</p>
+
+
+</div>

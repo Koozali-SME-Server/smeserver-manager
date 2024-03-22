@@ -1,0 +1,10 @@
+% layout 'default', title => 'Sme server 2 - Support';
+
+% content_for 'module' => begin
+<div id='module' class='module support-panel'>
+    <p> < %= $title % ></p>
+    <br>
+    <%= $modul %> 
+    <br>
+</div>
+%end

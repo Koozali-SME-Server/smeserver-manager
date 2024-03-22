@@ -1,0 +1,45 @@
+<div id='usr_pwds'>
+
+    % 	my $btn = l('SAVE');
+
+    %= form_for '/useraccountsd' => (method => 'POST') => begin
+	<p>
+	%= l 'usr_SYSTEM_PASSWORD_DESCRIPTION'
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'usr_CURRENT_SYSTEM_PASSWORD', class => 'label'
+	</span><span class=data>
+	%= password_field 'CurPass', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'usr_NEW_SYSTEM_PASSWORD', class => 'label'
+	</span><span class=data>
+	%= password_field 'Pass', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'usr_NEW_SYSTEM_PASSWORD_VERIFY', class => 'label'
+	</span><span class=data>
+	%= password_field 'PassVerify', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<br><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $usr_datas->{trt}
+	%= hidden_field 'user' => $usr_datas->{user}
+	%= hidden_field 'name' => $usr_datas->{name}
+	
+    % end
+
+</div>

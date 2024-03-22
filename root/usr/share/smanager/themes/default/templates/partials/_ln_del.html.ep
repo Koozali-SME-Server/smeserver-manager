@@ -1,0 +1,57 @@
+<div id='ln_del'>
+
+    % my $btn = l('REMOVE');
+    % my $deletehosts = $ln_datas->{deletehosts};
+    % my $subnet = $ln_datas->{subnet};
+    % my $router = $ln_datas->{router};
+    
+   % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $c->stash("ret")
+    %= dumper %$ln_datas
+    %= dumper $deletehosts
+	</p>
+    % }
+     
+    %= form_for '/localnetworkse' => (method => 'POST') => begin
+		<h2>
+		%=l "ln_REMOVE_TITLE"
+		</h2>
+			<p>
+				%=l "ln_REMOVE_DESC"
+			</p><br>
+			<span class=label>
+				%=l "NETWORK"
+			</span><span class=data>
+				%=$localnetwork
+			</span><br><br>
+			<span class=label>
+				%=l "ln_SUBNET_MASK"
+			</span><span class=data>
+				%= $subnet
+			</span><br><br>
+			<span class=label>
+				%=l "ROUTER"
+			</span>
+			<span class=data>
+				%= $router
+			</span><br><br>
+			% if($deletehosts) {
+			<br>
+			%=$c->l("ln_REMOVE_HOSTS_DESC")
+			<br>
+			<span class=label>
+				%= $c->l("ln_REMOVE_HOSTS_LABEL")
+			</span>
+			<span class= data>
+				%=check_box deletehost=>1, checked=>1
+			</span><br><br>
+			%}
+			%= hidden_field localnetwork=>$localnetwork
+	        <div class='center'>
+		%= submit_button "$btn", class => 'action'
+		</div>
+	%end
+
+</div>

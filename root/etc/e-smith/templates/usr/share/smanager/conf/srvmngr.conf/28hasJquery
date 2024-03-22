@@ -1,0 +1,2 @@
+    # is js-jquery available
+    hasJquery => { -f '/usr/share/smanager/themes/default/public/js/jquery.min.js' ? '1' : '0'; },

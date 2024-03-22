@@ -1,0 +1,16 @@
+    hypnotoad => \{
+    ## adresses and ports listened
+        listen => ['http://127.0.0.1:{$smanager{'TCPPort'} || 982 }'],
+        proxy  => 1,
+        pid_file => '/var/run/smanager.pid',
+
+    ## process number based on CPU number [x 2]
+        workers => (`grep processor /proc/cpuinfo | wc -l` * 2),
+
+    ## connections queue size, per worker
+        accepts => 100,
+
+    ## propriétaire et groupe du serveur
+        user => 'admin',
+        group => 'admin'
+    \},

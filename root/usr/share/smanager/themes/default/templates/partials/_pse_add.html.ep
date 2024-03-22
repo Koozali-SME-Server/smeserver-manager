@@ -1,0 +1,39 @@
+<div id='pse_add'>
+
+    % 	my $btn = l('ADD');
+
+    %= form_for '/pseudonyms2' => (method => 'POST') => begin
+	<p>
+	<h2>
+	%=l 'pse_TITLE_CREATE'
+	</h2>
+	<br>
+	%= $c->render_to_string(inline => l('pse_VALID_PSEUDONYM_NAMES'));
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'pse_PSEUDONYM_NAME', class => 'label'
+	</span><span class=data>
+	%= text_field 'Pseudonym', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'pse_SELECT_ACCOUNT', class => 'label'
+	</span><span class=data>
+	%= select_field 'Account' => $c->existing_accounts_list(), class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<br><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $pse_datas->{trt}
+	
+    % end    
+
+</div>

@@ -1,0 +1,81 @@
+% layout 'default', title => "Sme server 2 - backup";
+
+% content_for 'module' => begin
+
+<div id='module' class='module backup-panel'>
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $bac_datas
+	</p>
+    % }
+
+    % if ( stash 'warning' ) {
+    	<br><div class=sme-warning>
+    	%= $c->render_to_string(inline => stash 'warning') 
+	</div>
+    %}
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+
+    <h1><%= $title%></h1>
+    <!--br>Still incomplete click here for previous version
+	<a href="/server-manager/cgi-bin/backup" target='_blank'><b>(Previous Backup version)</b></a>
+    <br-->
+
+	<%= $c->render_to_string(inline => (l 'bac_BACKUP_DESC_DAR', $bac_datas->{module}, 
+		$bac_datas->{dumpsize}, $bac_datas->{tarsize})) %>
+
+    %= form_for '/backup' => (method => 'POST') => begin
+
+	<h2>
+	%=l 'bac_BACKUP_CONFIG_STATUS'
+	</h2>
+
+	<p><span class=label>
+	%=l 'bac_TAPE_BACKUPS',
+	</span><span class=data2>
+	%= $c->l(uc($bac_datas->{'backupStatus'})).'.'
+	</span>
+    % if ( $bac_datas->{'backupStatus'} eq 'enabled' ) {
+	%= $c->l('bac_BACKUPS_RUN_AT')
+	<span class=data>
+	%=  $bac_datas->{'backupTime'}
+	</span>
+	%= $c->l('bac_REMINDER_MESSAGE_AT')
+	<span class=data>
+	%= $bac_datas->{'reminderTime'}
+	</span>    
+    %}
+	<p><span class=label>
+	%=l 'bac_WORKSTN_BACKUPS',
+	</span><span class=data2>
+	%= $c->l(uc($bac_datas->{'backupwkStatus'})).'.'
+	</span>
+    % if ( $bac_datas->{'backupwkStatus'} eq 'enabled' ) {
+	%= $c->l('bac_WKBACKUPS_RUN_AT')
+	<b>
+	%= $bac_datas->{'backupwkTime'}
+	</b>
+    %}
+
+	<p><span class=label>
+	%=l 'bac_SELECT_AN_ACTION'
+	</span><span class=data>
+	% param 'Function' => $bac_datas->{function} unless param 'Function';
+	%= select_field 'Function' => $c->get_function_options(), class => 'input'
+	</span></p>
+
+	<br>
+    <div class='center'>
+	%= submit_button $c->l('PERFORM'), class => 'action'
+    </div>
+
+    % end
+
+</div>
+
+% end

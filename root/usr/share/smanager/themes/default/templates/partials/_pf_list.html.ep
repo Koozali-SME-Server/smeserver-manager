@@ -1,0 +1,109 @@
+<div id='pf_list'>
+    % my $btn = l('pf_CREATE_RULE');
+    %= form_for '/portforwardinga' => (method => 'POST') => begin
+
+	% my $retref= $c->stash("ret");
+	% my %ret;
+	% unless (length($retref)) {%ret = (ret=>"");}
+	% else {%ret = %$retref;}
+ 
+    % my $numtcpforwards = @$tcpforwards;
+	% my $numudpforwards = @$udpforwards;
+
+	% my @vars = split(",",$ret{vars});
+	% my $var1 = @vars[0];
+	% my $var2 = @vars[1];
+	% my $var3 = @vars[2];
+	% my $var4 = @vars[3];
+	% my $var5 = @vars[4];
+	% my $var6 = @vars[5];
+
+
+
+	%if ($ret{ret} eq "") {
+	    %= $c->render_to_string(inline => l('pf_FIRST_PAGE_DESCRIPTION'));
+	%} elsif (index($ret{ret},"SUCCESS") != -1) {
+	   <div class='success'>
+	       <h2> Operation Status Report</h2>
+			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
+		</div>
+	   %} else { 
+	   <div class='sme-error'>
+	       <h2> Operation Status Report - Error</h2>
+			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
+    	</div>
+	%}
+	<br><br>
+        <div class='center'>
+	%= submit_button "$btn", class => 'action'
+	</div>
+    % end   
+   
+   	<br>
+
+    %	if ($empty){
+            <br>
+		%=l 'pf_NO_FORWARDS'
+    %	} else {
+        <br>
+		%=l 'pf_SHOW_FORWARDS'
+	<br>
+		<table class="sme-border TableSort"><thead>
+		<tr>
+			<th class='sme-border'>
+				%=l 'pf_LABEL_PROTOCOL'
+			</th>
+			<th class='sme-border'>
+				%=l 'pf_LABEL_SOURCE_PORT'
+			</th>
+			<th class='sme-border'>
+				%=l 'pf_LABEL_DESTINATION_HOST'
+			</th>
+			<th class='sme-border'>
+				%=l 'pf_LABEL_DESTINATION_PORT'
+			</th>
+			<th class='sme-border'>
+				%=l 'pf_ALLOW_HOSTS'
+			</th>
+			<th class='sme-border'>
+				%=l 'pf_RULE_COMMENT'
+			</th>
+			<th class='sme-border' '>
+				%=l 'ACTION'
+			</th>
+		</tr>
+		</thead><tbody>
+		% my %forwards = ();
+		% $forwards{TCP} = $tcpforwards;
+		% $forwards{UDP} = $udpforwards;
+
+        % foreach my $proto (sort keys %forwards) {
+
+        %    if (@{ $forwards{$proto} }) {
+        %        foreach my $entry (@{ $forwards{$proto} }) {
+			<tr>
+        %           my $sport = $entry->key;
+        %           my $dhost = $entry->prop('DestHost');
+        %           my $dport = $entry->prop('DestPort') || '';
+        %           my $cmmnt  = $entry->prop('Comment') || '';
+        %           my $allow  = $entry->prop('AllowHosts') || '';
+		%= 			t td => (class => 'sme-border') => $proto
+		%= 			t td => (class => 'sme-border') => $sport
+		%= 			t td => (class => 'sme-border') => $dhost
+		%= 			t td => (class => 'sme-border') => $dport
+		%= 			t td => (class => 'sme-border') => $allow
+		%= 			t td => (class => 'sme-border') => $cmmnt
+					<td class='sme-border'>
+						<a href="portforwardingd?CsrfDef=TOKEN&trt=DEL&sport=<%= $sport%>&proto=<%= $proto%>"><button class='sme-remove-button' title="<%=l('REMOVE')%>"><%=l('REMOVE') %></button></a>
+					</td>
+			</tr>
+         %       }
+         %   }
+        %}
+	%}
+	</tbody>
+	</table>
+	%= hidden_field 'trt' => $pf_datas->{trt}
+ 
+</div>
+

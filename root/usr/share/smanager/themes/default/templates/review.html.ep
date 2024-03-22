@@ -1,0 +1,137 @@
+% layout 'default', title => 'Sme server 2 - Review';
+
+% content_for 'module' => begin
+<div id='central' class='central review-panel'>
+    <h1> <%= $title %> </h1>
+    <%= $modul %><br><br>
+
+    %= form_for 'review' => begin
+	<b>
+	%=l 'rvw_NETWORKING_PARAMS'
+	</b><br>
+	
+	<p><span class=label>
+	%=l 'rvw_SERVER_MODE'
+	</span>
+	%= $rvw_datas->{servermode}
+	</p>
+	
+	<p><span class=label>
+	%=l 'rvw_LOCAL_IP_ADDRESS_SUBNET_MASK'
+	</span>
+	%= $rvw_datas->{localip}
+	</p>
+	
+	% if ( $rvw_datas->{publicip} ) {
+	    <p><span class=label>
+	    %=l 'rvw_INTERNET_VISIBLE_ADDRESS'
+	    </span>
+	    %= $rvw_datas->{publicip}
+	    </p>
+	% }
+	
+	<p><span class=label>
+	%=l 'rvw_GATEWAY'
+	</span>
+	%= $rvw_datas->{gateway}
+	%= $rvw_datas->{serveronly}
+	</p>
+	
+	<p><table width='100%'><tr><td class=label><!--span class=label-->
+	%=l 'rvw_ADDITIONAL_LOCAL_NETWORKS'
+	<!--/span--></td><td>
+	%= $c->render_to_string( inline => $rvw_datas->{addlocalnetworks} );
+	</td></tr></table>
+	</p>
+	
+	<p><table width='100%'><tr><td class=label>
+	<!--<p><span class=label>-->
+	%=l 'rvw_DHCP_SERVER'
+	<!--</span>-->
+	</td><td>
+	%= $rvw_datas->{dhcpserver}
+	<!--</p>-->
+	</td></tr></table></p>
+
+	<br><br><b>
+	%=l 'rvw_SERVER_NAMES'
+	</b><br>
+	
+	<p><span class=label>
+	%=l 'rvw_DNS_SERVER'
+	</span>
+	%= $rvw_datas->{dnsserver}
+	</p>
+	
+	<p><span class=label>
+	%=l 'rvw_WEB_SERVER'
+	</span>
+	%= $rvw_datas->{webserver}
+	</p>
+	
+	<p><span class=label>
+	%=l 'rvw_PROXY_SERVER'
+	</span>
+	%= $rvw_datas->{proxyserver}
+	</p>
+	
+	<p><span class=label>
+	%=l 'rvw_FTP_SERVER'
+	</span>
+	%= $rvw_datas->{ftpserver}
+	</p>
+
+	<p><span class=label>
+	%=l 'rvw_SMTP_POP_AND_IMAP_MAIL_SERVERS'
+	</span>
+	%= $rvw_datas->{smtpserver}
+	</p>
+
+	<br><br><b>
+	%=l 'rvw_DOMAIN_INFORMATION'
+	</b><br>
+	
+	<p><span class=label>
+	%=l 'rvw_PRIMARY_DOMAIN'
+	</span>
+	%= $rvw_datas->{domainname}
+	</p>
+	
+	<!---<p><span class=label>-->
+	<p><table width='100%'><tr><td class=label>
+	%=l 'rvw_VIRTUAL_DOMAINS'
+	</td><td>
+	<!--</span>-->
+	%= $rvw_datas->{virtualdomains}
+	</td></tr></table></p>
+	<!--</p>-->
+	
+	<p><span class=label>
+	%=l 'rvw_PRIMARY_WEB_SITE'
+	</span>
+	%= $rvw_datas->{primarywebsite}
+	</p>
+	
+	<p><span class=label>
+	%=l 'rvw_SERVER_MANAGER'
+	</span>
+	%= $rvw_datas->{servermanager}
+	</p>
+	
+	<p><span class=label>
+	%=l 'rvw_USER_PASSWORD_PANEL'
+	</span>
+	%= $rvw_datas->{usermanager}
+	</p>
+	
+	<p><table width='100%'><tr><td class=label>
+	%=l 'rvw_EMAIL_ADDRESSES'
+	</td><td>
+	%= $rvw_datas->{emailaddresses}
+	</td></tr></table></p>
+
+    % end
+
+</div>
+
+% end

@@ -1,0 +1,38 @@
+% layout 'default', title => "Sme server 2 - restore";
+
+% content_for 'module' => begin
+
+<div id='module' class='module back_workstn_restore1-panel'>
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $bac_datas
+	</p>
+    % }
+
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+
+    <h1><%= $title%></h1>
+
+    %= form_for '/backupd' => (method => 'POST') => begin
+
+	<h2>
+	%=l 'bac_WORKSTN_RESTORE'
+	</h2>
+	<p>
+	%= $c->render_to_string(inline => $bac_datas->{restore_log})
+	</p><p>
+	%=l 'bac_YOU_MUST_REBOOT'
+	</p>
+	%= hidden_field 'Function' => $bac_datas->{'function'}
+    <div class='center'>
+	%= submit_button $c->l('bac_REBOOT'), class => 'action'
+    </div>
+    % end
+</div>
+
+% end

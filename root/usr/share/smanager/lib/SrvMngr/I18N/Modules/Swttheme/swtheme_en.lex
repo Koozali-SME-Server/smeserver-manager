@@ -1,0 +1,2 @@
+
+'swt_THEME' => 'Theme',

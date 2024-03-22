@@ -1,0 +1,35 @@
+% layout 'default', title => "Sme server 2 - hostentries";
+
+% content_for 'module' => begin
+<div id='module' class='module hostentries-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $hos_datas
+	</p>
+    % }
+    
+    <h1><%= $title%></h1>
+
+    % if ( $notif ) {
+	<br>
+	<span class=sme-error>
+	<%= $c->render_to_string(inline => $notif) %>
+	</span>
+    %}
+
+    % if ($hos_datas->{trt} eq 'ADD' or $hos_datas->{trt} eq 'UPD') {
+	%= include 'partials/_hos_upd'
+    %} elsif ($hos_datas->{trt} eq 'DEL') {
+	%= include 'partials/_hos_del'
+    %} elsif ( $hos_datas->{trt} eq 'ALC' or $hos_datas->{trt} eq 'ULC') {
+	%= include 'partials/_hos_ulc'
+    %} elsif ( $hos_datas->{trt} eq 'ARM' or $hos_datas->{trt} eq 'URM') {
+	%= include 'partials/_hos_urm'
+    %} else {
+	%= include 'partials/_hos_list'
+    %}
+
+</div>
+%end

@@ -1,0 +1,50 @@
+{
+    $OUT =<<'HERE';
+
+/*	from e-smith-manager to smanager (smeserver_manager2)  */
+
+/*----------------------------------------------------------------------
+ * copyright (C) 1999-2003 Mitel Networks Corporation
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *
+ * Technical support for this program is available from Mitel Networks
+ * Please visit our web site www.mitel.com for details.
+ *----------------------------------------------------------------------
+ */
+/*contribs.org styling */
+
+/* This special style is actually used only for the button row along the bottom of each page */
+th.sme-layout {
+border: 1px solid #8ebe43;
+background-color: #bee6a2;
+    }
+table.sme-border {
+border: 2px solid #dddddd;
+    }
+td.sme-border-warning,
+td.sme-border-right,
+td.sme-border-center {
+border: 1px solid #dddddd;
+    }
+td.sme-border-right {text-align: right;}
+td.sme-border-center {text-align: center;}
+th.sme-border {
+border: 1px solid #dddddd;
+background-color: #e8f3e1;
+    }
+HERE
+}
+    

@@ -1,0 +1,53 @@
+<div id='grp_list'>
+
+    % my $btn = l('GROUP_ADD');
+
+    %= form_for '/groups' => (method => 'POST') => begin
+
+        %= hidden_field 'trt' => 'ADD'
+
+	<p>	<br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+    % end    
+
+
+	<p>	<h2>
+	%=l 'grp_CURRENT_LIST'
+	</h2><br><br>
+    % 	my $numGroups = @$groups;
+    %	if ($numGroups == 0){
+        %=l 'ACCOUNT_GROUP_NONE'
+    %	} else {
+	<table class="sme-border TableSort"><thead>
+	<tr>
+    	    <th class='sme-border'>
+    	    %=l 'GROUP'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'DESCRIPTION'
+    	    </th>
+    	    <th class='sme-border'>
+				%=l 'ACTION'
+    	    </th>
+    	</tr>
+    	</thead><tbody>
+
+    %    foreach my $group ( @$groups )
+    %    {
+        <tr>
+            %= t td => (class => 'sme-border') => $group->key
+            %= t td => (class => 'sme-border') => $group->prop('Description')
+			<td class='sme-border' style="min-width:15em">
+				<a href='groups2?CsrfDef=TOKEN&trt=UPD&group=<%= $group->key%>'><button class='sme-modify-button' title=<%=l('MODIFY')%>><%=l('MODIFY') %></button></a>
+				<a href='groups2?CsrfDef=TOKEN&trt=DEL&group=<%= $group->key%>'><button class='sme-remove-button' title=<%=l('REMOVE')%>><%=l('REMOVE') %></button></a>
+			</td>
+    	</tr>
+    %    }
+    	</tbody>
+    	</table>
+	<%} %>
+	</p>
+
+
+</div>

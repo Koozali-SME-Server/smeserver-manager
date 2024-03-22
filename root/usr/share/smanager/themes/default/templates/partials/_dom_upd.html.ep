@@ -1,0 +1,70 @@
+<div id='dom_upd'>
+
+    % 	my $btn = l('ADD');
+
+    %= form_for '/domains2' => (method => 'POST') => begin
+	<p>
+	<h2>
+    % if ( $dom_datas->{trt} eq "ADD" ) {
+	%=l 'dom_CREATE_TITLE'
+    % } else {
+	%=l 'dom_MODIFY_TITLE'
+    % 	$btn = l('MODIFY');
+    % }
+	</h2>
+	</p>
+
+	<p><br>
+	<span class=label>
+	%=l 'DOMAIN_NAME', class => 'label'
+	</span><span class=data>
+    % if ( $dom_datas->{trt} eq "ADD" ) {
+	% param 'Domain' => $dom_datas->{domain} unless param 'Domain';
+	%= text_field 'Domain', class => 'input'
+    % } else {
+        %= hidden_field 'Domain' => $dom_datas->{domain}
+	%= $dom_datas->{domain}, class => 'data'
+    % }
+	</span>
+	</p>
+
+	<p><br>
+	<span class=label>
+	%=l 'DESCRIPTION_BRIEF', class => 'label'
+	</span><span class=data>
+	% param 'Description' => $dom_datas->{description} unless param 'Description';
+	%= text_field 'Description', class => 'input'
+	</span>
+	</p>
+
+	<p><br>
+	%=l 'dom_CONTENT_FIELD_DESCRIPTION'
+	<br>
+	<span class=label>
+	%= $c->l('dom_CONTENT', '');
+	</span><span class=data>
+	% param 'Content' => $dom_datas->{content} unless param 'Content';
+	%= select_field 'Content', $c->content_options_list(), class => 'input'
+	</span>
+	</p>
+
+	<p><br>
+	%=l 'dom_DESC_NAMESERVERS'
+	<br>
+	<span class=label>
+	%=l 'dom_LABEL_NAMESERVERS', class => 'label'
+	</span><span class=data>
+	% param 'Nameservers' => $dom_datas->{nameservers} unless param 'Nameservers';
+	%= select_field 'Nameservers', $c->nameserver_options_list(), class => 'input'
+	</span>
+	</p>
+
+	<p><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $dom_datas->{trt}
+	
+    %end
+
+</div>

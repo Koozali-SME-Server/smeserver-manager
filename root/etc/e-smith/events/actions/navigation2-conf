@@ -1,0 +1,176 @@
+#!/usr/bin/perl -w
+
+#----------------------------------------------------------------------
+# copyright (C) 1999-2006 Mitel Networks Corporation
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 		
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 		
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+# 
+#----------------------------------------------------------------------
+package esmith;
+use strict;
+
+use constant SMNGR_LIB => '/usr/share/smanager/lib';
+use constant I18NMODULES => 'SrvMngr/I18N/Modules';
+use constant WEBFUNCTIONS => 'SrvMngr/Controller';
+use constant NAVDIR => '/home/e-smith/db';
+use constant NAVIGATIONDIR => 'navigation2';
+use constant DEBUG => 0;
+
+use esmith::NavigationDB;
+use esmith::I18N;
+
+use Data::Dumper;	# activate if DEBUG
+
+my $navigation_ignore = 
+	"(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm(-.*)?)";
+
+my $i18n = new esmith::I18N;
+
+my %navdbs;
+
+opendir FUNCTIONS, SMNGR_LIB.'/'.WEBFUNCTIONS or 
+    die "Couldn't open ", SMNGR_LIB.'/'.WEBFUNCTIONS, "\n";
+my @files = grep (!/^${navigation_ignore}$/, readdir (FUNCTIONS));
+closedir FUNCTIONS;
+
+my @langs = $i18n->availableLanguages(); 
+#my @langs = ('en', 'fr'); 
+#print Dumper(\@langs);
+
+
+foreach my $lang (@langs)
+{
+    my $long_lex = SMNGR_LIB.'/'.I18NMODULES."/General/general_$lang.lex";
+    next unless ( -e $long_lex );
+
+    open(LEX, '<:encoding(UTF-8)', $long_lex)
+         or die "Couldn't open ", $long_lex, " for reading.\n";
+    my @gen_lex = <LEX>;
+    close LEX;
+
+    foreach my $file (@files)
+    {
+	next if (-d SMNGR_LIB.'/'.WEBFUNCTIONS . "/$file");
+#        next unless ( $file =~ m/D.*\.pm$/ );
+        next unless ( $file =~ m/[A-Z].*\.pm$/ );
+
+	my $file2 = lc($file);
+	$file2 =~ s/\.pm$//;
+
+    #-------------------------------------------------- 
+    # extract heading, description and weight information
+    # from Mojo controller
+    #-------------------------------------------------- 
+	open(SCRIPT, SMNGR_LIB.'/'.WEBFUNCTIONS . "/$file");
+        my $heading            	= undef;
+        my $description        	= undef;
+        my $heading_weight     	= undef;
+        my $description_weight 	= undef;
+        my $menucat		= undef;
+        my $routes		= undef;
+
+        while ( <SCRIPT> )
+	{
+	    $heading = $1 if (/^\s*#\s*heading\s*:\s*(.+?)\s*$/);
+	    $description = $1 
+		if (/^\s*#\s*description\s*:\s*(.+?)\s*$/);
+	    ($heading_weight, $description_weight) = ($1, $2) 
+		if (/^\s*#\s*navigation\s*:\s*(\d+?)\s+(\d+?)\s*$/);
+	    $menucat = $1 
+		if (/^\s*#\s*menu\s*:\s*(.+?)\s*$/);
+
+	    last if (defined $heading and 
+		defined $description and
+		defined $heading_weight and
+		defined $description_weight and
+		defined $menucat);
+
+	    # routes : end  (stop before eof if 'menu' is not here before 'routes'!!!
+	    $routes = $1 if (/^\s*#\s*routes\s*:\s*(.+?)\s*$/);
+	    last if (defined $routes and $routes eq 'end');
+	}
+	close SCRIPT;
+
+	print "updating script $file for lang $lang\n" if DEBUG;
+	my $navdb = $navdbs{$lang};
+	my $navinfo = NAVDIR.'/'.NAVIGATIONDIR . "/navigation.$lang";
+	$navdb ||= esmith::NavigationDB->open($navinfo);
+	$navdb ||= esmith::NavigationDB->create($navinfo) or
+	    die "Couldn't create $navinfo\n";
+        $navdbs{$lang} ||= $navdb;
+	my $rec = $navdb->get($file2) || 
+	    $navdb->new_record($file2, { type => 'panel' } );
+
+	my @panel_lex = ();
+	$long_lex = SMNGR_LIB.'/'.I18NMODULES.'/'.ucfirst($file2)."/${file2}_$lang.lex";
+	if ( -e $long_lex ) {
+	    open(LEX, '<:encoding(UTF-8)', $long_lex)
+    		 or die "Couldn't open ", $long_lex, " for reading.\n";
+	    @panel_lex = <LEX>;
+	    close LEX;
+	}
+
+	my %Lexicon = ();
+	push(@panel_lex, @gen_lex);
+	my $top_error = 0;
+
+	chomp @panel_lex;
+	for (@panel_lex) {
+	    next unless $_;	# first one empty
+	    my ($k, $v) = split / => /, $_;
+#	errors on split to $v (use DEBUG to see)
+	    if ( $k and $v ) {
+		$k =~ s/\'//g;
+		$v =~ s/\'//g;
+		$v =~ s/,$//g;
+		$Lexicon{ $k } = $v;
+	    } else {
+		$k = "?" unless ($k);
+		print STDERR "Error for $lang $file2 on $k \n" if DEBUG;
+		$top_error++;
+	    }
+	}
+	if ( $top_error > 0) {
+	    if ( DEBUG ) {
+	        print STDERR "$top_error errors for $lang $file2\n";
+#		print Dumper(\@panel_lex);
+#		print Dumper(\%Lexicon);
+#		exit 1;
+	    }
+	}
+
+	my $loc_heading =  localise( \%Lexicon, $heading );
+	my $loc_description =  localise( \%Lexicon, $description );
+	$loc_heading =~ s/^\s*(\w.*?)\s*$/$1/;
+	$loc_description =~ s/^\s*(\w.*?)\s*$/$1/;
+
+	$rec->merge_props(
+	    Heading => $loc_heading,
+	    Description => $loc_description,
+	    HeadingWeight => localise( \%Lexicon, $heading_weight ),
+	    DescriptionWeight => localise( \%Lexicon, $description_weight ),
+	    MenuCat => (defined $menucat ? $menucat : 'A'));
+    }
+    #warn "trying to close for lang $lang\n";
+    my $navdb = $navdbs{$lang};
+    $navdb->close();
+}
+
+
+sub localise {
+    my ($lexicon, $string) = @_;
+    $string  = "" unless defined $string;
+    return $lexicon->{$string} || $string;
+}

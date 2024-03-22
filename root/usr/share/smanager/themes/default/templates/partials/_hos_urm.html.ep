@@ -1,0 +1,37 @@
+<div id='hos_urm'>
+<!--	UPDATE HOST TYPE -->
+
+    % 	my $btn = l('MODIFY');
+
+    %= form_for '/hostentriesd' => (method => 'POST') => begin
+
+	<p>
+	%=l 'hos_REMOTE_PAGE_DESCRIPTION'
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'IP_ADDRESS_OR_FQDN', class => 'label'
+	</span><span class=data>
+	% param 'Externalip' => $hos_datas->{externalip} unless param 'Externalip';
+	%= text_field 'Externalip', class => 'input'
+	</span>
+	</p>
+
+
+	<p><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $hos_datas->{trt}
+	%= hidden_field 'Hostname' => $hos_datas->{hostname}
+        %= hidden_field 'Name' => $hos_datas->{name}
+        %= hidden_field 'Domain' => $hos_datas->{domain}
+	%= hidden_field 'Comment'=> $hos_datas->{comment}
+	%= hidden_field 'Hosttype'=> $hos_datas->{hosttype}
+	%= hidden_field 'Internalip' => $hos_datas->{internalip}
+	%= hidden_field 'Macaddress' => $hos_datas->{macaddress}
+	
+    %end
+
+</div>

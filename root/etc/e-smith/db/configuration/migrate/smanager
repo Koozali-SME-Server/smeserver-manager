@@ -1,0 +1,38 @@
+{
+    sub gen_pwd {
+        use MIME::Base64 qw(encode_base64);
+        my $p = "not set due to error";
+        if ( open( RANDOM, "/dev/urandom" ) ){
+            my $buf;
+            # 57 bytes is a full line of Base64 coding, and contains
+            # 456 bits of randomness - given a perfectly random /dev/random
+            if ( read( RANDOM, $buf, 57 ) != 57 ){
+                warn("Short read from /dev/random: $!");
+            }
+            else{
+                $p = encode_base64($buf);
+                chomp $p;
+            }
+            close RANDOM;
+        }
+        else{
+            warn "Could not open /dev/urandom: $!";
+        }
+        return $p;
+    }
+
+    my $rec = $DB->get('smanager')
+        || $DB->new_record('smanager', {type => 'service'});
+
+    my $pwd = $rec->prop('Secrets');
+    if (not $pwd or length($pwd) < 57){
+        my $pwd = gen_pwd();
+        $rec->set_prop('Secrets', $pwd);
+    }
+
+    my $theme = $rec->prop('Theme');
+    if (not $theme){
+        $rec->set_prop('Theme', 'default');
+    }
+
+}

@@ -1,0 +1,32 @@
+% layout 'default', title => "Sme server 2 - pseudonyms";
+
+% content_for 'module' => begin
+<div id='module' class='module pseudonyms-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $pse_datas
+	</p>
+    % }
+    
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+
+    <h1><%= $title%></h1>
+
+    % if ($pse_datas->{trt} eq 'ADD') {
+	%= include 'partials/_pse_add'
+    %} elsif ($pse_datas->{trt} eq 'DEL') {
+	    %= include 'partials/_pse_del'
+	%} elsif ($pse_datas->{trt} eq 'UPD') {
+		%= include 'partials/_pse_upd'
+	    %} else {
+		%= include 'partials/_pse_list'
+	    %}
+
+</div>
+%end

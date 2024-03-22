@@ -1,0 +1,15 @@
+all files stored in directory :
+->	/usr/share/perl5/vendor_perl/smeserver/Panel ?
+
+startup subroutines added for the server version
+
+sub startup{
+    $self->plugin Config
+    $self->mode
+    $self->setup_plugins;
+    $self->setup_helpers;
+    $self->setup_paths;
+    $self->setup_sessions;
+    $self->setup_routing;
+    $self->setup_hooks;
+}

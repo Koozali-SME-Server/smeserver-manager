@@ -1,0 +1,101 @@
+
+<!--*** toggle hide/unhide password field in login panel ***-->
+
+% content_for 'js_togglePassword' => begin
+  %= javascript begin
+
+  $(document).ready(function() {
+
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#id_password');
+
+    if (( togglePassword ) && ( password )) {
+	togglePassword.addEventListener('click', function (e) {
+	    // toggle the type attribute
+	    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+	    password.setAttribute('type', type);
+	    // toggle the eye slash icon
+	    // this.classList.toggle('eye-slash');
+	})
+    }
+  });
+
+  % end
+% end
+
+
+<!--*** toggle hide/unhide menu contents navigation menu ***-->
+
+% content_for 'js_toggleMenu' => begin
+  %= javascript begin
+
+    $(document).ready(function() {
+		$('#tognav').click(function() {
+			//alert('click1:'+window.localStorage.getItem('menunav'));
+			window.localStorage.setItem('menunav',!$('#menunav').is(':visible'));
+			//alert('click2:'+window.localStorage.getItem('menunav'));
+			$('#menunav').toggle({ duration: 300 });
+		});
+
+		$('#toguser').click(function() {
+			window.localStorage.setItem('menuuser',!$('#menuuser').is(':visible'));
+			$('#menuuser').toggle({ duration: 300 });
+		});
+
+		$('#togadm').click(function() {
+			window.localStorage.setItem('menuadm',!$('#menuadm').is(':visible'));
+			$('#menuadm').toggle({ duration: 300 });
+		});
+
+		
+		$('.section-title').click(function() {
+			var $section = $(this).parent().next('div');
+			if(!$section.length){
+				return false;
+			}
+			let localStorageTag = "admSection-"+this.innerHTML;
+			var jqObj = $($section);
+			window.localStorage.setItem(localStorageTag,!jqObj.is(':visible'));
+			$section.toggle({ duration: 600 });
+		})
+    });
+
+  % end
+% end
+
+<!--*** swap class on menu element chosen ***-->
+
+% content_for 'js_swapClass' => begin
+  %= javascript begin
+	(function($) {
+	    $.fn.swapClass = function(class1, class2) {
+		this.each(function() {
+		    var $elem = $(this);
+		    if ($elem.hasClass(class1)) {
+			$elem.removeClass(class1).addClass(class2);
+		    }
+		    else if ($elem.hasClass(class2)) {
+			$elem.removeClass(class2).addClass(class1);
+		    }
+		});
+	    };
+	})(jQuery);
+
+    $(document).ready(function() {
+	$('a.item-current').swapClass('item-current','item');
+
+	var pathname = $(location).attr('pathname');
+
+	//alert('jQuery loaded. Path searched: ' + pathname);
+
+	var menus = $('a.item');
+	$.each(menus, function() {
+	    if ( $(this).attr('href') == pathname ) {
+		$(this).swapClass('item', 'item-current');
+	//	alert('menu found! ' + $(this).attr('href') + ' ' + $(this).attr('class'));
+	    }
+	})
+
+	});
+  % end
+% end

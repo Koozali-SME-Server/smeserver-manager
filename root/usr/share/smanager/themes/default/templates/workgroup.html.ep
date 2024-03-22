@@ -1,0 +1,66 @@
+% layout 'default', title => "Sme server 2 - workgroup";
+
+% content_for 'module' => begin
+<div id='module' class='module workgroup-panel'>
+
+    %if ($config->{debug} == 1) {
+	<p>
+	(DBG)route: <%= $c->current_route %><br>
+	(DBG)pdc: <%= $wkg_datas->{ServerRole}%><br>
+	(DBG)roam: <%= $wkg_datas->{RoamingProfiles}%><br>
+	</p>
+    %}
+    
+    <h1><%= $title %></h1>
+    <br>
+    <%= $modul %>
+    <% 	my $btn = l('SAVE');
+     %>
+
+    %= form_for 'workgroup' => (method => 'POST') => begin
+	<p>
+	%=l 'wkg_DESC_WORKGROUP', class => 'desc'
+	<br><br>
+	<span class=label>
+	%=l 'wkg_LABEL_WORKGROUP', class => 'label'
+	</span><span class=data>
+	%= text_field 'Workgroup' =>  $wkg_datas->{Workgroup}, class => 'input'
+	</span>
+	</p>
+	<p>
+	%=l 'wkg_DESC_SERVERNAME', class => 'desc'
+	<br><br>
+	<span class=label>
+	%=l 'wkg_LABEL_SERVERNAME', class => 'label'
+	</span><span class=data>
+	%= text_field 'ServerName' =>  $wkg_datas->{ServerName}, class => 'input'
+	</span>
+	</p>
+	<p>
+        %= $c->render_to_string(inline => l 'wkg_DESC_PDC')
+	<br>
+	<span class=label>
+	%=l 'wkg_LABEL_PDC', class => 'label'
+	</span><span class=data>
+	% param 'ServerRole' => $wkg_datas->{ServerRole} unless param 'ServerRole';
+	%= select_field 'ServerRole' =>  [[ (l 'YES') => 'PDC'], [ (l 'NO') => 'WS']], class => 'input'
+	</span>
+	</p>
+	<p>
+        %= $c->render_to_string(inline => l 'wkg_DESC_ROAM')
+	<br>
+	<span class=label>
+	%=l 'wkg_LABEL_ROAM', class => 'label'
+	</span><span class=data>
+	% param 'RoamingProfiles' => $wkg_datas->{RoamingProfiles} unless param 'RoamingProfiles';
+	%= select_field 'RoamingProfiles' =>  [[ (l 'YES') => 'yes'], [ (l 'NO') => 'no']], class => 'input'
+	</span>
+	</p>
+	<p>
+	<br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+    % end    
+
+</div>
+%end

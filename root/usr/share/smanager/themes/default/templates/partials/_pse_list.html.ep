@@ -1,0 +1,79 @@
+<div id='pse_list'>
+
+    % my $btn = l('pse_CLICK_TO_CREATE');
+
+    %= $c->render_to_string(inline => l('pse_DESCRIPTION'));
+
+    %= form_for '/pseudonyms' => (method => 'POST') => begin
+
+        %= hidden_field 'trt' => 'ADD'
+
+	<p><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+	
+    % end    
+
+
+	<p><h2>
+	%=l 'pse_CURRENT_PSEUDONYMS'
+	</h2><br>
+    % 	my $numPseudonyms = @$pseudonyms;
+    %	if ($numPseudonyms == 0){
+        %=l 'pse_ACCOUNT_PSEUDONYM_NONE'
+    %	} else {
+	<table class="sme-border TableSort"><thead>
+	<tr>
+    	    <th class='sme-border'>
+    	    %=l 'pse_PSEUDONYM'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'pse_USER_OR_GROUP'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'ACTION'
+    	    </th>
+			<!-- <th class='sme-border' style="display: normal;"></th> -->
+   	</tr></thead>
+   	<tbody>
+
+    %    foreach my $pseudonym ( @$pseudonyms )
+    %    {
+    %	    my $modifiable = $pseudonym->prop('Changeable') || 'yes';
+    %	    my $removable = $pseudonym->prop('Removable') || 'yes';
+
+    %       my $account = $pseudonym->prop('Account');
+    %       $account = "Administrator" if ($account eq "admin");
+    %	    $account = $c->l("pse_EVERYONE") if ($account eq "shared");
+
+    %	    my $visible = $pseudonym->prop('Visible');
+    %	    $account .= $c->l("pse_LOCAL_ONLY")
+    %    	if (defined $visible && $visible eq "internal");
+
+        <tr>
+            %= t td => (class => 'sme-border') => $pseudonym->key
+            %= t td => (class => 'sme-border') => $account
+
+    %	    my ($actionModify, $actionRemove) = '&nbsp;';
+    %	    if ($modifiable eq 'yes') { 
+    % 		$actionModify = "<a href='pseudonyms2?CsrfDef=TOKEN&trt=UPD&pseudonym=" . $pseudonym->key . "'>" . "<button class='sme-modify-button' title=".l('MODIFY').">".l('MODIFY')."</button>" . "</a>"; 
+    %	    }
+    %	    if ($removable eq 'yes')  { 
+    % 		$actionRemove = "<a href='pseudonyms2?CsrfDef=TOKEN&trt=DEL&pseudonym=" . $pseudonym->key . "'>" . "<button class='sme-remove-button' title=".l('REMOVE').">".l('REMOVE')."</button>" . "</a>"; 
+    %	    }
+
+    	    <td class='sme-border' style="min-width:15em">
+				<%= $c->render_to_string(inline => $actionModify) %>&nbsp;<%= $c->render_to_string(inline => $actionRemove) %>
+    	    </td>
+    	</tr>
+
+    %    }
+    	</tbody>
+    	</table>
+	<%} %>
+	</p>
+
+
+
+</div>
+

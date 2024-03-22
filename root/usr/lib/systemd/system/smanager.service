@@ -1,0 +1,20 @@
+[Unit]
+Description=Server Manager 2 Mojo
+Requires=network.target httpd-e-smith.service ldap.service
+After=network.target 
+
+[Service]
+Type=simple
+SyslogIdentifier=smanager
+WorkingDirectory=/usr/share/smanager/script
+PIDFile=/var/run/smanager.pid
+ExecStartPre=/sbin/e-smith/service-status smanager
+ExecStart=/usr/bin/hypnotoad srvmngr -f
+ExecStop=/usr/bin/hypnotoad -s srvmngr
+ExecReload=/usr/bin/hypnotoad srvmngr
+KillMode=process
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=sme-server.target

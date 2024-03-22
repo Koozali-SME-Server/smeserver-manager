@@ -1,0 +1,94 @@
+<div id='usr_list'>
+
+
+    % my $btn = l('usr_ADD_USER');
+
+    %= form_for '/useraccounts' => (method => 'POST') => begin
+
+	<p>
+	<br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+    % end    
+
+	<p>
+	%= $c->render_to_string(inline => $c->l('usr_FIRSTPAGE_DESC'))
+	<br>
+	</p>
+	
+    % 	my $numUsers = @$users;
+    %	if ($numUsers == 0){
+        %=l 'usr_NO_USER_ACCOUNTS'
+    %	} else {
+	<table class="sme-border TableSort"><thead>
+	<tr>
+    	    <th class='sme-border'>
+    	    %=l 'ACCOUNT'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'USER_NAME'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'usr_VPN_CLIENT_ACCESS'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'usr_FORWARDING_ADDRESS'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'ACTION'
+    	    </th>
+    	</tr>
+        </thead><tbody>
+    	
+    %    foreach my $user (@$users) {
+
+    %        my $username = $user->key();
+    %        my $first    = $user->prop('FirstName');
+    %        my $last     = $user->prop('LastName');
+    %        my $lockable = $user->prop('Lockable') || 'yes';
+    %        my $removable = $user->prop('Removable') || 'yes';
+    %        my $fwd       = (($user->prop('EmailForward') || 'local') =~ m/^forward|both$/) ?
+    %                       $user->prop('ForwardAddress') : '';
+    %        my $vpnaccess = $user->prop('VPNClientAccess') || 'no';
+    %        $vpnaccess = $vpnaccess eq 'yes' ? $c->l('YES') : $c->l('NO');
+    %        my $password_set = $user->prop('PasswordSet');
+
+        <tr>
+            %= t td => (class => 'sme-border') => $username
+            %= t td => (class => 'sme-border') => "$first  $last"
+            %= t td => (class => 'sme-border') => $vpnaccess
+            %= t td => (class => 'sme-border') => $fwd
+    %	    my ($actionModify, $actionLock, $actionResetPw, $actionRemove) = '&nbsp;';
+    %	    if ($username eq 'admin')  { 
+    % 	    	$actionModify = "<a href='useraccountsd?CsrfDef=TOKEN&trt=UPS&user=" . $username . "'>" . "<button class='sme-modify-button' title=".l("MODIFY").">".l("MODIFY")."</button></a>"; 
+    %			$actionResetPw = "<a href='useraccountsd?CsrfDef=TOKEN&trt=PWS&user=" . $username . "'>" . "<button class='sme-password-button' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
+    %	    } else {
+    % 	    	$actionModify = "<a href='useraccountsd?CsrfDef=TOKEN&trt=UPD&user=" . $username . "'>" . "<button class='sme-modify-button' title=".l("MODIFY").">".l("MODIFY")."</button></a>"; 
+    %		if ($password_set ne 'yes') {
+    %			$actionLock = l('ACCOUNT_LOCKED'); 
+    %			$actionResetPw = "<a href='useraccountsd?CsrfDef=TOKEN&trt=PWD&user=" . $username . "'>" . "<button class='sme-password-button' style ='border-color:red;' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
+    %		} else {
+    %			$actionLock = "<a href='useraccountsd?CsrfDef=TOKEN&trt=LCK&user=" . $username . "'>" . "<button class='sme-lock-button' title=".l('usr_LOCK_ACCOUNT').">".l("usr_LOCK_ACCOUNT")."</button></a>"; 
+    %			$actionResetPw = "<a href='useraccountsd?CsrfDef=TOKEN&trt=PWD&user=" . $username . "'>" . "<button class='sme-password-button' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
+    %		}
+    %	    	if ( $removable eq 'yes' )  { 
+    % 			$actionRemove = "<a href='useraccountsd?CsrfDef=TOKEN&trt=DEL&user=" . $username . "'>" . "<button class='sme-remove-button' title=".l("REMOVE").">".l("REMOVE")."</button></a>"; 
+    %		}
+    %	    }
+    	    <td class='sme-border' style="min-width:35em">
+				<%= $c->render_to_string(inline => $actionModify) %>
+				<%= $c->render_to_string(inline => $actionResetPw) %>
+				<%= $c->render_to_string(inline => $actionLock) %>
+				<%= $c->render_to_string(inline => $actionRemove) %>
+    	    </td>
+    	</tr>
+    %    }
+    	</tbody>
+    	</table>
+
+	<%} %>
+
+        %= hidden_field 'trt' => $usr_datas->{trt}
+
+</div>

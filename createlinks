@@ -1,0 +1,54 @@
+#!/usr/bin/perl -w
+
+use esmith::Build::CreateLinks  qw(:all);
+
+#--------------------------------------------------
+# functions for manager
+#--------------------------------------------------
+my $mngrdir = '/usr/share/smanager';
+
+# templates to expand
+for (  qw( sme_core.css sme_main.css sme_menu.css styles.css ) )
+{
+    templates2events("$mngrdir/themes/default/public/css/$_", qw(
+        bootstrap-console-save smeserver-manager-update
+        ));
+}
+
+templates2events("$mngrdir/conf/srvmngr.conf", 
+        qw( smeserver-manager-update smanager-theme-change smanager-modify bootstrap-console-save ));
+
+templates2events("/etc/httpd/conf/httpd.conf",
+        qw( smeserver-manager-update smanager-modify ));
+
+
+# services to launch on event
+for my $event ( qw( smeserver-manager-update smanager-modify ) )
+{
+    safe_symlink("restart",
+        "root/etc/e-smith/events/$event/services2adjust/smanager");
+    safe_symlink("reload",
+        "root/etc/e-smith/events/$event/services2adjust/httpd-e-smith");
+}
+
+safe_symlink("reload",
+    "root/etc/e-smith/events/smanager-theme-change/services2adjust/smanager");
+
+safe_symlink("restart",
+    "root/etc/e-smith/events/smanager-refresh/services2adjust/smanager");
+
+# actions to perform
+for my $event ( qw( smeserver-manager-update smanager-refresh bootstrap-console-save ) )
+{
+    event_link('navigation2-conf', "$event", '80');
+    event_link('routes2-conf', "$event", '80');
+    event_link('locales2-conf', "$event", '80');
+}
+
+event_link('systemd-default', "smeserver-manager-update", '88');
+event_link('systemd-reload', "smeserver-manager-update", '89');
+
+use esmith::Build::Backup qw(:all);
+backup_includes("smeserver-manager", qw(
+/usr/share/smanager/data
+));

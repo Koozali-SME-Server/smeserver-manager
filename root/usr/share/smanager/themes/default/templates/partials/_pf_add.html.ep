@@ -1,0 +1,85 @@
+<div id='pf_add'>
+
+	% my $retref= $c->stash("ret");
+	% my %ret;
+	% unless (length($retref)) {%ret = (ret=>"");}
+	% else {%ret = %$retref;}
+	
+	% my @vars = split(",",$ret{vars});
+	% my $var1 = @vars[0];
+	% my $var2 = @vars[1];
+	% my $var3 = @vars[2];
+	% my $var4 = @vars[3];
+	% my $var5 = @vars[4];
+	% my $var6 = @vars[5];
+
+	%if ($ret{'ret'} eq "") {
+   	
+	%} elsif (index($ret{ret},"SUCCESS") != -1) {
+	   <div class='success'>
+	       <h2> Operation Status Report</h2>
+			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
+		</div>
+	   %} else { 
+	   <div class='sme-error'>
+	       <h2> Operation Status Report - Error</h2>
+			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
+    	</div>
+	%}
+	<br />
+    % my $btn = l('ADD');
+    
+   % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $c->stash("ret")
+	</p>
+    % }
+     
+    %= form_for '/portforwardingb' => (method => 'POST') => begin
+		<h2>
+		%=l "pf_CREATE_RULE"
+		</h2>
+			<p>
+				%=l "pf_SUMMARY_ADD_DESC"
+			</p><br>
+			<span class=label>
+				%=l "pf_LABEL_PROTOCOL"
+			</span><span class=data>
+				%=select_field  'proto'=>["TCP","UDP"]
+			</span><br><br>
+			<span class=label>
+				%=l "pf_LABEL_SOURCE_PORT"
+			</span><span class=data>
+				%=text_field 'sport'
+			</span><br><br>
+			<span class=label>
+				%=l "pf_LABEL_DESTINATION_PORT"
+			</span>
+			<span class=data>
+				%=text_field 'dport'
+			</span><br><br>
+			<span class=label>
+				%=l "pf_LABEL_DESTINATION_HOST"
+			</span>
+			<span class=data>
+				%=text_field 'dhost'
+			</span><br><br>
+			<span class=label>
+				%=l "pf_ALLOW_HOSTS"
+			</span>
+			<span class=data>
+				%=text_field 'allow'
+			</span><br><br>
+			<span class=label>
+				%=l "pf_RULE_COMMENT"
+			</span>
+			<span class=data>
+				%=text_field 'cmmnt'
+			</span><br><br>
+	        <div class='center'>
+		%= submit_button "$btn", class => 'action'
+		</div>
+	%end
+
+</div>

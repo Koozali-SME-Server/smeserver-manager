@@ -1,0 +1,92 @@
+% layout 'default', title => "Sme server 2 - emaildeliver";
+
+% content_for 'module' => begin
+<div id='module' class='module emaildeliver-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $mai_datas
+	</p>
+    % }
+    
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+
+    <h1><%= $title%></h1>
+
+    %= form_for '/emailsettingd' => (method => 'POST') => begin
+
+	<h2>
+	%=l 'mai_TITLE_UNKNOWN'
+	</h2>
+
+	%=l 'mai_DESC_UNKNOWN'
+
+	<p><span class=label>
+	%=l 'mai_LABEL_UNKNOWN'
+	</span><span class=input>
+	% param 'EmailUnknownUser' => $mai_datas->{emailunknownuser} unless param 'EmailUnknownUser';
+	%= select_field 'EmailUnknownUser' => $c->get_emailunknownuser_opt(), class => 'input'
+	</span></p>
+
+	<hr class='menubar' />
+	<h2>
+	%=l 'mai_TITLE_DELEGATE'
+	</h2>
+
+	%=l 'mai_DESC_DELEGATE'
+
+	<p><span class=label>
+	%=l 'mai_LABEL_DELEGATE'
+	</span><span class=input>
+	% param 'DelegateMailServer' => $mai_datas->{delegatemailserver} unless param 'DelegateMailServer';
+	%= text_field 'DelegateMailServer', class => 'input'
+	</span></p>
+
+	<hr class='sectionbar' />
+	<h2>
+	%=l 'mai_TITLE_SMARTHOST'
+	</h2>
+
+	%=l 'mai_DESC_SMARTHOST'
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SMARTHOST'
+	</span><span class=input>
+	% param 'SMTPSmartHost' => $mai_datas->{smtpsmarthost} unless param 'SMTPSmartHost';
+	%= text_field 'SMTPSmartHost', class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SMARTHOST_SMTPAUTH_STATUS'
+	</span><span class=input>
+	% param 'SMTPAUTHPROXY_status' => $mai_datas->{smtpauthproxystatus} unless param 'SMTPAUTHPROXY_status';
+	%= select_field 'SMTPAUTHPROXY_status' => [[(l 'DISABLED') => 'disabled'], [(l 'ENABLED') => 'enabled']], class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SMARTHOST_SMTPAUTH_USERID'
+	</span><span class=input>
+	% param 'SMTPAUTHPROXY_Userid' => $mai_datas->{smtpauthproxyuserid} unless param 'SMTPAUTHPROXY_Userid';
+	%= text_field 'SMTPAUTHPROXY_Userid', class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SMARTHOST_SMTPAUTH_PASSWD'
+	</span><span class=input>
+	% param 'SMTPAUTHPROXY_Passwd' => $mai_datas->{smtpauthproxypassword} unless param 'SMTPAUTHPROXY_Passwd';
+	%= password_field 'SMTPAUTHPROXY_Passwd', class => 'input'
+	</span></p>
+
+    % 	my $btn = l('SAVE');
+	%= submit_button "$btn", class => 'action'
+
+	%= hidden_field 'trt' => 'DEL'
+    % end    
+
+</div>
+%end

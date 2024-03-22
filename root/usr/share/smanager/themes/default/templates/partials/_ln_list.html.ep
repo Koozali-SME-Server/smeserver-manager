@@ -1,0 +1,99 @@
+<div id='ln_list'>
+    % my $btn = l('ln_LOCALNETWORK_ADD');
+    %= form_for '/localnetworksa' => (method => 'POST') => begin
+	<p>
+
+	% my $retref= $c->stash("ret");
+	% my %ret;
+	% unless (length($retref)) {%ret = (ret=>"");}
+	% else {%ret = %$retref;}
+
+    % if ($config->{debug} == 1) {
+	<p>
+		%= dumper "Ret:".$ret{ret};
+	</p>	
+	%}
+
+	% my @vars = split(",",$ret{vars});
+	% my $var1 = @vars[0];
+	% my $var2 = @vars[1];
+	% my $var3 = @vars[2];
+	% my $var4 = @vars[3];
+	% my $var5 = @vars[4];
+	% my $var6 = @vars[5];
+	% my $var7 = @vars[6];
+
+
+	%if ($ret{ret} eq "") {
+		%=l "ln_FIRSTPAGE_DESC"
+	%} elsif (index($ret{ret},"SUCCESS") != -1) {
+	   <div class='success'>
+	       <h2> Operation Status Report</h2>
+		%= $c->render_to_string(inline => l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6,$var7));
+		</div>
+	   %} else { 
+	   <div class='sme-error'>
+	       <h2> Operation Status Report - Error</h2>
+		%= $c->render_to_string(inline => l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6,$var7));
+    	</div>
+	%}
+	<br><br>
+        <div class='center'>
+	%= submit_button "$btn", class => 'action'
+	</div>
+    % end    
+
+	<br>
+    % my $numlocalnetworks = @$localnetworks;
+    %	if ($numlocalnetworks == 0){
+        %=l 'ln_LOCAL_NETWORK_NONE'
+    %	} else {
+        <br>
+		<table class="sme-border TableSort"><thead>
+		<tr>
+			<th class='sme-border'>
+				%=l 'NETWORK'
+			</th>
+			<th class='sme-border'>
+				%=l 'ln_SUBNET_MASK'
+			</th>
+
+			<th class='sme-border'>
+				%=l 'ln_NUMBER_OF_HOSTS'
+			</th>
+
+			<th class='sme-border'>
+				%=l 'ROUTER'
+			</th>
+
+			<th class='sme-border' '>
+				%=l 'ACTION'
+			</th>
+			</tr>
+			</thead><tbody>
+		%    foreach my $localnetwork (@$localnetworks )
+		%    {
+		%     	my ($num_hosts) = esmith::util::computeHostRange( $localnetwork->key, $localnetwork->prop('Mask') );
+		%     	my $removable = $localnetwork->prop('Removable') || "yes";
+		%    		my $system       = $localnetwork->prop('SystemLocalNetwork') || "no";
+		%   		if ( $system eq "yes" ) { $removable = "no"; }
+					<tr>
+					%= t td => (class => 'sme-border') => $localnetwork->key
+					%= t td => (class => 'sme-border') => $localnetwork->prop('Mask')
+					%= t td => (class => 'sme-border') => $num_hosts
+					%= t td => (class => 'sme-border') => $localnetwork->prop('Router')
+					%  if ($removable eq "yes") {
+						<td class='sme-border'>
+						<a href="localnetworksd?CsrfDef=TOKEN&trt=DEL&localnetwork=<%= $localnetwork->key%>"><button class='sme-remove-button' title="<%=l('REMOVE')%>"><%=l('REMOVE') %></button></a></td>
+					% } else {
+						<td class='sme-border'> </td> 
+					%}
+					</tr>
+		%  } 
+		</tbody>
+		</table>
+		</p>
+
+			%= hidden_field 'trt' => $ln_datas->{trt}
+	%}
+</div>

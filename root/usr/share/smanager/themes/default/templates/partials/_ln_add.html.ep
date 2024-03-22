@@ -1,0 +1,69 @@
+<div id='ln_add'>
+
+	% my $retref= $c->stash("ret");
+	% my %ret;
+	% unless (length($retref)) {%ret = (ret=>"");}
+	% else {%ret = %$retref;}
+	
+	% my @vars = split(",",$ret{vars});
+	% my $var1 = @vars[0];
+	% my $var2 = @vars[1];
+	% my $var3 = @vars[2];
+	% my $var4 = @vars[3];
+	% my $var5 = @vars[4];
+	% my $var6 = @vars[5];
+
+	%if ($ret{'ret'} eq "") {
+   	
+	%} elsif (index($ret{ret},"SUCCESS") != -1) {
+	   <div class='success'>
+	       <h2> Operation Status Report</h2>
+			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
+		</div>
+	   %} else { 
+	   <div class='sme-error'>
+	       <h2> Operation Status Report - Error</h2>
+			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
+    	</div>
+	%}
+	<br />
+    % my $btn = l('ADD');
+    % my $network_db = esmith::NetworksDB->open();
+    
+   % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $c->stash("ret")
+	</p>
+    % }
+     
+    %= form_for '/localnetworksb' => (method => 'POST') => begin
+		<h2>
+		%=l "ln_ADD_TITLE"
+		</h2>
+			<p>
+			%= $c->render_to_string(inline => l('ln_ADD_DESC'));
+			</p><br>
+			<span class=label>
+				%=l "NETWORK"
+			</span><span class=data>
+				%=text_field  'networkAddress'
+			</span><br><br>
+			<span class=label>
+				%=l "ln_SUBNET_MASK"
+			</span><span class=data>
+				%=text_field 'networkMask'
+			</span><br><br>
+			<span class=label>
+				%=l "ROUTER"
+			</span>
+			<span class=data>
+				%=text_field 'networkRouter'
+			</span><br><br>
+    		<div class='center'>
+		%= submit_button "$btn", class => 'action'
+		</div>
+	%end
+
+</div>
+

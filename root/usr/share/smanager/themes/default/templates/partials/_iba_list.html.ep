@@ -1,0 +1,79 @@
+<div id='iba_list'>
+
+
+    % my $btn = l('iba_ADD_IBAY');
+
+    %= form_for '/ibays' => (method => 'POST') => begin
+
+	<p>
+	<br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+    % end    
+
+	<p>
+	%=l 'iba_FIRSTPAGE_DESC'
+	<br><br>
+	</p>
+	
+    % 	my $numIbays = @$ibays;
+    %	if ($numIbays == 0){
+        %=l 'iba_NO_IBAYS'
+    %	} else {
+	<table class="sme-border TableSort"><thead>
+	<tr>
+    	    <th class='sme-border'>
+    	    %=l 'NAME'
+    	    </th>
+    	    <th class='sme-border'>
+    	    %=l 'DESCRIPTION'
+    	    </th>
+    	    <th class='sme-border'>
+				%=l 'ACTION'
+    	    </th>
+    	</tr>
+    	</thead><tbody>
+    %    foreach my $ibay (@$ibays)
+    %    {
+    %	    my $modifiable = $ibay->prop('Modifiable') || 'yes';
+    %	    my $passwordable = $ibay->prop('Passwordable') || 'yes';
+    %	    my $removable = $ibay->prop('Removable') || 'yes';
+    %	    my $needPassword = grep { $_ eq $ibay->prop('PublicAccess') } 
+    %                            qw(local-pw global-pw global-pw-remote);
+
+        <tr>
+            %= t td => (class => 'sme-border') => $ibay->key
+            %= t td => (class => 'sme-border') => $ibay->prop('Name')
+    %	    my ($actionModify, $actionResetPw, $actionRemove) = '&nbsp;';
+    %	    if ($modifiable eq 'yes') { 
+    % 		$actionModify = "<a href='ibaysd?CsrfDef=TOKEN&trt=UPD&ibay=" . $ibay->key . "'>" . "<button class='sme-modify-button' title=".l('MODIFY').">".l('MODIFY')."</button>" . "</a>"; 
+    %	    }
+    %	    if ($passwordable eq 'yes')  { 
+    %		if ($ibay->prop('PasswordSet') ne 'yes' && $needPassword) {
+    %#			$actionResetPw .= "<a href='ibaysd?CsrfDef=TOKEN&trt=PWD&ibay=" . $ibay->key . "' class='error'>" . l('PASSWORD_RESET') . "</a>"; 
+    %			$actionResetPw .= "<a href='ibaysd?CsrfDef=TOKEN&trt=PWD&ibay=" . $ibay->key. "'>" . "<button class='sme-password-button' style ='border-color:red;' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
+%		} else {
+    %			$actionResetPw .= "<a href='ibaysd?CsrfDef=TOKEN&trt=PWD&ibay=" . $ibay->key . "'>" . "<button class='sme-password-button' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
+    %#			$actionResetPw .= "<a href='ibaysd?CsrfDef=TOKEN&trt=PWD&ibay=" . $ibay->key . "'>" . l('PASSWORD_RESET') . "</a>"; 
+    %		}
+    %	        $actionResetPw .= '&nbsp';
+    %	    }
+    %	    if ($removable eq 'yes')  { 
+    % 		$actionRemove = "<a href='ibaysd?CsrfDef=TOKEN&trt=DEL&ibay=" . $ibay->key . "'>" . "<button class='sme-remove-button' title=".l('REMOVE').">".l('REMOVE')."</button>" . "</a>"; 
+    %	    }
+    	    <td class='sme-border' style="min-width:20em">
+				<%= $c->render_to_string(inline => $actionModify) %>
+				<%= $c->render_to_string(inline => $actionResetPw)%>
+				<%= $c->render_to_string(inline => $actionRemove) %>
+			</td>
+    	</tr>
+    %    }
+    	</tbody>
+    	</table>
+
+	<%} %>
+
+        %= hidden_field 'trt' => $iba_datas->{trt}
+
+</div>

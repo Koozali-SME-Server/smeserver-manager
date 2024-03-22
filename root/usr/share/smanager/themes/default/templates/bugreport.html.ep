@@ -1,0 +1,83 @@
+% layout 'default', title => 'Sme server 2 - Bug report';
+
+% content_for 'module' => begin
+
+<div id='module' class='module bugreport-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	(DBG)route: <%= $c->current_route %><br>
+	(DBG)trt: <%= $bugr_datas->{trt} %><br>
+	</p>
+    % }
+    
+    <h1><%= $title %></h1>
+    <!--br><%= $modul %><br-->
+    <p>
+
+    <p><b>
+    %=l ('bugr_DO_NOT_PANIC')
+    </b></p>
+    <p>
+    %=l ('bugr_SME_EXPERIENCE')
+    </p><p>
+    %=l ('bugr_USE_TEMPLATE')
+: <a href="https://wiki.koozali.org/Bugzilla_Help#Reporting_Bugs"
+ target="_blank">https://wiki.koozali.org/Bugzilla_Help#Reporting_Bugs</a>.
+    </p><p>
+    %=l ('bugr_PLEASE_REPORT_HERE')
+: <a href="https://bugs.koozali.org" target="_blank">https://bugs.koozali.org</a>.
+    </p><p> 
+   %=l ('bugr_FOLLOWING_REPORT_MIGHT_HELP')
+    </p><p>
+    %=l ('bugr_REPORT_CONTENT')
+    <br><ul><li>
+    %=l ('bugr_SME_VERSION')
+    </li><li>
+    %=l ('bugr_SERVER_MODE')
+    </li><li>
+    %=l ('bugr_PREVIOUS_SERVER_MODE')
+    </li><li>
+    %=l ('bugr_KERNEL_AND_ARCH')
+    </li><li>
+    %=l ('bugr_INSTALLED_RPMS')
+    </li><li>
+    %=l ('bugr_ALTERED_TEMPLATES')
+    </li><li>
+    %=l ('bugr_ALTERED_EVENTS')
+    </li><li>
+    %=l ('bugr_YUM_REPOS')
+    </li><br></ul>
+    %=l ('bugr_PRIVACY')
+    </p><p>
+
+    <% my $btn = l('bugr_CREATE_REPORT'); %>
+
+    %= form_for 'bugreport' => (method => 'POST') => begin
+        %= submit_button "$btn", class => 'action'
+    % end    
+
+    </p><p><b>
+    %=l ('bugr_DONATING')
+    </b><br><br>
+    %=l ('bugr_AWARE_SME')
+    <br><br><b>
+    %=l ('bugr_YOUR_HELP')
+    </b><br><br>
+    %=l ('bugr_CONSIDER_DONATING')
+    <br><br>
+
+    %= link_to 'https://wiki.koozali.org/Donate' => begin
+	%= image '/images/btn_donateCC_LG.gif'
+
+    %= hidden_field 'trt' => $bugr_datas->{trt}
+
+    % end
+
+    <br>
+    %=l ('bugr_THANK_YOU')
+    </p>
+
+</div>
+
+%end

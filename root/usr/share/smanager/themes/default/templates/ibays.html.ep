@@ -1,0 +1,39 @@
+% layout 'default', title => "Sme server 2 - ibays";
+
+% content_for 'module' => begin
+<div id='module' class='module ibays-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $iba_datas
+	</p>
+    % }
+
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+
+    <h1><%= $title%></h1>
+
+    % if ( stash 'modul' ) {
+	%= $c->render_to_string(inline => stash 'modul' );
+    % }
+
+    % if ($iba_datas->{trt} eq 'ADD') {
+	%= include 'partials/_iba_upd'
+    %} elsif ($iba_datas->{trt} eq 'DEL') {
+	    %= include 'partials/_iba_del'
+	%} elsif ($iba_datas->{trt} eq 'UPD') {
+		%= include 'partials/_iba_upd'
+		%} elsif ($iba_datas->{trt} eq 'PWD') {
+		    %= include 'partials/_iba_pwd'
+		%} else {
+		    %= include 'partials/_iba_list'
+		%}
+
+</div>
+%end
+

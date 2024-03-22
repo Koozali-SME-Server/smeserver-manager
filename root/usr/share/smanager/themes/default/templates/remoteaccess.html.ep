@@ -1,0 +1,225 @@
+% layout 'default', title => "Sme server 2 - remoteaccess";
+
+% content_for 'module' => begin
+<div id='module' class='module remoteaccess-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $rma_datas
+	</p>
+    % }
+    <h1><%= $title%></h1>
+    % if ( $notif ) {
+	<br>
+	<span class=sme-error>
+	<%= $c->render_to_string(inline => $notif) %>
+	</span>
+    %}
+
+    <hr class='sectionbar' />
+
+    <% 	my $btn = l('SAVE'); %>
+
+    %= form_for 'remoteaccess' => (method => 'POST') => begin
+
+    % my $ipsec = $c->get_ipsecrw_status();
+    % if ( $ipsec ) {
+	<p>
+	<h2>
+	%=l 'rma_TITLE_IPSECRW'
+	</h2><br>
+
+	%=l 'rma_DESC_IPSECRW'
+	<br>
+
+	<span class=label>
+	%=l 'rma_LABEL_IPSECRW_SESS'
+	</span><span class=data>
+	% param 'IpsecrwSess' => $c->get_ipsecrw_sessions unless param 'IpsecrwSess';
+	%= text_field 'IpsecrwSess', class => 'input'
+	</span>
+	<br>
+
+	%= $c->render_to_string(inline => $c->l('rma_DESC_IPSECRW_RESET'));
+	<br>
+	<span class=label>
+	%=l 'rma_LABEL_IPSECRW_RESET'
+	</span><span class=data>
+	%= check_box 'IpsecrwReset',class => 'input'
+	</span>
+	<br><br>
+
+	<hr class='sectionbar' />
+
+	</p>
+    %}
+
+	<!-- percequ include 'partials/_rma_pptp' -->
+
+	<p><h2>
+	%= $c->l('rma_VALIDFROM_TITLE', $c->l('rma_REMOTE_MANAGEMENT'));
+	</h2><br>
+	%=l 'rma_VALIDFROM_DESC'
+	<br><br>
+
+    % my @vals = $self->_get_valid_from();
+    % if (@vals) {
+	<table class="sme-border TableSort"><thead>
+	<tr><th class='sme-border'>
+    	    %=l 'NETWORK'
+    	    </th><th class='sme-border'>
+    	    %=l 'SUBNET_MASK'
+    	    </th><th class='sme-border'>
+    	    %=l 'NUM_OF_HOSTS'
+    	    </th><th class='sme-border'>
+    	    %=l 'REMOVE'
+    	</th></tr>
+    	</thead></tbody>
+
+    %    foreach my $val ( @vals )
+    %    {
+    %        my ($net, $mask) = split '/', $val;
+    %        $mask = '255.255.255.255' unless ($mask);
+    %        my ($numhosts,$a,$b) = esmith::util::computeHostRange($net,$mask);
+        <tr>
+            %= t td => (class => 'sme-border') => $net
+            %= t td => (class => 'sme-border') => $mask
+            %= t td => (class => 'sme-border') => $numhosts
+            <td class='sme-border'><input type='checkbox' name='Remove_nets' value='<%= $net.'/'.$mask %>'> </td>
+    	</tr>
+    %    }
+
+    	</tbody>
+    	</table>    
+
+	<!-- my @cbGroup = $q->checkbox_group(-name => 'validFromRemove',
+		-values => [@vals], -labels => { map {$_ => ''} @vals });
+    	    foreach my $val (@vals)
+    		{ esmith::cgi::genSmallCell($q, shift(@cbGroup), } -->
+    % } else {
+	<br><b>
+        %= l('rma_NO_ENTRIES_YET');
+	</b>
+    %}
+	</p>
+
+	<p>
+	%=l 'rma_DESC_VALID_FROM_ENTRIES'
+	<br><br>
+	<span class=label>
+	%=l 'NETWORK'
+	</span><span class=data>
+	%= text_field 'ValidFromNetwork', class => 'input'
+	</span>
+	<br>
+	<span class=label>
+	%=l 'rma_SUBNET_MASK'
+	</span><span class=data>
+	%= text_field 'ValidFromMask', class => 'input'
+	</span>
+	</p>
+
+	<hr class='sectionbar' />
+
+	<p><h2>
+	%=l 'rma_TITLE_SSH'
+	</h2><br>
+	%=l 'rma_DESC_SSH'
+	<br><br>
+	<span class=label>
+	%=l 'rma_LABEL_SSH'
+	</span><span class=data>
+	% param 'SshAccess' => $c->get_ssh_access() unless param 'SshAccess';
+	%= select_field 'SshAccess' => $c->networkAccess_list(), class => 'input'
+	</span>
+	<br>
+	
+	<span class=label>
+	%=l 'rma_LABEL_SSH_ADMIN'
+	</span><span class=data>
+	% param 'SshPermitRootLogin' => $rma_datas->{sshPermitRootLogin} unless param 'SshPermitRootLogin';
+	%= select_field 'SshPermitRootLogin' => [[(l 'NO'), 'no'], [(l 'YES'), 'yes']], class => 'input'
+	</span>
+	<br>
+
+	<span class=label>
+	%=l 'rma_LABEL_SSH_PASSWORD_ACCESS'
+	</span><span class=data>
+	% param 'SshPasswordAuthentication' => $c->get_ssh_password_auth() unless param 'SshPasswordAuthentication';
+	%= select_field 'SshPasswordAuthentication' => [[(l 'NO'), 'no'], [(l 'YES'), 'yes']], class => 'input'
+	</span>
+	<br>
+
+	<span class=label>
+	%=l 'rma_LABEL_SSH_PORT'
+	</span><span class=data>
+	% param 'SshTCPPort' => $c->get_ssh_port() unless param 'SshTCPPort';
+	%= text_field 'SshTCPPort', class => 'input'
+	</span>
+	<br>
+	</p>
+
+	<hr class='sectionbar' />
+
+	<p><h2>
+	%=l 'rma_TITLE_FTP_ACCESS'
+	</h2><br>
+	%= $c->render_to_string(inline => $c->l('rma_DESC_FTP_ACCESS'));
+
+	<br>
+	<span class=label>
+	%=l 'rma_LABEL_FTP_ACCESS'
+	</span><span class=data>
+	% param 'FtpAccess' => $c->get_ftp_access() unless param 'FtpAccess';
+	%= select_field 'FtpAccess' => $c->networkAccess_list(), class => 'input'
+	</span>
+	<br>
+
+	<br>
+	%= $c->render_to_string(inline => $c->l('rma_DESC_FTP_LOGIN'));
+	<br>
+	<span class=label>
+	%=l 'rma_LABEL_FTP_LOGIN'
+	</span><span class=data>
+	% param 'FtpPasswordAccess' => $c->get_ftp_password_login_access() unless param 'FtpPasswordAccess';
+	%= select_field 'FtpPasswordAccess' => $c->passwordLogin_list(), class => 'input'
+	</span>
+	<br>
+	</p>
+
+    % my $mode = $c->get_telnet_mode();
+    % if ( $mode ne 'off') {
+	<p>
+	<hr class='sectionbar' />
+
+	<h2>
+	%=l 'rma_TITLE_TELNET_ACCESS'
+	</h2><br>
+
+	<span class=sme-error>
+	%=l 'rma_DESC_TELNET_ACCESS'
+	</span>
+	<br><br>
+
+	<span class=label>
+	%=l 'rma_LABEL_TELNET_ACCESS'
+	</span><span class=data>
+	% param 'TelnetAccess' => $mode unless param 'TelnetAccess';
+	%= select_field 'TelnetAccess' => $c->networkAccess_list(), class => 'input'
+	</span>
+	<br>
+
+	</p>
+    %}
+
+
+        <div class='center'>
+	%= submit_button "$btn", class => 'action'
+	</div>
+
+    % end
+
+</div>
+
+% end

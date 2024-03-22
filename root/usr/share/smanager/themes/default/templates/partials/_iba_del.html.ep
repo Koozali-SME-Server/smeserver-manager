@@ -1,0 +1,22 @@
+<div id='iba_del'>
+
+    % 	my $btn = l('REMOVE');
+    %= form_for '/ibaysd' => (method => 'POST') => begin
+	<p>
+	<h2>
+	%=l 'iba_REMOVE_TITLE'
+	</h2>
+	<br>
+	%= $c->render_to_string(inline => l('iba_REMOVE_DESC', $iba_datas->{ibay}, $iba_datas->{description}));
+	<br>
+	</p>
+	<p>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+        %= hidden_field 'trt' => $iba_datas->{trt}
+        %= hidden_field 'ibay' => $iba_datas->{ibay}
+
+    % end    
+
+</div>

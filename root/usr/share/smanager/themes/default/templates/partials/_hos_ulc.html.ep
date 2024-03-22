@@ -1,0 +1,60 @@
+<div id='hos_ulc'>
+<!--	UPDATE HOST TYPE -->
+
+    % 	my $btn = l('NEXT');
+
+    %= form_for '/hostentriesd' => (method => 'POST') => begin
+	<p><h2>
+    % if ( $hos_datas->{trt} eq "ALC" ) {
+	%=l 'hos_CREATE_TYPE'
+    % } else {
+	%=l 'hos_MODIFY_TYPE'
+    % 	$btn = l('MODIFY');
+    % }
+	</h2></p>
+
+	<p>
+	%=l 'hos_LOCAL_PAGE_DESCRIPTION'
+	</p>
+
+	<p>
+	%=l 'hos_LOCAL_IP_DESCRIPTION'
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'hos_LOCAL_IP', class => 'label'
+	</span><span class=data>
+	% param 'Internalip' => $hos_datas->{internalip} unless param 'Internalip';
+	%= text_field 'Internalip', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	%=l 'hos_ETHERNET_ADDRESS_DESCRIPTION'
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'hos_ETHERNET_ADDRESS', class => 'label'
+	</span><span class=data>
+	% param 'Macaddress' => $hos_datas->{macaddress} unless param 'Macaddress';
+	%= text_field 'Macaddress', class => 'input'
+	</span>
+	</p>
+
+	<p><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $hos_datas->{trt}
+	%= hidden_field 'Hostname' => $hos_datas->{hostname}
+        %= hidden_field 'Name' => $hos_datas->{name}
+        %= hidden_field 'Domain' => $hos_datas->{domain}
+	%= hidden_field 'Comment'=> $hos_datas->{comment}
+	%= hidden_field 'Hosttype'=> $hos_datas->{hosttype}
+	%= hidden_field 'Externalip' => $hos_datas->{externalip}
+	
+    %end
+
+</div>

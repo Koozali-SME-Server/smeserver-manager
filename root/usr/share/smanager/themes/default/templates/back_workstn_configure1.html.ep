@@ -1,0 +1,156 @@
+% layout 'default', title => "Sme server 2 - backup - conf";
+
+% content_for 'module' => begin
+
+<div id='module' class='module back_workstn_configure1-panel'>
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $bac_datas
+	</p>
+    % }
+
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+
+    <h1><%= $title%></h1>
+
+	<h2>
+	%=l 'bac_CONFIGURE_WORKSTN_BACKUP'
+	</h2>
+
+	%= $c->render_to_string(inline => (l 'bac_CONFIGURE_WORKSTN_BACKUP_DESC'))
+
+    %= form_for '/backupd' => (method => 'POST') => begin
+
+	<p>
+	<span class=label>
+	%=l 'bac_ENABLE_WORKSTN_BACKUP'
+	</span><span class=data>
+    % if ( $bac_datas->{status} eq 'checked' ) {
+	<input type='checkbox' name='Workstnbackup' checked >
+    %} else {
+	%= check_box 'Workstnbackup'
+    %}
+	</span>
+
+	</p>
+	<p><h3>
+	%= l 'bac_WORKSTATION_BACKUP_DEST'
+	</h3><br>
+
+    % if ( $bac_datas->{vfstype} =~ m/cifs|nfs/s ) {
+	<span class=label>
+	%=l 'bac_WORKSTN_NAME'
+	</span><span class=data>
+	% param 'BackupwkStation' => $bac_datas->{station} unless param 'BackupwkStation';
+	%= text_field 'BackupwkStation', size => 20, class => 'input'
+	</span><br>
+    %}
+    % if (  $bac_datas->{vfstype} eq 'usb' ) {
+	<span class=label>
+	%=l 'bac_local removable disk'
+	</span><span class=data>
+	% param 'BackupwkFolder' => $bac_datas->{mount} unless param 'BackupwkFolder';
+	%= select_field 'BackupwkFolder' => $c->get_BackupwkDest_options( $bac_datas->{vfstype}), class => 'input'
+	</span><br>
+    % } elsif ( $bac_datas->{vfstype} eq 'mnt') {
+	<span class=label>
+	%=l 'bac_Mounted disk'
+	</span><span class=data>
+	% param 'BackupwkFolder' => $bac_datas->{folder} unless param 'BackupwkFolder';
+	%= select_field 'BackupwkFolder' => $c->get_BackupwkDest_options( $bac_datas->{vfstype}), class => 'input'
+	</span><br>
+    % } else {
+	<span class=label>
+	%=l 'bac_SHARED_FOLDER_NAME'
+	</span><span class=data>
+	% param 'BackupwkFolder' => $bac_datas->{folder} unless param 'BackupwkFolder';
+	%= text_field 'BackupwkFolder', size => 20, class => 'input'
+	</span><br>
+    %}
+    % if (  $bac_datas->{vfstype} eq 'cifs' ) {
+	<span class=label>
+	%=l 'bac_WORKSTN_LOGIN'
+	</span><span class=data>
+	% param 'BackupwkLogin' => $bac_datas->{login} unless param 'BackupwkLogin';
+	%= text_field 'BackupwkLogin', size => 12, class => 'input'
+	</span><br><span class=label>
+	%=l 'bac_PASSWORD'
+	</span><span class=data>
+	% param 'BackupwkPassword' => $bac_datas->{password} unless param 'BackupwkPassword';
+	%= password_field 'BackupwkPassword', size => 12, class => 'input'
+	</span>
+    %}
+	</p><br><h3>
+	%= l 'bac_WORKSTN_BACKUP_SETTINGS'
+	</h3><br>
+
+	<p><span class=label>
+	%=l 'bac_NUMBER_OF_SETS'
+	</span><span class=data>
+	% param 'SetsNumber' => $bac_datas->{setsNumber} unless param 'SetsNumber';
+	%= text_field 'SetsNumber', size => '3'
+	</span>
+	%=l 'bac_NUMBER_OF_FILES_IN_SET'
+	<span class=data>
+	% param 'Filesinset' => $bac_datas->{filesinset} unless param 'Filesinset';
+	%= text_field 'Filesinset', size => '3'
+	</span></p>
+
+	<p>
+	<span class=label>
+	%=l 'bac_WORKSTN_BACKUP_TIME'
+	</span><span class=data>
+	% param 'BackupwkHour' => $bac_datas->{hour} unless param 'BackupwkHour';
+	%= text_field 'BackupwkHour', size => '2'
+	% param 'BackupwkMin' => $bac_datas->{min} unless param 'BackupwkMin';
+	%= text_field 'BackupwkMin', size => '2'
+	</span>
+	%=l 'AM/PM:'
+	<span class=data>
+	% param 'BackupwkAMPM' => $bac_datas->{ampm} unless param 'BackupwkAMPM';
+	%= select_field 'BackupwkAMPM' => ['AM', 'PM'], class => 'input'
+	</span>
+	</p>
+
+	<p><span class=label>
+	%=l 'bac_WORKSTN_TIMEOUT'
+	</span><span class=data>
+	% param 'BackupwkTimeout' => $bac_datas->{timeout} unless param 'BackupwkTimeout';
+	%= text_field 'BackupwkTimeout', size => '2'
+	</span>
+	%=l 'bac_INC_ONLY_TIMEOUT'
+	<span class=data>
+    % if ( $bac_datas->{incOnlyTimeout} eq 'checked' ) {
+	<input type='checkbox' name='IncOnlyTimeout' checked  >
+    %} else {
+	%= check_box 'IncOnlyTimeout'
+    %}
+	</span></p>
+
+	<p>
+	<span class=label>
+	%=l 'bac_COMPRESSION_LEVEL'
+	</span><span class=data>
+	% param 'Compression' => $bac_datas->{compression} unless param 'Compression';
+	%= text_field 'Compression', size => '1'
+	</span>
+	%=l 'bac_FULL_ONLY_ON'
+	<span class=data>
+	% param 'Dof' => $bac_datas->{dof} unless param 'Dof';
+	%= select_field 'Dof' => $c->get_dow_list(), class => 'input'
+	</p><br>
+
+
+	%= hidden_field 'Function' => $bac_datas->{function}
+	%= hidden_field 'VFSType' => $bac_datas->{vfstype}
+    <div class='center'>
+	%= submit_button $c->l('bac_UPDATE_CONF'), class => 'action'
+    </div>
+    % end
+</div>
+% end

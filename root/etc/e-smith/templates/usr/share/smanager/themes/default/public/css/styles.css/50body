@@ -1,0 +1,278 @@
+{
+    $OUT = <<'EOF';
+
+/*	smeserver_manager2  */
+
+/*----------------------------------------------------------------------
+ * copyright (C) 1999-2003 Mitel Networks Corporation
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *
+ * Technical support for this program is available from Mitel Networks
+ * Please visit our web site www.mitel.com for details.
+ *----------------------------------------------------------------------
+ */
+
+/* This is the basic stylesheet originally used in the mojo version.
+   */
+
+body{
+    background-color: #FFF;
+}
+
+#container{
+    max-width: 100%;
+    position: relative;
+    margin: auto;
+}
+
+#navigation{
+    width: 190px;
+    position: absolute;
+    margin-left: 0px;
+    padding: 5px;
+    background-color: #E8F3E1;
+/*    height: 600px; */
+    overflow: auto;
+}
+
+#main{
+    margin-left: 195px;
+    padding: 10px;
+}
+
+#central{
+    margin-left: 0px;
+    padding: 5px;
+}
+
+#footer{
+    margin-left: 0px;
+    padding: 5px;
+}
+
+#header {
+    background: #bee6a2;
+}
+
+#header h1, a:link, a:visited {
+    color: black;
+    text-decoration: none;
+/* contribs.org styling */
+}
+
+a:link { color: #006921; text-decoration: none; }
+a:visited { color: #063; text-decoration: none; }
+a:hover { color: #F00; text-decoration: none; }
+a:active { color: #606060; text-decoration: none; }
+
+.sme-error {
+    color: red;
+    background-color: #ffffff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: red ; 
+    padding: 2px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+.sme-warning {
+    color: orange;
+    background-color: #ffffff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: orange ; 
+    padding: 4px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top:2px;
+    margin-bottom:2px;
+}
+
+#footer img {
+    float: right;
+    position: fixed;
+    margin-left: 40%;
+}
+
+label.field-with-error {
+	color: #dd7e5e
+}
+
+input.field-with-error { 
+	background-color: #fd9e7e 
+}
+
+span.label {
+    display: inline-block;
+    font-weight: bold;
+    background-color: #e8f3e1; /*lightgreen;*/
+    width: 30%;
+    text-align: right;
+}
+
+td.label {
+    font-weight: bold;
+    background-color: #e8f3e1; /*lightgreen;*/
+    width: 30%;
+    text-align: right;
+}
+
+span.label2 {
+    display: inline-block;
+    font-weight: bold;
+    background-color: #e8f3e1; /*lightgreen;*/
+    text-align: right;
+}
+
+span.data {
+    padding: 2px;
+    font-weight: bold;
+    margin-left: 0%;
+/*    background-color: lightblue;*/
+}
+
+span.data2 {
+    padding: 2px;
+/*    background-color: lightblue; */
+}
+
+input.action {
+    margin-left: 0px;
+    background-color: #bee6a2; /*lightgreen;*/
+    color: darkgreen;
+    border-radius: 8px;
+    border: 2px solid #4CAF50; /* Green */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input.action:hover {background-color: #3e8e41; color:white;}
+
+input.action:active {
+  background-color: #3e8e41;
+  transform: translate(-2px,2px);
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+input.action2 {
+    margin-left: 0px;
+    color: black;
+    background-color: #d4d0c8;
+    display: flex;
+    justify-content: center;
+}
+
+
+#modul.desc {
+    padding: 3px;
+    background-color: grey;
+}
+
+[type = 'text'] {
+    margin-left: 0px;
+    /*background-color: lightblue;*/
+}
+
+.a, .return {
+    color: #661866;
+    font-weight: bold;
+}
+
+a.section {
+}
+.a, .item {
+    line-height: 12px;
+}
+
+a.section-title {
+    display: inline-block;
+    color: #6CA345;	/*#888;*/
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: 18px;
+    font-weight: bold;
+}
+
+a.menu-title {
+    display: inline-block;
+    color: #1A6D1A;	/*#666;*/
+    padding-left: 1px;
+    padding-right: 1px;
+    font-weight: bold;
+}
+
+
+#module {
+/*    height: 600px; */
+    overflow: auto;
+}
+
+
+#h2l1 {
+    height: 40px;
+    width: 100%;
+}
+#h2e11 {
+    width: 70%;
+    float: left;
+}
+#h2e12 {
+    background-color: #C0E7A6;
+    float: left;
+    text-align: right;
+}
+
+#h2l2 {
+/*    background-color: #A8F9E7;*/
+    border-top: solid white 3px;
+    border-bottom: solid white 2px;
+    height: 14px;
+    width: 100%;
+    padding: 1px;
+}
+
+#h2e21 {
+    float: left;
+    width: 70%;
+}
+
+#h2e22,#h2e23 {
+    float: left;
+    width: 10%;
+    text-align: center;
+}
+
+.toggle-password {
+    margin-left: -30px;
+}
+
+.tg-icon {
+    position: relative;
+    top: 5px;
+    left: 2px;
+}
+
+/*end*/
+EOF
+}

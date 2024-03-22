@@ -1,0 +1,44 @@
+{
+    # vim: ft=perl:
+
+    $haveSSL = (exists ${modSSL}{status} and ${modSSL}{status} eq "enabled") ?  'yes' : 'no';
+    $plainTextAccess = ${'httpd-admin'}{PermitPlainTextAccess} || 'no';
+    $plainPort = ${'httpd-e-smith'}{TCPPort} || '80';
+    $adminPort2 = ${'smanager'}{TCPPort} || '982';
+    $adminAccess = ${'smanager'}{access} || 'private';
+    $sslPort = ${modSSL}{TCPPort} || '443';
+
+    $OUT = '';
+
+    foreach $place ('smanager')
+    {
+        if (($port eq $plainPort) && ($haveSSL eq 'yes') && ($plainTextAccess ne 'yes'))
+        {
+            $OUT .= '    RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1$' . "\n";
+            $OUT .= "    RewriteRule ^/$place(/.*|\$)    https://%{HTTP_HOST}/$place\$1 [L,R]\n";
+            $OUT .= "\n";
+	}
+        $OUT .= "    RewriteRule ^/$place\$   https://%{HTTP_HOST}/$place/ [L,R]\n\n";
+
+        $OUT .= "    ProxyRequests Off\n";
+        $OUT .= "    ProxyPreserveHost On\n";
+        $OUT .= "    ProxyPass /$place http://127.0.0.1:$adminPort2 keepalive=On\n";
+        $OUT .= "    ProxyPassReverse /$place http://127.0.0.1:$adminPort2\n";
+        $OUT .= "    RequestHeader set X-Forwarded-Proto 'http'\n";
+
+        $OUT .= "    <Location '/$place'>\n";
+        if ($port eq $plainPort)
+        {
+            $OUT .= '        Require ip 127.0.0.1' . "\n";
+        }
+        elsif (($haveSSL eq 'yes') && ($port eq $sslPort) && ($adminAccess eq 'public'))
+        {
+            $OUT .= "#       public access requested in conf db\n";
+            $OUT .= "        Require all granted\n";
+        } else {
+            $OUT .= "#       private access by default\n";
+            $OUT .= "        Require ip $localAccess $externalSSLAccess\n";
+        }
+        $OUT .= "    </Location>\n";
+    }
+}

@@ -1,0 +1,44 @@
+<div id='usr_pwd'>
+
+    % 	my $btn = l('SAVE');
+
+    %= form_for '/useraccountsd' => (method => 'POST') => begin
+	<p>
+	<h2>
+	%=l 'RESET_PASSWORD_TITLE'
+	</h2>
+	
+	<br>
+	%= $c->l('usr_RESET_DESC', $usr_datas->{user}, $usr_datas->{name} );
+	<br>
+	%= l 'usr_RESET_DESC2'
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'PASSWORD_NEW', class => 'label'
+	</span><span class=data>
+	%= password_field 'newPass', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'PASSWORD_VERIFY_NEW', class => 'label'
+	</span><span class=data>
+	%= password_field 'newPassVerify', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<br><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $usr_datas->{trt}
+	%= hidden_field 'user' => $usr_datas->{user}
+	%= hidden_field 'name' => $usr_datas->{name}
+	
+    % end    
+
+</div>

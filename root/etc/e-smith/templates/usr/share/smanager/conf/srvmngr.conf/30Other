@@ -1,0 +1,5 @@
+    modules_dir => 'lib/SrvMngr/Controller',
+    webapp => 'smanager',
+    mode => 'production',
+    debug => 0,
+\}

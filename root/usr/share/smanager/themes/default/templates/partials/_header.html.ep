@@ -1,0 +1,27 @@
+<div id="header2" class="hd2">
+    <div id="h2l1"> 
+	<div id="h2e11">
+	    <a target='_blank' href="http://www.koozali.org"><img src="images/smeserver_logo.jpg" height="40" alt="SME Server"></a>
+	</div>
+<!--        <div id="h2e12"><h5><a href="initial">Server Manager</a>
+            <a href="/server-manager" target='_blank'>&nbsp &nbsp (Prev SM)</a></h5> -->           
+        <div id="h2e12" style="float:right;"><br><a href="/server-manager" target='_blank'><button style="background-color:#98d36e;font-weight:bold;color:#063;">Legacy SM</button></a></div>
+    </div>
+
+    <div id="h2l2" class="infobar"> 
+	<div id="h2e21">
+        <b>
+        <%= session 'SystemName' %>@<%= session 'DomainName' %></b> 
+	</div>
+        <div id="h2e22">
+          <a target="_parent" href="manual">&nbsp;&nbsp;<b> ? </b>&nbsp;&nbsp;</a>&nbsp;
+	</div>
+	<div id="h2e23">
+%    if ( not defined $c->session->{username} ) {
+          <a target="_parent" href="login"><b>Login</b></a>&nbsp;
+%    } else {
+          <a target="_parent" href="logout"><b><%= $c->session->{username} %> Logout</b></a>&nbsp;
+%    }
+	</div>
+    </div>
+</div>

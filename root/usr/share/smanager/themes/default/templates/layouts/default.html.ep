@@ -1,0 +1,136 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- default +jquery -->
+<head>
+<title><%= $title %></title>
+    <link rev="made" href="mailto:bugs%40koozali.org">
+    <meta name="copyright" content="(head.tmpl)Copyright 2003-2004 Mitel Corporation">
+    %= stylesheet '/css/sme_core.css'
+    %= stylesheet '/css/sme_main.css'
+    %= stylesheet '/css/sme_menu.css'
+    %= stylesheet '/css/styles.css'
+    %= content_for 'head_contrib'
+    % if (config 'hasJquery') {
+	%= include 'partials/_js_imports'
+	%= include 'common_js'
+    % }
+    %= content_for 'refresh'
+    
+    %= stylesheet '/js/datatables.min.css'
+	%= javascript '/js/datatables.min.js'
+	%= stylesheet '/js/jquery-ui.min.css'
+	%= javascript '/js/jquery-ui.min.js'
+	
+	%= stylesheet '/js/dataTables.buttons.min.js'
+	%= stylesheet '/js/jszip.min.js'
+	%= stylesheet '/js/pdfmake.min.js'
+	%= stylesheet '/js/vfs_fonts.js'
+	%= stylesheet '/js/buttons.html5.min.js'
+	%= stylesheet '/js/buttons.print.min.js'
+
+	%= stylesheet '/css/sme-jquery-overrides.css'
+
+</head>
+
+<body>
+%   if ( not defined $c->session->{lang} ) {
+%	SrvMngr::init_session ( $c );
+%    }
+    <div id="header">
+	%= include 'partials/_header'
+        % if ($c->is_logged_in && scalar @{SrvMngr::theme_list( $c )} > 1) {
+    	    %= include 'partials/_swt_theme'
+        % }
+    </div>
+
+    <div id="container">
+
+	% if (config 'hasJquery') {
+	    %= content 'js_toggleMenu'
+	% }
+
+	<div id="navigation" class="col-md-3">
+	    %= include 'partials/_nav_menu'
+%	if ( $c->is_logged_in ) {
+	    %= include 'partials/_user_menu'
+%	}
+%	if ( $c->is_admin ) {
+	    %= include 'partials/_navig2'
+%	}
+	</div>
+	<div id="main" class="col-md-9">
+
+	    %= include 'partials/_info'
+
+	    % if (flash 'success') {
+		<br><div class=success>
+		%= $c->render_to_string(inline => flash 'success') 
+		</div>
+	    % }
+	    % if ( flash 'warning' ) {
+		<br><div class=sme-warning>
+		%= $c->render_to_string(inline => flash 'warning') 
+		</div>
+	    %}
+	    % if ( flash 'error' ) {
+		<br><div class=sme-error>
+		%= $c->render_to_string(inline => flash 'error') 
+		</div>
+	    %}
+	    %= content 'module'
+	    %= include 'partials/_footer'
+	</div>
+    </div>
+
+    % if (config 'hasJquery') {
+	%= content 'js_swapClass'
+	%= content 'js_togglePassword'
+    % }
+
+%= javascript '/js/sme-dataTable-setup.js'
+
+%= javascript begin
+//Set menu to initial condition based on localStorage
+$(document).ready(function() {
+	let menunavflag = window.localStorage.getItem('menunav');
+	if (menunavflag != "false"){
+		$('#menunav').toggle(true);	
+	} else {
+		$('#menunav').toggle(false);	      
+	}
+	
+	let menuadmflag = window.localStorage.getItem('menuadm');
+	if (menuadmflag != "false"){
+		$('#menuadm').toggle(true);	
+	} else {
+		$('#menuadm').toggle(false);	      
+	}
+
+	let menuuserflag = window.localStorage.getItem('menuuser');
+	if (menuuserflag != "false"){
+		$('#menuuser').toggle(true);	
+	} else {
+		$('#menuuser').toggle(false);	      
+	}
+	
+	var sections = document.getElementsByClassName("section-title");
+	for (var i = 0, len = sections.length; i < len; i++) {
+		var jqObj = $(sections[i]);
+		var $section = jqObj.parent().next('div');
+		if(!$section.length){
+			return false;
+		}
+		let localStorageTag = "admSection-"+sections[i].innerHTML;
+		if (window.localStorage.getItem(localStorageTag) != "false"){
+			$section.toggle(true);
+		} else {
+			$section.toggle(false);	      
+		}
+	}
+})
+%end
+  
+</body>
+</html>

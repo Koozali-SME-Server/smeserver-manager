@@ -1,0 +1,45 @@
+% layout 'default', title => "Sme server 2 - yum_update";
+
+% content_for 'module' => begin
+
+<div id='module' class='module yumpostupg-panel'>
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $yum_datas
+	</p>
+    % }
+
+    <h1><%= $title%></h1>
+
+    % if ( $notif ) {
+	<br><div class=sme-error>
+	%= $notif
+	</div>
+    %}
+
+    <br><div class=success>
+    <% my $btn = l('NEXT'); %>
+    %= $c->render_to_string( inline => l 'yum_UPDATE_SUCCESS' )
+    % if ( $yum_datas->{reconf} eq 'yes' ) {
+	%= $c->render_to_string( inline => l 'yum_HEADER_POSTUPGRADE_REQUIRED' )
+	<% $btn = l('RECONFIGURE'); %>
+    % }
+    </div><br>
+
+    %= form_for 'yumd' => (method => 'POST') => begin
+
+	<%= $c->render_to_string(inline => $c->show_yum_log()) %>
+
+    	%=  hidden_field 'trt' => 'PSTU'
+    	%=  hidden_field 'reconf' => $yum_datas->{reconf}
+	<br>
+    <div class='center'>
+	%= submit_button "$btn", class => 'action'
+    </div>
+
+    % end
+
+</div>
+
+% end

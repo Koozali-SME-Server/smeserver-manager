@@ -1,0 +1,101 @@
+<div id='iba_upd'>
+
+
+	% my $btn = l('ADD');
+
+    %= form_for '/ibaysd' => (method => 'POST') => begin
+	<p>
+	<h2>
+	%=l 'iba_ADD_TITLE'
+	</h2>
+	<br>
+	%=l 'iba_NAME_FIELD_DESC'
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'iba_NAME_LABEL', class => 'label'
+	</span><span class=data>
+	% if ( $iba_datas->{trt} eq 'ADD' ) {
+	    % param 'ibay' => $iba_datas->{ibay} unless param 'ibay';
+	    %= text_field 'ibay', class => 'input'
+	% } else {
+	    % $btn = l('SAVE');
+	    %= $iba_datas->{ibay}, class => 'data'
+	% }
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'DESCRIPTION', class => 'label'
+	</span><span class=data>
+	% param 'ibayDesc' => $iba_datas->{description} unless param 'ibayDesc';
+	%= text_field 'ibayDesc', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'GROUP'
+	</span><span class=data>
+	% param 'group' => $iba_datas->{group} unless param 'group';
+	%= select_field 'group' => $c->group_list_m(), class => 'input'
+	<br>
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'iba_USER_ACCESS'
+	</span><span class=data>
+	% param 'userAccess' => $iba_datas->{userAccess} unless param 'userAccess';
+	%= select_field 'userAccess' => $c->userAccess_list_m(), class => 'input'
+	
+	<br>
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'iba_PUBLIC_ACCESS'
+	</span><span class=data>
+	% param 'publicAccess' => $iba_datas->{publicAccess} unless param 'publicAccess';
+	%= select_field 'publicAccess' => $c->publicAccess_list_m(), class => 'input'
+	<br>
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'iba_ALLOW_DYNAMIC_CONTENT'
+	</span><span class=data>
+	% param 'CgiBin' => $iba_datas->{CgiBin} unless param 'CgiBin';
+	%= select_field 'CgiBin' => [[ (l 'DISABLED') => 'disabled'], [ (l 'ENABLED') => 'enabled']], class => 'input'
+	<br>
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'iba_HTTPS_Only'
+	</span><span class=data>
+	% param 'SSL' => $iba_datas->{SSL} unless param 'SSL';
+	%= select_field 'SSL' => [[ (l 'DISABLED') => 'disabled'], [ (l 'ENABLED') => 'enabled']], class => 'input'
+	<br>
+	</span>
+	</p>
+
+	<p>
+	<br><br>
+	%= submit_button $btn, class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $iba_datas->{trt}
+	% if ( $iba_datas->{trt} eq 'UPD' ) {
+    	    %= hidden_field 'ibay' => $iba_datas->{ibay}
+	% }
+	
+    % end
+
+</div>

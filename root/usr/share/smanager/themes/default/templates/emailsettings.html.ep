@@ -1,0 +1,130 @@
+% layout 'default', title => "Sme server 2 - emailsettings";
+
+% content_for 'module' => begin
+<div id='module' class='module emailsettings-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $mai_datas
+	</p>
+    % }
+
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+
+    <h1><%= $title%></h1>
+
+    %= form_for 'emailsettings' => (method => 'POST') => begin
+	<p><span class=label>
+	%=l 'mai_LABEL_POP_ACCESS_CONTROL'
+	</span><span class=data2>
+	%= $c->get_current_pop3_access( 1 )
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_IMAP_ACCESS_CONTROL'
+	</span><span class=data2>
+	%= $c->get_current_imap_access( 1 )
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_WEBMAIL'
+	</span><span class=data2>
+	%= $c->get_current_webmail_status( 1 )
+	</span></p>
+
+    % 	my $btn = l('mai_DESC_STATE_ACCESS_BUTTON');
+    <div class='center'>
+	%= submit_button "$btn", class => 'action'
+    </div>
+
+	%= hidden_field 'trt' => 'ACC'
+    % end    
+
+        <hr class="sectionbar" />
+    
+    %= form_for 'emailsettings' => (method => 'POST') => begin
+	<p><span class=label>
+	%=l 'mai_LABEL_VIRUS_SCAN'
+	</span><span class=data2>
+	%= $c->get_virus_status(1)
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SPAM_SCAN'
+	</span><span class=data2>
+	%= $c->get_spam_status(1)
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_BLOCK_EXECUTABLE_CONTENT'
+	</span><span class=data2>
+	%= $c->get_patterns_status(1)
+	</span></p>
+
+    % 	my $btn = l('mai_DESC_STATE_FILTERING_BUTTON');
+    <div class='center'>
+	%= submit_button "$btn", class => 'action'
+    </div>
+
+	%= hidden_field 'trt' => 'FIL'
+    % end    
+
+        <hr class="sectionbar" />
+
+    %= form_for 'emailsettings' => (method => 'POST') => begin
+	<p><span class=label>
+	%=l 'mai_LABEL_MODE'
+	</span><span class=data2>
+	%= $mai_datas->{fetchmailmethod}
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SMTP_AUTH_CONTROL'
+	</span><span class=data2>
+	%= $c->get_current_smtp_auth( 1 )
+	</span></p>
+
+    % 	my $btn = l('mai_DESC_STATE_RECEPTION_BUTTON');
+    <div class='center'>
+	%= submit_button "$btn", class => 'action'
+    </div>
+
+	%= hidden_field 'trt' => 'REC'
+    % end    
+
+        <hr class="sectionbar" />
+
+    %= form_for 'emailsettings' => (method => 'POST') => begin
+	<p><span class=label>
+	%=l 'mai_LABEL_UNKNOWN'
+	</span><span class=data2>
+	%= $c->get_emailunknownuser_status( 1 )
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_DELEGATE'
+	</span><span class=data2>
+	%= $c->get_value('DelegateMailServer')
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SMARTHOST'
+	</span><span class=data2>
+	%= $c->get_value('SMTPSmartHost')
+	</span></p>
+
+    % 	my $btn = l('mai_DESC_STATE_DELIVERY_BUTTON');
+    <div class='center'>
+	%= submit_button "$btn", class => 'action'
+    </div>
+
+	%= hidden_field 'trt' => 'DEL'
+    % end    
+
+</div>
+%end

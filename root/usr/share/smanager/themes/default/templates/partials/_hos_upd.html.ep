@@ -1,0 +1,77 @@
+<div id='hos_upd'>
+
+    % 	my $btn = l('NEXT');
+
+    %= form_for '/hostentriesd' => (method => 'POST') => begin
+	<p><h2>
+    % if ( $hos_datas->{trt} eq "ADD" ) {
+	%=l 'hos_CREATE_TITLE'
+    % } else {
+	%=l 'hos_MODIFY_TITLE'
+    % 	$btn = l('MODIFY');
+    % }
+	</h2></p>
+
+	<p>
+	%=l 'hos_HOSTNAME_DESCRIPTION'
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'hos_HOSTNAME', class => 'label'
+	</span><span class=data>
+    % if ( $hos_datas->{trt} eq "ADD" ) {
+	% param 'Name' => $hos_datas->{name} unless param 'Name';
+	%= text_field 'Name', class => 'input'
+    % } else {
+        %= hidden_field 'Name' => $hos_datas->{name}
+	%= $hos_datas->{name}, class => 'data'
+    % }
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'DOMAIN', class => 'label'
+	</span><span class=data>
+    % if ( $hos_datas->{trt} eq "ADD" ) {
+	% param 'Domain' => $hos_datas->{domain} unless param 'Domain';
+	%= select_field 'Domain', $c->domains_list(), class => 'input'
+    % } else {
+        %= hidden_field 'Domain' => $hos_datas->{domain}
+	%= $hos_datas->{domain}, class => 'data'
+    % }
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%= $c->l('COMMENT', '');
+	</span><span class=data>
+	% param 'Comment' => $hos_datas->{comment} unless param 'Comment';
+	%= text_field 'Comment', class => 'input'
+	</span>
+	</p>
+
+	<p>
+	<span class=label>
+	%=l 'LOCATION', class => 'label'
+	</span><span class=data>
+	% param 'Hosttype' => $hos_datas->{hosttype} unless param 'Hosttype';
+	%= select_field 'Hosttype', $c->hosttype_list(), class => 'input'
+	</span>
+	</p>
+
+	<p><br>
+	%= submit_button "$btn", class => 'action'
+	</p>
+
+	%= hidden_field 'trt' => $hos_datas->{trt}
+	%= hidden_field 'Hostname' => $hos_datas->{hostname}
+	%= hidden_field 'Internalip' => $hos_datas->{internalip}
+	%= hidden_field 'Externalip' => $hos_datas->{externalip}
+	%= hidden_field 'Macaddress' => $hos_datas->{macaddress}
+
+    %end
+
+</div>

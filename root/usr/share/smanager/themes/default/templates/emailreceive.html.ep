@@ -1,0 +1,113 @@
+% layout 'default', title => "Sme server 2 - emailreceive";
+
+% content_for 'module' => begin
+<div id='module' class='module emailreceive-panel'>
+
+    % if ($config->{debug} == 1) {
+	<p>
+	%= dumper $c->current_route
+	%= dumper $mai_datas
+	</p>
+    % }
+
+    % if ( stash 'error' ) {
+    	<br><div class=sme-error>
+    	%= $c->render_to_string(inline => stash 'error') 
+	</div>
+    %}
+    
+    <h1><%= $title%></h1>
+
+    %= form_for '/emailsettingd' => (method => 'POST') => begin
+
+	%=l 'mai_DESC_MODE'
+
+	<p><span class=label>
+	%=l 'mai_LABEL_MODE'
+	</span><span class=input>
+	% param 'FetchmailMethod' => $mai_datas->{fetchmailmethod} unless param 'FetchmailMethod';
+	%= select_field 'FetchmailMethod' => $c->get_retrieval_opt(), class => 'input'
+	</span></p>
+
+	%=l 'mai_DESC_SMTP_AUTH_CONTROL'
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SMTP_AUTH_CONTROL'
+	</span><span class=input>
+    	% param 'SMTPAuth' => $c->get_current_smtp_auth() unless param 'SMTPAuth';
+	%= select_field 'SMTPAuth' => $c->get_smtp_auth_opt(), class => 'input'
+	</span></p>
+
+	<hr class="sectionbar" />
+	<h2>
+	%=l 'mai_TITLE_SECONDARY'
+	</h2>
+
+	%=l 'mai_DESC_SECONDARY'
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SECONDARY'
+	</span><span class=input>
+	% param 'SecondaryMailServer' => $mai_datas->{secondarymailserver} unless param 'SecondaryMailServer';
+	%= text_field 'SecondaryMailServer', class => 'input'
+	</span></p>
+
+	%=l 'mai_DESC_FETCH_PERIOD'
+
+	<p><span class=label>
+	%=l 'mai_LABEL_FETCH_PERIOD'
+	</span><span class=input>
+	% param 'FreqOffice' => $mai_datas->{freqoffice} unless param 'FreqOffice';
+	%= select_field 'FreqOffice' => $c->fetchmail_freq(), class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_FETCH_PERIOD_NIGHTS'
+	</span><span class=input>
+	% param 'FreqOutside' => $mai_datas->{freqoutside} unless param 'FreqOutside';
+	%= select_field 'FreqOutside' => $c->fetchmail_freq(), class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_FETCH_PERIOD_WEEKENDS'
+	</span><span class=input>
+	% param 'FreqWeekend' => $mai_datas->{freqweekend} unless param 'FreqWeekend';
+	%= select_field 'FreqWeekend' => $c->fetchmail_freq(), class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_POP_ACCOUNT'
+	</span><span class=input>
+	% param 'SecondaryMailAccount' => $mai_datas->{secondarymailaccount} unless param 'SecondaryMailAccount';
+	%= text_field 'SecondaryMailAccount', class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_POP_PASS'
+	</span><span class=input>
+	% param 'SecondaryMailPassword' => $mai_datas->{secondarymailpassword} unless param 'SecondaryMailPassword';
+	%= password_field 'SecondaryMailPassword', class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SORT_METHOD'
+	</span><span class=input>
+	% param 'SpecifyHeader' => $mai_datas->{specifyheader} unless param 'SpecifyHeader';
+	%= select_field 'SpecifyHeader' => [[(l 'mai_DEFAULT') => 'off'], [(l 'mai_SPECIFY_BELOW') => 'on']], class => 'input'
+	</span></p>
+
+	<p><span class=label>
+	%=l 'mai_LABEL_SORT_HEADER'
+	</span><span class=input>
+	% param 'SecondaryMailEnvelope' => $mai_datas->{secondarymailenvelope} unless param 'SecondaryMailEnvelope';
+	%= text_field 'SecondaryMailEnvelope', class => 'input'
+	</span></p>
+
+    % 	my $btn = l('SAVE');
+	%= submit_button "$btn", class => 'action'
+
+	%= hidden_field 'trt' => 'REC'
+    % end    
+
+</div>
+%end

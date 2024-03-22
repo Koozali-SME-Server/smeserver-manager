@@ -1,0 +1,38 @@
+%	use SrvMngr qw( getNavigation );
+%	my %nav = %{SrvMngr->getNavigation( $c->languages(), 'A' )};
+
+	<div id='navigat2'>
+	 <!-- ><div><a href='#' id='togadm' class='menu-title'>ADMINISTRATION</a></div> -->
+	<div id='menuadm'>
+
+%    my $cc = 1;
+%    foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'}) 
+%		<=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
+	<div><a href='#' class='section section-title'><%= $h %></a></div>
+	<div class='togms'>
+%	my ($classNew, $target, $href) = '';
+%	foreach (sort { $a->{'WEIGHT'} <=> $b->{'WEIGHT'} }  @{$nav{$h}{'DESCRIPTIONS'}}) {
+
+%	    next if ($_->{'MENUCAT'} ne 'A' );	# menu Admin 
+
+%	    if ( $_->{'FILENAME'} =~ m/^2\// ) {
+%		$target = '_self';
+%	    	(my $file2 = $_->{'FILENAME'}) =~ s|^2/||;
+%	    	$href = '/smanager/' . $file2;
+%	    } else {
+%		$target = 'main';
+%#	    	$href = '/server-manager' . $_->{'FILENAME'};
+%#	    	$href = $c->getlegacyurl($c,'/server-manager' . $_->{'FILENAME'});
+% 			my $host = $c->req->url->to_abs->host;
+%	    	$href = "/smanager/legacypanel?url=https://$host/server-manager" . $_->{'FILENAME'};
+% 
+%	    }
+	    <div class='menu-cell'><a class='item<%= $classNew %>' target='<%= $target %>'
+	    id='sme<%= $cc %>' href='<%= $href %>'><%= $_->{'DESCRIPTION'} %></a></div>
+%           $cc++;
+%	}
+	</div>
+%    }
+
+    </div>
+    </div>

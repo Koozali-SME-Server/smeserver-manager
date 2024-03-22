@@ -1,0 +1,6 @@
+{
+    return "# smanager is disabled\n" 
+	unless $smanager{status} eq 'enabled';
+
+    return "15 0 * * * root /usr/share/smanager/script/daily.sh \n"
+}

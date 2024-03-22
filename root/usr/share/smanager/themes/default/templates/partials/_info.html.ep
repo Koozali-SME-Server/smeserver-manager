@@ -1,0 +1,16 @@
+<div id="info">
+    <% if (! $c->session->{PwdSet} ) { %>
+	<div class="sme-error"><h5>
+        Warning: you have not yet changed the default system password.</h5></div>
+    <% } %>
+    <% if ( $c->is_unsafe ) { %>
+	<div class="sme-error"><h5>
+        Warning: a reconfigure and reboot is required before proceeding! Failure to do so now
+        may leave your system in an unknown state!</h5></div>
+    <% } %>
+    <% if ( $c->session->{Access} eq 'public' && (($config->{debug} ne '0') || ($config->{mode} ne 'production')) ) { %>
+	<div class="sme-error"><h5>
+        Warning: Development or debug mode enabled AND public access is offered !
+        </h5></div>
+    <% } %>
+</div>

@@ -1,0 +1,6 @@
+/usr/share/smanager/log/production.log {
+  weekly
+  copytruncate
+  rotate 12
+  missingok
+}
