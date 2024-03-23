@@ -1,8 +1,8 @@
 Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
-%define version 0.1.4
-%define release 34
+%define version 11.0.0
+%define release 1
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Mar 23 2024 Brian Read <brianr@koozali.org>11.0.0-1.sme
+- Update Release and Version to base version and 1st release for SME11 [SME: 12518]
+
 * Fri Mar 22 2024 cvs2git.sh aka Brian Read <brianr@koozali.org> 0.1.4-34.sme
 - Roll up patches and move to git repo [SME: 12338]
 
