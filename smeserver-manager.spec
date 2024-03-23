@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 1
+%define release 2
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -12,7 +12,7 @@ Source1: visible.png
 
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 BuildArchitectures: noarch
-BuildRequires: e-smith-devtools
+BuildRequires: smeserver-devtools
 #<Build tests>
 #BuildRequires:  perl >= 0:5.016
 #BuildRequires:  perl(Test::More)
@@ -22,9 +22,9 @@ BuildRequires: e-smith-devtools
 #BuildRequires:  perl(Net::Netmask) >= 1.9
 #</Build tests>
 
-Requires: e-smith-lib >= 1.18.0-26
-Requires: e-smith-manager >= 2.4.0-22
-Requires: e-smith-apache >= 2.6.0-19
+Requires: smeserver-lib >= 1.18.0-26
+Requires: smeserver-manager >= 2.4.0-22
+Requires: smeserver-apache >= 2.6.0-19
 Requires: smeserver-php >= 3.0.0-43
 Requires: perl(Mojolicious) >= 7.56
 Requires: perl(Mojolicious::Plugin::I18N) >= 1.6
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Mar 23 2024 Brian Read <brianr@koozali.org>11.0.0-2.sme
+- Change Requires: e-smith- to Requires:smeserver-
+
 * Sat Mar 23 2024 Brian Read <brianr@koozali.org>11.0.0-1.sme
 - Update Release and Version to base version and 1st release for SME11 [SME: 12518]
 
