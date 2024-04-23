@@ -1,6 +1,11 @@
 package SrvMngr::Controller::Legacypanel;
 
 #----------------------------------------------------------------------
+# heading     : Legacy
+# description : Legacy panel
+# navigation  : 99999 9999
+#----------------------------------------------------------------------
+#----------------------------------------------------------------------
 # name   : legacypanel,    method : get,   url : /legacypanel,     ctlact : Legacypanel#main
 #
 # routes : end

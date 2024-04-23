@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 3
+%define release 4
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Apr 23 2024 Brian Read <brianr@koozali.org> 11.0.0-4.sme
+- add in Nav numbers for Legacypanels.pm and ignore it when generating nav menu [SME:12643]
+
 * Thu Apr 04 2024 Brian Read <brianr@koozali.org> 11.0.0-3.sme
 - Set license file to GPL2.0  [SME: 12577]
 

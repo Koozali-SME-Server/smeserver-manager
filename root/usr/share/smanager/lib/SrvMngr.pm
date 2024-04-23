@@ -535,7 +535,7 @@ sub getNavigation {
     # Determine the directory where the functions are kept
     #----------------------------------------------------- 
 	my $navigation_ctlr_ignore = 
-	"(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm(-.*)?)";
+	"(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm|Legacypanel\.pm(-.*)?)";
 #	"(\.\.?|Initial\.pm|Manual\.pm|Swttheme\.pm|Request\.pm|Modules\.pm(-.*)?)";
 	my $navigation_cgi_ignore = 
 	"(\.\.?|navigation|noframes|online-manual|(internal|pleasewait)(-.*)?)";
