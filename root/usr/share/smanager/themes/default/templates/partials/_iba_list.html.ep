@@ -9,6 +9,7 @@
 	<br>
 	%= submit_button "$btn", class => 'action'
 	</p>
+    %= hidden_field 'trt' => 'ADD';
 
     % end    
 
@@ -71,9 +72,7 @@
     %    }
     	</tbody>
     	</table>
-
 	<%} %>
 
-        %= hidden_field 'trt' => $iba_datas->{trt}
 
 </div>
