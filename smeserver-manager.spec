@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 5
+%define release 6
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Apr 29 2024 Brian Read <brianr@koozali.org> 11.0.0-6.sme
+- Update layout for table extras [SME: 12656]
+
 * Sun Apr 28 2024 Brian Read <brianr@koozali.org> 11.0.0-5.sme
 - Ibay create not getting into panel [SME: 12652]
 

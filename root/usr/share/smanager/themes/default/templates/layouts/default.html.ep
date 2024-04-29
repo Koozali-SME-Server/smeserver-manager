@@ -19,16 +19,18 @@
     %= content_for 'refresh'
     
     %= stylesheet '/js/datatables.min.css'
+
 	%= javascript '/js/datatables.min.js'
+
 	%= stylesheet '/js/jquery-ui.min.css'
+
 	%= javascript '/js/jquery-ui.min.js'
-	
-	%= stylesheet '/js/dataTables.buttons.min.js'
-	%= stylesheet '/js/jszip.min.js'
-	%= stylesheet '/js/pdfmake.min.js'
-	%= stylesheet '/js/vfs_fonts.js'
-	%= stylesheet '/js/buttons.html5.min.js'
-	%= stylesheet '/js/buttons.print.min.js'
+	%= javascript '/js/dataTables.buttons.min.js'
+	%= javascript '/js/jszip.min.js'
+	%= javascript '/js/pdfmake.min.js'
+	%= javascript '/js/vfs_fonts.js'
+	%= javascript '/js/buttons.html5.min.js'
+	%= javascript '/js/buttons.print.min.js'
 
 	%= stylesheet '/css/sme-jquery-overrides.css'
 
@@ -90,47 +92,6 @@
     % }
 
 %= javascript '/js/sme-dataTable-setup.js'
-
-%= javascript begin
-//Set menu to initial condition based on localStorage
-$(document).ready(function() {
-	let menunavflag = window.localStorage.getItem('menunav');
-	if (menunavflag != "false"){
-		$('#menunav').toggle(true);	
-	} else {
-		$('#menunav').toggle(false);	      
-	}
-	
-	let menuadmflag = window.localStorage.getItem('menuadm');
-	if (menuadmflag != "false"){
-		$('#menuadm').toggle(true);	
-	} else {
-		$('#menuadm').toggle(false);	      
-	}
-
-	let menuuserflag = window.localStorage.getItem('menuuser');
-	if (menuuserflag != "false"){
-		$('#menuuser').toggle(true);	
-	} else {
-		$('#menuuser').toggle(false);	      
-	}
-	
-	var sections = document.getElementsByClassName("section-title");
-	for (var i = 0, len = sections.length; i < len; i++) {
-		var jqObj = $(sections[i]);
-		var $section = jqObj.parent().next('div');
-		if(!$section.length){
-			return false;
-		}
-		let localStorageTag = "admSection-"+sections[i].innerHTML;
-		if (window.localStorage.getItem(localStorageTag) != "false"){
-			$section.toggle(true);
-		} else {
-			$section.toggle(false);	      
-		}
-	}
-})
-%end
   
 </body>
 </html>
