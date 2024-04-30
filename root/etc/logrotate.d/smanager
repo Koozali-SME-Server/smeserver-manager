@@ -1,4 +1,6 @@
-/usr/share/smanager/log/production.log {
+/var/log/smanager/smanager.log {
+  su root root
+  create 600 root root
   weekly
   copytruncate
   rotate 12

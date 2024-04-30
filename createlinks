@@ -47,6 +47,9 @@ for my $event ( qw( smeserver-manager-update smanager-refresh bootstrap-console-
 
 event_link('systemd-default', "smeserver-manager-update", '88');
 event_link('systemd-reload', "smeserver-manager-update", '89');
+templates2events("/etc/rsyslog.conf", "smeserver-manager-update");
+safe_symlink("restart",
+    "root/etc/e-smith/events/smeserver-manager-update/services2adjust/rsyslog");
 
 use esmith::Build::Backup qw(:all);
 backup_includes("smeserver-manager", qw(

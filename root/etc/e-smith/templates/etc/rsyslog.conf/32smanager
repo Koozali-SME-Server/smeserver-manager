@@ -1,0 +1,4 @@
+#smanager
+:programname, isequal, "smanager"            /var/log/smanager/smanager.log
+& stop
+
