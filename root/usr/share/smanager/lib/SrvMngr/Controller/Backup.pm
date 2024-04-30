@@ -37,6 +37,8 @@ use esmith::BackupHistoryDB;
 use esmith::util;
 use esmith::lockfile;
 
+use esmith::BlockDevices;
+
 use constant DEBUG => $ENV{MOJO_SMANAGER_DEBUG} || 0;
 
 our $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
@@ -1576,19 +1578,33 @@ sub get_BackupwkDest_options {
     my @usbdisks = ();
 
     if ( $VFSType eq 'usb' ) {
-        foreach my $udi (qx(hal-find-by-property --key volume.fsusage --string filesystem)) {
-            $udi =~ m/^(\S+)/;
+        my $devices = esmith::BlockDevices->new ('allowmount' => 'disabled');
+        my ($valid, $invalid) = $devices->checkBackupDrives(0);
 
-            my $is_mounted = qx(hal-get-property --udi $1 --key volume.is_mounted);
-
-            if ($is_mounted eq "false\n") {
-                my $vollbl = qx(hal-get-property --udi $1 --key volume.label);
-                $vollbl =~ m/^(\S+)/;
-                if ($vollbl =~ /^\s/) {$vollbl = 'nolabel';}
-                chomp $vollbl;
-                push @usbdisks, $vollbl;
+        if ( ${$valid}[0] ) {
+            foreach ( @{$valid} ) {
+                push @usbdisks, $devices->label($_);
             }
         }
+ 
+        if (!$usbdisks[0]){
+			 push (@usbdisks,$c->l('bac_No suitable local devices found'));
+		}
+        $devices->destroy;
+
+         #foreach my $udi (qx(hal-find-by-property --key volume.fsusage --string filesystem)) {
+            #$udi =~ m/^(\S+)/;
+
+            #my $is_mounted = qx(hal-get-property --udi $1 --key volume.is_mounted);
+
+            #if ($is_mounted eq "false\n") {
+                #my $vollbl = qx(hal-get-property --udi $1 --key volume.label);
+                #$vollbl =~ m/^(\S+)/;
+                #if ($vollbl =~ /^\s/) {$vollbl = 'nolabel';}
+                #chomp $vollbl;
+                #push @usbdisks, $vollbl;
+            #}
+        #}
     #    return undef unless ($usbdisks[0]);
     }
 
@@ -1985,31 +2001,50 @@ sub dmount {
 	return ( qx(/bin/mount -t nfs -o nolock "$host:/$share" $mountdir 2>&1) );
     } 
     elsif ($VFSType eq 'usb') {
-        my $device = "";
-        my $blkdev = "";
+         my $device = "";
         my $vollbl = "";
-        foreach my $udi (qx(hal-find-by-property --key volume.fsusage --string filesystem)) {
-          $udi =~ m/^(\S+)/;
-          my $is_mounted = qx(hal-get-property --udi $1 --key volume.is_mounted);
 
-          if ($is_mounted eq "false\n") {
-              $blkdev = qx(hal-get-property --udi $1 --key block.device);
-              if ($blkdev =~ m/^(\S+)/) {$blkdev = $1;}
-          }
-          if ($is_mounted eq "false\n") {
-              $vollbl = qx(hal-get-property --udi $1 --key volume.label);
-              $vollbl =~ m/^(\S+)/;
-              if ($vollbl =~ /^\s/) {$vollbl = 'nolabel';}
-          }
+        my $devices = esmith::BlockDevices->new ('allowmount' => 'disabled');
+        my ($valid, $invalid) = $devices->checkBackupDrives(0);
 
-          chomp $vollbl;
-          chomp $blkdev;
-          $vollbl = "media/$vollbl";
-          if  ($vollbl eq $share) {
-            $device = $blkdev;
-          } 
+        if ( ${$valid}[0] ) {
+            foreach ( @{$valid} ) {
+                $vollbl = $devices->label($_);
+                if ( $share eq "media/$vollbl" ) {
+                    $device = "/dev/$_";
+                }
+            }
         }
-        return ( qx(/bin/mount $device "/$share" 2>&1) );
+        $devices->destroy;
+        return ( qx (mount $device /$share 2>&1) );
+ 
+#-------------------------------------------------------------------------------------------------------
+        #my $device = "";
+        #my $blkdev = "";
+        #my $vollbl = "";
+        #foreach my $udi (qx(hal-find-by-property --key volume.fsusage --string filesystem)) {
+          #$udi =~ m/^(\S+)/;
+          #my $is_mounted = qx(hal-get-property --udi $1 --key volume.is_mounted);
+
+          #if ($is_mounted eq "false\n") {
+              #$blkdev = qx(hal-get-property --udi $1 --key block.device);
+              #if ($blkdev =~ m/^(\S+)/) {$blkdev = $1;}
+          #}
+          #if ($is_mounted eq "false\n") {
+              #$vollbl = qx(hal-get-property --udi $1 --key volume.label);
+              #$vollbl =~ m/^(\S+)/;
+              #if ($vollbl =~ /^\s/) {$vollbl = 'nolabel';}
+          #}
+
+          #chomp $vollbl;
+          #chomp $blkdev;
+          #$vollbl = "media/$vollbl";
+          #if  ($vollbl eq $share) {
+            #$device = $blkdev;
+          #} 
+        #}
+         #return ( qx(/bin/mount $device "/$share" 2>&1) );
+#-------------------------------------------------------------------------------------------------------
     } else {
 	return ("Error while mounting $host/$share : $VFSType not supported.\n");
     }

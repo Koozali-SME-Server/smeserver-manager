@@ -1,3 +1,4 @@
+'bac_No suitable local devices found' => 'No suitable local devices found',
 'bac_BACKUP_TITLE' => 'Backup or restore server data',
 'bac_BACKUP_DESC' => '<P>The server provides two ways to back up and restore
 your server: using your local desktop or a tape drive.</P>

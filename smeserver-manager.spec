@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 6
+%define release 7
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Apr 30 2024 Brian Read <brianr@koozali.org> 11.0.0-7.sme
+- Remove use of hel command and replace by call to BlockDevices lib [SME: 12644]
+
 * Mon Apr 29 2024 Brian Read <brianr@koozali.org> 11.0.0-6.sme
 - Update layout for table extras [SME: 12656]
 
