@@ -37,10 +37,12 @@
 		%= $c->render_to_string(inline => l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6,$var7));
     	</div>
 	%}
-	<br><br>
-        <div class='center'>
+
+	<p>
+	<br>
 	%= submit_button "$btn", class => 'action'
-	</div>
+	</p>
+
     % end    
 
 	<br>

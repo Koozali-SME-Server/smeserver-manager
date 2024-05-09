@@ -57,9 +57,10 @@
 		%#}
 			%= hidden_field sport=>$sport
 			%= hidden_field proto=>$proto
-	        <div class='center'>
-		%= submit_button "$btn", class => 'action'
-		</div>
+			<br>
+			%= submit_button "$btn", class => 'action'
+			</p>
+
 	%end
 
 </div>

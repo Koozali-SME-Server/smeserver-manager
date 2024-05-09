@@ -60,9 +60,10 @@
 			<span class=data>
 				%=text_field 'networkRouter'
 			</span><br><br>
-    		<div class='center'>
-		%= submit_button "$btn", class => 'action'
-		</div>
+			<p>
+			<br>
+			%= submit_button "$btn", class => 'action'
+			</p>
 	%end
 
 </div>

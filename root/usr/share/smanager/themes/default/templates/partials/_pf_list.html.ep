@@ -18,8 +18,6 @@
 	% my $var5 = @vars[4];
 	% my $var6 = @vars[5];
 
-
-
 	%if ($ret{ret} eq "") {
 	    %= $c->render_to_string(inline => l('pf_FIRST_PAGE_DESCRIPTION'));
 	%} elsif (index($ret{ret},"SUCCESS") != -1) {
@@ -33,21 +31,22 @@
 			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
     	</div>
 	%}
-	<br><br>
-        <div class='center'>
+
+	<p>
+	<br>
 	%= submit_button "$btn", class => 'action'
-	</div>
+	</p>
+
+
     % end   
    
-   	<br>
-
     %	if ($empty){
             <br>
 		%=l 'pf_NO_FORWARDS'
     %	} else {
         <br>
 		%=l 'pf_SHOW_FORWARDS'
-	<br>
+	<br><br />
 		<table class="sme-border TableSort"><thead>
 		<tr>
 			<th class='sme-border'>

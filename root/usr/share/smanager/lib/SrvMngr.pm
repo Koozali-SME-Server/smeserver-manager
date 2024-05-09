@@ -624,7 +624,7 @@ sub getNavigation {
 	{
 	    $heading = $rec->prop('Heading');
 	    $description = $rec->prop('Description');
-	    $headingWeight = $rec->prop('HeadingWeight');
+	    $headingWeight = $rec->prop('HeadingWeight') || 99999; #Stop noise in logs if file in dir does not have nav header.
 	    $descriptionWeight = $rec->prop('DescriptionWeight');
 	    $urlpath = $rec->prop('UrlPath') || '';
 	    $menucat = $rec->prop('MenuCat') || 'A';	# admin menu (default)

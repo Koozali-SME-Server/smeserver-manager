@@ -1,5 +1,6 @@
-<div id="footer">
+<div id="footer" width=100%>
 <HR class="sme-copyrightbar">
+<a href="https://mojolicious.org" target="_blank"><img src="images/sme-mojo-logo-white.png" style="position:relative;"></a>
 <font class="sme-copyright">
 %	if ( $c->is_logged_in ) {
 	SME Server <%= session 'releaseVersion' %> - Manager <%= $c->app->VERSION %>

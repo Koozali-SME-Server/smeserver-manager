@@ -213,10 +213,10 @@
 	</p>
     %}
 
-
-        <div class='center'>
+	<p>
+	<br>
 	%= submit_button "$btn", class => 'action'
-	</div>
+	</p>
 
     % end
 

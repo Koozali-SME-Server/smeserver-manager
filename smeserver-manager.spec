@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 8
+%define release 9
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu May 09 2024 Brian Read <brianr@koozali.org> 11.0.0-9.sme
+- Add mojo logo to footer [SME: 12679]
+- Fix default for HeaderWeight to avoid noise in logs if no Nav header in file
+- Align buttons consistently [SME: 12680]
+
 * Tue Apr 30 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-8.sme
 - create dedicated log files and logrotate [SME: 12664]
 
