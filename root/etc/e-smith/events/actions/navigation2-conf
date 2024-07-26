@@ -123,7 +123,7 @@ foreach my $lang (@langs)
 			close LEX;
 		}
 		#Extract the prefix for this module
-		my @keys = values @panel_lex;  # Get all values from the hash
+		my @keys = values @panel_lex;  # Get all values from the array
 		
 		my $i = 0;                    # Initialize the index
 		my $found = 0;                # Flag to check if the prefix was found
@@ -131,12 +131,13 @@ foreach my $lang (@langs)
 
 		while ($i < @keys) {          # Loop until we run out of entries
 			my $extracted_value = $keys[$i] || "";  # The current entry
+			#print("Extracted val: ".$extracted_value."\n");
 
 			# Extract prefix from the second value (up to and including the first underscore)
-			my ($prefix) = $extracted_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
+			#my ($prefix) = $second_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
+			($prefix) = $extracted_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
 			
 			if (defined $prefix) {
-				#print("Prefix: " . $prefix . "\n");
 				$found = 1;           # Set found flag to true
 				last;                 # Exit the loop if prefix is found
 			} else {
@@ -147,8 +148,11 @@ foreach my $lang (@langs)
 		}
 
 		if (!$found) {
-			print(STDERR "No valid prefix found in any entries: ".$file2." (".$lang.")\n") if DEBUG;
+			print(STDERR "No valid prefix found in any entries: ".$file2." (".$lang.")\n"); # if DEBUG;
+			$prefix = "xx_";			  # Probably never match!!
+			
 		}
+		print("Prefix: ".$prefix."".$file2." (".$lang.")\n");
 		
 		my %Lexicon = ();
 		push(@panel_lex, @gen_lex);
@@ -202,11 +206,11 @@ foreach my $lang (@langs)
 
 sub localise {
     my ($lexicon, $string) = @_;
-#    print("Looking up:".$string."\n");
+    #print("Looking up:".$string."\n");
     $string  = "" unless defined $string;
     my $lc_string = lc($string);
     my $res = $lexicon->{$lc_string} || $string;
-#    print("Returning:".$res."\n");
+    #print("Returning:".$res."\n");
     return $res;
 }
 

@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 9
+%define release 10
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Jul 26 2024 Brian Read <brianr@koozali.org> 11.0.0-10.sme
+- fix navigation2.conf to more correctly translate menus [SME: 12714]
+
 * Thu May 09 2024 Brian Read <brianr@koozali.org> 11.0.0-9.sme
 - Add mojo logo to footer [SME: 12679]
 - Fix default for HeaderWeight to avoid noise in logs if no Nav header in file
