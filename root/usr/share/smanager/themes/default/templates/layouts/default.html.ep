@@ -31,7 +31,9 @@
 	%= javascript '/js/vfs_fonts.js'
 	%= javascript '/js/buttons.html5.min.js'
 	%= javascript '/js/buttons.print.min.js'
+	%= javascript '/js/flag-by-locale.js'
 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
 	%= stylesheet '/css/sme-jquery-overrides.css'
 
 </head>

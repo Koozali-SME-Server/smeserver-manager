@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 10
+%define release 11
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Jul 27 2024 Brian Read <brianr@koozali.org> 11.0.0-11.sme
+- Add in flag icon indication of locale [SME: 12706]
+
 * Fri Jul 26 2024 Brian Read <brianr@koozali.org> 11.0.0-10.sme
 - fix navigation2.conf to more correctly translate menus [SME: 12714]
 
