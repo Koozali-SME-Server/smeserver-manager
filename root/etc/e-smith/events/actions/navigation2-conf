@@ -152,7 +152,7 @@ foreach my $lang (@langs)
 			$prefix = "xx_";			  # Probably never match!!
 			
 		}
-		print("Prefix: ".$prefix."".$file2." (".$lang.")\n");
+		#print("Prefix: ".$prefix." ".$file2." (".$lang.")\n");
 		
 		my %Lexicon = ();
 		push(@panel_lex, @gen_lex);
