@@ -1,5 +1,4 @@
-{
-    $OUT = <<'EOF';
+/* DO NOT MODIFY THIS FILE! It is updated automatically */
 
 /*	smeserver_manager2  */
 
@@ -234,7 +233,7 @@ a.menu-title {
     width: 100%;
 }
 #h2e11 {
-    width: 70%;
+    width: 50%;
     float: left;
 }
 #h2e12 {
@@ -257,9 +256,9 @@ a.menu-title {
     width: 70%;
 }
 
-#h2e22,#h2e23 {
+#h2e22,#h2e23,#h2e12 {
     float: left;
-    width: 10%;
+    width: 14em;
     text-align: center;
 }
 
@@ -274,5 +273,4 @@ a.menu-title {
 }
 
 /*end*/
-EOF
-}
+

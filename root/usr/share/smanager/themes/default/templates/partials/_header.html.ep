@@ -29,7 +29,7 @@
 
 #legacy-button button {
     background-color: #98d36e; /* Button background color */
-    font-weight: bold;         /* Bold text for the button */
+    font-weight: lighter;      /* Lighter text for the button */
     color: #063;               /* Button text color */
     padding: 5px 10px;         /* Padding for the button */
     border: none;              /* Remove default button border */
@@ -41,35 +41,88 @@
     background-color: #82c961; /* Change color on hover */
 }
 
+.infobar {
+    display: flex;                  /* Use flexbox for alignment */
+    justify-content: space-between; /* Space between child elements */
+    align-items: center;            /* Center items vertically */
+    padding: 10px;                  /* Adjust padding as desired */
+}
+
+#h2e21 {
+    flex: 1;                        /* Allow the first div to take available space on the left */
+}
+
+#h2e22 {
+    display: flex;                  /* Make this div a flex container */
+    justify-content: center;        /* Center the help button */
+    align-items: center;            /* Center vertically */
+    flex: none;                    /* Prevent this div from growing */
+    position: relative;             /* Relative position for centering */
+    width: 100px;                  /* Set a width for the help button container */
+}
+
+#h2e23 {
+    margin-left: auto;              /* Push the third div to the right */
+}
+
+.login-button {
+    background-color: #98d36e;     /* Button background color */
+    font-weight: bold;              /* Bold text */
+    xxcolor: #ffffff;                 /* Button text color */
+    padding: 8px 12px;              /* Adjust padding for button height */
+    border: none;                   /* Remove default border */
+    border-radius: 4px;             /* Rounded corners */
+    cursor: pointer;                /* Change cursor on hover */
+}
+
+.login-button:hover {
+    background-color: #82c961;      /* Change color on hover */
+}
+
+#help-button {
+    text-decoration: none;          /* Remove underline from link */
+    font-size: 20px;                /* Adjust font size as needed */
+    padding: 8px 12px;              /* Add padding to the help link */
+    background-color: #98d36e;      /* Background for visibility */
+    border-radius: 4px;             /* Rounded corners */
+    color: #000;                    /* Button text color */
+}
+
+#help-button:hover {
+    background-color: #82c961;      /* Change background on hover */
+}
 </style>
 
 <div id="header2" class="hd2">
     <div id="h2l1"> 
 		<div id="h2e11">
 			<a target='_blank' href="http://www.koozali.org"><img src="images/smeserver_logo.jpg" height="40" alt="SME Server"></a>
-		</div>     
+		</div> 
+
+		<div id="h2e22">
+			<a id="help-button" target="_parent" href="manual"><button> ? </button></a>
+		</div>
+    
         <div id="h2e12">
 			<a id="legacy-button" href="/server-manager" target='_blank'><button>Legacy SM</button></a>
         </div>
+		<div id="h2e23">
+			% if ( not defined $c->session->{username} ) {
+				<a target="_parent" href="login"><button class="login-button">Login</button></a>
+			% } else {
+				<a target="_parent" href="logout"><button class="login-button"><%= $c->session->{username} %> Logout</button></a>
+			% }
+		</div>
 		<div id="flag-container">
 			<!-- The flag icon will be inserted here -->
 		</div>
     </div>
-    <div id="h2l2" class="infobar"> 
+	<div id="h2l2" class="infobar"> 
 		<div id="h2e21">
 			<b>
-			<%= session 'SystemName' %>@<%= session 'DomainName' %></b> 
-			</div>
-				<div id="h2e22">
-				  <a target="_parent" href="manual">&nbsp;&nbsp;<b> ? </b>&nbsp;&nbsp;</a>&nbsp;
-			</div>
-			<div id="h2e23">
-		%    if ( not defined $c->session->{username} ) {
-				  <a target="_parent" href="login"><b>Login</b></a>&nbsp;
-		%    } else {
-				  <a target="_parent" href="logout"><b><%= $c->session->{username} %> Logout</b></a>&nbsp;
-		%    }
-			</div>
+				<%= session 'SystemName' %>@<%= session 'DomainName' %></b> 
 		</div>
+		
+		
 	</div>
 </div>
