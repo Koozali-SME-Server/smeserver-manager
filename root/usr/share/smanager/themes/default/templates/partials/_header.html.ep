@@ -3,7 +3,6 @@
     display: flex;                  /* Use flexbox layout */
     justify-content: space-between; /* Space between child elements */
     align-items: center;           /* Center items vertically */
-    padding: 0 20px;               /* Add left and right padding */
 }
 
 #h2e11 {
