@@ -1,4 +1,5 @@
-/* DO NOT MODIFY THIS FILE! It is updated automatically */
+{
+    $OUT = <<'EOF';
 
 /*	smeserver_manager2  */
 
@@ -272,5 +273,7 @@ a.menu-title {
     left: 2px;
 }
 
-/*end*/
 
+/*end*/
+EOF
+}
