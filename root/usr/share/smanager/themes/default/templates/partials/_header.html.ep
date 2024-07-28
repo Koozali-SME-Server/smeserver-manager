@@ -1,26 +1,45 @@
 <style>
 #h2l1 {
-	display: flex;                  /* Use flexbox layout */
-	justify-content: space-between; /* Distribute space between child elements */
-	align-items: center;           /* Vertically center items */
+    display: flex;                  /* Use flexbox layout */
+    justify-content: space-between; /* Space between child elements */
+    align-items: center;           /* Center items vertically */
+    padding: 0 20px;               /* Add left and right padding */
 }
 
 #h2e11 {
-	flex: 1;                       /* Allow the first div to take available space on the left */
+    flex: 1;                       /* Allow the first div to take available space on the left */
 }
 
-#h2e12 {
-	display: flex;                 /* Set the second div as flex container */
-	align-items: center;          /* Center the content vertically */
-	margin-left: 20px;            /* Add margin to the left of the second div */
+#h2e12 { 
+    display: flex;                 /* Make this div a flex container */
+    align-items: center;           /* Vertically center content in this div */
+    margin-left: 20px;            /* Add margin to the left of this div */
 }
 
 #flag-container {
-	margin-left: 20px;            /* Add margin to the left of the third div */
-	margin-right:5px;
-	
-#flag-icon {
-    font-size: 21px;
+    display: flex;                 /* Make this div a flex container */
+    align-items: center;           /* Vertically center content in this div */
+    margin-left: 20px;             /* Add margin to the left of the flag container */
+    padding-right: 20px;           /* Add padding to the right side of the flag container */
+}
+
+.flag-icon {
+    width: 43px;
+    font-size: 20px;
+}
+
+#legacy-button button {
+    background-color: #98d36e; /* Button background color */
+    font-weight: bold;         /* Bold text for the button */
+    color: #063;               /* Button text color */
+    padding: 5px 10px;         /* Padding for the button */
+    border: none;              /* Remove default button border */
+    border-radius: 4px;        /* Rounded corners for button */
+    cursor: pointer;           /* Change cursor on hover */
+}
+
+#legacy-button button:hover {
+    background-color: #82c961; /* Change color on hover */
 }
 
 </style>
@@ -30,8 +49,8 @@
 		<div id="h2e11">
 			<a target='_blank' href="http://www.koozali.org"><img src="images/smeserver_logo.jpg" height="40" alt="SME Server"></a>
 		</div>     
-        <div id="h2e12" style="float:right;">
-			<br><a href="/server-manager" target='_blank'><button style="background-color:#98d36e;font-weight:bold;color:#063;">Legacy SM</button></a>
+        <div id="h2e12">
+			<a id="legacy-button" href="/server-manager" target='_blank'><button>Legacy SM</button></a>
         </div>
 		<div id="flag-container">
 			<!-- The flag icon will be inserted here -->
