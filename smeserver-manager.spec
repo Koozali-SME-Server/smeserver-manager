@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 12
+%define release 13
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Jul 28 2024 Brian Read <brianr@koozali.org> 11.0.0-13.sme
+- Fix sysles.css template - overwrote it by mistake [SME: 12706]
+- Also re-organised login and Legacy SM menus and help on top
+
 * Sun Jul 28 2024 Brian Read <brianr@koozali.org> 11.0.0-12.sme
 - correct positio of flag-icon [SME: 12706]
 
