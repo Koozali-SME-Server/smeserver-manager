@@ -230,14 +230,6 @@ hr.sme-copyrightbar {
     font-size: 10px; 
 }
 
-#flag-icon {
-    font-size: 20px;
-    float: right;
-    margin-top: 0.67em;
-    margin-right: 1%;
-}
-
-
 /*These style definitions were found int he old css file (manager.css)
 but don't seem to ever be referenced in the code.  They're here
 for reference.

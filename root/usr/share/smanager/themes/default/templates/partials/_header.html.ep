@@ -1,3 +1,30 @@
+<style>
+#h2l1 {
+	display: flex;                  /* Use flexbox layout */
+	justify-content: space-between; /* Distribute space between child elements */
+	align-items: center;           /* Vertically center items */
+}
+
+#h2e11 {
+	flex: 1;                       /* Allow the first div to take available space on the left */
+}
+
+#h2e12 {
+	display: flex;                 /* Set the second div as flex container */
+	align-items: center;          /* Center the content vertically */
+	margin-left: 20px;            /* Add margin to the left of the second div */
+}
+
+#flag-container {
+	margin-left: 20px;            /* Add margin to the left of the third div */
+	margin-right:5px;
+	
+#flag-icon {
+    font-size: 21px;
+}
+
+</style>
+
 <div id="header2" class="hd2">
     <div id="h2l1"> 
 		<div id="h2e11">
