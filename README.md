@@ -27,10 +27,10 @@ It is based on the perl Mojolicious package. Mojolicious is a real-time web fram
 smeserver-manager provides an intuitive and user-friendly web interface that allows administrators to manage various aspects of the server without needing deep technical knowledge or command-line skills.
 
 #### User and Group Management:
-Easily add, remove, and manage user accounts and groups. The interface simplifies creating email accounts, setting passwords, and configuring user permissions.
+It allows you to easily add, remove, and manage user accounts and groups. The interface simplifies creating email accounts, setting passwords, and configuring user permissions.
 
 #### Network Configuration:
-Configures network settings such as IP addresses, DNS, DHCP, and gateway settings. The interface also provides options for setting up VPNs, remote access, and firewall rules.
+You can configures network settings such as IP addresses, DNS, DHCP, and gateway settings. The interface also provides options for setting up VPNs, remote access, and firewall rules.
 
 #### File Sharing and Storage:
 Enables and manages file sharing services like Samba (for Windows file sharing) and NFS (for Unix/Linux file sharing). Administrators can easily create shared folders and manage permissions.
