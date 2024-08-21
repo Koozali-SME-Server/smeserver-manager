@@ -488,7 +488,7 @@ sub do_yum {
     }
 
     esmith::util::backgroundCommand(0,
-        "/sbin/e-smith/signal-event", "DNF-$function");
+        "/sbin/e-smith/signal-event", "dnf-$function");
 
     for ( qw(available installed updates) ) {
 	$dbs{$_}->reload;
