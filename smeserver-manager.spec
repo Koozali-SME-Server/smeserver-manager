@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 14
+%define release 15
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,8 +108,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Aug 21 2024 Brian Read <brianr@koozali.org> 11.0.0-15.sme
+- Migrate SM2 Software installer panel from use of yum to dnf [SME: 12718]
+
 * Sun Jul 28 2024 Brian Read <brianr@koozali.org> 11.0.0-14.sme
-- fix [SME: ]
+- Version skipped due to operator error! [SME: <none> ]
 
 * Sun Jul 28 2024 Brian Read <brianr@koozali.org> 11.0.0-13.sme
 - Fix sysles.css template - overwrote it by mistake [SME: 12706]

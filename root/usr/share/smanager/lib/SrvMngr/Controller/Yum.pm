@@ -29,8 +29,8 @@ our %dbs;
 
 for ( qw(available installed updates) )
 {
-    $dbs{$_} = esmith::ConfigDB->open_ro("yum_$_") or
-	die "Couldn't open yum_$_ DB\n";
+    $dbs{$_} = esmith::ConfigDB->open_ro("dnf_$_") or
+	die "Couldn't open dnf_$_ DB\n";
 }
 
 for ( qw(repositories) )
@@ -55,7 +55,7 @@ sub main {
     if ( -e "/var/run/yum.pid" ) {
 	$yum_datas{'trt'} = 'LOGF';
 	$dest = 'yumlogfile';
-    } elsif ($cdb->get_prop('yum', 'LogFile')) {
+    } elsif ($cdb->get_prop('dnf', 'LogFile')) {
 	$yum_datas{'trt'} = 'PSTU';
 	$yum_datas{'reconf'} = $cdb->get_value('UnsavedChanges', 'yes');
 	$dest = 'yumpostupg';
@@ -85,7 +85,7 @@ sub do_display {
     # force $trt if current logfile
     if ( -e "/var/run/yum.pid" ) {
 	$trt = 'LOGF';
-    } elsif ($cdb->get_prop('yum', 'LogFile')) {
+    } elsif ($cdb->get_prop('dnf', 'LogFile')) {
 	$trt = 'PSTU';
     }
 
@@ -112,7 +112,7 @@ sub do_display {
 	}
 	
         if ( $trt eq 'PSTU') {
-	    if ($cdb->get_prop('yum', 'LogFile')) {
+	    if ($cdb->get_prop('dnf', 'LogFile')) {
 		$dest = 'yumpostupg';
 		$yum_datas{'reconf'} = $cdb->get_value('UnsavedChanges', 'yes');
 	    }
@@ -289,7 +289,7 @@ sub package_functions_enabled {
 
     my ($c) = @_;
 
-    return ($cdb->get_prop("yum", "PackageFunctions") eq "enabled");
+    return ($cdb->get_prop("dnf", "PackageFunctions") eq "enabled");
 
 }
 
@@ -298,7 +298,7 @@ sub get_status {
 
     my ($c, $prop, $localise) = @_;
 
-    my $status = $cdb->get_prop("yum", $prop) || 'disabled';
+    my $status = $cdb->get_prop("dnf", $prop) || 'disabled';
 
     return $status unless $localise;
 
@@ -433,7 +433,7 @@ sub change_settings {
 			PackageFunctions
             	) )
     {
-	$cdb->set_prop('yum', $param, $c->param("yum_$param"));
+	$cdb->set_prop("dnf", $param, $c->param("yum_$param"));
     }
 
     my $check4updates = $c->param("yum_check4updates");
@@ -441,21 +441,21 @@ sub change_settings {
 
     if ($check4updates ne 'disabled') { $status = 'enabled'; }
 
-    $cdb->set_prop('yum', 'check4updates', $check4updates);
+    $cdb->set_prop("dnf", 'check4updates', $check4updates);
 
     my $deltarpm = $c->param("yum_DeltaRpmProcess");
-    $cdb->set_prop('yum', 'DeltaRpmProcess', $deltarpm);
+    $cdb->set_prop("dnf", 'DeltaRpmProcess', $deltarpm);
 
     my $downloadonly = $c->param("yum_DownloadOnly");
     if ($downloadonly ne 'disabled') { $status = 'enabled'; }
 
-    $cdb->set_prop('yum', 'DownloadOnly', $downloadonly);
+    $cdb->set_prop("dnf", 'DownloadOnly', $downloadonly);
 
     my $AutoInstallUpdates = $c->param("yum_AutoInstallUpdates");
     if ($AutoInstallUpdates ne 'disabled') { $status = 'enabled'; }
 
-    $cdb->set_prop('yum', 'AutoInstallUpdates', $AutoInstallUpdates);
-    $cdb->set_prop('yum', 'status', $status);
+    $cdb->set_prop("dnf", 'AutoInstallUpdates', $AutoInstallUpdates);
+    $cdb->set_prop("dnf", 'status', $status);
 
     my %selected = map {$_ => 1} @{$c->every_param('SelectedRepositories')};
 
@@ -469,7 +469,7 @@ sub change_settings {
 
     $dbs{repositories}->reload;
 
-    unless ( system( "/sbin/e-smith/signal-event", "yum-modify" ) == 0 )
+    unless ( system( "/sbin/e-smith/signal-event", "dnf-modify" ) == 0 )
     {
 	return $c->l('yum_ERROR_UPDATING_CONFIGURATION');
     }
@@ -484,11 +484,11 @@ sub do_yum {
 
     for ( qw(SelectedGroups SelectedPackages) )
     {
-	$cdb->set_prop("yum", $_, join(',', (@{$c->every_param($_)} )));
+	$cdb->set_prop("dnf", $_, join(',', (@{$c->every_param($_)} )));
     }
 
     esmith::util::backgroundCommand(0,
-        "/sbin/e-smith/signal-event", "yum-$function");
+        "/sbin/e-smith/signal-event", "DNF-$function");
 
     for ( qw(available installed updates) ) {
 	$dbs{$_}->reload;
@@ -517,7 +517,7 @@ sub format_yum_log {
 
     $cdb->reload;
 
-    my $filepage = $cdb->get_prop('yum', 'LogFile');
+    my $filepage = $cdb->get_prop('dnf', 'LogFile');
     return '' unless $filepage and ( -e "$filepage" );
 
     my $out = sprintf "<PRE>";
@@ -537,7 +537,7 @@ sub post_upgrade_reboot {
 
     my $c = shift;
 
-    $cdb->get_prop_and_delete('yum', 'LogFile');
+    $cdb->get_prop_and_delete('dnf', 'LogFile');
     $cdb->reload;
 
     if (fork == 0) {
@@ -552,7 +552,7 @@ sub post_upgrade_reboot {
 sub show_yum_log {
     my $c = shift;
     my $out = $c->format_yum_log();
-    my $yum_log = $cdb->get_prop_and_delete('yum', 'LogFile');
+    my $yum_log = $cdb->get_prop_and_delete('dnf', 'LogFile');
     return $out;
 }
 
