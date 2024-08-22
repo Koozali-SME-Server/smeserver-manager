@@ -47,9 +47,9 @@
 
     	%=  hidden_field 'trt' => 'INST'
 	<br><br>
-    <div class='center'>
+    <!-- <div class='center'>-->
 	%= submit_button $c->l('yum_INSTALL_SOFTWARE'), class => 'action'
-    </div>
+    <!--</div>-->
 
     % end
 

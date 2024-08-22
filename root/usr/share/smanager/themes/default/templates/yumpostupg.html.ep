@@ -34,9 +34,9 @@
     	%=  hidden_field 'trt' => 'PSTU'
     	%=  hidden_field 'reconf' => $yum_datas->{reconf}
 	<br>
-    <div class='center'>
+    <!-- <div class='center'>-->
 	%= submit_button "$btn", class => 'action'
-    </div>
+    <!--</div>-->
 
     % end
 

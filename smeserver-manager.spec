@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 16
+%define release 17
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Aug 22 2024 Brian Read <brianr@koozali.org> 11.0.0-17.sme
+- Left Align Software Install panels Submit button [SME: 12727]
+
 * Wed Aug 21 2024 Brian Read <brianr@koozali.org> 11.0.0-16.sme
 - Typo uc DNF changed to lc dnf in Yum.pm [SME: 127245]
 - Monitor dnf running using dnf status file 

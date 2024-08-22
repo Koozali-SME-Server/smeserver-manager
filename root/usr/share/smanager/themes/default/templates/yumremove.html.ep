@@ -46,9 +46,9 @@
 
     	%=  hidden_field 'trt' => 'REMO'
 	<br>
-    <div class='center'>
+    <!--<div class='center'>-->
 	%= submit_button $c->l('REMOVE'), class => 'action'
-    </div>
+    <!--</div>-->
 
     % end
 

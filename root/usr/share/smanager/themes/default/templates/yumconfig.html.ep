@@ -79,9 +79,9 @@
 
     	%=  hidden_field 'trt' => 'CONF'
 	<br>
-    <div class='center'>
+    <!--<div class='center'>-->
 	%= submit_button $c->l('SAVE'), class => 'action'
-    </div>
+    <!--</div>-->
 
     % end
 
