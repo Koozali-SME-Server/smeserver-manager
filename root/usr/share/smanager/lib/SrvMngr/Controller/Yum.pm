@@ -23,6 +23,8 @@ use File::Basename;
 
 our $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
 
+my $dnf_status_file  = '/var/cache/dnf/dnf.status';
+
 #use File::stat;
 
 our %dbs;
@@ -52,7 +54,8 @@ sub main {
 
     $yum_datas{'trt'} = 'STAT';
 
-    if ( -e "/var/run/yum.pid" ) {
+   
+    if ( $c->is_dnf_running()) {
 	$yum_datas{'trt'} = 'LOGF';
 	$dest = 'yumlogfile';
     } elsif ($cdb->get_prop('dnf', 'LogFile')) {
@@ -83,7 +86,7 @@ sub do_display {
     $yum_datas{'trt'} = $trt;
 
     # force $trt if current logfile
-    if ( -e "/var/run/yum.pid" ) {
+    if ( $c->is_dnf_running() ) {
 	$trt = 'LOGF';
     } elsif ($cdb->get_prop('dnf', 'LogFile')) {
 	$trt = 'PSTU';
@@ -106,7 +109,7 @@ sub do_display {
 	}
 
         if ( $trt eq 'LOGF' ) {
-	    if (-e "/var/run/yum.pid") {
+	    if ($c->is_dnf_running()) {
 	    $dest = 'yumlogfile';
 	    }
 	}
@@ -221,7 +224,7 @@ sub do_update {
     if ( $trt eq 'LOGF' ) {
 
     	$dest = 'yumlogfile';
-        if ( ! -e "/var/run/yum.pid") {
+        if ( ! $c->is_dnf_running()) {
 	    $yum_datas{trt} = 'SUC';
 	    $result = $c->l('yum_SUCCESS');
         }
@@ -247,6 +250,24 @@ sub do_update {
 
 };
 
+sub get_dnf_status {
+    #interrogate status file created and maintained by smeserver.py plugin for dnf.
+    my ($c) = @_;
+    my $file_name = $dnf_status_file;
+    my $content = "resolved";
+    if ( -e "$file_name") {
+	open my $fh, '<', $file_name or die "Can't open file: $!";
+	$content = <$fh>;
+	close $fh;
+    }
+    return $content;
+}
+
+sub is_dnf_running {
+    my ($c) = @_;
+    my $dnf_status = $c->get_dnf_status();
+    return $dnf_status ne "resolved" && $dnf_status ne "config" && $dnf_status ne "sack";
+}
 
 sub is_empty {
 

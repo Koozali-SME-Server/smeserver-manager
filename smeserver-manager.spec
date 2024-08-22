@@ -110,6 +110,7 @@ true
 %changelog
 * Wed Aug 21 2024 Brian Read <brianr@koozali.org> 11.0.0-16.sme
 - Typo uc DNF changed to lc dnf in Yum.pm [SME: 127245]
+- Monitor dnf running using dnf status file 
 
 * Wed Aug 21 2024 Brian Read <brianr@koozali.org> 11.0.0-15.sme
 - Migrate SM2 Software installer panel from use of yum to dnf [SME: 12718]
