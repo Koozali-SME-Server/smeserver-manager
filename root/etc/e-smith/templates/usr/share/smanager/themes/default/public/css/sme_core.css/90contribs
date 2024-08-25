@@ -67,5 +67,21 @@ hr.sme-copyrightbar {
 color: #8ebe43;
 background-color: #8ebe43;
     }
+      
+/* flag container no flag */
+#flag-container span {
+  font-size: 24px;
+}
+
+.fallback-box {
+  display: inline-block; /* Make it inline-block to fit around the content */
+  border: 2px solid gray; /* Change the border color as desired */
+  padding: 10px; /* Add some padding */
+  border-radius: 10px; /* Round the corners of the box */
+  font-size: 60px; /* Adjust size if needed */
+  margin-top: 10px; /* Add some margin */
+  text-align: center; /* Center text inside the box */
+}
+
 HERE
 }

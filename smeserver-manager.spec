@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 17
+%define release 18
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Aug 25 2024 Brian Read <brianr@koozali.org> 11.0.0-18.sme
+- Move flag to emojii from downloaded jpg. Fix singleton locale issue[SME: 12706]
+
 * Thu Aug 22 2024 Brian Read <brianr@koozali.org> 11.0.0-17.sme
 - Left Align Software Install panels Submit button [SME: 12727]
 
