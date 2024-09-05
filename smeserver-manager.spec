@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 18
+%define release 19
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Sep 05 2024 Brian Read <brianr@koozali.org> 11.0.0-19.sme
+- Add in mojo plugin WithoutCache [SME: 12695]
+
 * Sun Aug 25 2024 Brian Read <brianr@koozali.org> 11.0.0-18.sme
 - Move flag to emojii from downloaded jpg. Fix singleton locale issue[SME: 12706]
 

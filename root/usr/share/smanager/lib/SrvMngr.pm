@@ -25,6 +25,7 @@ use SrvMngr::Plugin::I18N;
 use SrvMngr::I18N;
 use SrvMngr::Model::Main;
 
+use SrvMngr::Plugin::WithoutCache;
 
 our $VERSION = '1.420';
 $VERSION = eval $VERSION;
@@ -210,6 +211,8 @@ sub setup_plugins {
     $self->plugin('TagHelpers');
 
     $self->plugin('RenderFile');
+    
+    $self->plugin('SrvMngr::Plugin::WithoutCache');
 
     # CSRF protection if production mode
 #    $self->plugin('Mojolicious::Plugin::CSRFDefender' => {
