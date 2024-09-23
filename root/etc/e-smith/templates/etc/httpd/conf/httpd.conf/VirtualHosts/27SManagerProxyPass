@@ -40,5 +40,10 @@
             $OUT .= "        Require ip $localAccess $externalSSLAccess\n";
         }
         $OUT .= "    </Location>\n";
+        # prevent caching of manager files in browser
+        $OUT .= "   <LocationMatch \"/$place/.+\.(html|cgi)\$\">\n";
+        $OUT .= "                   Header set Cache-Control no-store\n";
+        $OUT .= "   </LocationMatch>\n";
+
     }
 }

@@ -395,19 +395,16 @@ sub get_current_webmail_status {
   # determine status of webmail
   my $WebmailStatus = "disabled";
 
-  my $IMPStatus = $cdb->get_prop('imp', 'status') || 'disabled';
-
-  my $HordeStatus = $cdb->get_prop('horde', 'status') || 'disabled';
+  my $RoundcubeStatus = $cdb->get_prop('roundcube', 'status') || 'disabled';
 
   my $MysqlStatus = $cdb->get_prop('mariadb', 'status') || 'disabled';
 
-  my $PHPStatus = $cdb->get_prop('php', 'status') || 'disabled';
+  my $PHPStatus = $cdb->get_prop('php81', 'status') || 'disabled';
 
-  my $Networkaccess = $cdb->get_prop('horde','access') || 'disabled';
+  my $Networkaccess = $cdb->get_prop('roundcube','access') || 'disabled';
 
-  # all four components must be on for webmail to be working
-  if ( ( $IMPStatus eq "enabled" )
-       && ( $HordeStatus eq "enabled" )
+  # all 3 components must be on for webmail to be working
+  if ( ( $RoundcubeStatus eq "enabled" )
        && ( $MysqlStatus eq "enabled" )
        && ( $PHPStatus eq "enabled"   ) 
        && ( $Networkaccess eq "public"))
@@ -415,8 +412,7 @@ sub get_current_webmail_status {
       $WebmailStatus = "enabledSSL";
     }
 
-  elsif ( ( $IMPStatus eq "enabled" )
-       && ( $HordeStatus eq "enabled" )
+  elsif ( ( $RoundcubeStatus eq "enabled" )
        && ( $MysqlStatus eq "enabled" )
        && ( $PHPStatus eq "enabled"   )
        && ( $Networkaccess eq "private" ))
@@ -803,37 +799,27 @@ sub change_settings_access {
 
     my $webmail = ($c->param('WebMail') || 'disabled');
     if ( $webmail eq "enabled" ) {
-      $cdb->set_prop('php', "status", $webmail );
+      $cdb->set_prop('php81', "status", $webmail );
       $cdb->set_prop('mariadb',"status", $webmail );
-      $cdb->set_prop('imp',"status", $webmail );
-      $cdb->set_prop('horde', "status", $webmail );
-      $cdb->set_prop('imp',"access", "full" );
-      $cdb->set_prop('horde',"access", "public" );
-      $cdb->set_prop('horde',"HttpsOnly", "no" );
+      $cdb->set_prop('roundcube',"status", $webmail );
+      $cdb->set_prop('roundcube',"access", "public" );
     }
     elsif ( $webmail eq "enabledSSL" ) {
-      $cdb->set_prop('php',"status", "enabled" );
+      $cdb->set_prop('php81',"status", "enabled" );
       $cdb->set_prop('mariadb',"status", "enabled" );
-      $cdb->set_prop('imp',"status", 'enabled' );
-      $cdb->set_prop('horde',"status", 'enabled' );
-      $cdb->set_prop('imp',"access", "SSL" );
-      $cdb->set_prop('horde',"access", "public" );
-      $cdb->set_prop('horde',"HttpsOnly", "yes" );
+      $cdb->set_prop('roundcube',"status", 'enabled' );
+      $cdb->set_prop('roundcube',"access", "public" );
     }
 
     elsif ( $webmail eq "localnetworkSSL" ) {
-      $cdb->set_prop('php',"status", "enabled" );
+      $cdb->set_prop('php81',"status", "enabled" );
       $cdb->set_prop('mariadb',"status", "enabled" );
-      $cdb->set_prop('imp',"status", 'enabled' );
-      $cdb->set_prop('horde',"status", 'enabled' );
-      $cdb->set_prop('imp',"access", "SSL" );
-      $cdb->set_prop('horde',"access", "private" );
-      $cdb->set_prop('horde',"HttpsOnly", "yes" );
+      $cdb->set_prop('roundcube',"status", 'enabled' );
+      $cdb->set_prop('roundcube',"access", "private" );
      }
 
     else {
-      $cdb->set_prop('imp',"status", 'disabled' );
-      $cdb->set_prop('horde',"status", 'disabled' );
+      $cdb->set_prop('roundcube',"status", 'disabled' );
     }
 
     unless ( system( "/sbin/e-smith/signal-event", "email-update" ) == 0 ) {
