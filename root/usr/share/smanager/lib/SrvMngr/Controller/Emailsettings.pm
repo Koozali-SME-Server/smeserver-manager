@@ -503,8 +503,7 @@ sub get_webmail_opt {
 
     return [[ $c->l('DISABLED') => 'disabled' ],
 	    [ $c->l('mai_ENABLED_SECURE_ONLY') => 'enabledSSL' ],
-	    [ $c->l('mai_ONLY_LOCAL_NETWORK_SSL') => 'localnetworkSSL' ],
-	    [ $c->l('mai_ENABLED_BOTH') => 'public' ]];
+	    [ $c->l('mai_ONLY_LOCAL_NETWORK_SSL') => 'localnetworkSSL' ]];
 
 }
 
@@ -515,10 +514,10 @@ sub get_webmail_options {
 
     my %options = ( 
 		disabled   => 'DISABLED', 
-               enabledSSL => 'mai_ENABLED_SECURE_ONLY',
-               localnetworkSSL => 'mai_ONLY_LOCAL_NETWORK_SSL' );
+		enabledSSL => 'mai_ENABLED_SECURE_ONLY',
+		localnetworkSSL => 'mai_ONLY_LOCAL_NETWORK_SSL')
 
-    \%options;
+    return \%options;
 }
 
 
@@ -654,6 +653,7 @@ sub display_multidrop {
 sub change_settings_reception {
 
     my $c = shift;
+    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
 
     my $FetchmailMethod = ( $c->param('FetchmailMethod') || 'standard' );
 
@@ -720,6 +720,7 @@ sub change_settings_reception {
 sub change_settings_delivery {
 
     my ($c) = shift;
+    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
 
     my $EmailUnknownUser = ($c->param('EmailUnknownUser') || 'returntosender');
 
@@ -748,7 +749,8 @@ sub change_settings_delivery {
 sub change_settings_access {
 
     my $c = shift;
-
+	$cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+    
     my $pop3Access = ($c->param('POPAccess') || 'private');
     if ($pop3Access eq 'disabled') {
         $cdb->set_prop('pop3', "status", "disabled" );
@@ -798,13 +800,7 @@ sub change_settings_access {
     #------------------------------------------------------------
 
     my $webmail = ($c->param('WebMail') || 'disabled');
-    if ( $webmail eq "enabled" ) {
-      $cdb->set_prop('php81', "status", $webmail );
-      $cdb->set_prop('mariadb',"status", $webmail );
-      $cdb->set_prop('roundcube',"status", $webmail );
-      $cdb->set_prop('roundcube',"access", "public" );
-    }
-    elsif ( $webmail eq "enabledSSL" ) {
+    if ( $webmail eq "enabledSSL" ) {
       $cdb->set_prop('php81',"status", "enabled" );
       $cdb->set_prop('mariadb',"status", "enabled" );
       $cdb->set_prop('roundcube',"status", 'enabled' );
@@ -833,6 +829,8 @@ sub change_settings_access {
 sub change_settings_filtering {
 
     my $c = shift;
+    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+
 
     my $virus_status = ( $c->param('VirusStatus') || 'disabled' );
     $cdb->set_prop("qpsmtpd", 'VirusScan', $virus_status);

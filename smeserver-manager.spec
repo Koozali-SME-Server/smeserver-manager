@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 20
+%define release 21
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Sep 23 2024 Brian Read <brianr@koozali.org> 11.0.0-21.sme
+- Remove both option for webmail [SME: 12744]
+- Add in re-open DB for portforwarding and email settings.
+
 * Mon Sep 23 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-20.sme
 - webmail switch panel to use roundcube [SME: 12742]
 - prevent browser from caching [SME: 12695]

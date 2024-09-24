@@ -171,9 +171,11 @@ sub add_portforward {
 	#work out which protocol   	
 	my $fdb;
 	if ($proto eq 'TCP') {
+		$tcp_db = esmith::ConfigDB->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
 		$fdb = $tcp_db;
 	}
 	else {
+		$udp_db = esmith::ConfigDB->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
 		$fdb = $udp_db;
 	}
 	#Get the other values 
