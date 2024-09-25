@@ -57,12 +57,14 @@ sub do_display {
 
     $mai_datas{'trt'} = $trt;
 
-        if ( $trt eq 'ACC' ) {
-	    $dest = 'emailaccess';
-	    $mai_datas{fetchmailmethod} = $cdb->get_prop('fetchmail', 'Method');
-        }
+		if ( $trt eq 'ACC' ) 
+    {
+			$dest = 'emailaccess';
+			$mai_datas{fetchmailmethod} = $cdb->get_prop('fetchmail', 'Method');
+    }
 
-        if ( $trt eq 'FIL' ) {
+    if ( $trt eq 'FIL' ) 
+    {
 	    $dest = 'emailfilter';
 	    $mai_datas{'virusstatus'} = $c->get_virus_status();
 	    $mai_datas{'spamstatus'} = $cdb->get_prop('spamassassin', 'status');
@@ -72,9 +74,10 @@ sub do_display {
 	    $mai_datas{spamsortspam} = $cdb->get_prop('spamassassin', 'SortSpam');
 	    $mai_datas{spamsubjecttag} = $cdb->get_prop('spamassassin', 'SubjectTag');
 	    $mai_datas{spamsubject} = $cdb->get_prop('spamassassin', 'Subject');
-        }
+    }
 
-        if ( $trt eq 'REC' ) {
+    if ( $trt eq 'REC' ) 
+    {
 	    $dest = 'emailreceive';
 	    $mai_datas{fetchmailmethod} = $cdb->get_prop('fetchmail', 'Method');
 	    $mai_datas{freqoffice} = $cdb->get_prop('fetchmail', 'FreqOffice');
@@ -86,9 +89,10 @@ sub do_display {
 	    $mai_datas{specifyheader} = get_secondary_mail_use_envelope();
 	    $mai_datas{secondarymailenvelope} = $cdb->get_prop('fetchmail', 'SecondaryMailEnvelope');
 
-	}
+    }
 
-        if ( $trt eq 'DEL' ) {
+    if ( $trt eq 'DEL' ) 
+    {
 	    $dest = 'emaildeliver';
 	    $mai_datas{emailunknownuser} = $cdb->get_value('EmailUnknownUser') || '"returntosender';
 	    $mai_datas{delegatemailserver} = $cdb->get_value('DelegateMailServer');
@@ -96,7 +100,7 @@ sub do_display {
 	    $mai_datas{smtpauthproxystatus} = $cdb->get_prop('smtp-auth-proxy', 'status') || 'disabled';
 	    $mai_datas{smtpauthproxyuserid} = $cdb->get_prop('smtp-auth-proxy', 'Userid') || '';
 	    $mai_datas{smtpauthproxypassword} = $cdb->get_prop('smtp-auth-proxy', 'Passwd') || '';
-	}
+    }
 
 
     $c->stash( title => $title, notif => $notif, mai_datas => \%mai_datas );
@@ -120,98 +124,107 @@ sub do_update {
 
     my ($dest, $res, $result) = '';
 
-    if ( $trt eq 'ACC' ) {
+    if ( $trt eq 'ACC' ) 
+    {
+     	$dest = 'emailaccess';
+			#	$mai_datas{xxx}	= $c->param('XXX');
+			
+			# controls
+			#	$res = xxxxxxx( $c );
+			#	$result .= $res unless $res eq 'OK';
 
-	$dest = 'emailaccess';
-#	$mai_datas{xxx}	= $c->param('XXX');
+			if ( ! $result ) 
+			{
+	    	$res = $c->change_settings_access();
+	    	$result .= $res unless $res eq 'OK';
+	    	if ( ! $result ) 
+				{ 
+					$result = $c->l('mai_SUCCESS'); 
+    		}
+			}
+   	}
 
-	# controls
-#	$res = xxxxxxx( $c );
-#	$result .= $res unless $res eq 'OK';
+    if ( $trt eq 'FIL' ) 
+			{
+			$dest = 'emailfilter';
+			#	$mai_datas{xxx}	= $c->param('XXX');
+			
+			# controls
+			#	$res = zzzzzz( $c );
+			#	$result .= $res unless $res eq 'OK';
 
-	if ( ! $result ) {
-	    $res = $c->change_settings_access();
-	    $result .= $res unless $res eq 'OK';
-	    if ( ! $result ) { 
-		$result = $c->l('mai_SUCCESS'); 
-	    }
-	}
-    }
+			if ( ! $result ) 
+			{
+	    	$res = $c->change_settings_filtering();
+	    	$result .= $res unless $res eq 'OK';
+	    	if ( ! $result ) 
+				{ 
+					$result = $c->l('mai_SUCCESS'); 
+    		}
+			}
+   	}
 
-    if ( $trt eq 'FIL' ) {
+    if ( $trt eq 'REC' ) 
+		{
+			$dest = 'emailreceive';
+			#	$mai_datas{xxx}	= $c->param('XXX');
+			
+			# controls
+			#	$res = yyyyyyyyy( $c );
+			#	$result .= $res unless $res eq 'OK';
 
-	$dest = 'emailfilter';
-#	$mai_datas{xxx}	= $c->param('XXX');
+			if ( ! $result ) 
+			{
+	    	$res = $c->change_settings_reception();
+	    	$result .= $res unless $res eq 'OK';
+	    	if ( ! $result ) 
+				{ 
+					$result = $c->l('mai_SUCCESS'); 
+    		}
+			}
+   	}
 
-	# controls
-#	$res = zzzzzz( $c );
-#	$result .= $res unless $res eq 'OK';
+    if ( $trt eq 'DEL' ) 
+		{
+			$dest = 'emaildeliver';
+			#	$mai_datas{xxx}	= $c->param('XXX');
+			
+			# controls
+			$res = $c->ip_number_or_blank( $c->param('DelegateMailServer') );
+			$result .= $res . ' DMS <br>' unless $res eq 'OK';
 
-	if ( ! $result ) {
-	    $res = $c->change_settings_filtering();
-	    $result .= $res unless $res eq 'OK';
-	    if ( ! $result ) { 
-		$result = $c->l('mai_SUCCESS'); 
-	    }
-	}
-    }
+			$res = $c->validate_smarthost( $c->param('SMTPSmartHost') );
+			$result .= $res . ' SH <br>' unless $res eq 'OK';
 
-    if ( $trt eq 'REC' ) {
+			$res = $c->nonblank_if_smtpauth( $c->param('SMTPSmartHost') );
+			$result .= $res . ' SH <br>' unless $res eq 'OK';
 
-	$dest = 'emailreceive';
-#	$mai_datas{xxx}	= $c->param('XXX');
+			$res = $c->nonblank_if_smtpauth( $c->param('SMTPAUTHPROXY_Userid') );
+			$result .= $res . ' USR <br>' unless $res eq 'OK';
 
-	# controls
-#	$res = yyyyyyyyy( $c );
-#	$result .= $res unless $res eq 'OK';
+			$res = $c->nonblank_if_smtpauth( $c->param('SMTPAUTHPROXY_Passwd') );
+			$result .= $res . ' PWD <br>' unless $res eq 'OK';
 
-	if ( ! $result ) {
-	    $res = $c->change_settings_reception();
-	    $result .= $res unless $res eq 'OK';
-	    if ( ! $result ) { 
-		$result = $c->l('mai_SUCCESS'); 
-	    }
-	}
-    }
-
-    if ( $trt eq 'DEL' ) {
-
-	$dest = 'emaildeliver';
-#	$mai_datas{xxx}	= $c->param('XXX');
-
-	# controls
-	$res = $c->ip_number_or_blank( $c->param('DelegateMailServer') );
-	$result .= $res . ' DMS <br>' unless $res eq 'OK';
-
-	$res = $c->validate_smarthost( $c->param('SMTPSmartHost') );
-	$result .= $res . ' SH <br>' unless $res eq 'OK';
-
-	$res = $c->nonblank_if_smtpauth( $c->param('SMTPSmartHost') );
-	$result .= $res . ' SH <br>' unless $res eq 'OK';
-
-	$res = $c->nonblank_if_smtpauth( $c->param('SMTPAUTHPROXY_Userid') );
-	$result .= $res . ' USR <br>' unless $res eq 'OK';
-
-	$res = $c->nonblank_if_smtpauth( $c->param('SMTPAUTHPROXY_Passwd') );
-	$result .= $res . ' PWD <br>' unless $res eq 'OK';
-
-	if ( ! $result ) {
-	    $res = $c->change_settings_delivery();
-	    $result .= $res unless $res eq 'OK';
-	    if ( ! $result ) { 
-		$result = $c->l('mai_SUCCESS');
-	    }
-	}
-    }
+			if ( ! $result ) 
+			{
+				$res = $c->change_settings_delivery();
+				$result .= $res unless $res eq 'OK';
+				if ( ! $result ) 
+				{ 
+					$result = $c->l('mai_SUCCESS');
+				}
+			}
+		}
 
 
     # common part
 
-    if ($res ne 'OK') {
-	$c->stash( error => $result );
-	$c->stash( title => $title, mai_datas => \%mai_datas );
-	return $c->render( $dest );
-    }
+    if ($res ne 'OK') 
+			{
+			$c->stash( error => $result );
+			$c->stash( title => $title, mai_datas => \%mai_datas );
+			return $c->render( $dest );
+    	}
 
     my $message = "emailsettings updates $trt DONE";
     $c->app->log->info($message);
@@ -399,7 +412,7 @@ sub get_current_webmail_status {
 
   my $MysqlStatus = $cdb->get_prop('mariadb', 'status') || 'disabled';
 
-  my $PHPStatus = $cdb->get_prop('php81', 'status') || 'disabled';
+  my $PHPStatus = $cdb->get_prop('php81-php-fpm', 'status') || 'disabled';
 
   my $Networkaccess = $cdb->get_prop('roundcube','access') || 'disabled';
 
@@ -515,7 +528,7 @@ sub get_webmail_options {
     my %options = ( 
 		disabled   => 'DISABLED', 
 		enabledSSL => 'mai_ENABLED_SECURE_ONLY',
-		localnetworkSSL => 'mai_ONLY_LOCAL_NETWORK_SSL')
+		localnetworkSSL => 'mai_ONLY_LOCAL_NETWORK_SSL');
 
     return \%options;
 }
@@ -749,7 +762,7 @@ sub change_settings_delivery {
 sub change_settings_access {
 
     my $c = shift;
-	$cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+	  $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
     
     my $pop3Access = ($c->param('POPAccess') || 'private');
     if ($pop3Access eq 'disabled') {
@@ -801,14 +814,14 @@ sub change_settings_access {
 
     my $webmail = ($c->param('WebMail') || 'disabled');
     if ( $webmail eq "enabledSSL" ) {
-      $cdb->set_prop('php81',"status", "enabled" );
+      $cdb->set_prop('php81-php-fpm',"status", "enabled" );
       $cdb->set_prop('mariadb',"status", "enabled" );
       $cdb->set_prop('roundcube',"status", 'enabled' );
       $cdb->set_prop('roundcube',"access", "public" );
     }
 
     elsif ( $webmail eq "localnetworkSSL" ) {
-      $cdb->set_prop('php81',"status", "enabled" );
+      $cdb->set_prop('php81-php-fpm',"status", "enabled" );
       $cdb->set_prop('mariadb',"status", "enabled" );
       $cdb->set_prop('roundcube',"status", 'enabled' );
       $cdb->set_prop('roundcube',"access", "private" );
@@ -844,7 +857,7 @@ sub change_settings_filtering {
                         Subject
 			SubjectTag) )
     {
-	$cdb->set_prop('spamassassin', $param, $c->param("Spam$param"));
+	  $cdb->set_prop('spamassassin', $param, $c->param("Spam$param"));
     }
 
     my $patterns_status = $c->adjust_patterns() ? 'enabled' : 'disabled';
@@ -852,7 +865,7 @@ sub change_settings_filtering {
 
     unless ( system( "/sbin/e-smith/signal-event", "email-update" ) == 0 )
     {
-	return $c->l('mai_ERROR_UPDATING_CONFIGURATION');
+	    return $c->l('mai_ERROR_UPDATING_CONFIGURATION');
     }
 
     return 'OK';

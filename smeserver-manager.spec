@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 21
+%define release 22
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -108,6 +108,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Sep 24 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-22.sme
+- fix typos, and tidy tabs [SME: 12744]
+
 * Mon Sep 23 2024 Brian Read <brianr@koozali.org> 11.0.0-21.sme
 - Remove both option for webmail [SME: 12744]
 - Add in re-open DB for portforwarding and email settings.
