@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 23
+%define release 24
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -113,6 +113,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Oct 02 2024 Brian Read <brianr@koozali.org> 11.0.0-24.sme
+- Messed up build - finger trouble [SME: 12753]
+
 * Wed Oct 02 2024 Brian Read <brianr@koozali.org> 11.0.0-23.sme
 - Add release number to footer  [SME: 12753]
 
