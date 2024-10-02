@@ -3,7 +3,7 @@
 <a href="https://mojolicious.org" target="_blank"><img src="images/sme-mojo-logo-white.png" style="position:relative;"></a>
 <font class="sme-copyright">
 %	if ( $c->is_logged_in ) {
-	SME Server <%= session 'releaseVersion' %> - Manager <%= $c->app->VERSION %>
+	SME Server <%= session 'releaseVersion' %>-<%= $c->app->VERSION %> Manager II
 % }
 <br>Copyright 1999-2006 Mitel Corporation<br>
 %= session 'copyRight'

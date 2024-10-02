@@ -27,7 +27,14 @@ use SrvMngr::Model::Main;
 
 use SrvMngr::Plugin::WithoutCache;
 
-our $VERSION = '1.420';
+#this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
+our $VERSION = ''; 
+#Extract the release value
+if ($VERSION =~ /^(\d+)/) {
+    $VERSION = $1;  # $1 contains the matched numeric digits
+} else {
+    $VERSION = '999' #No leading numeric digits found
+}
 $VERSION = eval $VERSION;
 
 use Exporter 'import';

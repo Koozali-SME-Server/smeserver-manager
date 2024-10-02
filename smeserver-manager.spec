@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 22
+%define release 23
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -49,6 +49,11 @@ This RPM contributes the navigation bars for the smeserver-manager. New Mojolici
 %setup
 
 %build
+
+#extract the release number and drop it in to the version for SM2 footer.
+sed -i "s/our \$VERSION = '[^']*'/our \$VERSION = '%{release}'/g" root/usr/share/smanager/lib/SrvMngr.pm
+
+
 perl createlinks
 
 # Force creation of potentially empty directories
@@ -108,6 +113,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Oct 02 2024 Brian Read <brianr@koozali.org> 11.0.0-23.sme
+- Add release number to footer  [SME: 12753]
+
 * Tue Sep 24 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-22.sme
 - fix typos, and tidy tabs [SME: 12744]
 
