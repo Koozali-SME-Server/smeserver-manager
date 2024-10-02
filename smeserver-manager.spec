@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 24
+%define release 25
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -113,6 +113,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Oct 02 2024 Brian Read <brianr@koozali.org> 11.0.0-25.sme
+- Add in cursor change when save/submit pressed to indicate processing [SME: 12748]
+
 * Wed Oct 02 2024 Brian Read <brianr@koozali.org> 11.0.0-24.sme
 - Messed up build - finger trouble [SME: 12753]
 

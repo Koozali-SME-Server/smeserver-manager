@@ -35,6 +35,19 @@
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
 	%= stylesheet '/css/sme-jquery-overrides.css'
+	
+	<style>
+	#busy-indicator {
+		display: none;
+		margin-top: 10px;
+		font-weight: bold;
+		color: red;
+	}
+	.busy {
+		cursor: wait; /* Change the cursor to a 'wait' cursor */
+	}
+	</style>
+
 
 </head>
 
@@ -94,6 +107,22 @@
     % }
 
 %= javascript '/js/sme-dataTable-setup.js'
+
+	<script>
+		$(document).ready(function() {
+			// Handle form submission for any form
+			$('form').on('submit', function(event) {
+				// Disable the submit button
+				$(this).find('button[type="submit"], input[type="submit"]').prop('disabled', true);
+				// Show the busy indicator
+//				$('#busy-indicator').show();
+				
+				// Change the cursor to "wait"
+				$('body').addClass('busy');
+			});
+		});
+	</script>
+
   
 </body>
 </html>
