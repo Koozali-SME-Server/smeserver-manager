@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 25
+%define release 26
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -113,6 +113,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Oct 04 2024 Brian Read <brianr@koozali.org> 11.0.0-26.sme
+- Add in email link to roundcube from user accounts [SME: 12751]
+
 * Wed Oct 02 2024 Brian Read <brianr@koozali.org> 11.0.0-25.sme
 - Add in cursor change when save/submit pressed to indicate processing [SME: 12748]
 
