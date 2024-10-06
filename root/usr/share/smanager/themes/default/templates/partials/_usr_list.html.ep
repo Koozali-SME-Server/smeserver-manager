@@ -86,7 +86,7 @@
 				<%= $c->render_to_string(inline => $actionLock) %>
 				<%= $c->render_to_string(inline => $actionRemove) %>
 %#				<a href="<%= "https://sme11.thereadclan.me.uk/" %>roundcube?_user=<%= $username %>"><button class="sme-email-button" title="<%= l('EMAIL') %>"><%= l('EMAIL') %></button></a>
-				<a href="<%= "legacypanel/?url=https://".$thisdomain."/" %>roundcube?_user=<%= $username %>"><button class="sme-email-button" title="<%= l('EMAIL') %>"><%= l('EMAIL') %></button></a>
+				<a href="<%= "roundcubepanel/?url=https://".$thisdomain."/" %>roundcube?_user=<%= $username %>"><button class="sme-email-button" title="<%= l('EMAIL') %>"><%= l('EMAIL') %></button></a>
     	    </td>
     	</tr>
     %    }

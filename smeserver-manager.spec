@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 26
+%define release 27
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -113,6 +113,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Oct 06 2024 Brian Read <brianr@koozali.org> 11.0.0-27.sme
+- Add in change to _user_list.html.ep for access to roundcube email from useraccounts [SME: 12751]
+
 * Fri Oct 04 2024 Brian Read <brianr@koozali.org> 11.0.0-26.sme
 - Add in email link to roundcube from user accounts [SME: 12751]
 
