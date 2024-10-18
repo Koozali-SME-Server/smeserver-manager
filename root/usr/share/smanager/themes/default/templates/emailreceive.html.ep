@@ -1,12 +1,17 @@
 % layout 'default', title => "Sme server 2 - emailreceive";
 
 % content_for 'module' => begin
+
+% use constant FALSE => 0;
+% use constant TRUE  => 1;
+
 <div id='module' class='module emailreceive-panel'>
 
     % if ($config->{debug} == 1) {
 	<p>
 	%= dumper $c->current_route
 	%= dumper $mai_datas
+	%= dumper $c->param('SMTPAuth')
 	</p>
     % }
 
@@ -26,16 +31,65 @@
 	%=l 'mai_LABEL_MODE'
 	</span><span class=input>
 	% param 'FetchmailMethod' => $mai_datas->{fetchmailmethod} unless param 'FetchmailMethod';
+<!--
+	<pre>
+		%= dumper $mai_datas->{fetchmailmethod}
+		%= dumper $c->get_retrieval_opt()
+		%= param 'FetchmailMethod'
+	</pre>
+-->
 	%= select_field 'FetchmailMethod' => $c->get_retrieval_opt(), class => 'input'
 	</span></p>
 
-	%=l 'mai_DESC_SMTP_AUTH_CONTROL'
+	%#=l 'mai_DESC_SMTP_AUTH_CONTROL'
+	<br />
+	%= l "SMTP port (25) main purpose is to receive emails from another server, STARTTLS is always offered, but auth if offered is only if STARTTLS is also used by client."
+	<br />
+	%= l "SMTPS port (465) will require implicit SSL/TLS then authenticate to send."
+	<br />
+	%= l "SMTP Submission port (587) will require STARTTLS, then authenticate to send."
+	<br />
 
+	% my $smtp_mesg=l('SMTP port %u allow client to authenticate:');
 	<p><span class=label>
-	%=l 'mai_LABEL_SMTP_AUTH_CONTROL'
+		%= sprintf($smtp_mesg,$c->get_db_prop('qpsmtpd','TCPPort',25)); 
 	</span><span class=input>
-    	% param 'SMTPAuth' => $c->get_current_smtp_auth() unless param 'SMTPAuth';
-	%= select_field 'SMTPAuth' => $c->get_smtp_auth_opt(), class => 'input'
+    	% param 'SMTPAuth' => $c->get_current_smtp_auth( FALSE ) unless param 'SMTPAuth';
+<!--
+	<pre>
+		%= dumper $c->get_smtp_auth_opt()
+		%= dumper $c->get_current_smtp_auth(FALSE)
+		%= dumper $c->get_db_prop("qpsmtpd","Authentication")
+		%= param 'SMTPAuth'
+	</pre>
+-->
+		%= select_field 'SMTPAuth' => $c->get_smtp_auth_opt(), class => 'input'
+	</span></p>
+
+	% my $smtp_mesg=l('SMTPS SSL/TLS auth: port %u status:');
+	<p><span class=label>
+		%= sprintf($smtp_mesg,$c->get_db_prop('sqpsmtpd','TCPPort',465)); 
+	</span><span class=input>
+		% param 'sSMTPAuth' => $c->get_current_smtp_ssl_auth(FALSE,'s', TRUE) unless param 'sSMTPAuth';
+	
+		%= select_field 'sSMTPAuth' => $c->get_smtp_ssl_auth_opt(), class => 'input'
+	</span></p>
+
+	%my $smtp_mesg=l('Submission port %u status:');
+	<p><span class=label>
+		%= sprintf($smtp_mesg,$c->get_db_prop('uqpsmtpd','TCPPort',587)); 
+	</span><span class=input>
+    	% param 'uSMTPAuth' => $c->get_current_smtp_ssl_auth(FALSE,'u', TRUE) unless param 'uSMTPAuth';
+<!--
+	<pre>
+		%= dumper $c->get_smtp_ssl_auth_opt()
+		%= dumper $c->get_current_smtp_ssl_auth(FALSE,'s', TRUE)
+		%= dumper $c->get_current_smtp_ssl_auth(FALSE,'u', TRUE)
+		%= dumper $c->get_db_prop("uqpsmtpd","access")
+		%= param 'uSMTPAuth'
+	</pre>
+-->
+	%= select_field 'uSMTPAuth' => $c->get_smtp_ssl_auth_opt(), class => 'input'
 	</span></p>
 
 	<hr class="sectionbar" />
