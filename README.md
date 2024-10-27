@@ -13,7 +13,7 @@ SMEServer Koozali developed git repo for smeserver-manager smeserver
 <br />https://wiki.koozali.org/Server_Manager_2_Howto_incorporate_a_legacy_contrib
 
 ## Bugzilla
-Show list of outstanding bugs: [here](https://bugs.koozali.org/buglist.cgi?component=smeserver-manager&product=SME%20Server%2010.X&query_format=advanced&limit=0&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&bug_status=CONFIRMED)
+Show list of outstanding bugs: [here](https://bugs.koozali.org/buglist.cgi?quicksearch=smeserver-manager)
 
 ## Description
 
