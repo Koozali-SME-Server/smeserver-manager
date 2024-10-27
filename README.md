@@ -13,7 +13,14 @@ SMEServer Koozali developed git repo for smeserver-manager smeserver
 <br />https://wiki.koozali.org/Server_Manager_2_Howto_incorporate_a_legacy_contrib
 
 ## Bugzilla
-Show list of outstanding bugs: [here](https://bugs.koozali.org/buglist.cgi?quicksearch=smeserver-manager)
+Show list of outstanding bugs:
+[All](https://bugs.koozali.org/buglist.cgi?action=wrap&bug_status=UNCONFIRMED&bug_status=CONFIRMED&bug_status=NEEDINFO&bug_status=IN_PROGRESS&bug_status=RESOLVED&bug_status=VERIFIED&cf_package=smeserver-manager&classification=SME+Server&list_id=105756&order=changeddate+DESC%2Ccomponent%2Cpriority%2Cbug_severity&query_format=advanced)  
+[Confirmed](https://bugs.koozali.org/buglist.cgi?action=wrap&bug_status=CONFIRMED&cf_package=smeserver-manager&classification=SME+Server&order=changeddate+DESC%2Ccomponent%2Cpriority%2Cbug_severity&query_format=advanced)  
+[Unconfirmed](https://bugs.koozali.org/buglist.cgi?action=wrap&bug_status=UNCONFIRMED&cf_package=smeserver-manager&classification=SME+Server&order=changeddate+DESC%2Ccomponent%2Cpriority%2Cbug_severity&query_format=advanced)  
+[Need info](https://bugs.koozali.org/buglist.cgi?action=wrap&bug_status=NEEDINFO&cf_package=smeserver-manager&classification=SME+Server&order=changeddate+DESC%2Ccomponent%2Cpriority%2Cbug_severity&query_format=advanced)  
+[In progress](https://bugs.koozali.org/buglist.cgi?action=wrap&bug_status=IN_PROGRESS&cf_package=smeserver-manager&classification=SME+Server&order=changeddate+DESC%2Ccomponent%2Cpriority%2Cbug_severity&query_format=advanced)  
+[Resolved](https://bugs.koozali.org/buglist.cgi?action=wrap&bug_status=RESOLVED&cf_package=smeserver-manager&classification=SME+Server&order=changeddate+DESC%2Ccomponent%2Cpriority%2Cbug_severity&query_format=advanced)  
+[Verified](https://bugs.koozali.org/buglist.cgi?action=wrap&bug_status=VERIFIED&cf_package=smeserver-manager&classification=SME+Server&order=changeddate+DESC%2Ccomponent%2Cpriority%2Cbug_severity&query_format=advanced)
 
 ## Description
 
