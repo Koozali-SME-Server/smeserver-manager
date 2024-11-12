@@ -2,3 +2,4 @@
 *.log
 *spec-20*
 *.tar.xz
+*.bak
