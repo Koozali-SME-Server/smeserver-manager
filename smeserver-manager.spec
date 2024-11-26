@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 28
+%define release 29
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -113,6 +113,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Nov 26 2024 Brian Read <brianr@koozali.org> 11.0.0-29.sme
+- Fix remoteaccess panel, reformat pm file and bring success panel into line with other similar panels [SME: 12747]
+
 * Fri Oct 18 2024 Brian Read <brianr@koozali.org> 11.0.0-28.sme
 - Add in emailsettings for port 25,465 and 587  [SME: 12750]
 - Comment out change to localhost for roundcube in _user_list email icon setting [SME: 12751]
