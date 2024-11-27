@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# List of services to query for the public IP
+services=(
+    "ifconfig.me"
+    "ipinfo.io/ip"
+    "icanhazip.com"
+    "api.ipify.org"
+    "ident.me"
+    "ip.tyk.nu"
+    "checkip.amazonaws.com"
+    "ipecho.net/plain"
+    "myip.dnsomatic.com"
+    "ip.seeip.org"
+    "ipapi.co/ip"
+    "wtfismyip.com/text"
+    "openident.net/ip"
+    "ifconfig.co/ip"
+)
+
+# Function to shuffle the array of services
+shuffle_services() {
+    local i
+    for ((i=${#services[@]} - 1; i > 0; i--)); do
+        local j=$((RANDOM % (i + 1)))
+        local temp="${services[i]}"
+        services[i]="${services[j]}"
+        services[j]="$temp"
+    done
+}
+
+# Function to fetch the public IP address
+get_public_ip() {
+    shuffle_services
+    for service in "${services[@]}"; do
+        public_ip=$(curl -s --max-time 5 "$service")
+        
+        # Check if the curl request was successful and there's a valid IP address
+        if [[ $? -eq 0 && $public_ip =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            logger -t public_ip_script "Service used: $service, IP found: $public_ip"
+            echo "$public_ip"
+            return
+        fi
+    done
+
+    # If none of the services returned a valid IP, output an error message
+    echo "Failed to retrieve public IP using all services." >&2
+    logger -t public_ip_script "Error: Failed to retrieve public IP using all services."
+    exit 1
+}
+
+# Execute the function
+get_public_ip
+
