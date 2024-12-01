@@ -1,0 +1,159 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------
+# copyright (C) 2022 Koozali SME Server
+#               
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#               
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#               
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+# 
+#----------------------------------------------------------------------
+
+event=$1
+fqdn=$2
+todo=$3
+domainlist=""
+
+case $todo in
+  disabled|enabled)
+        #
+        ;;
+  *)
+	todo="all"
+	;;
+esac
+
+if [[ ! -z "$fqdn"  ]]
+  then
+  # if fqdn not empty just use this one
+  domainlist="$fqdn"
+elif [[ ! -z "$event" ]] && [[ "$event" == *"domain"* ]]
+  then
+  # else if event *domains* => all domains
+  domainlist=$(perl -Mesmith::DomainsDB -e 'my $domains = esmith::DomainsDB->open; my @DOM = $domains->get_all_by_prop(type=>"domain"); print( join(" " , map { $_->key } @DOM)) ')
+elif [[ ! -z "$event" ]] && [[ "$event" == *"host"* ]]
+  then
+  # else if event *hosts* => all hosts
+  domainlist=$(perl -Mesmith::HostsDB -e 'my $domains = esmith::HostsDB->open; my @DOM = $domains->get_all_by_prop(type=>"host"); print( join(" " , map { $_->key } @DOM)) ')
+else
+  # else all domain and hosts
+  domains=$(perl -Mesmith::DomainsDB -e 'my $domains = esmith::DomainsDB->open; my @DOM = $domains->get_all_by_prop(type=>"domain"); print( join(" " , map { $_->key } @DOM)) ')
+  hosts=$(perl -Mesmith::HostsDB -e 'my $domains = esmith::HostsDB->open; my @DOM = $domains->get_all_by_prop(type=>"host"); print( join(" " , map { $_->key } @DOM)) ')
+  domainlist="$domains $hosts"
+fi
+domainlist=$(echo $domainlist |sort|uniq)
+
+#list from pihole install script; only ipv4 ones
+#here we select our 
+dns=$(/sbin/e-smith/db configuration getprop letesencrypt dnscheck||echo "https://cloudflare-dns.com/dns-query,8.8.8.8,8.8.4.4,1.1.1.1,1.0.0.1,208.67.222.222,208.67.220.220,4.2.2.1,4.2.2.2,8.20.247.20,84.200.69.80,84.200.70.40,9.9.9.10,149.112.112.10")
+# from https://stackoverflow.com/questions/10586153/how-to-split-a-string-into-an-array-in-bash
+IFS=', ' read -r -a DNS <<< "$dns"
+RANDOM=$$$(date +%s)
+x=1
+#TODO: if only one element skip the random selection
+while [ $x -le 5 ]; do
+mydns=${DNS[ $RANDOM % ${#DNS[@]} ]}
+if [[ $mydns == http* ]] ; then
+  curl -s $mydns >/dev/null 
+  if [[ "$?" == "0" ]]; then
+    break
+  fi
+else
+  nc -z  -w2 $mydns 53
+  if [[ "$?" == "0" ]]; then
+    break
+  fi
+fi
+x=$(( $x + 1 ))
+#in case of failure defaulting on a dns over https after 5
+mydns="https://cloudflare-dns.com/dns-query"
+done
+echo "External DNS Server  : $mydns"
+
+MYFORCEDIP=$(/sbin/e-smith/db configuration getprop letesencrypt ExternalIP)
+# check if gateway or server only
+MYMODE=$(/sbin/e-smith/db configuration get SystemMode)
+# check our external ip if gateway, internal else
+LOCALIP=$(/sbin/e-smith/db configuration get InternalIP)
+MYIP=$LOCALIP
+# check the ip suggested by external world that point to us.
+MYEXTIP=$(/usr/sbin/e-smith/getmyip)
+
+if [ -z "$MYFORCEDIP" ]; then
+  # we do not expect that a server-only has an ip routable on internet as firewall is not designed for that
+  # but in case, we handle the situation as for ExternalIP in servergateway mode, please write ad hoc rules for masq if you do so...
+  if [[ "$MYMODE" == "servergateway"  ]] ; then
+    MYIP=$(/sbin/e-smith/db configuration get ExternalIP);
+  fi
+  if [[ "$MYIP" != "$MYEXTIP"  ]] ; then
+    echo "External Interface IP: $MYIP"
+    echo "Detected Wan IP      : $MYEXTIP"
+    echo "You seem to be behind a firewall, using the external IP obtained with our test $MYEXTIP"
+    MYIP=$MYEXTIP
+  fi
+else
+  MYIP=$MYFORCEDIP
+fi
+
+echo "============================================================================================="
+OUTPUT="Domain\tStatus\tMYIP\tA\tLE_status\tLE_previous"
+# TODO all : check disabled and enabled ; active : check enabled and undef only
+
+for DOMAIN in  $domainlist 
+   do
+   # is it a host, a domain or should we ignore it
+   TYPE=$(/sbin/e-smith/db domains gettype $DOMAIN || /sbin/e-smith/db hosts gettype $DOMAIN )
+   if [[ "$TYPE" == "domain" ]] ; then 
+	TYPE="domains"
+   elif [[ "$TYPE" == "host" ]] ; then
+        TYPE="hosts"
+   else
+	echo "$DOMAIN is not in domains and not in hosts ($TYPE)"
+	continue
+   fi
+   # do we have a priority ?
+   currentstate=$(/sbin/e-smith/db $TYPE getprop $DOMAIN letsencryptSSLcert || echo "disabled")
+   if [ "$currentstate" != "$todo" -a "$todo" != "all" ] ; then
+	#echo "$DOMAIN skipping, only checking $todo $TYPE"
+	continue
+   fi
+   # https://stackoverflow.com/questions/15268987/bash-based-regex-domain-name-validation 
+   if ( !  echo $DOMAIN| grep -P -q '(?=^.{4,253}$)(^(?:[a-zA-Z0-9](?:(?:[a-zA-Z0-9\-]){0,61}[a-zA-Z0-9])?\.)+([a-zA-Z]{2,}|xn--[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])$)' -Z ) ; then
+	if [[ "$currentstate" == "disabled" ]]; then continue; fi
+        echo "$DOMAIN is not a RFC compliant domain, disabling"
+	/sbin/e-smith/db $TYPE setprop $DOMAIN letsencryptSSLcert disabled
+        /sbin/e-smith/db $TYPE delprop $DOMAIN letsencryptMYIP
+        continue
+   fi
+   THISDOMIP=$(/usr/bin/q A @$mydns $DOMAIN -f json |jq -r 'first(.Answers[].A  | select( . != null )) // null' 2>/dev/null || /usr/bin/q A @$LOCALIP $DOMAIN -f json |jq -r 'first(.Answers[].A  | select( . != null )) // null' 2>/dev/null  )
+   previous=$(/sbin/e-smith/db $TYPE getprop $DOMAIN letsencryptSSLcert||echo 'undefined');
+   # if it does not resolve, next
+   if [[ "$THISDOMIP" == ""  ]]
+        then
+        OUTPUT="$OUTPUT\n$DOMAIN\tNOK\t$MYIP\tnoip\tdisabled\t$previous"
+        /sbin/e-smith/db $TYPE setprop $DOMAIN letsencryptSSLcert disabled
+        /sbin/e-smith/db $TYPE delprop $DOMAIN letsencryptMYIP
+        continue;
+   fi
+   if [[ "$MYIP" == "$THISDOMIP" ]]
+        then
+        OUTPUT="$OUTPUT\n$DOMAIN\tOK\t$MYIP\t$THISDOMIP\tenabled\t$previous"
+        /sbin/e-smith/db $TYPE setprop $DOMAIN letsencryptSSLcert enabled letsencryptMYIP $THISDOMIP
+   else
+        OUTPUT="$OUTPUT\n$DOMAIN\tNOK\t$MYIP\t$THISDOMIP\tdisabled\t$previous"
+        /sbin/e-smith/db $TYPE setprop $DOMAIN letsencryptSSLcert disabled letsencryptMYIP $THISDOMIP
+   fi
+   sleep 1
+done
+printf "%b" $OUTPUT |column -t -s $'\t' 
+
