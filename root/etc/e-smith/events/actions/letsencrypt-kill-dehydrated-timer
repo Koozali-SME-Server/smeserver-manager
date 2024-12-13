@@ -1,3 +1,0 @@
-#! /bin/sh
-systemctl is-active --quiet dehydrated.timer && systemctl stop dehydrated.timer
-

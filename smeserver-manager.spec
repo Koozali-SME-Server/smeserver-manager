@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 29
+%define release 30
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -35,6 +35,8 @@ Requires: perl(DBM::Deep) >= 2.0011-1
 Requires: perl(Mojo::JWT) >= 0.08-1
 Requires: mutt >= 1.5.21
 Requires: smeserver-manager-jsquery >= 1.0
+Requires: smeserver-lib >= 11.0
+Requires: smeserver-certificates >= 11.0
 #Requires: js-jquery > 2.2.4-3 (optional)
 
 Provides: server-manager
@@ -113,6 +115,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Dec 13 2024 Brian Read <brianr@koozali.org> 11.0.0-30.sme
+- Add in letsencrypt panel, add requires for smeserver-lib and smeserver-certificates [SME: 12810]
+
 * Tue Nov 26 2024 Brian Read <brianr@koozali.org> 11.0.0-29.sme
 - Fix remoteaccess panel, reformat pm file and bring success panel into line with other similar panels [SME: 12747]
 
