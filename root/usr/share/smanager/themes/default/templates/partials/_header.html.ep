@@ -100,17 +100,17 @@
 		</div> 
 
 		<div id="h2e22">
-			<a id="help-button" target="_parent" href="manual"><button> ? </button></a>
+			<button type='button'><a id="help-button" target="_parent" href="manual">?</a></button>
 		</div>
     
         <div id="h2e12">
-			<a id="legacy-button" href="/server-manager" target='_blank'><button>Legacy SM</button></a>
+			<button type='button'><a id="legacy-button" href="/server-manager" target='_blank'>Legacy SM</a></button>
         </div>
 		<div id="h2e23">
 			% if ( not defined $c->session->{username} ) {
-				<a target="_parent" href="login"><button class="login-button">Login</button></a>
+				<button type='button' class="login-button"><a target="_parent" href="login">Login</a></button>
 			% } else {
-				<a target="_parent" href="logout"><button class="login-button"><%= $c->session->{username} %> Logout</button></a>
+				<button type='button' class="login-button"><a target="_parent" href="logout"><%= $c->session->{username} %> Logout</button>
 			% }
 		</div>
 		<div id="flag-container">

@@ -1,4 +1,4 @@
-<div id="footer" width=100%>
+<div id="footer">
 <HR class="sme-copyrightbar">
 <a href="https://mojolicious.org" target="_blank"><img src="images/sme-mojo-logo-white.png" style="position:relative;"></a>
 <font class="sme-copyright">
@@ -9,4 +9,3 @@
 %= session 'copyRight'
 <br>Copyright (c) 2013-2024 Koozali Foundation Inc.<br>
 </font>
-
