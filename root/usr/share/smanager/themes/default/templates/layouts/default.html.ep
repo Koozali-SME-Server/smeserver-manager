@@ -5,7 +5,7 @@
 <!-- default +jquery -->
 <head>
 <title><%= $title %></title>
-    <link rev="made" href="mailto:bugs%40koozali.org">
+    <link rel="made" href="mailto:bugs%40koozali.org">
     <meta name="copyright" content="(head.tmpl)Copyright 2003-2004 Mitel Corporation">
     %= stylesheet '/css/sme_core.css'
     %= stylesheet '/css/sme_main.css'

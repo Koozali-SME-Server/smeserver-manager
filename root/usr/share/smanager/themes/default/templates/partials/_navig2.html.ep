@@ -5,7 +5,7 @@
 	 <!-- ><div><a href='#' id='togadm' class='menu-title'>ADMINISTRATION</a></div> -->
 	<div id='menuadm'>
 
-%    my $cc = 1;
+%    my $cc = 100;
 %    foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'}) 
 %		<=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
 	<div><a href='#' class='section section-title'><%= $h %></a></div>

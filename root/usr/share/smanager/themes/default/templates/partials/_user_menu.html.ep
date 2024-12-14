@@ -4,7 +4,7 @@
 	<div id='usermenu'>
 	<a href='#' id='toguser' class='section section-title'>Current User (<%= session 'username' %>)</a>
 	<div id='menuuser'>
-%    my $cc = 1;
+%    my $cc = 300;
 %    foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'}) 
 %		<=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
 	<!-- div class='section'><%= $h %></div -->

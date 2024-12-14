@@ -5,7 +5,7 @@
 	<!-- <a href='#' id='tognav' class='menu-title'>NAVIGATION</a> -->
 	<div id='menunav'>
 
-%    my $cc = 1;
+%    my $cc = 200;
 %    foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'}) 
 %		<=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
 %
