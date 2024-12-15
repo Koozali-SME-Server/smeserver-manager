@@ -44,25 +44,25 @@
 	</span><span class=data>
 	%= text_field 'department' =>  $dir_datas->{department}, class => 'input'
 	</span>
-	</p>
+	</p><p>
 	<span class=label>
 	%=l 'dir_COMPANY', class => 'label'
 	</span><span class=data>
 	%= text_field 'company', $dir_datas->{company}, class => 'input'
 	</span>
-	</p>
+	</p><p>
 	<span class=label>
 	%=l 'dir_STREET', class => 'label'
 	</span><span class=data>
 	%= text_field 'street' =>  $dir_datas->{street}, class => 'input'
 	</span>
-	</p>
+	</p><p>
 	<span class=label>
 	%=l 'dir_CITY', class => 'label'
 	</span><span class=data>
 	%= text_field 'city', $dir_datas->{city}, class => 'input'
 	</span>
-	</p>
+	</p><p>
 	<span class=label>
 	%=l 'dir_PHONENUMBER', class => 'label'
 	</span><span class=data>

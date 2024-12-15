@@ -52,12 +52,11 @@
 
 	<hr class='sectionbar' />
 
-	</p>
     %}
 
 	<!-- percequ include 'partials/_rma_pptp' -->
 
-	<p><h2>
+	<h2>
 	%= $c->l('rma_VALIDFROM_TITLE', $c->l('rma_REMOTE_MANAGEMENT'));
 	</h2><br>
 	%=l 'rma_VALIDFROM_DESC'
@@ -86,7 +85,7 @@
             %= t td => (class => 'sme-border') => $net
             %= t td => (class => 'sme-border') => $mask
             %= t td => (class => 'sme-border') => $numhosts
-            <td class='sme-border'><input type='checkbox' name='Remove_nets' value='<%= $net.'/'.$mask %>'> </td>
+            <td class='sme-border'><input type='checkbox' name='Remote_nets' value='<%= $net.'/'.$mask %>'> </td>
     	</tr>
     %    }
 
@@ -102,9 +101,6 @@
         %= l('rma_NO_ENTRIES_YET');
 	</b>
     %}
-	</p>
-
-	<p>
 	%=l 'rma_DESC_VALID_FROM_ENTRIES'
 	<br><br>
 	<span class=label>
@@ -118,11 +114,10 @@
 	</span><span class=data>
 	%= text_field 'ValidFromMask', class => 'input'
 	</span>
-	</p>
 
 	<hr class='sectionbar' />
 
-	<p><h2>
+	<h2>
 	%=l 'rma_TITLE_SSH'
 	</h2><br>
 	%=l 'rma_DESC_SSH'
@@ -158,11 +153,10 @@
 	%= text_field 'SshTCPPort', class => 'input'
 	</span>
 	<br>
-	</p>
 
 	<hr class='sectionbar' />
 
-	<p><h2>
+	<h2>
 	%=l 'rma_TITLE_FTP_ACCESS'
 	</h2><br>
 	%= $c->render_to_string(inline => $c->l('rma_DESC_FTP_ACCESS'));
@@ -186,11 +180,9 @@
 	%= select_field 'FtpPasswordAccess' => $c->passwordLogin_list(), class => 'input'
 	</span>
 	<br>
-	</p>
 
     % my $mode = $c->get_telnet_mode();
     % if ( $mode ne 'off') {
-	<p>
 	<hr class='sectionbar' />
 
 	<h2>
@@ -210,13 +202,10 @@
 	</span>
 	<br>
 
-	</p>
     %}
 
-	<p>
 	<br>
 	%= submit_button "$btn", class => 'action'
-	</p>
 
     % end
 

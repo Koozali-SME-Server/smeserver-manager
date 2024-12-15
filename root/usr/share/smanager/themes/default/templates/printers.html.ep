@@ -12,8 +12,8 @@
 
     % if ( stash 'error' ) {
     	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
+			%= $c->render_to_string(inline => stash 'error') 
+		</div>
     %}
 
     <h1><%= $title%></h1>
@@ -30,4 +30,3 @@
 
 </div>
 %end
-

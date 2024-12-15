@@ -13,11 +13,10 @@
     
     <h1><%= $title %></h1>
     <!--br><%= $modul %><br-->
-    <p>
 
-    <p><b>
+    <b>
     %=l ('bugr_DO_NOT_PANIC')
-    </b></p>
+    </b>
     <p>
     %=l ('bugr_SME_EXPERIENCE')
     </p><p>
@@ -49,7 +48,7 @@
     %=l ('bugr_YUM_REPOS')
     </li><br></ul>
     %=l ('bugr_PRIVACY')
-    </p><p>
+    </p>
 
     <% my $btn = l('bugr_CREATE_REPORT'); %>
 
@@ -57,7 +56,7 @@
         %= submit_button "$btn", class => 'action'
     % end    
 
-    </p><p><b>
+    <p><b>
     %=l ('bugr_DONATING')
     </b><br><br>
     %=l ('bugr_AWARE_SME')
@@ -66,6 +65,7 @@
     </b><br><br>
     %=l ('bugr_CONSIDER_DONATING')
     <br><br>
+    </p>
 
     %= link_to 'https://wiki.koozali.org/Donate' => begin
 	%= image '/images/btn_donateCC_LG.gif'
@@ -76,7 +76,6 @@
 
     <br>
     %=l ('bugr_THANK_YOU')
-    </p>
 
 </div>
 

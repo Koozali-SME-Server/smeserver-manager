@@ -15,7 +15,6 @@
 
     <br><%= $modul %><br>
 
-    <p>
     <% my $btn = l('bugr_Download this report'); %>
 
     %= form_for 'bugreportD' => (method => 'POST') => begin

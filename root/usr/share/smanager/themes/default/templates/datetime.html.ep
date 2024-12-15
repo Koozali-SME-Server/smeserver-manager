@@ -45,6 +45,7 @@
 		%= $dat_datas->{now_string}
 		</b>
 		</p>
+		<p>
 		<br>
 		<span class=label>
 		%=l 'dat_NTP_SERVER'
