@@ -59,29 +59,67 @@
             %= t td => (class => 'sme-border') => "$first  $last"
             %= t td => (class => 'sme-border') => $vpnaccess
             %= t td => (class => 'sme-border') => $fwd
-    %	    my ($actionModify, $actionLock, $actionResetPw, $actionRemove) = '&nbsp;';
-    %	    if ($username eq 'admin')  { 
-    % 	    	$actionModify = "<a href='useraccountsd?CsrfDef=TOKEN&trt=UPS&user=" . $username . "'>" . "<button class='sme-modify-button' title=".l("MODIFY").">".l("MODIFY")."</button></a>"; 
-    %			$actionResetPw = "<a href='useraccountsd?CsrfDef=TOKEN&trt=PWS&user=" . $username . "'>" . "<button class='sme-password-button' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
-    %	    } else {
-    % 	    	$actionModify = "<a href='useraccountsd?CsrfDef=TOKEN&trt=UPD&user=" . $username . "'>" . "<button class='sme-modify-button' title=".l("MODIFY").">".l("MODIFY")."</button></a>"; 
-    %		if ($password_set ne 'yes') {
-    %			$actionLock = l('ACCOUNT_LOCKED'); 
-    %			$actionResetPw = "<a href='useraccountsd?CsrfDef=TOKEN&trt=PWD&user=" . $username . "'>" . "<button class='sme-password-button' style ='border-color:red;' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
-    %		} else {
-    %			$actionLock = "<a href='useraccountsd?CsrfDef=TOKEN&trt=LCK&user=" . $username . "'>" . "<button class='sme-lock-button' title=".l('usr_LOCK_ACCOUNT').">".l("usr_LOCK_ACCOUNT")."</button></a>"; 
-    %			$actionResetPw = "<a href='useraccountsd?CsrfDef=TOKEN&trt=PWD&user=" . $username . "'>" . "<button class='sme-password-button' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
-    %		}
-    %	    	if ( $removable eq 'yes' )  { 
-    % 			$actionRemove = "<a href='useraccountsd?CsrfDef=TOKEN&trt=DEL&user=" . $username . "'>" . "<button class='sme-remove-button' title=".l("REMOVE").">".l("REMOVE")."</button></a>"; 
-    %		}
-    %	    }
-    %		
-    %		my $thisdomain = session 'SystemName';
-    %		$thisdomain .= ".".session 'DomainName';
-    %#		my $thisdomain = "localhost";
+			%my ($actionModify, $actionLock, $actionResetPw, $actionRemove) = '&nbsp;';
+			%my $modify_text = l('MODIFY');  # Localized text
+			%my $csrf_token = "TOKEN";  # CSRF token for security
+			%my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
+			%my $password_text = l("PASSWORD_RESET");
+			%if ($username eq 'admin')  { 
+				%$actionModify = qq{
+				%	<button type='button' class='sme-modify-button' title='$modify_text' 
+				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=UPS&user=$useraccounts_user_name'">
+				%		$modify_text
+				%	</button>
+				%};
+			%} else {
+				%$actionModify = qq{
+				%	<button type='button' class='sme-modify-button' title='$modify_text' 
+				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=UPD&user=$useraccounts_user_name'">
+				%		$modify_text
+				%	</button>
+				%};
+			%}
+			%if ($password_set ne 'yes') {
+				%$actionLock = l('ACCOUNT_LOCKED');
+				%$actionResetPw = qq{
+				%	<button type='button' class='sme-password-button unset' title="$password_text - currently unset" style = background:pink;
+				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=PWD&ibay=$useraccounts_user_name'">
+				%		$password_text
+				%	</button>
+				%};
+			%} else {
+				%my $lock_text = l('ACCOUNT LOCKED');  # Localized text
+				%my $csrf_token = "TOKEN";  # CSRF token for security
+				%my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
+				%$actionLock = qq{
+				%	<button type='button' class='sme-lock-button' title='$lock_text' 
+				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=LCK&user=$useraccounts_user_name'">
+				%		$lock_text
+				%	</button>
+				%};
+				%$actionResetPw = qq{
+					%	<button type='button' class='sme-password-button' title='$password_text' 
+					%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name'">
+					%		$password_text
+					%	</button>
+					%};
+			%}
+			%if ( $removable eq 'yes' )  { 
+				%my $remove_text = l('REMOVE');  # Localized text
+				%my $csrf_token = "TOKEN";  # CSRF token for security
+				%$actionRemove = qq{
+				%	<button type='button' class='sme-remove-button' title='$remove_text' 
+				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=DEL&user=$useraccounts_user_name'">
+				%		$remove_text
+				%	</button>
+				%};
+			%}
 
-    	    <td class='sme-border' style="min-width:35em">
+	%		my $thisdomain = session 'SystemName';
+	%		$thisdomain .= ".".session 'DomainName';
+	%#		my $thisdomain = "localhost";
+
+		<td class='sme-border' style="min-width:35em">
 				<%= $c->render_to_string(inline => $actionModify) %>
 				<%= $c->render_to_string(inline => $actionResetPw) %>
 				<%= $c->render_to_string(inline => $actionLock) %>
