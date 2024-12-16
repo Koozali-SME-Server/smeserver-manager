@@ -50,9 +50,9 @@
             %= t td => (class => 'sme-border') => $_->{'MACAddress'};
             %= t td => (class => 'sme-border') => $_->{'Comment'};
 			<td class='sme-border' style="min-width:15em">
-		%	    my ($actionModify, $actionRemove) = '&nbsp;';
+				%my ($actionModify, $actionRemove) = '&nbsp;';
 				%my $static = $_->{'static'} || "no";
-		%	    if ($static ne 'yes') {
+				%if ($static ne 'yes') {
 					%my $modify_text = l('MODIFY');  # Localized text
 					%my $csrf_token = "TOKEN";  # CSRF token for security
 					%my $hostentries_name = $_->{'HostName'};  # hostentries name extracted from the data structure
@@ -71,7 +71,7 @@
 					%		$remove_text
 					%	</button>
 					%};
-			%	}
+				%}
 				<%= $c->render_to_string(inline => $actionModify) %> <%= $c->render_to_string(inline => $actionRemove) %>
     	    </td>
     	</tr>

@@ -46,29 +46,58 @@
         <tr>
             %= t td => (class => 'sme-border') => $ibay->key
             %= t td => (class => 'sme-border') => $ibay->prop('Name')
-    %	    my ($actionModify, $actionResetPw, $actionRemove) = '&nbsp;';
-    %	    if ($modifiable eq 'yes') { 
-    % 		$actionModify = "<a href='ibaysd?CsrfDef=TOKEN&trt=UPD&ibay=" . $ibay->key . "'>" . "<button class='sme-modify-button' title=".l('MODIFY').">".l('MODIFY')."</button>" . "</a>"; 
-    %	    }
-    %	    if ($passwordable eq 'yes')  { 
-    %		if ($ibay->prop('PasswordSet') ne 'yes' && $needPassword) {
-    %#			$actionResetPw .= "<a href='ibaysd?CsrfDef=TOKEN&trt=PWD&ibay=" . $ibay->key . "' class='error'>" . l('PASSWORD_RESET') . "</a>"; 
-    %			$actionResetPw .= "<a href='ibaysd?CsrfDef=TOKEN&trt=PWD&ibay=" . $ibay->key. "'>" . "<button class='sme-password-button' style ='border-color:red;' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
-%		} else {
-    %			$actionResetPw .= "<a href='ibaysd?CsrfDef=TOKEN&trt=PWD&ibay=" . $ibay->key . "'>" . "<button class='sme-password-button' title=".l("Reset-Password").">".l("Reset-Password")."</button></a>"; 
-    %#			$actionResetPw .= "<a href='ibaysd?CsrfDef=TOKEN&trt=PWD&ibay=" . $ibay->key . "'>" . l('PASSWORD_RESET') . "</a>"; 
-    %		}
-    %	        $actionResetPw .= '&nbsp';
-    %	    }
-    %	    if ($removable eq 'yes')  { 
-    % 		$actionRemove = "<a href='ibaysd?CsrfDef=TOKEN&trt=DEL&ibay=" . $ibay->key . "'>" . "<button class='sme-remove-button' title=".l('REMOVE').">".l('REMOVE')."</button>" . "</a>"; 
-    %	    }
-    	    <td class='sme-border' style="min-width:20em">
+			<td class='sme-border' style="min-width:15em">
+				%my ($actionModify, $actionResetPw, $actionRemove) = '&nbsp;';
+				%if ($modifiable eq 'yes') { 
+					%my $modify_text = l('MODIFY');  # Localized text
+					%my $csrf_token = "TOKEN";  # CSRF token for security
+					%my $ibays_entry_name = $ibay->key;  # ibays_entry name extracted from the data structure
+					%$actionModify = qq{
+					%	<button type='button' class='sme-modify-button' title='$modify_text' 
+					%		onclick="window.location.href='ibaysd?CsrfDef=$csrf_token&trt=UPD&ibay=$ibays_entry_name'">
+					%		$modify_text
+					%	</button>
+					%};
+				%}
+				
+				%if ($passwordable eq 'yes')  { 
+					%my $password_text = l('PASSWORD_RESET');  # Localized text
+					%my $csrf_token = "TOKEN";  # CSRF token for security
+					%my $ibays_entry_name = $ibay->key;  # ibays_entry name extracted from the data structure
+					%if ($ibay->prop('PasswordSet') ne 'yes' && $needPassword) {
+						%$actionResetPw = qq{
+						%	<button type='button' class='sme-password-button unset' title="$password_text - currently unset" style = background:pink;
+						%		onclick="window.location.href='ibaysd?CsrfDef=$csrf_token&trt=PWD&ibay=$ibays_entry_name'">
+						%		$password_text
+						%	</button>
+						%};
+					%} else {
+						%$actionResetPw = qq{
+						%	<button type='button' class='sme-password-button' title='$password_text' 
+						%		onclick="window.location.href='ibaysd?CsrfDef=$csrf_token&trt=PWD&ibay=$ibays_entry_name'">
+						%		$password_text
+						%	</button>
+						%};
+					%}
+					
+				%}
+
+				%if ($removable eq 'yes')  { 
+					%my $remove_text = l('REMOVE');  # Localized text
+					%my $csrf_token = "TOKEN";  # CSRF token for security
+					%my $ibays_entry_name = $ibay->key;  # ibays_entry name extracted from the data structure
+					%$actionRemove = qq{
+					%	<button type='button' class='sme-remove-button' title='$remove_text' 
+					%		onclick="window.location.href='ibaysd?CsrfDef=$csrf_token&trt=DEL&ibays=$ibays_entry_name'">
+					%		$remove_text
+					%	</button>
+					%};
+				%}
 				<%= $c->render_to_string(inline => $actionModify) %>
 				<%= $c->render_to_string(inline => $actionResetPw)%>
 				<%= $c->render_to_string(inline => $actionRemove) %>
-			</td>
-    	</tr>
+    	    </td>
+   	</tr>
     %    }
     	</tbody>
     	</table>
