@@ -57,7 +57,18 @@
             %= t td => (class => 'sme-border') => $printer->prop('Location')
             %= t td => (class => 'sme-border') => $address
             %= t td => (class => 'sme-border') => $remoteName
-	    <td class='sme-border'><a href="printers2?CsrfDef=TOKEN&trt=DEL&printer=<%= $printer->key%>"><button class='sme-remove-button' title="<%=l('REMOVE')%>"><%=l('REMOVE') %></button></a></td>
+			<td class='sme-border'>
+				%my $remove_text = l('REMOVE');  # Localized text
+				%my $csrf_token = "TOKEN";  # CSRF token for security
+				%my $printer_name = $printer->key;
+				%my $actionRemove = qq{
+				%	<button type='button' class='sme-remove-button' title='$remove_text' 
+				%		onclick="window.location.href='printers2?CsrfDef=$csrf_token&trt=DEL&&printer=$printer_name'">
+				%		$remove_text
+				%	</button>
+				%};
+			<%= $c->render_to_string(inline => $actionRemove) %>
+			</td>
     	</tr>
     %    }
     	</tbody>

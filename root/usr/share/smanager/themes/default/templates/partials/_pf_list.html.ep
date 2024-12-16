@@ -93,7 +93,15 @@
 		%= 			t td => (class => 'sme-border') => $allow
 		%= 			t td => (class => 'sme-border') => $cmmnt
 					<td class='sme-border'>
-						<a href="portforwardingd?CsrfDef=TOKEN&trt=DEL&sport=<%= $sport%>&proto=<%= $proto%>"><button class='sme-remove-button' title="<%=l('REMOVE')%>"><%=l('REMOVE') %></button></a>
+						%my $remove_text = l('REMOVE');  # Localized text
+						%my $csrf_token = "TOKEN";  # CSRF token for security
+						%my $actionRemove = qq{
+						%	<button type='button' class='sme-remove-button' title='$remove_text' 
+						%		onclick="window.location.href='portforwardingd?CsrfDef=$csrf_token&trt=DEL&sport=$sport&proto=$proto'">
+						%		$remove_text
+						%	</button>
+						%};
+					<%= $c->render_to_string(inline => $actionRemove) %>
 					</td>
 			</tr>
          %       }
@@ -105,4 +113,3 @@
 	%= hidden_field 'trt' => $pf_datas->{trt}
  
 </div>
-
