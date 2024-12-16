@@ -37,7 +37,7 @@
 	%= $ic 
         %=l 'quo_FILES' 
 	%=l 'quo_OCCUPYING' 
-	%= $bc 
+	%= $c->toMB($bc)
 	%=l 'quo_MEGABYTES'
 	</p>
 	

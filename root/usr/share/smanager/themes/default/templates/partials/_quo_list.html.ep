@@ -57,7 +57,18 @@
             %= t td => (class => 'sme-border') => sprintf("%.2f", $bs / 1024 )
             %= t td => (class => 'sme-border') => sprintf("%.2f", $bh / 1024 )
             %= t td => (class => 'sme-border') => sprintf("%.2f", $bc / 1024 )
-	    <td class='sme-border'><a href="quotad?CsrfDef=TOKEN&trt=UPD&user=<%= $user->key%>"><button class='sme-modify-button' title="<%=l('MODIFY')%>"><%=l('MODIFY') %></button></a></td>
+			<td class='sme-border'>
+				%my $modify_text = l('MODIFY');  # Localized text
+				%my $csrf_token = "TOKEN";  # CSRF token for security
+				%my $quota_user_name = $user->key;  # quotas_entry name extracted from the data structure
+				%my $actionModify = qq{
+				%	<button type='button' class='sme-modify-button' title='$modify_text' 
+				%		onclick="window.location.href='quotad?CsrfDef=$csrf_token&trt=UPD&user=$quota_user_name'">
+				%		$modify_text
+				%	</button>
+				%};
+				<%= $c->render_to_string(inline => $actionModify) %>
+			</td>
     	</tr>
     %    }
     	</tbody>
