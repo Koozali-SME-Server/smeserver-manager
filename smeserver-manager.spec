@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 30
+%define release 31
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Dec 17 2024 Brian Read <brianr@koozali.org> 11.0.0-31.sme
+- Edit html to avoid w3c html validation warnings [SME: 6278]
+
 * Fri Dec 13 2024 Brian Read <brianr@koozali.org> 11.0.0-30.sme
 - Add in letsencrypt panel, add requires for smeserver-lib and smeserver-certificates [SME: 12810]
 
