@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 31
+%define release 32
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Dec 18 2024 Brian Read <brianr@koozali.org> 11.0.0-32.sme
+- Fix for User and localnetwork panel [SME: 6278]
+- Fix menu entry for proxy to stop it moving 
+
 * Tue Dec 17 2024 Brian Read <brianr@koozali.org> 11.0.0-31.sme
 - Edit html to avoid w3c html validation warnings [SME: 6278]
 

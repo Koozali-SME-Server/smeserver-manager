@@ -1,7 +1,6 @@
 <div id='ln_list'>
     % my $btn = l('ln_LOCALNETWORK_ADD');
     %= form_for '/localnetworksa' => (method => 'POST') => begin
-	<p>
 
 	% my $retref= $c->stash("ret");
 	% my %ret;
@@ -68,10 +67,10 @@
 				%=l 'ROUTER'
 			</th>
 
-			<th class='sme-border' '>
+			<th class='sme-border'>
 				%=l 'ACTION'
 			</th>
-			</tr>
+		</tr>
 			</thead><tbody>
 		%    foreach my $localnetwork (@$localnetworks )
 		%    {
@@ -84,18 +83,23 @@
 					%= t td => (class => 'sme-border') => $localnetwork->prop('Mask')
 					%= t td => (class => 'sme-border') => $num_hosts
 					%= t td => (class => 'sme-border') => $localnetwork->prop('Router')
-					%  if ($removable eq "yes") {
-						<td class='sme-border'>
-						<a href="localnetworksd?CsrfDef=TOKEN&trt=DEL&localnetwork=<%= $localnetwork->key%>"><button class='sme-remove-button' title="<%=l('REMOVE')%>"><%=l('REMOVE') %></button></a></td>
-					% } else {
-						<td class='sme-border'> </td> 
-					%}
+					%my $actionRemove = '&nbsp;';
+					%if ($removable eq "yes") {
+						%my $remove_text = l('REMOVE');  # Localized text
+						%my $local_network_entry = $localnetwork->key;
+						%my $csrf_token = "TOKEN";  # CSRF token for security
+						%$actionRemove = qq{
+						%	<button type='button' class='sme-remove-button' title='$remove_text' 
+						%		onclick="window.location.href='localnetworksd?CsrfDef=$csrf_token&trt=DEL&localnetwork=$local_network_entry'">
+						%		$remove_text
+						%	</button>
+						%};
+					% }
+					<td class='sme-border'><%= $c->render_to_string(inline => $actionRemove) %></td>
 					</tr>
 		%  } 
 		</tbody>
 		</table>
-		</p>
-
 			%= hidden_field 'trt' => $ln_datas->{trt}
 	%}
 </div>
