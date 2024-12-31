@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 33
+%define release 34
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Dec 31 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-34.sme
+- fix css warning xxcolor [SME: 12844]
+- update CSP style rules [SME: 12840]
+
 * Mon Dec 30 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-33.sme
 - host locally flag-icon.min.css 3.5.0 [SME: 12845]
 - remove onclick to comply with strict CSP [SME: 12846]

@@ -43,8 +43,13 @@
         $OUT .= "                   Header set Content-Security-Policy  \"script-src 'self' 'unsafe-eval' 'unsafe-hashes' "
         ." 'sha256-X8Qwlk0M9iDTQZqFVpbVcThRjBqQXpwTOZCLX8I+Frk=' 'sha256-inQ04nmqTZI75Z5g/tAzjahedNugPFfrhxHyoFezFkM=' 'sha256-5IsIX+Vbow7wwy2RjR3+5X06R/0CQZPkw3OHj/228cM=' 'sha256-tfVskwioRaNsV75h89itf7FujMgIrodfs1Ea4UAJNpE=' 'sha256-P51OyslUh5bGkoWk9qY+o4Su4HuwNFoQcFCeNxF7Ms8=' ; "
         ." style-src 'self'  'unsafe-hashes' "
-        ." 'sha256-msdEhWmYTu7vqzGaQHDfvy6lzlDsbKkouwvN2R6Co9E=' 'sha256-a1tyxi1vRpW2Q9+0hM+nBA250/jWJlJdeR43c5r90PI=' 'sha256-iYwYhiMcsGmXCUzLEpEzZNz5dINrlkqf1sLbLhEcqGM=' 'sha256-bOTFT8zacR4Rfja/WIKXgAQQXVaPyG3oBlvAhU4ga8g=' 'sha256-2iGOQeZyvW9G2X+8IhZDG+GPRpXQTxUg/2QxdI+dyEg=' 'sha256-CP93jJ1Y8nMwUoDzFbo1srdgsbADPasAc0Wjig1ahpY=' 'sha256-2iGOQeZyvW9G2X+8IhZDG+GPRpXQTxUg/2QxdI+dyEg=' ;"
-        ." \"\n"; 
+        #'sha256-EhT63KK1JBrsUM27H+5RMNifDFpVB+GXcTtavKXwCK8=' #h2l1
+        #'sha256-msdEhWmYTu7vqzGaQHDfvy6lzlDsbKkouwvN2R6Co9E=' #busy-indicator
+        #'sha256-iYwYhiMcsGmXCUzLEpEzZNz5dINrlkqf1sLbLhEcqGM=' _footer.html.ep style="position:relative;"
+        #'sha256-bOTFT8zacR4Rfja/WIKXgAQQXVaPyG3oBlvAhU4ga8g=' _usr_list style="min-width:35em"
+        #'sha256-CP93jJ1Y8nMwUoDzFbo1srdgsbADPasAc0Wjig1ahpY=' groups style="min-width:15em"
+        ." 'sha256-msdEhWmYTu7vqzGaQHDfvy6lzlDsbKkouwvN2R6Co9E=' 'sha256-iYwYhiMcsGmXCUzLEpEzZNz5dINrlkqf1sLbLhEcqGM='  'sha256-bOTFT8zacR4Rfja/WIKXgAQQXVaPyG3oBlvAhU4ga8g=' 'sha256-CP93jJ1Y8nMwUoDzFbo1srdgsbADPasAc0Wjig1ahpY=' 'sha256-EhT63KK1JBrsUM27H+5RMNifDFpVB+GXcTtavKXwCK8=' ;"
+	." \"\n"; 
 	$OUT .= "    </Location>\n";
         # prevent caching of manager files in browser
         $OUT .= "   <LocationMatch \"/$place/.+\.(html|cgi)\$\">\n";

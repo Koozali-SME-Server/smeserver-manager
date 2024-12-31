@@ -68,7 +68,7 @@
 .login-button {
     background-color: #98d36e;     /* Button background color */
     font-weight: bold;              /* Bold text */
-    xxcolor: #ffffff;                 /* Button text color */
+    color: #ffffff;                 /* Button text color */
     padding: 8px 12px;              /* Adjust padding for button height */
     border: none;                   /* Remove default border */
     border-radius: 4px;             /* Rounded corners */
@@ -100,11 +100,11 @@
 		</div> 
 
 		<div id="h2e22">
-			<button type='button'><a id="help-button" target="_parent" href="manual">?</a></button>
+			<button type='button'class="login-button"><a id="help-button" target="_parent" href="manual">?</a></button>
 		</div>
     
         <div id="h2e12">
-			<button type='button'><a id="legacy-button" href="/server-manager" target='_blank'>Legacy SM</a></button>
+			<button type='button' class="login-button"><a id="legacy-button" href="/server-manager" target='_blank'>Legacy SM</a></button>
         </div>
 		<div id="h2e23">
 			% if ( not defined $c->session->{username} ) {
