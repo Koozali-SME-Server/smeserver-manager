@@ -30,7 +30,13 @@
 		</span><br>
 	
 		<span class='data'>
-			%= submit_button l('lets_Back'), class => 'action back', onclick =>'history.back()'
+                        %my $back_text = l('lets_Back');  # Localized text
+                        %my $actionBack = qq{
+                        %       <a href="letsencryptd">
+                        %       <input class='action back' type='submit'  value='$back_text'>
+                        %       </a>
+                        %};
+                      <%= $c->render_to_string(inline => $actionBack) %>
 		</span>
 		
 	

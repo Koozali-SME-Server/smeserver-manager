@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 32
+%define release 33
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Dec 30 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-33.sme
+- host locally flag-icon.min.css 3.5.0 [SME: 12845]
+- remove onclick to comply with strict CSP [SME: 12846]
+- add CSP rules with specific hash [SME: 12840]
+
 * Wed Dec 18 2024 Brian Read <brianr@koozali.org> 11.0.0-32.sme
 - Fix for User and localnetwork panel [SME: 6278]
 - Fix menu entry for proxy to stop it moving 

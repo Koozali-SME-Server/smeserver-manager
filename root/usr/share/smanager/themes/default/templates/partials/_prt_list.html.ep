@@ -62,10 +62,11 @@
 				%my $csrf_token = "TOKEN";  # CSRF token for security
 				%my $printer_name = $printer->key;
 				%my $actionRemove = qq{
-				%	<button type='button' class='sme-remove-button' title='$remove_text' 
-				%		onclick="window.location.href='printers2?CsrfDef=$csrf_token&trt=DEL&&printer=$printer_name'">
+                                %       <a href="printers2?CsrfDef=$csrf_token&trt=DEL&&printer=$printer_name">
+				%	<button type='button' class='sme-remove-button' title='$remove_text' >
 				%		$remove_text
 				%	</button>
+                                %       </a>
 				%};
 			<%= $c->render_to_string(inline => $actionRemove) %>
 			</td>

@@ -51,10 +51,11 @@
 			%my $csrf_token = "TOKEN";  # CSRF token for security
 			%my $domain_name = $domain->{Domain};  # Domain name extracted from the data structure
 			%my $actionModify = qq{
-			%	<button type='button' class='sme-modify-button' title='$modify_text' 
-			%		onclick="window.location.href='domains2?CsrfDef=$csrf_token&trt=UPD&Domain=$domain_name'">
+                        %       <a href="domains2?CsrfDef=$csrf_token&trt=UPD&Domain=$domain_name">
+			%	<button type='button' class='sme-modify-button' title='$modify_text' >
 			%		$modify_text
 			%	</button>
+                        %       </a>
 			%};
 			%my $removable = ($domain->{Removable} || 'yes');
 			%my $actionRemove = '&nbsp;';
@@ -63,10 +64,11 @@
 					%my $csrf_token = "TOKEN";  # CSRF token for security
 					%my $domain_name = $domain->{Domain};  # Domain name extracted from the data structure
 					%$actionRemove = qq{
-						%	<button type='button' class='sme-remove-button' title='$remove_text' 
-						%		onclick="window.location.href='domains2?CsrfDef=$csrf_token&trt=DEL&Domain=$domain_name'">
+                                                %       <a href="domains2?CsrfDef=$csrf_token&trt=DEL&Domain=$domain_name">
+						%	<button type='button' class='sme-remove-button' title='$remove_text' >
 						%		$remove_text
 						%	</button>
+                                                %       </a>
 					%};
 				%#		$actionRemove = "<a href='domains2?CsrfDef=TOKEN&trt=DEL&Domain=" . $domain->{Domain} . "'>" . "<button class='sme-remove-button' title=".l('REMOVE').">".l('REMOVE')."</button>" . "</a>"; 
 			%};

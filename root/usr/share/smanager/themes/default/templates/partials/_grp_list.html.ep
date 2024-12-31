@@ -43,19 +43,21 @@
 				%my $csrf_token = "TOKEN";  # CSRF token for security
 				%my $group_name = $group->key;  # group name extracted from the data structure
 				%my $actionModify = qq{
-				%	<button type='button' class='sme-modify-button' title='$modify_text' 
-				%		onclick="window.location.href='groups2?CsrfDef=$csrf_token&trt=UPD&group=$group_name'">
+                                %       <a href="groups2?CsrfDef=$csrf_token&trt=UPD&group=$group_name">
+				%	<button type='button' class='sme-modify-button' title='$modify_text' >
 				%		$modify_text
 				%	</button>
+                                %       </a>
 				%};
 				%my $remove_text = l('REMOVE');  # Localized text
 				%my $csrf_token = "TOKEN";  # CSRF token for security
 				%my $group_name = $group->key;  # group name extracted from the data structure
 				%my $actionRemove = qq{
-				%	<button type='button' class='sme-remove-button' title='$remove_text' 
-				%		onclick="window.location.href='groups2?CsrfDef=$csrf_token&trt=DEL&group=$group_name'">
+                                %       <a href="groups2?CsrfDef=$csrf_token&trt=DEL&group=$group_name">
+				%	<button type='button' class='sme-remove-button' title='$remove_text' > 
 				%		$remove_text
 				%	</button>
+                                %       </a>
 				%};
 				<%= $c->render_to_string(inline => $actionModify) %> <%= $c->render_to_string(inline => $actionRemove) %>
 			</td>

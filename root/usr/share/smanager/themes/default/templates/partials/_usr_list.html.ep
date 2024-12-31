@@ -66,52 +66,58 @@
 			%my $password_text = l("PASSWORD_RESET");
 			%if ($useraccounts_user_name eq 'admin')  { 
 				%$actionModify = qq{
-				%	<button type='button' class='sme-modify-button' title='$modify_text' 
-				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=UPS&user=$useraccounts_user_name'">
+                                %       <a href="useraccountsd?CsrfDef=$csrf_token&trt=UPS&user=$useraccounts_user_name">
+				%	<button type='button' class='sme-modify-button' title='$modify_text'>
 				%		$modify_text
 				%	</button>
+                                %       </a>
 				%};
 			%} else {
 				%$actionModify = qq{
-				%	<button type='button' class='sme-modify-button' title='$modify_text' 
-				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=UPD&user=$useraccounts_user_name'">
+                                %       <a href="useraccountsd?CsrfDef=$csrf_token&trt=UPD&user=$useraccounts_user_name">
+				%	<button type='button' class='sme-modify-button' title='$modify_text' >
 				%		$modify_text
 				%	</button>
+                                %       </a>
 				%};
 			%}
 			%if ($password_set ne 'yes') {
 				%$actionLock = l('ACCOUNT_LOCKED');
 				%$actionResetPw = qq{
-				%	<button type='button' class='sme-password-button unset' title="$password_text - currently unset" style = background:pink;
-				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name'">
+                                %       <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name">
+				%	<button type='button' class='sme-password-button unset' title="$password_text - currently unset" style = background:pink; >
 				%		$password_text
 				%	</button>
+                                %       </a>
 				%};
 			%} else {
 				%my $lock_text = l('ACCOUNT LOCKED');  # Localized text
 				%my $csrf_token = "TOKEN";  # CSRF token for security
 				%my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
 				%$actionLock = qq{
-				%	<button type='button' class='sme-lock-button' title='$lock_text' 
-				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=LCK&user=$useraccounts_user_name'">
+                                %       <a href="useraccountsd?CsrfDef=$csrf_token&trt=LCK&user=$useraccounts_user_name">
+				%	<button type='button' class='sme-lock-button' title='$lock_text' >
 				%		$lock_text
 				%	</button>
+                                %       </a>
 				%};
 				%$actionResetPw = qq{
-					%	<button type='button' class='sme-password-button' title='$password_text' 
-					%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name'">
+                                        %       <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name">
+					%	<button type='button' class='sme-password-button' title='$password_text' >
 					%		$password_text
 					%	</button>
+                                        %       </a>
 					%};
 			%}
 			%if ( $removable eq 'yes' )  { 
 				%my $remove_text = l('REMOVE');  # Localized text
 				%my $csrf_token = "TOKEN";  # CSRF token for security
 				%$actionRemove = qq{
-				%	<button type='button' class='sme-remove-button' title='$remove_text' 
-				%		onclick="window.location.href='useraccountsd?CsrfDef=$csrf_token&trt=DEL&user=$useraccounts_user_name'">
+                                %       <a href="useraccountsd?CsrfDef=$csrf_token&trt=DEL&user=$useraccounts_user_name">
+				%	<button type='button' class='sme-remove-button' title='$remove_text' >
 				%		$remove_text
 				%	</button>
+                                %       </a>
 				%};
 			%}
 			
@@ -121,10 +127,11 @@
 			%my $csrf_token = "TOKEN";  # CSRF token for security
 			%my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
 			%$actionroundcube = qq{
-			%	<button type='button' class='sme-email-button' title='$roundcube_text' 
-			%		onclick="window.location.href='roundcubepanel?CsrfDef=$csrf_token&url=https://$thisdomain/roundcube?_user=$useraccounts_user_name'">
+                        %       <a href="roundcubepanel?CsrfDef=$csrf_token&url=https://$thisdomain/roundcube?_user=$useraccounts_user_name">
+			%	<button type='button' class='sme-email-button' title='$roundcube_text' >
 			%		$roundcube_text
 			%	</button>
+                        %       </a>
 			%};
 
 		<td class='sme-border' style="min-width:35em">

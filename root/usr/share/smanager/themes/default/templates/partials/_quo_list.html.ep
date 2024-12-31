@@ -62,10 +62,11 @@
 				%my $csrf_token = "TOKEN";  # CSRF token for security
 				%my $quota_user_name = $user->key;  # quotas_entry name extracted from the data structure
 				%my $actionModify = qq{
-				%	<button type='button' class='sme-modify-button' title='$modify_text' 
-				%		onclick="window.location.href='quotad?CsrfDef=$csrf_token&trt=UPD&user=$quota_user_name'">
+                                %       <a href="quotad?CsrfDef=$csrf_token&trt=UPD&user=$quota_user_name">
+				%	<button type='button' class='sme-modify-button' title='$modify_text' >
 				%		$modify_text
 				%	</button>
+                                %       </a>
 				%};
 				<%= $c->render_to_string(inline => $actionModify) %>
 			</td>

@@ -57,19 +57,21 @@
 					%my $csrf_token = "TOKEN";  # CSRF token for security
 					%my $hostentries_name = $_->{'HostName'};  # hostentries name extracted from the data structure
 					%$actionModify = qq{
-					%	<button type='button' class='sme-modify-button' title='$modify_text' 
-					%		onclick="window.location.href='hostentriesd?CsrfDef=$csrf_token&trt=UPD&Hostname=$hostentries_name'">
+                                        %       <a href="hostentriesd?CsrfDef=$csrf_token&trt=UPD&Hostname=$hostentries_name">
+					%	<button type='button' class='sme-modify-button' title='$modify_text' > 
 					%		$modify_text
 					%	</button>
+                                        %       </a>
 					%};
 					%my $remove_text = l('REMOVE');  # Localized text
 					%my $csrf_token = "TOKEN";  # CSRF token for security
 					%#my $hostentries_name = $_->{'HostName'};  # hostentries name extracted from the data structure
 					%$actionRemove = qq{
-					%	<button type='button' class='sme-remove-button' title='$remove_text' 
-					%		onclick="window.location.href='hostentriesd?CsrfDef=$csrf_token&trt=DEL&Hostname=$hostentries_name'">
+                                        %       <a href="hostentriesd?CsrfDef=$csrf_token&trt=DEL&Hostname=$hostentries_name">
+					%	<button type='button' class='sme-remove-button' title='$remove_text' >
 					%		$remove_text
 					%	</button>
+                                        %       </a>
 					%};
 				%}
 				<%= $c->render_to_string(inline => $actionModify) %> <%= $c->render_to_string(inline => $actionRemove) %>

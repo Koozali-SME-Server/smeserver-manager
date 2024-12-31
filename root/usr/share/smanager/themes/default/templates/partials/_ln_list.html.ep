@@ -89,10 +89,11 @@
 						%my $local_network_entry = $localnetwork->key;
 						%my $csrf_token = "TOKEN";  # CSRF token for security
 						%$actionRemove = qq{
-						%	<button type='button' class='sme-remove-button' title='$remove_text' 
-						%		onclick="window.location.href='localnetworksd?CsrfDef=$csrf_token&trt=DEL&localnetwork=$local_network_entry'">
+                                                %       <a href="localnetworksd?CsrfDef=$csrf_token&trt=DEL&localnetwork=$local_network_entry">
+						%	<button type='button' class='sme-remove-button' title='$remove_text' >
 						%		$remove_text
 						%	</button>
+                                                %       </a>
 						%};
 					% }
 					<td class='sme-border'><%= $c->render_to_string(inline => $actionRemove) %></td>

@@ -96,10 +96,11 @@
 						%my $remove_text = l('REMOVE');  # Localized text
 						%my $csrf_token = "TOKEN";  # CSRF token for security
 						%my $actionRemove = qq{
-						%	<button type='button' class='sme-remove-button' title='$remove_text' 
-						%		onclick="window.location.href='portforwardingd?CsrfDef=$csrf_token&trt=DEL&sport=$sport&proto=$proto'">
+                                                %       <a href="portforwardingd?CsrfDef=$csrf_token&trt=DEL&sport=$sport&proto=$proto">
+						%	<button type='button' class='sme-remove-button' title='$remove_text' >
 						%		$remove_text
 						%	</button>
+                                                %       </a>
 						%};
 					<%= $c->render_to_string(inline => $actionRemove) %>
 					</td>

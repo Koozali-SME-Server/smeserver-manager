@@ -61,10 +61,11 @@
 					%my $csrf_token = "TOKEN";  # CSRF token for security
 					%my $pseudonyms_entry_name = $pseudonym->key;  # pseudonyms_entry name extracted from the data structure
 					%$actionModify = qq{
-					%	<button type='button' class='sme-modify-button' title='$modify_text' 
-					%		onclick="window.location.href='pseudonyms2?CsrfDef=$csrf_token&trt=UPD&pseudonym=$pseudonyms_entry_name'">
+                                        %       <a href="pseudonyms2?CsrfDef=$csrf_token&trt=UPD&pseudonym=$pseudonyms_entry_name">
+					%	<button type='button' class='sme-modify-button' title='$modify_text' >
 					%		$modify_text
 					%	</button>
+                                        %       </a>
 					%};
 				%}
 
@@ -73,10 +74,11 @@
 					%my $csrf_token = "TOKEN";  # CSRF token for security
 					%my $pseudonyms_entry_name = $pseudonym->key;  # pseudonyms_entry name extracted from the data structure
 					%$actionRemove = qq{
-					%	<button type='button' class='sme-remove-button' title='$remove_text' 
-					%		onclick="window.location.href='pseudonyms2?CsrfDef=$csrf_token&trt=DEL&pseudonym=$pseudonyms_entry_name'">
+                                        %       <a href="pseudonyms2?CsrfDef=$csrf_token&trt=DEL&pseudonym=$pseudonyms_entry_name">
+					%	<button type='button' class='sme-remove-button' title='$remove_text' >
 					%		$remove_text
 					%	</button>
+                                        %       </a>
 					%};
 				%}
 				<%= $c->render_to_string(inline => $actionModify) %> <%= $c->render_to_string(inline => $actionRemove) %>
