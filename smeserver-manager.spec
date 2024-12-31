@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 34
+%define release 35
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Dec 31 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-35.sme
+- fix PATH [SME: 12847]
+
 * Tue Dec 31 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-34.sme
 - fix css warning xxcolor [SME: 12844]
 - update CSP style rules [SME: 12840]

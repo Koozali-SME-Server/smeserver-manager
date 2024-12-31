@@ -9,7 +9,7 @@ use esmith::util;
 BEGIN
 {
     $0 =~ /^(.+)$/ms; $0 = $1; # Untaint script name
-    $ENV{'PATH'} = '/bin:/usr/bin:/usr/local/bin';
+    $ENV{'PATH'} = '/usr/sbin:/usr/bin:/usr/local/bin';
     $ENV{'SHELL'} = '/bin/bash';
     $ENV{'HOME'} = '/usr/share/smanager';
     delete $ENV{'ENV'};
