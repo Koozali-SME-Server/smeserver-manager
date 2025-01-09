@@ -34,8 +34,8 @@
 	<p><span class=label>
 	%=l 'mai_LABEL_SPAM_SCAN'
 	</span><span class=input>
-	% param 'SpamStatus' => $mai_datas->{spamstatus} unless param 'SpamStatus';
-	%= select_field 'SpamStatus' => [[(l 'DISABLED') => 'disabled'], [ (l 'ENABLED') => 'enabled']], class => 'input'
+	% param 'Spamstatus' => $mai_datas->{spamstatus} unless param 'Spamstatus';
+	%= select_field 'Spamstatus' => [[(l 'DISABLED') => 'disabled'], [ (l 'ENABLED') => 'enabled']], class => 'input'
 	</span></p>
 
 	<p><span class=label>

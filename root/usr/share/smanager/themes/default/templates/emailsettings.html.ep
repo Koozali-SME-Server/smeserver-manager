@@ -86,22 +86,24 @@
 	</span><span class=data2>
 	%= $mai_datas->{fetchmailmethod}
 	</span></p>
+	
+	% my $smtp_mesg;
 
-	% my $smtp_mesg=l('SMTP port %u allow client to authenticate:');
+	% $smtp_mesg=l('SMTP port %u allow client to authenticate:');
 	<p><span class=label>
 		%= sprintf($smtp_mesg,$c->get_db_prop('qpsmtpd','TCPPort',25)); 
 	</span><span class=data2>
 	%= $c->get_current_smtp_auth( TRUE )
 	</span></p>
 
-	% my $smtp_mesg=l('SMTPS SSL/TLS auth: port %u status:');
+	% $smtp_mesg=l('SMTPS SSL/TLS auth: port %u status:');
 	<p><span class=label>
 		%= sprintf($smtp_mesg,$c->get_db_prop('sqpsmtpd','TCPPort',465)); 
 	</span><span class=data2>
 	%= $c->get_current_smtp_ssl_auth( TRUE, 's', FALSE )
 	</span></p>
 
-	%my $smtp_mesg=l 'Submission port %u status:';
+	% $smtp_mesg=l 'Submission port %u status:';
 	<p><span class=label>
 		%= sprintf($smtp_mesg,$c->get_db_prop('uqpsmtpd','TCPPort',587)); 
 	</span><span class=data2>
@@ -109,7 +111,7 @@
 	</span></p>
 	<br />
 
-    % 	my $btn = l('mai_DESC_STATE_RECEPTION_BUTTON');
+    % my $btn = l('mai_DESC_STATE_RECEPTION_BUTTON');
     <div class='center'>
 	%= submit_button "$btn", class => 'action'
     </div>

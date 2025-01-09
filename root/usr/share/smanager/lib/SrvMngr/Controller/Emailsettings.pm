@@ -964,7 +964,7 @@ sub change_settings_filtering {
 			TagLevel
 			RejectLevel
 			SortSpam 
-                        Subject
+			Subject
 			SubjectTag) )
     {
 	  $cdb->set_prop('spamassassin', $param, $c->param("Spam$param"));
