@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 36
+%define release 37
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Jan 09 2025 Brian Read <brianr@koozali.org> 11.0.0-37.sme
+- Delete userpanelaccess from base (left in incorrectly after saome testing)  [SME: 12839]
+
 * Thu Jan 09 2025 Brian Read <brianr@koozali.org> 11.0.0-36.sme
 - Fix spamassassin status not coming through from email filter panel to email settings panel  [SME: 12868]
 - Correct spelling of API in letsencrypt panel [SME: 12864]
