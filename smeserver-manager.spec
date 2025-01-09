@@ -117,6 +117,7 @@ true
 %changelog
 * Thu Jan 09 2025 Brian Read <brianr@koozali.org> 11.0.0-36.sme
 - Fix spamassassin status not coming through from email filter panel to email settings panel  [SME: 12868]
+- Correct spelling of API in letsencrypt panel [SME: 12864]
 
 * Tue Dec 31 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-35.sme
 - fix PATH [SME: 12847]
