@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 37
+%define release 38
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,8 +115,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Jan 11 2025 Brian Read <brianr@koozali.org> 11.0.0-38.sme
+- Fix password reset for admin in user panel [SME: 12655]
+
 * Thu Jan 09 2025 Brian Read <brianr@koozali.org> 11.0.0-37.sme
-- Delete userpanelaccess from base (left in incorrectly after saome testing)  [SME: 12839]
+- Delete userpanelaccess from base (left in incorrectly after some testing)  [SME: 12839]
 
 * Thu Jan 09 2025 Brian Read <brianr@koozali.org> 11.0.0-36.sme
 - Fix spamassassin status not coming through from email filter panel to email settings panel  [SME: 12868]
