@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 38
+%define release 39
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Jan 14 2025 Brian Read <brianr@koozali.org> 11.0.0-39.sme
+- Apply perltidy to all Controller files, add .perltidy to directory and .gitignore for .tdy files (just incase) [SME: 12485]
+
 * Sat Jan 11 2025 Brian Read <brianr@koozali.org> 11.0.0-38.sme
 - Fix password reset for admin in user panel [SME: 12655]
 

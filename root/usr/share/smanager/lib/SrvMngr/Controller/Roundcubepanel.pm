@@ -10,37 +10,27 @@ package SrvMngr::Controller::Roundcubepanel;
 #
 # routes : end
 #----------------------------------------------------------------------
-
 use strict;
 use warnings;
-
 use Mojo::Base 'Mojolicious::Controller';
-
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
 
 #use SrvMngr::Model::Main;
-
-
 sub main {
-
     my $c = shift;
     $c->app->log->info($c->log_req);
-
-    my $title = $c->l('Roundcube Webmail');
-    my $roundcube_url = $c->param('url');
+    my $title            = $c->l('Roundcube Webmail');
+    my $roundcube_url    = $c->param('url');
     my $roundcube_height = $c->param('height') | 600;
-    $c->stash( title => $title, modul => $roundcube_url, height => $roundcube_height );
+    $c->stash(title => $title, modul => $roundcube_url, height => $roundcube_height);
     $c->render(template => 'roundcube');
-
-}
+} ## end sub main
 
 sub getroundcubeurl {
-	my $c = shift;
-	my $url = shift;
-	return "/smanager/roundcube?url=$url";
-}
-
-
+    my $c   = shift;
+    my $url = shift;
+    return "/smanager/roundcube?url=$url";
+} ## end sub getroundcubeurl
 1;
