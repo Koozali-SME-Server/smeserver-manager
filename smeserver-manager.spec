@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 39
+%define release 40
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Jan 15 2025 Brian Read <brianr@koozali.org> 11.0.0-40.sme
+- Comment out missing prefix message in navigation2-conf action and re-format it with perltidy [SME: 127672]
+
 * Tue Jan 14 2025 Brian Read <brianr@koozali.org> 11.0.0-39.sme
 - Apply perltidy to all Controller files, add .perltidy to directory and .gitignore for .tdy files (just incase) [SME: 12485]
 

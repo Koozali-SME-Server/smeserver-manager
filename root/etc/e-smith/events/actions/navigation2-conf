@@ -1,218 +1,207 @@
 #!/usr/bin/perl -w
-
 #----------------------------------------------------------------------
 # copyright (C) 1999-2006 Mitel Networks Corporation
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 		
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 		
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-# 
+#
 #----------------------------------------------------------------------
 package esmith;
 use strict;
-
-use constant SMNGR_LIB => '/usr/share/smanager/lib';
-use constant I18NMODULES => 'SrvMngr/I18N/Modules';
-use constant WEBFUNCTIONS => 'SrvMngr/Controller';
-use constant NAVDIR => '/home/e-smith/db';
+use constant SMNGR_LIB     => '/usr/share/smanager/lib';
+use constant I18NMODULES   => 'SrvMngr/I18N/Modules';
+use constant WEBFUNCTIONS  => 'SrvMngr/Controller';
+use constant NAVDIR        => '/home/e-smith/db';
 use constant NAVIGATIONDIR => 'navigation2';
-use constant DEBUG => 0;
-
+use constant DEBUG         => 0;
 use esmith::NavigationDB;
 use esmith::I18N;
-
-use Data::Dumper;	# activate if DEBUG
-
+use Data::Dumper;    # activate if DEBUG
 binmode(STDOUT, ":encoding(UTF-8)");
-
-my $navigation_ignore = 
-	"(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm(-.*)?)";
-
-my $i18n = new esmith::I18N;
-
+my $navigation_ignore = "(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm(-.*)?)";
+my $i18n              = new esmith::I18N;
 my %navdbs;
-
-opendir FUNCTIONS, SMNGR_LIB.'/'.WEBFUNCTIONS or 
-    die "Couldn't open ", SMNGR_LIB.'/'.WEBFUNCTIONS, "\n";
-my @files = grep (!/^${navigation_ignore}$/, readdir (FUNCTIONS));
+opendir FUNCTIONS, SMNGR_LIB . '/' . WEBFUNCTIONS
+    or die "Couldn't open ", SMNGR_LIB . '/' . WEBFUNCTIONS, "\n";
+my @files = grep (!/^${navigation_ignore}$/, readdir(FUNCTIONS));
 closedir FUNCTIONS;
+my @langs = $i18n->availableLanguages();
 
-my @langs = $i18n->availableLanguages(); 
 #my @langs = ('tr');  #Temp override
+foreach my $lang (@langs) {
+    my $long_lex = SMNGR_LIB . '/' . I18NMODULES . "/General/general_$lang.lex";
+    next unless (-e $long_lex);
+    open(LEX, '<:encoding(UTF-8)', $long_lex)
+        or die "Couldn't open ", $long_lex, " for reading.\n";
+    my @gen_lex = <LEX>;
+    close LEX;
 
+    #my @files = ('Portforwarding.pm');  #Temp override
+    foreach my $file (@files) {
+        next if (-d SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file");
 
-foreach my $lang (@langs)
-{
-	my $long_lex = SMNGR_LIB.'/'.I18NMODULES."/General/general_$lang.lex";
-	next unless ( -e $long_lex );
+        #        next unless ( $file =~ m/D.*\.pm$/ );
+        next unless ($file =~ m/[A-Z].*\.pm$/);
+        my $file2 = lc($file);
+        $file2 =~ s/\.pm$//;
 
-	open(LEX, '<:encoding(UTF-8)', $long_lex)
-		 or die "Couldn't open ", $long_lex, " for reading.\n";
-	my @gen_lex = <LEX>;
-	close LEX;
+        #--------------------------------------------------
+        # extract heading, description and weight information
+        # from Mojo controller
+        #--------------------------------------------------
+        open(SCRIPT, SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file");
+        my $heading            = undef;
+        my $description        = undef;
+        my $heading_weight     = undef;
+        my $description_weight = undef;
+        my $menucat            = undef;
+        my $routes             = undef;
 
-	#my @files = ('Portforwarding.pm');  #Temp override
-	foreach my $file (@files)
-	{
-		next if (-d SMNGR_LIB.'/'.WEBFUNCTIONS . "/$file");
-		#        next unless ( $file =~ m/D.*\.pm$/ );
-			next unless ( $file =~ m/[A-Z].*\.pm$/ );
+        while (<SCRIPT>) {
+            $heading     = $1 if (/^\s*#\s*heading\s*:\s*(.+?)\s*$/);
+            $description = $1
+                if (/^\s*#\s*description\s*:\s*(.+?)\s*$/);
+            ($heading_weight, $description_weight) = ($1, $2)
+                if (/^\s*#\s*navigation\s*:\s*(\d+?)\s+(\d+?)\s*$/);
+            $menucat = $1
+                if (/^\s*#\s*menu\s*:\s*(.+?)\s*$/);
+            last
+                if (defined $heading
+                and defined $description
+                and defined $heading_weight
+                and defined $description_weight
+                and defined $menucat);
 
-		my $file2 = lc($file);
-		$file2 =~ s/\.pm$//;
-		#-------------------------------------------------- 
-		# extract heading, description and weight information
-		# from Mojo controller
-		#-------------------------------------------------- 
-		open(SCRIPT, SMNGR_LIB.'/'.WEBFUNCTIONS . "/$file");
-		my $heading            	= undef;
-		my $description        	= undef;
-		my $heading_weight     	= undef;
-		my $description_weight 	= undef;
-		my $menucat		= undef;
-		my $routes		= undef;
+            # routes : end  (stop before eof if 'menu' is not here before 'routes'!!!
+            $routes = $1 if (/^\s*#\s*routes\s*:\s*(.+?)\s*$/);
+            last         if (defined $routes and $routes eq 'end');
+        } ## end while (<SCRIPT>)
+        close SCRIPT;
+        print "updating script $file for lang $lang\n" if DEBUG;
+        my $navdb   = $navdbs{$lang};
+        my $navinfo = NAVDIR . '/' . NAVIGATIONDIR . "/navigation.$lang";
+        $navdb ||= esmith::NavigationDB->open($navinfo);
+        $navdb ||= esmith::NavigationDB->create($navinfo)
+            or die "Couldn't create $navinfo\n";
+        $navdbs{$lang} ||= $navdb;
+        my $rec = $navdb->get($file2)
+            || $navdb->new_record($file2, { type => 'panel' });
+        my @panel_lex = ();
+        $long_lex = SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_$lang.lex";
 
-		while ( <SCRIPT> )
-		{
-			$heading = $1 if (/^\s*#\s*heading\s*:\s*(.+?)\s*$/);
-			$description = $1 
-			if (/^\s*#\s*description\s*:\s*(.+?)\s*$/);
-			($heading_weight, $description_weight) = ($1, $2) 
-			if (/^\s*#\s*navigation\s*:\s*(\d+?)\s+(\d+?)\s*$/);
-			$menucat = $1 
-			if (/^\s*#\s*menu\s*:\s*(.+?)\s*$/);
+        if (-e $long_lex) {
+            open(LEX, '<:encoding(UTF-8)', $long_lex)
+                or die "Couldn't open ", $long_lex, " for reading.\n";
+            @panel_lex = <LEX>;
+            close LEX;
+        } ## end if (-e $long_lex)
 
-			last if (defined $heading and 
-			defined $description and
-			defined $heading_weight and
-			defined $description_weight and
-			defined $menucat);
+        #Extract the prefix for this module
+        my @keys   = values @panel_lex;    # Get all values from the array
+        my $i      = 0;                    # Initialize the index
+        my $found  = 0;                    # Flag to check if the prefix was found
+        my $prefix = "xx_";                # Probably never match!!
 
-			# routes : end  (stop before eof if 'menu' is not here before 'routes'!!!
-			$routes = $1 if (/^\s*#\s*routes\s*:\s*(.+?)\s*$/);
-			last if (defined $routes and $routes eq 'end');
-		}
-		close SCRIPT;
+        while ($i < @keys) {               # Loop until we run out of entries
+            my $extracted_value = $keys[$i] || "";    # The current entry
+                                                      #print("Extracted val: ".$extracted_value."\n");
 
-		print "updating script $file for lang $lang\n"if DEBUG;
-		my $navdb = $navdbs{$lang};
-		my $navinfo = NAVDIR.'/'.NAVIGATIONDIR . "/navigation.$lang";
-		$navdb ||= esmith::NavigationDB->open($navinfo);
-		$navdb ||= esmith::NavigationDB->create($navinfo) or
-			die "Couldn't create $navinfo\n";
-			$navdbs{$lang} ||= $navdb;
-		my $rec = $navdb->get($file2) || 
-			$navdb->new_record($file2, { type => 'panel' } );
-		
-		my @panel_lex = ();
-		$long_lex = SMNGR_LIB.'/'.I18NMODULES.'/'.ucfirst($file2)."/${file2}_$lang.lex";
-		if ( -e $long_lex ) {
-			open(LEX, '<:encoding(UTF-8)', $long_lex)
-				 or die "Couldn't open ", $long_lex, " for reading.\n";
-			@panel_lex = <LEX>;
-			close LEX;
-		}
-		#Extract the prefix for this module
-		my @keys = values @panel_lex;  # Get all values from the array
-		
-		my $i = 0;                    # Initialize the index
-		my $found = 0;                # Flag to check if the prefix was found
-		my $prefix = "xx_";			  # Probably never match!!
+            # Extract prefix from the second value (up to and including the first underscore)
+            #my ($prefix) = $second_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
+            ($prefix) = $extracted_value =~ /^'(.*?_)/;    # Match everything up to and including the first underscore
 
-		while ($i < @keys) {          # Loop until we run out of entries
-			my $extracted_value = $keys[$i] || "";  # The current entry
-			#print("Extracted val: ".$extracted_value."\n");
+            if (defined $prefix) {
+                $found = 1;                                # Set found flag to true
+                last;                                      # Exit the loop if prefix is found
+            } else {
 
-			# Extract prefix from the second value (up to and including the first underscore)
-			#my ($prefix) = $second_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
-			($prefix) = $extracted_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
-			
-			if (defined $prefix) {
-				$found = 1;           # Set found flag to true
-				last;                 # Exit the loop if prefix is found
-			} else {
-				#print("Extracted Val: " . $extracted_value . "\n");
-			}
+                #print("Extracted Val: " . $extracted_value . "\n");
+            }
+            $i++;                                          # Increment the index to check the next entry
+        } ## end while ($i < @keys)
 
-			$i++;                     # Increment the index to check the next entry
-		}
+        if (!$found) {
+            #print(STDERR "No valid prefix found in any entries: " . $file2 . " (" . $lang . ")\n");    # if DEBUG;
+            $prefix = "xx_";    # Probably never match!!
+        }
 
-		if (!$found) {
-			print(STDERR "No valid prefix found in any entries: ".$file2." (".$lang.")\n"); # if DEBUG;
-			$prefix = "xx_";			  # Probably never match!!
-			
-		}
-		#print("Prefix: ".$prefix." ".$file2." (".$lang.")\n");
-		
-		my %Lexicon = ();
-		push(@panel_lex, @gen_lex);
-		my $top_error = 0;
+        #print("Prefix: ".$prefix." ".$file2." (".$lang.")\n");
+        my %Lexicon = ();
+        push(@panel_lex, @gen_lex);
+        my $top_error = 0;
+        chomp @panel_lex;
 
-		chomp @panel_lex;
-		for (@panel_lex) {
-			next unless $_;	# first one empty
-			my ($k, $v) = split / => /, $_;
-		#	errors on split to $v (use DEBUG to see)
-			if ( $k and $v ) {
-				$k =~ s/\'//g;
-				$v =~ s/\'//g;
-				$v =~ s/,$//g;
-				$Lexicon{ lc($k) } = $v;
-			} else {
-				$k = "?" unless ($k);
-				print STDERR "Error for $lang $file2 on $k \n" if DEBUG;
-				$top_error++;
-			}
-		}
-		if ( $top_error > 0) {
-			if ( DEBUG ) {
-				print STDERR "$top_error errors for $lang $file2\n";
-				#		print Dumper(\@panel_lex);
-				#		print Dumper(\%Lexicon);
-				#		exit 1;
-			}
-		}
-		$heading = "" unless defined $heading;
-		$description = "" unless defined $description;
-		# Get the base language code from $lang
-		my $base_lang = (split('-', $lang))[0];
-		my $loc_heading =  process_localization( \%Lexicon, $heading, $lang, $prefix );
-		my $loc_description =  process_localization( \%Lexicon, $description, $lang, $prefix );
-		$loc_heading =~ s/^\s*(\w.*?)\s*$/$1/;
-		$loc_description =~ s/^\s*(\w.*?)\s*$/$1/;
+        for (@panel_lex) {
+            next unless $_;     # first one empty
+            my ($k, $v) = split / => /, $_;
 
-		$rec->merge_props(
-			Heading => $loc_heading,
-			Description => $loc_description,
-			HeadingWeight => localise( \%Lexicon, $heading_weight ),
-			DescriptionWeight => localise( \%Lexicon, $description_weight ),
-			MenuCat => (defined $menucat ? $menucat : 'A'));
-	}
-	#warn "trying to close for lang $lang\n";
-	my $navdb = $navdbs{$lang};
-	$navdb->close();
-}
+            #	errors on split to $v (use DEBUG to see)
+            if ($k and $v) {
+                $k =~ s/\'//g;
+                $v =~ s/\'//g;
+                $v =~ s/,$//g;
+                $Lexicon{ lc($k) } = $v;
+            } else {
+                $k = "?" unless ($k);
+                print STDERR "Error for $lang $file2 on $k \n" if DEBUG;
+                $top_error++;
+            }
+        } ## end for (@panel_lex)
 
+        if ($top_error > 0) {
+            if (DEBUG) {
+                print STDERR "$top_error errors for $lang $file2\n";
+
+                #		print Dumper(\@panel_lex);
+                #		print Dumper(\%Lexicon);
+                #		exit 1;
+            } ## end if (DEBUG)
+        } ## end if ($top_error > 0)
+        $heading     = "" unless defined $heading;
+        $description = "" unless defined $description;
+
+        # Get the base language code from $lang
+        my $base_lang       = (split('-', $lang))[0];
+        my $loc_heading     = process_localization(\%Lexicon, $heading,     $lang, $prefix);
+        my $loc_description = process_localization(\%Lexicon, $description, $lang, $prefix);
+        $loc_heading     =~ s/^\s*(\w.*?)\s*$/$1/;
+        $loc_description =~ s/^\s*(\w.*?)\s*$/$1/;
+        $rec->merge_props(
+            Heading           => $loc_heading,
+            Description       => $loc_description,
+            HeadingWeight     => localise(\%Lexicon, $heading_weight),
+            DescriptionWeight => localise(\%Lexicon, $description_weight),
+            MenuCat           => (defined $menucat ? $menucat : 'A')
+        );
+    } ## end foreach my $file (@files)
+
+    #warn "trying to close for lang $lang\n";
+    my $navdb = $navdbs{$lang};
+    $navdb->close();
+} ## end foreach my $lang (@langs)
 
 sub localise {
     my ($lexicon, $string) = @_;
+
     #print("Looking up:".$string."\n");
-    $string  = "" unless defined $string;
+    $string = "" unless defined $string;
     my $lc_string = lc($string);
-    my $res = $lexicon->{$lc_string} || $string;
+    my $res       = $lexicon->{$lc_string} || $string;
+
     #print("Returning:".$res."\n");
     return $res;
-}
+} ## end sub localise
 
 # Subroutine to process localization
 sub process_localization {
@@ -226,15 +215,17 @@ sub process_localization {
 
     # Check the condition
     if ($loc_heading eq $heading && $base_lang ne 'en') {
+
         # Construct the new key by combining the prefix and the original heading
         my $key = $prefix . $heading;
+
         # Localize using the constructed key
         $loc_heading = localise($lexicon_ref, $key);
+
         # See if it got a hit
-        if ($loc_heading eq $key){
-			$loc_heading = $heading;
-		}
-    }
-    
-    return $loc_heading; # Optionally return the localized heading
-}
+        if ($loc_heading eq $key) {
+            $loc_heading = $heading;
+        }
+    } ## end if ($loc_heading eq $heading...)
+    return $loc_heading;    # Optionally return the localized heading
+} ## end sub process_localization
