@@ -128,6 +128,7 @@ sub findlogFiles {
             # or not log files
             foreach (
                 qw(
+                journal
                 lastlog
                 btmp$
                 wtmp
