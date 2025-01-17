@@ -11,7 +11,7 @@
 	<span class=label>
 	%=l 'usr_CURRENT_SYSTEM_PASSWORD', class => 'label'
 	</span><span class=data>
-	%= password_field 'CurPass', class => 'input'
+	%= password_field 'CurPass', class => 'input', class=>'sme-password'
 	</span>
 	</p>
 
@@ -19,7 +19,7 @@
 	<span class=label>
 	%=l 'usr_NEW_SYSTEM_PASSWORD', class => 'label'
 	</span><span class=data>
-	%= password_field 'Pass', class => 'input'
+	%= password_field 'Pass', class => 'input', class=>'sme-password'
 	</span>
 	</p>
 
@@ -27,7 +27,7 @@
 	<span class=label>
 	%=l 'usr_NEW_SYSTEM_PASSWORD_VERIFY', class => 'label'
 	</span><span class=data>
-	%= password_field 'PassVerify', class => 'input'
+	%= password_field 'PassVerify', class => 'input', class=>'sme-password'
 	</span>
 	</p>
 

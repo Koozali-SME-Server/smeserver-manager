@@ -11,6 +11,7 @@
     %= stylesheet '/css/sme_main.css'
     %= stylesheet '/css/sme_menu.css'
     %= stylesheet '/css/styles.css'
+    %= stylesheet '/css/sme-password.css'
     %= content_for 'head_contrib'
     % if (config 'hasJquery') {
 	%= include 'partials/_js_imports'
@@ -32,6 +33,7 @@
 	%= javascript '/js/buttons.html5.min.js'
 	%= javascript '/js/buttons.print.min.js'
 	%= javascript '/js/flag-by-locale.js'
+	%= javascript '/js/sme-password.js'
 
 	<link rel="stylesheet" href="/smanager/css/flag-icon.min.css">
 	%= stylesheet '/css/sme-jquery-overrides.css'

@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 41
+%define release 42
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Jan 17 2025 Brian Read <brianr@koozali.org> 11.0.0-42.sme
+- Implement password visibility icon - [SME: 12803]
+
 * Wed Jan 15 2025 Brian Read <brianr@koozali.org> 11.0.0-41.sme
 - Add journal files to those not viewable [SME: 12870]
 

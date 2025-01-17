@@ -1,5 +1,5 @@
 
-<!--*** toggle hide/unhide password field in login panel ***-->
+<!--*** toggle hide/unhide password field in login panel ***
 
 % content_for 'js_togglePassword' => begin
   %= javascript begin
@@ -22,7 +22,7 @@
 
   % end
 % end
-
+-->
 
 <!--*** toggle hide/unhide menu contents navigation menu ***-->
 

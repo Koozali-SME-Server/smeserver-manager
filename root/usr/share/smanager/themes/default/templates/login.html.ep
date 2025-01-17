@@ -43,9 +43,9 @@
     <p><span class=label>
     %=l 'PASSWORD'
     </span><span class=input>
-    %= password_field 'Password', id => 'id_password', autocomplete => 'current-password'
+    %= password_field 'Password', id => 'id_password', autocomplete => 'current-password', class=>'sme-password'
     % if (config 'hasJquery') {
-	<a href='#' id='togglePassword' class='toggle-password tg-icon'> <img src="images/visible.png" height="16" alt="Visible"></a>
+	%#<a href='#' id='togglePassword' class='toggle-password tg-icon'> <img src="images/visible.png" height="16" alt="Visible"></a>
     % }
     </span></p>
 %}

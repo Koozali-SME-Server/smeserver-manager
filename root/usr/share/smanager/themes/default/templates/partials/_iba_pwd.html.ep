@@ -17,7 +17,7 @@
 	<span class=label>
 	%=l 'PASSWORD_NEW', class => 'label'
 	</span><span class=data>
-	%= password_field 'newPass', class => 'input'
+	%= password_field 'newPass', class => 'input' , class=>'sme-password'
 	</span>
 	</p>
 
@@ -25,7 +25,7 @@
 	<span class=label>
 	%=l 'PASSWORD_VERIFY_NEW', class => 'label'
 	</span><span class=data>
-	%= password_field 'newPassVerify', class => 'input'
+	%= password_field 'newPassVerify', class => 'input', class=>'sme-password'
 	</span>
 	</p>
 
