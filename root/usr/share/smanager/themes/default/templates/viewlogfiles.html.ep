@@ -2,7 +2,7 @@
 
 % content_for 'module' => begin
 <div id='module' class='module viewlogfiles-panel'>
-    %if ($config->{debug} == 1) {
+    %if (config->{debug} == 1) {
 	<p>
 	(DBG)route: <%= $c->current_route %><br>
 	</p>

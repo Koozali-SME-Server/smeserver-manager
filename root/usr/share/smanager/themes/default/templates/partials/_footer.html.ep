@@ -4,6 +4,7 @@
 <font class="sme-copyright">
 %	if ( $c->is_logged_in ) {
 	SME Server <%= session 'releaseVersion' %>-<%= $c->app->VERSION %> Manager II
+	<%= Mojolicious->VERSION %>
 % }
 <br>Copyright 1999-2006 Mitel Corporation<br>
 %= session 'copyRight'

@@ -7,7 +7,7 @@
 
 <div id='module' class='module emailsettings-panel'>
 
-    % if ($config->{debug} == TRUE) {
+    % if (config->{debug} == TRUE) {
 	<p>
 	%= dumper $c->current_route
 	%= dumper $mai_datas

@@ -3,7 +3,7 @@
 % content_for 'module' => begin
 
 <div id='module' class='module yumpostupg-panel'>
-    % if ($config->{debug} == 1) {
+    % if (config->{debug} == 1) {
 	<p>
 	%= dumper $c->current_route
 	%= dumper $yum_datas

@@ -4,7 +4,7 @@
 
 <div id='module' class='module bugreport-panel'>
 
-    % if ($config->{debug} == 1) {
+    % if (config->{debug} == 1) {
 	<p>
 	(DBG)route: <%= $c->current_route %><br>
 	(DBG)trt: <%= $bugr_datas->{trt} %><br>

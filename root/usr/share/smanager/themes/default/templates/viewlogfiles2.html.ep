@@ -4,7 +4,7 @@
 
 <div id='module' class='module viewlogfiles2-panel'>
 
-    % if ($config->{debug} == 1) {
+    % if (config->{debug} == 1) {
 	<p>
 	(DBG)route: <%= $c->current_route %><br>
 	(DBG)trt: <%= $log_datas->{trt} %><br>

@@ -3,7 +3,7 @@
 % content_for 'module' => begin
 <div id='module' class='module directory-panel'>
 
-    %if ($config->{debug} == 1) {
+    %if (config->{debug} == 1) {
 	<p>
 	(DBG)route: <%= $c->current_route %><br>
 	(DBG)dir. access: <%= $dir_datas->{access}%><br>

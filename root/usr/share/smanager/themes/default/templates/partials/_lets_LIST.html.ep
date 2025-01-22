@@ -7,7 +7,7 @@
 		SelectInput();
 	};
 	</script>
-	% if ($config->{debug} == 1) {
+	% if (config->{debug} == 1) {
 		<pre>
 			%= dumper $lets_data
 		</pre>

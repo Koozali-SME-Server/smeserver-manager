@@ -3,7 +3,7 @@
 % content_for 'module' => begin
 
 <div id='module' class='module back_tape_restore-panel'>
-    % if ($config->{debug} == 1) {
+    % if (config->{debug} == 1) {
 	<p>
 	%= dumper $c->current_route
 	%= dumper $bac_datas

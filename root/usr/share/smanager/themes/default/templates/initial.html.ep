@@ -2,7 +2,7 @@
 
 % content_for 'module' => begin
 
-    % if ($config->{debug} == 1) {
+    % if (config->{debug} == 1) {
 	<p>
 	%= dumper $c->current_route
 	</p>

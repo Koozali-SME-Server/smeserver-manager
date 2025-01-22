@@ -29,7 +29,7 @@
 	<br />
     % my $btn = l('ADD');
     
-   % if ($config->{debug} == 1) {
+   % if (config->{debug} == 1) {
 	<p>
 	%= dumper $c->current_route
 	%= dumper $c->stash("ret")
