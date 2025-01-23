@@ -305,10 +305,10 @@ sub do_display {
     my $modul     = "";
 
     # Accessing all parameters
-    my %params = $c->req->params->to_hash;
+    my $params = $c->req->params->to_hash;
 
     # Get number of parameters
-    my $num_params = keys %params;
+    my $num_params = scalar keys %$params;
 
     #Tag as Post or Get (ie. create new entry or edit existing one
     my $is_new_record = ($c->req->method() eq 'POST');

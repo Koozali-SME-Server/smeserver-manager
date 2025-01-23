@@ -354,7 +354,7 @@ sub get_selected_LIST {
     my $selected      = shift;    #Parameter is name of selected row.
     my $is_new_record = shift;    #Indicates new record required (defaults)
     my %ret           = {};
-    return $ret;
+    return %ret;
 } ## end sub get_selected_LIST
 
 sub get_selected_PARAMS {
@@ -362,7 +362,7 @@ sub get_selected_PARAMS {
     my $selected      = shift;    #Parameter is name of selected row.
     my $is_new_record = shift;    #Indicates new record required (defaults)
     my %ret           = {};
-    return $ret;
+    return %ret;
 } ## end sub get_selected_PARAMS
 
 sub get_selected_CHECKALLDOMAINS {
@@ -370,7 +370,7 @@ sub get_selected_CHECKALLDOMAINS {
     my $selected      = shift;    #Parameter is name of selected row.
     my $is_new_record = shift;    #Indicates new record required (defaults)
     my %ret           = {};
-    return $ret;
+    return %ret;
 } ## end sub get_selected_CHECKALLDOMAINS
 
 sub get_selected_CHECKALLENABLEDDOMAINS {
@@ -378,7 +378,7 @@ sub get_selected_CHECKALLENABLEDDOMAINS {
     my $selected      = shift;    #Parameter is name of selected row.
     my $is_new_record = shift;    #Indicates new record required (defaults)
     my %ret           = {};
-    return $ret;
+    return %ret;
 } ## end sub get_selected_CHECKALLENABLEDDOMAINS
 
 sub get_selected_CHECKONEDOMAIN {
@@ -386,7 +386,7 @@ sub get_selected_CHECKONEDOMAIN {
     my $selected      = shift;    #Parameter is name of selected row.
     my $is_new_record = shift;    #Indicates new record required (defaults)
     my %ret           = {};
-    return $ret;
+    return %ret;
 } ## end sub get_selected_CHECKONEDOMAIN
 
 #after sucessful modify or create or whatever and submit then perfom (if the params validate)
