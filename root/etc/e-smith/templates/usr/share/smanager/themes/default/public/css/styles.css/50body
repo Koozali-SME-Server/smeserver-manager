@@ -80,6 +80,7 @@ a:active { color: #606060; text-decoration: none; }
 
 .sme-error {
     color: red;
+    display:block;
     background-color: #ffffff;
     border-width: 1px;
     border-style: solid;
@@ -93,6 +94,7 @@ a:active { color: #606060; text-decoration: none; }
 
 .sme-warning {
     color: orange;
+    display:block;  
     background-color: #ffffff;
     border-width: 1px;
     border-style: solid;

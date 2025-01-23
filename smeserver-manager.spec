@@ -118,7 +118,8 @@ true
 * Thu Jan 23 2025 Brian Read <brianr@koozali.org> 11.0.0-43.sme
 - fix access to config file though config plugin for mojo 9.39 [SME: 12885]
 - Fix password setting for useraccounts and also adjust DB opens
-- Add mojo version to footer for logged in.
+- Add mojo version to footer for logged in [SME: 12886]
+- Fix up css for red error message when multiline [SME: 12802]
 
 * Fri Jan 17 2025 Brian Read <brianr@koozali.org> 11.0.0-42.sme
 - Implement password visibility icon - [SME: 12803]
