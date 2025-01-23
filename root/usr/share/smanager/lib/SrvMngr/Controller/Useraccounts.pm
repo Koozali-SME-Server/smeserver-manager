@@ -34,6 +34,7 @@ our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
+	my $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
     my $notif     = '';
     my %usr_datas = ();
     my $title     = $c->l('usr_FORM_TITLE');
@@ -394,10 +395,12 @@ sub remove_account {
 sub reset_password {
     my ($c, $user, $passw1) = @_;
 
+
     unless (($user) = ($user =~ /^(\w[\-\w_\.]*)$/)) {
         return $c->l('usr_TAINTED_USER');
     }
     $user = $1;
+	my $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
     my $acct = $adb->get($user);
 
     if ($acct->prop('type') eq "user") {
@@ -445,10 +448,9 @@ sub validate_password {
     }
     $reason ||= "Software error: password check failed";
     return "OK" if ($reason eq "ok");
-    return
-          $c->l("Bad Password Choice") . ": "
+    return $c->l("Bad Password Choice") . ": "
         . $c->l("The password you have chosen is not a good choice, because") . " "
-        . $c->($reason) . ".";
+        . $c->l($reason) . ".";
 } ## end sub validate_password
 
 sub emailForward_list {
