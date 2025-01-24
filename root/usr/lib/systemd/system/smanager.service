@@ -1,7 +1,7 @@
 [Unit]
 Description=Server Manager 2 Mojo
-Requires=network.target httpd-e-smith.service ldap.service
-After=network.target 
+Requires=network-online.target httpd-e-smith.service ldap.service
+After=network-online.target 
 
 [Service]
 Type=simple

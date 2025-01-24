@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 43
+%define release 44
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -115,6 +115,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Jan 24 2025 Brian Read <brianr@koozali.org> 11.0.0-44.sme
+- Change to network-online for systemd startup to make sure network is up [SME: 12758]
+
 * Thu Jan 23 2025 Brian Read <brianr@koozali.org> 11.0.0-43.sme
 - fix access to config file though config plugin for mojo 9.39 [SME: 12885]
 - Fix password setting for useraccounts and also adjust DB opens
