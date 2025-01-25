@@ -20,16 +20,15 @@
 
 	<p>
     %= $c->render_to_string(inline => $c->l('rbo_DESCRIPTION'))
-    <br>
+    <br><br>
 
 	<span class=label>
 	%=l 'rbo_LABEL_REBOOT'
 	</span>
-
 	<span class=data>
 	%= select_field 'function' => $c->rebootFunction_list()
 	</span>
-	</p>
+	</p><br>
 
 	%= submit_button "$btn", class => 'action'
 
