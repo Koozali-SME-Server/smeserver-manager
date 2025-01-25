@@ -24,7 +24,7 @@
 	<span class=label>
 	%=l 'wkg_LABEL_WORKGROUP', class => 'label'
 	</span><span class=data>
-	%= text_field 'Workgroup' =>  $wkg_datas->{Workgroup}, class => 'input'
+	%= text_field 'Workgroup' =>  $wkg_datas->{Workgroup}, class => 'input' , pattern=>".{1,15}", title=>"Limited to 15 characters by the NETBIOS"
 	</span>
 	</p>
 	<p>
