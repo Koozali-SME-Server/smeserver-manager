@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 44
+%define release 45
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -26,18 +26,46 @@ Requires: smeserver-lib >= 1.18.0-26
 Requires: smeserver-manager >= 2.4.0-22
 Requires: smeserver-apache >= 2.6.0-19
 Requires: smeserver-php >= 3.0.0-43
-Requires: perl(Mojolicious) >= 7.56
+#Requires: smeserver-manager-locale >= 11.0.0
+Requires: perl(Mojolicious) >= 8.42
 Requires: perl(Mojolicious::Plugin::I18N) >= 1.6
 Requires: perl(Mojolicious::Plugin::RenderFile) >= 0.12
 Requires: perl(Mojolicious::Plugin::CSRFDefender) >= 0.0.8
 Requires: perl(Net::Netmask) >= 1.9
 Requires: perl(DBM::Deep) >= 2.0011-1
 Requires: perl(Mojo::JWT) >= 0.08-1
+#Requires: perl(Time::TAI64) >= 2.11
 Requires: mutt >= 1.5.21
 Requires: smeserver-manager-jsquery >= 1.0
 Requires: smeserver-lib >= 11.0
 Requires: smeserver-certificates >= 11.0
 #Requires: js-jquery > 2.2.4-3 (optional)
+
+Requires: smeserver-manager-locale-bg
+Requires: smeserver-manager-locale-da
+Requires: smeserver-manager-locale-de
+Requires: smeserver-manager-locale-el
+Requires: smeserver-manager-locale-es
+Requires: smeserver-manager-locale-et
+Requires: smeserver-manager-locale-fr
+Requires: smeserver-manager-locale-he
+Requires: smeserver-manager-locale-hu
+Requires: smeserver-manager-locale-id
+Requires: smeserver-manager-locale-it
+Requires: smeserver-manager-locale-ja
+Requires: smeserver-manager-locale-nb
+Requires: smeserver-manager-locale-nl
+Requires: smeserver-manager-locale-pl
+Requires: smeserver-manager-locale-pt
+Requires: smeserver-manager-locale-pt_BR
+Requires: smeserver-manager-locale-ro
+Requires: smeserver-manager-locale-ru
+Requires: smeserver-manager-locale-sl
+Requires: smeserver-manager-locale-sv
+Requires: smeserver-manager-locale-th
+Requires: smeserver-manager-locale-tr
+Requires: smeserver-manager-locale-zh_CN
+Requires: smeserver-manager-locale-zh_TW
 
 Provides: server-manager
 AutoReqProv: no
@@ -115,6 +143,13 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Jan 25 2025 Brian Read <brianr@koozali.org> 11.0.0-45.sme
+- Add some space in the reboot/reconf/shutdown panel [SME: ]
+- Add check for 15 characters netbios name in workgroup panel [SME: ]
+- Add action for post-upgrade-and-reboot for reconfigure panel [SME: 12865]
+- Remove call to TAI64 in viewlogfiles as qmail specific format [SME: 12889]
+- Add requires to pull in all the locale translation [SME: 12757]
+
 * Fri Jan 24 2025 Brian Read <brianr@koozali.org> 11.0.0-44.sme
 - Change to network-online for systemd startup to make sure network is up [SME: 12758]
 

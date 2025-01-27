@@ -56,10 +56,11 @@ sub do_action {
 
             #    esmith::util::backgroundCommand( 1, "/sbin/e-smith/signal-event", "post-upgrade",
             #	    "; ", "/sbin/e-smith/signal-event", "reboot" );
-            system("/sbin/e-smith/signal-event", "post-upgrade") == 0
-                or die("Error occurred while running post-upgrade.\n");
-            system("/sbin/e-smith/signal-event", "reboot") == 0
-                or die("Error occurred while rebooting.\n");
+            esmith::util::backgroundCommand( 1, "/sbin/e-smith/signal-event", "post-upgrade-and-reboot");
+		    #system("/sbin/e-smith/signal-event", "post-upgrade") == 0
+		    #or die("Error occurred while running post-upgrade.\n");
+		    #system("/sbin/e-smith/signal-event", "reboot") == 0
+		    #or die("Error occurred while rebooting.\n");
         } ## end unless ($debug)
     } ## end elsif ($function eq 'reconfigure')
     $c->stash(title => $title, modul => $result);

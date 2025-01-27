@@ -17,7 +17,7 @@ use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
 use esmith::ConfigDB;
-use Time::TAI64;
+#use Time::TAI64;
 use File::Basename;
 use HTML::Entities;
 use esmith::FormMagick qw(gen_locale_date_string);
@@ -104,10 +104,11 @@ sub do_action {
 sub timestamp2local {
     $_ = shift;
 
-    if (/^(\@[0-9a-f]{24})(.*)/s) {
-        return Time::TAI64::tai64nlocal($1) . $2;
-    } elsif (/^([0-9]{10}\.[0-9]{3})(.*)/s) {
-        return localtime($1) . $2;
+    #if (/^(\@[0-9a-f]{24})(.*)/s) {
+    #    return Time::TAI64::tai64nlocal($1) . $2;
+    #} els
+	if (/^([0-9]{10}\.[0-9]{3})(.*)/s) {
+		return localtime($1) . $2;
     }
     return $_;
 } ## end sub timestamp2local
