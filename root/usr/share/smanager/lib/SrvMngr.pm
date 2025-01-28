@@ -224,12 +224,12 @@ sub setup_plugins {
     # CSRF protection if production mode
 #    $self->plugin('Mojolicious::Plugin::CSRFDefender' => {
 #   Adapted plugin for use with GET method
-    $self->plugin('SrvMngr::Plugin::CSRFDefender' => {
-	onetime => 1,
-	error_status => 400,
-	error_content => 'Error: CSRF token is invalid or outdated'
+    #$self->plugin('SrvMngr::Plugin::CSRFDefender' => {
+	#onetime => 1,
+	#error_status => 400,
+	#error_content => 'Error: CSRF token is invalid or outdated'
     	#error_template => 'csrf_400'
-	}) if ( $self->mode eq 'production' );
+	#}) if ( $self->mode eq 'production' );
 
     $self->plugin('SrvMngr::Plugin::I18N' => {namespace => 'SrvMngr::I18N', default => 'en'});
 
