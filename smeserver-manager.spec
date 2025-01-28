@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 45
+%define release 46
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Jan 28 2025 Brian Read <brianr@koozali.org> 11.0.0-46.sme
+- Adjust conditions for showing "Reconfigure required" to only check UnSavedChanges DB entry [SME: 12891]
+- Add indication of developement mode in footer
+
 * Sat Jan 25 2025 Brian Read <brianr@koozali.org> 11.0.0-45.sme
 - Add some space in the reboot/reconf/shutdown panel [SME: ]
 - Add check for 15 characters netbios name in workgroup panel [SME: ]

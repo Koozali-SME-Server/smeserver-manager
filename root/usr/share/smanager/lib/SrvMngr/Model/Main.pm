@@ -43,8 +43,9 @@ sub init_data {
 sub reconf_needed {
 
     my $cdb = esmith::ConfigDB->open_ro() or die("can't open Config DB");
-    my $unsafe = ($cdb->get('bootstrap-console') and $cdb->get('bootstrap-console')->prop('Run') eq 'yes') ||
-         ($cdb->get('UnsavedChanges') and $cdb->get('UnsavedChanges')->value eq 'yes') || '0';
+    #my $unsafe = ($cdb->get('bootstrap-console') and $cdb->get('bootstrap-console')->prop('Run') eq 'yes') ||
+    #     ($cdb->get('UnsavedChanges') and $cdb->get('UnsavedChanges')->value eq 'yes') || '0';
+	my $unsafe = ($cdb->get('UnsavedChanges') and $cdb->get('UnsavedChanges')->value eq 'yes') || '0';   
     return $unsafe;
 }
 
@@ -105,4 +106,3 @@ sub check_adminalias {
 
 
 1;
-
