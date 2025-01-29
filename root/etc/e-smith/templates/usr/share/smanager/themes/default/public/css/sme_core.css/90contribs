@@ -68,9 +68,18 @@ color: #8ebe43;
 background-color: #8ebe43;
     }
       
-/* flag container no flag */
+/* flag container*/
 #flag-container span {
-  font-size: 24px;
+	font-size: 24px;
+    display: flex;                     /* Allows for easy centering */
+    justify-content: center;           /* Center horizontally */
+    align-items: center;               /* Center vertically */
+    width: 100%;                       /* Full width of parent */
+    height: 24px;                      /* Set a fixed height */
+    border: 1px solid #ccc;            /* Light gray border */
+    border-radius: 5px;                /* Rounded corners */
+    cursor: default;                   /* Prevent text cursor */
+
 }
 
 .fallback-box {

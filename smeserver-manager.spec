@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 47
+%define release 48
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Jan 29 2025 Brian Read <brianr@koozali.org> 11.0.0-48.sme
+- Make Country flag display independant of the internet. [SME: 12893]
+
 * Tue Jan 28 2025 Brian Read <brianr@koozali.org> 11.0.0-47.sme
 - Temp (we hope) remove CSRF protection plugin  [SME: ]
 - Fix comparison in footer with config->mode 
