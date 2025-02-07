@@ -90,7 +90,7 @@
 					%my $csrf_token = "TOKEN";  # CSRF token for security
 					%my $ibays_entry_name = $ibay->key;  # ibays_entry name extracted from the data structure
 					%$actionRemove = qq{
-                                        %       <a href="ibaysd?CsrfDef=$csrf_token&trt=DEL&ibays=$ibays_entry_name">
+                                        %       <a href="ibaysd?CsrfDef=$csrf_token&trt=DEL&ibay=$ibays_entry_name">
 					%	<button type='button' class='sme-remove-button' title='$remove_text' >
 					%		$remove_text
 					%	</button>

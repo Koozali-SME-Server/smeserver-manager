@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 48
+%define release 49
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Feb 07 2025 Brian Read <brianr@koozali.org> 11.0.0-49.sme
+- Fix delete of ibay [SME: ]
+
 * Wed Jan 29 2025 Brian Read <brianr@koozali.org> 11.0.0-48.sme
 - Make Country flag display independant of the internet. [SME: 12893]
 
