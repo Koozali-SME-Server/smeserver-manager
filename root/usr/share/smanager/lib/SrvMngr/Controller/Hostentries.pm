@@ -25,10 +25,11 @@ use HTML::Entities;
 use Net::IPv4Addr qw(ipv4_in_network);
 
 #use URI::Escape;
-our $ddb = esmith::DomainsDB->open  || die "Couldn't open hostentries db";
-our $cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-our $hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
-our $ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
+#our $ddb = esmith::DomainsDB->open  || die "Couldn't open hostentries db";
+#our $cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
+#our $hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
+#our $ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
+my ($ddb,$cdb,$hdb,$ndb);
 
 sub main {
     my $c = shift;
@@ -36,6 +37,10 @@ sub main {
     my %hos_datas = ();
     my $title     = $c->l('hos_FORM_TITLE');
     my $notif     = '';
+	#my $ddb = esmith::DomainsDB->open  || die "Couldn't open hostentries db";
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
+	$hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
+	$ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
     $hos_datas{trt} = 'LIST';
     my %dom_hosts = ();
 
@@ -68,6 +73,9 @@ sub do_display {
     $trt = 'LST' if ($trt ne 'DEL' && $trt ne 'UPD' && $trt ne 'ADD');
     my %hos_datas = ();
     my $title     = $c->l('hos_FORM_TITLE');
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
+	$hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
+	$ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
     my $notif     = '';
     $hos_datas{'trt'} = $trt;
 
@@ -112,6 +120,9 @@ sub do_update {
     my $trt       = ($c->param('trt') || 'LIST');
     my %hos_datas = ();
     my $title     = $c->l('hos_FORM_TITLE');
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
+	$hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
+	$ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
     my $notif     = '';
     my $result    = '';
     $hos_datas{'name'}       = lc $c->param('Name');

@@ -17,7 +17,7 @@ use esmith::AccountsDB;
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw( theme_list init_session is_normal_password );
-our $cdb = esmith::ConfigDB->open_ro || die "Couldn't open configuration db";
+#our $cdb = esmith::ConfigDB->open_ro || die "Couldn't open configuration db";
 
 sub main {
     my $c         = shift;
@@ -194,6 +194,7 @@ sub check_password {
     my $c        = shift;
     my $password = shift;
     my $strength;
+   	my $cdb = esmith::ConfigDB->open_ro || die "Couldn't open configuration db";
     my $rec = $cdb->get('passwordstrength');
     $strength = ($rec ? ($rec->prop('Users') || 'none') : 'none');
     return validate_password($c, $strength, $password);

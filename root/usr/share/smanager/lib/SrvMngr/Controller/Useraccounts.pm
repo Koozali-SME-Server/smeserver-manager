@@ -28,13 +28,15 @@ use esmith::util;
 #use Exporter;
 #use Carp qw(verbose);
 #use esmith::FormMagick::Panel::useraccounts;
-our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
-our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+#our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+my ($cdb,$adb);
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
-	my $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
     my $notif     = '';
     my %usr_datas = ();
     my $title     = $c->l('usr_FORM_TITLE');
@@ -53,6 +55,8 @@ sub do_display {
     my %usr_datas = ();
     my $title     = $c->l('usr_FORM_TITLE');
     my ($notif, $modul) = '';
+	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
     $usr_datas{'trt'} = $trt;
 
     if ($trt eq 'ADD') {
@@ -139,6 +143,8 @@ sub do_update {
     $usr_datas{trt} = $trt;
     my $title = $c->l('usr_FORM_TITLE');
     my ($res, $result) = '';
+	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
 
     if ($trt eq 'ADD') {
 

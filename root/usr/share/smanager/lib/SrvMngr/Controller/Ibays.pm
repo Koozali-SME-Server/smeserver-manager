@@ -19,15 +19,18 @@ use esmith::ConfigDB;
 use esmith::DomainsDB;
 
 #use esmith::FormMagick::Panel::ibays;
-our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
-our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+#our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+my ($adb,$cdb);
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
     my %iba_datas = ();
     my $title     = $c->l('iba_FORM_TITLE');
-    $iba_datas{'trt'} = 'LIST';
+    $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+	$iba_datas{'trt'} = 'LIST';
     my @ibays;
 
     if ($adb) {
@@ -42,6 +45,8 @@ sub do_display {
     my $rt   = $c->current_route;
     my $trt  = ($c->param('trt') || 'LIST');
     my $ibay = $c->param('ibay') || '';
+    $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
 
     #$trt = 'DEL' if ( $ibay );
     #$trt = 'ADD' if ( $rt eq 'ibayadd' );
@@ -116,6 +121,8 @@ sub do_update {
     $iba_datas{'trt'} = $trt;
     my $result = '';
     my $res;
+    $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
 
     if ($trt eq 'ADD') {
         my $name = ($c->param('ibay') || '');

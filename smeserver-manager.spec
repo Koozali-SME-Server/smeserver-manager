@@ -144,7 +144,9 @@ true
 
 %changelog
 * Fri Feb 07 2025 Brian Read <brianr@koozali.org> 11.0.0-49.sme
-- Fix delete of ibay [SME: ]
+- Fix delete of ibay - typo in link
+- Move across toMB() sub from formmagick to quota.pm
+- Recast DB opening so it is specific to the route rather than global [SME: 12905]
 
 * Wed Jan 29 2025 Brian Read <brianr@koozali.org> 11.0.0-48.sme
 - Make Country flag display independant of the internet. [SME: 12893]

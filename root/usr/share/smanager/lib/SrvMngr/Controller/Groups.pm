@@ -18,14 +18,17 @@ use SrvMngr qw(theme_list init_session);
 #use Data::Dumper;
 #use esmith::FormMagick::Panel::groups;
 use esmith::AccountsDB;
-our $cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+#our $cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
+#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+my ($cdb,$adb);
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
     my %grp_datas = ();
     my $title     = $c->l('grp_FORM_TITLE');
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
     $grp_datas{trt} = 'LST';
     my @groups;
 
@@ -44,6 +47,8 @@ sub do_display {
     my $group     = $c->param('group');
     my %grp_datas = ();
     my $title     = $c->l('grp_FORM_TITLE');
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
     $grp_datas{'trt'} = $trt;
 
     if ($trt eq 'ADD') {
@@ -99,6 +104,8 @@ sub do_update {
     my $title     = $c->l('grp_FORM_TITLE');
     my ($res, $result) = '';
     my %grp_datas = ();
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
     $grp_datas{'trt'}   = $trt;
     $grp_datas{'group'} = $groupName;
     my @members = ();

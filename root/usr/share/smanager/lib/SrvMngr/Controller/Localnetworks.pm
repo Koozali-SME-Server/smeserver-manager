@@ -17,8 +17,9 @@ use SrvMngr qw(theme_list init_session subnet_mask get_reg_mask ip_number);
 #use Data::Dumper;
 use esmith::util;
 use esmith::HostsDB;
-my $network_db = esmith::NetworksDB->open() || die("Couldn't open networks db");
+#my $network_db = esmith::NetworksDB->open() || die("Couldn't open networks db");
 my $ret = "OK";
+my ($network_db);
 
 sub main {
     my $c = shift;
@@ -26,6 +27,7 @@ sub main {
     my %ln_datas = ();
     $ln_datas{return} = "";
     my $title = $c->l('ln_LOCAL NETWORKS');
+	$network_db = esmith::NetworksDB->open() || die("Couldn't open networks db");
     my $modul = '';
     $ln_datas{trt} = 'LIST';
     my @localnetworks;
@@ -47,6 +49,7 @@ sub do_display {
     $c->app->log->info($c->log_req);
     my $rt = $c->current_route;
     my $trt = ($c->param('trt') || 'LIST');
+	$network_db = esmith::NetworksDB->open() || die("Couldn't open networks db");
     $trt = 'DEL'  if ($rt eq 'localnetworksdel');
     $trt = 'ADD'  if ($rt eq 'localnetworksadd');
     $trt = 'ADD1' if ($rt eq 'localnetworksadd1');
@@ -81,7 +84,7 @@ sub do_display {
     if ($trt eq 'DEL1') {
 
         #After Remove clicked on Delete network panel
-        my $network_db   = esmith::NetworksDB->open() || die("Failed to open Networkdb-1");
+        $network_db   = esmith::NetworksDB->open() || die("Failed to open Networkdb-1");
         my $localnetwork = $c->param("localnetwork");
         my $delete_hosts = $c->param("deletehost") || "1";                                    #default to deleting them.
         my $rec = $network_db->get($localnetwork) || die("Failed to find network on db:$localnetwork");
@@ -135,7 +138,7 @@ sub do_display {
 
 sub remove_network {
     my $network      = shift;
-    my $network_db   = esmith::NetworksDB->open();
+    $network_db   = esmith::NetworksDB->open();
     my $record       = $network_db->get($network);
     my $delete_hosts = shift;
 
@@ -265,3 +268,4 @@ sub add_network {
         );
     } ## end else [ if ($totalHosts == 1) ]
 } ## end sub add_network
+1;
