@@ -14,7 +14,7 @@ use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
 use Text::Template;
 use File::Basename;
-use esmith::FormMagick qw( gen_locale_date_string );
+use SrvMngr qw( gen_locale_date_string );
 our $cdb = esmith::ConfigDB->open or die "Couldn't open ConfigDB\n";
 
 # Get some basic info on the current SME install

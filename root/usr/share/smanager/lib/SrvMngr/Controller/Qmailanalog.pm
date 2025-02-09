@@ -10,7 +10,7 @@ package SrvMngr::Controller::Qmailanalog;
 use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
-use esmith::FormMagick qw(gen_locale_date_string);
+use SrvMngr qw(gen_locale_date_string);
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);

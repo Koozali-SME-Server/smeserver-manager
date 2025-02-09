@@ -12,15 +12,13 @@ use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 
-#use esmith::FormMagick qw(gen_locale_date_string);
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
 use esmith::ConfigDB;
-#use Time::TAI64;
 use File::Basename;
 use HTML::Entities;
-use esmith::FormMagick qw(gen_locale_date_string);
+use SrvMngr qw(gen_locale_date_string);
 use File::Temp qw(tempfile);
 use constant TRUE  => 1;
 use constant FALSE => 0;

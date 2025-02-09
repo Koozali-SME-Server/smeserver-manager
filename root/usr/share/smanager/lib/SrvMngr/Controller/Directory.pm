@@ -14,8 +14,6 @@ use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
 
-#use esmith::util qw(ldapBase);
-use esmith::FormMagick::Panel::directory;
 our $db = esmith::ConfigDB->open() || die "Couldn't open config db";
 
 sub main {
@@ -75,4 +73,21 @@ sub do_update {
     $c->stash(title => $title, modul => $result);
     $c->render(template => 'module');
 } ## end sub do_update
+
+sub get_ldap_base {
+    return esmith::util::ldapBase(get_value('','DomainName'));
+}
+
+sub get_value {
+    my $fm = shift;
+    my $item = shift;
+
+    my $record = $db->get($item);
+    if ($record) {
+        return $record->value();
+    }
+    else {
+        return '';
+    }
+}
 1;

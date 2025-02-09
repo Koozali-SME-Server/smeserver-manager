@@ -11,9 +11,7 @@ package SrvMngr::Controller::Quota;
 use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
-use esmith::FormMagick::Panel::quota;
 
-#use esmith::TestUtils;
 use Scalar::Util qw(looks_like_number);
 use Locale::gettext;
 use SrvMngr::I18N;
@@ -55,9 +53,9 @@ sub do_display {
         if ($rec and $rec->prop('type') eq 'user') {
             $quo_datas{user}    = $user;
             $quo_datas{userRec} = $rec;
-            my $max = esmith::FormMagick::Panel::quota->toBestUnit($rec->prop('MaxBlocks'));
+            my $max = $c->toBestUnit($rec->prop('MaxBlocks'));
             $quo_datas{hardlim} = $max;
-            $max                = esmith::FormMagick::Panel::quota->toBestUnit($rec->prop('MaxBlocksSoftLim'));
+            $max                = $c->toBestUnit($rec->prop('MaxBlocksSoftLim'));
             $quo_datas{softlim} = $max;
         } ## end if ($rec and $rec->prop...)
     } ## end if ($trt eq 'UPD')
@@ -165,4 +163,48 @@ sub toMB
     my ($self,$kb) = @_;
     return sprintf("%.2f", $kb / 1024);
 }
+
+sub toMBNoDecimalPlaces
+{
+    my ($self,$kb) = @_;
+    return sprintf("%.0f", $kb / 1024);
+}
+
+sub toGBNoDecimalPlaces
+{
+    my ($self,$kb) = @_;
+    return sprintf("%.0f", $kb / 1024 / 1024);
+}
+
+sub toKB 
+{
+    my ($self,$mb) = @_;
+    return sprintf("%.0f", $mb * 1024);
+}
+
+
+sub GBtoKB
+{
+    my ($self,$gb) = @_;
+    return sprintf("%.0f", $gb * 1024 * 1024);
+}
+
+sub MBtoKB
+{
+    my ($self,$mb) = @_;
+    return sprintf("%.0f", $mb * 1024);
+}
+
+sub toBestUnit
+{
+    my ($self,$kb) = @_;
+    return 0 if($kb == 0);
+    return $kb."K" if($kb < 1024);
+    return $kb."K" if($kb > 1024 && $kb < 1048576 && $kb % 1024 != 0);
+    return $self->toMBNoDecimalPlaces($kb)."M" if($kb < 1048576);
+    return $self->toMBNoDecimalPlaces($kb)."M" if($kb > 1048576 
+	&& ($kb % 1048576 != 0));
+    return $self->toGBNoDecimalPlaces($kb)."G";
+}
+
 1

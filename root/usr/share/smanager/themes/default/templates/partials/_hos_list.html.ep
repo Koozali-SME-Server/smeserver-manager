@@ -64,7 +64,7 @@
                                         %       </a>
 					%};
 					%my $remove_text = l('REMOVE');  # Localized text
-					%my $csrf_token = "TOKEN";  # CSRF token for security
+					%$csrf_token = "TOKEN";  # CSRF token for security
 					%#my $hostentries_name = $_->{'HostName'};  # hostentries name extracted from the data structure
 					%$actionRemove = qq{
                                         %       <a href="hostentriesd?CsrfDef=$csrf_token&trt=DEL&Hostname=$hostentries_name">

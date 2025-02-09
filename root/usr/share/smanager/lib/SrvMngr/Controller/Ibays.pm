@@ -18,7 +18,6 @@ use esmith::AccountsDB;
 use esmith::ConfigDB;
 use esmith::DomainsDB;
 
-#use esmith::FormMagick::Panel::ibays;
 #our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
 #our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
 my ($adb,$cdb);

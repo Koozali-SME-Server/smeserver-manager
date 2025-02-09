@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 49
+%define release 50
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Feb 09 2025 Brian Read <brianr@koozali.org> 11.0.0-50.sme
+- Move all routines from FormMagic still called by SM2 panels to SM2 [SME:12906]
+- delete all references to FormMagic 
+
 * Fri Feb 07 2025 Brian Read <brianr@koozali.org> 11.0.0-49.sme
 - Fix delete of ibay - typo in link
 - Move across toMB() sub from formmagick to quota.pm

@@ -12,8 +12,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-use esmith::FormMagick;
 use esmith::util;
+use SrvMngr qw( gen_locale_date_string );
 our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
 
 sub main {
@@ -41,7 +41,7 @@ sub main {
 
     # get rid of trailing carriage return on last field
     chop($dat_datas{ampm});
-    $dat_datas{'now_string'} = esmith::FormMagick->gen_locale_date_string();
+    $dat_datas{'now_string'} = gen_locale_date_string;
     $c->stash(title => $title, modul => $modul, dat_datas => \%dat_datas);
     $c->render('datetime');
 } ## end sub main

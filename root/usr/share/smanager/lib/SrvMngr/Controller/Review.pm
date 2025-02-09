@@ -17,10 +17,11 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
+use SrvMngr qw(gen_locale_date_string);
+
 
 #use SrvMngr::Review_sub qw(print_page);
 #use smeserver::Panel::review;
-use esmith::FormMagick::Panel::review;
 our $db       = esmith::ConfigDB->open_ro   || die "Couldn't open config db";
 our $domains  = esmith::DomainsDB->open_ro  || die "Couldn't open domains";
 our $networks = esmith::NetworksDB->open_ro || die "Couldn't open networks";
@@ -33,7 +34,7 @@ sub main {
     my %rvw_datas = ();
     $rvw_datas{'servermode'} = (get_value('', 'SystemMode') || '');
     $rvw_datas{'localip'}          = get_value('$c', 'LocalIP') . '/' . get_value('$c', 'LocalNetmask');
-    $rvw_datas{'publicip'}         = esmith::FormMagick::Panel::review->get_public_ip_address($c);
+    $rvw_datas{'publicip'}         = $c->get_public_ip_address($c);
     $rvw_datas{'gateway'}          = $c->render_to_string(inline => print2_gateway_stanza($c));
     $rvw_datas{'serveronly'}       = $c->render_to_string(inline => print2_serveronly_stanza($c));
     $rvw_datas{'addlocalnetworks'} = get_local_networks($c);

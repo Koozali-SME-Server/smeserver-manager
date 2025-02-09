@@ -13,7 +13,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-use esmith::FormMagick::Panel::workgroup;
 our $db = esmith::ConfigDB->open || die "Couldn't open config db";
 
 sub main {

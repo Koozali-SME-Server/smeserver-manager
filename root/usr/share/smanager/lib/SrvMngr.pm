@@ -17,6 +17,7 @@ use Mojo::Home;
 
 use DBM::Deep;
 use Mojo::JWT;
+use POSIX qw(strftime);
 
 use Mojolicious::Plugin::Config;
 #use Mojolicious::Plugin::I18N;
@@ -27,8 +28,10 @@ use SrvMngr::Model::Main;
 
 use SrvMngr::Plugin::WithoutCache;
 
+use esmith::I18N;
+
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = ''; 
+our $VERSION = '50.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -43,6 +46,7 @@ our @EXPORT_OK = qw(
 	getNavigation ip_number is_normal_password email_simple
 	mac_address_or_blank mac_address ip_number_or_blank
 	lang_space get_routes_list subnet_mask get_reg_mask
+	gen_locale_date_string get_public_ip_address
 	);
 
 has home => sub {
@@ -782,6 +786,30 @@ sub is_normal_password {
     } else {
         return $c->l("FM_PASSWORD2");
     }
+}
+
+sub gen_locale_date_string
+{
+    my $self = shift;
+    my $i18n = esmith::I18N->new();
+    $i18n->setLocale('formmagick', $i18n->preferredLanguage());
+    return strftime "%c", localtime;
+}
+
+sub get_public_ip_address
+{
+    my $self = shift;
+	my $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+    my $sysconfig = $cdb->get('sysconfig');
+    if ($sysconfig)
+    {
+        my $publicIP = $sysconfig->prop('PublicIP');
+        if ($publicIP)
+        {
+            return $publicIP;
+        }
+    }
+    return undef;
 }
 
 

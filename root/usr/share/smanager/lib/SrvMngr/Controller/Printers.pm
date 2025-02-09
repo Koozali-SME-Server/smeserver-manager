@@ -14,7 +14,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-use esmith::FormMagick::Panel::printers;
 #our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
 my $adb;
 
