@@ -152,6 +152,55 @@ sub get2_local_networks {
     } ## end else [ if ($numNetworks == 0)]
 } ## end sub get2_local_networks
 
+sub get_net_prop {
+  my $fm = shift;
+  my $item = shift;
+  my $prop = shift;
+
+  my $record = $networks->get($item);
+  if ($record) {
+    return $record->prop($prop);
+  }
+  else {
+    return '';
+  }
+
+}
+
+
+sub get_local_networks {
+    my $fm = shift;
+
+    my @nets = $networks->get_all_by_prop('type' => 'network');
+
+    my $numNetworks = @nets;
+    if ($numNetworks == 0) {
+        return  $fm->localise('NO_NETWORKS');
+    }
+    else {
+        my $out = "";
+        foreach my $network (sort @nets) {
+            if ($out ne "") {
+                $out .= "<BR>";
+            }
+
+            $out .= $network->key."/" . get_net_prop($fm, $network->key, 'Mask');
+
+            if ( defined get_net_prop($fm, $network->key, 'Router') ) {
+                $out .= " via " . get_net_prop ($fm, $network->key, 'Router'); 
+            }
+        }
+        return $out;
+    }
+
+}
+
+sub get_local_domain
+{
+    return (get_value('','DomainName'));
+}
+
+
 =head2 print2_gateway_stanza
 
 If this system is a server gateway, show the external ip and gateway ip (mojo ver)
@@ -217,4 +266,51 @@ sub print2_dhcp_stanza {
     } ## end if (get_prop($c, 'dhcpd'...))
     return $out;
 } ## end sub print2_dhcp_stanza
+
+sub get_value {
+  my $fm = shift;
+  my $item = shift;
+  my $record = $db->get($item);
+  if ($record) {
+    return $record->value();
+  }
+  else {
+    return '';
+  }
+  
+}
+
+sub get_prop {
+  my $fm = shift if (ref($_[0]) ); # If we're being called in a formmagick context
+				 # The first argument will always be a fm.
+				 #otherwise, we don't want to grab it
+  my $item = shift;
+  my $prop = shift;
+
+  my $record = $db->get($item);
+  if ($record) {
+    return $record->prop($prop);
+  }
+  else {
+    return '';
+  }
+
+}
+
+sub get_public_ip_address
+{
+    my $self = shift;
+    my $sysconfig = $db->get('sysconfig');
+    if ($sysconfig)
+    {
+        my $publicIP = $sysconfig->prop('PublicIP');
+        if ($publicIP)
+        {
+            return $publicIP;
+        }
+    }
+    return undef;
+}
+
+
 1;

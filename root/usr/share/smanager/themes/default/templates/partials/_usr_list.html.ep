@@ -59,11 +59,11 @@
             %= t td => (class => 'sme-border') => "$first  $last"
             %= t td => (class => 'sme-border') => $vpnaccess
             %= t td => (class => 'sme-border') => $fwd
-			%my ($actionModify, $actionLock, $actionResetPw, $actionRemove,$actionroundcube) = '&nbsp;';
-			%my $modify_text = l('MODIFY');  # Localized text
-			%my $csrf_token = "TOKEN";  # CSRF token for security
-			%my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
-			%my $password_text = l("PASSWORD_RESET");
+			% my ($actionModify, $actionLock, $actionResetPw, $actionRemove,$actionroundcube) = '&nbsp;';
+			% my $modify_text = l('MODIFY');  # Localized text
+			% my $csrf_token = "TOKEN";  # CSRF token for security
+			% my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
+			% my $password_text = l("PASSWORD_RESET");
 			%if ($useraccounts_user_name eq 'admin')  { 
 				%$actionModify = qq{
 					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=UPS&user=$useraccounts_user_name">
@@ -98,9 +98,9 @@
 					%</a>
 				%};
 			%} elsif ($useraccounts_user_name ne 'admin') {
-				%my $lock_text = l('ACCOUNT LOCKED');  # Localized text
-				%my $csrf_token = "TOKEN";  # CSRF token for security
-				%my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
+				% my $lock_text = l('ACCOUNT LOCKED');  # Localized text
+				% my $csrf_token = "TOKEN";  # CSRF token for security
+				% my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
 				%$actionLock = qq{
 					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=LCK&user=$useraccounts_user_name">
 						%	<button type='button' class='sme-lock-button' title='$lock_text' >
@@ -117,8 +117,8 @@
 					%};
 			%}
 			%if ( $removable eq 'yes' )  { 
-				%my $remove_text = l('REMOVE');  # Localized text
-				%my $csrf_token = "TOKEN";  # CSRF token for security
+				% my $remove_text = l('REMOVE');  # Localized text
+				% my $csrf_token = "TOKEN";  # CSRF token for security
 				%$actionRemove = qq{
 					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=DEL&user=$useraccounts_user_name">
 					%	<button type='button' class='sme-remove-button' title='$remove_text' >
@@ -128,13 +128,12 @@
 				%};
 			%}
 			
-			%my $thisdomain = session 'SystemName';
-			%$thisdomain .= ".".session 'DomainName';
-			%my $roundcube_text = l('Webmail');  # Localized text
-			%my $csrf_token = "TOKEN";  # CSRF token for security
-			%my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
-			%$actionroundcube = qq{
-				%<a href="roundcubepanel?CsrfDef=$csrf_token&url=https://$thisdomain/roundcube?_user=$useraccounts_user_name">
+		    % my $thisdomain = $c->req->url->to_abs->host;
+			% my $roundcube_text = l('Webmail');  # Localized text
+			% $csrf_token = "TOKEN";  # CSRF token for security
+			% $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
+			% $actionroundcube = qq{
+				%<a href="roundcubepanel?CsrfDef=$csrf_token&url=https://$thisdomain/roundcube?_user=$useraccounts_user_name&height=600px">
 				%	<button type='button' class='sme-email-button' title='$roundcube_text' >
 				%		$roundcube_text
 				%	</button>

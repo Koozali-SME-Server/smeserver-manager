@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 50
+%define release 51
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,8 +143,13 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Feb 10 2025 Brian Read <brianr@koozali.org> 11.0.0-51.sme
+- Replace url in call to webmail by browser url rather than system host and domain [SME: 12910]
+- Fix up CSS so not inline
+- Sort out reveiw panel missing routines from FormMagic [SME: 12907].
+
 * Sun Feb 09 2025 Brian Read <brianr@koozali.org> 11.0.0-50.sme
-- Move all routines from FormMagic still called by SM2 panels to SM2 [SME:12906]
+- Move all routines from FormMagic still called by SM2 panels to SM2 [SME: 12906]
 - delete all references to FormMagic 
 
 * Fri Feb 07 2025 Brian Read <brianr@koozali.org> 11.0.0-49.sme

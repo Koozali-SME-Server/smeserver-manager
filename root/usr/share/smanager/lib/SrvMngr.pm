@@ -31,7 +31,7 @@ use SrvMngr::Plugin::WithoutCache;
 use esmith::I18N;
 
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '50.el8.sme'; 
+our $VERSION = '51.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -811,7 +811,6 @@ sub get_public_ip_address
     }
     return undef;
 }
-
 
 sub email_simple {
     my ($c, $data) = @_;

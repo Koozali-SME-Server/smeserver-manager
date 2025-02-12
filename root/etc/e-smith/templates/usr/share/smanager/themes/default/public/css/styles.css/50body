@@ -275,6 +275,18 @@ a.menu-title {
     left: 2px;
 }
 
+.roundcube div {
+	height:462px;
+	width:85%;
+	margin-bottom:1%;
+}
+
+.roundcube object {
+	margin-top:1%;
+	height:95%;
+	width:100%;
+}
+
 
 /*end*/
 EOF

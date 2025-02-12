@@ -14,25 +14,26 @@
 			%= $c->render_to_string(inline => stash 'error') 
 		</div>
     %}
-    <h1> roundcube - <%=$title %></h1><br>
-    <p>If the roundcube panel does not appear after logging in, then please check your password.</p><br />
+    <h1><%=$title %></h1><br>
+    <p>If the Webmail panel does not appear after logging in, then please check your password.</p><br />
 
-    % my $thisdomain = session 'SystemName';
-    % $thisdomain .= ".".session 'DomainName';
+    % my $thisdomain = $c->req->url->to_abs->host;
     % my $url = $c->stash('modul');
+    % if (!$url) {
+	%	$url = $thisdomain."/roundcube";
+	%}
     % my $username = 'admin';
     % if ($url =~ /[?&]_user=([^&]+)/) {
 	%	$username = $1;
 	%}
-	
-	<a href="<%= "https://".$thisdomain."/" %>roundcube?_user=<%= $username %>"><button class="sme-fullwindow1-button" width=20em title="<%= l('Full Window') %>"><%= l('Full Window') %></button></a>
-
-    % my $height = $c->stash('height') | '600px';
-    % if ($height !~ /px$/) { $height = $height.'px';}
-    % if ($url eq "") {
-	%	$url = "https://".$thisdomain."/roundcube";
+	% if (!($url =~ /https:/)) {
+    % $url = 'https://' . $url;
 	%}
-	<object id="roundcube" class="roundcube" data="<%=$url %>" style="width:99%;height:<%= $height %>;" title="<%= $c->stash('title') %>"  type="text/html" ><%= $c->stash('title') %> not found</object>
+
+    <div class='roundcube'>
+		<a href="<%= "https://".$thisdomain."/" %>roundcube?_user=<%= $username %>"><button class="sme-fullwindow1-button" width=20em title="<%= l('Full Window') %>"><%= l('Full Window') %></button></a>
+		<object id="roundcube" data="<%=$url %>" title="<%= $c->stash('title') %>"  type="text/html" ><%= $c->stash('title') %> not found</object>
+	</div>
 </div>
 
 
