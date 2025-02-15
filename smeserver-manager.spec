@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 52
+%define release 53
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Feb 15 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-53.sme
+- helper to set default value of select field using protected value [SME: 12923]
+
 * Wed Feb 12 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-52.sme
 - move letsencrypt panel to smeserver-certificates [SME: 12916]
 

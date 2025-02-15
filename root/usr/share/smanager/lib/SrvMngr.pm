@@ -212,6 +212,21 @@ sub setup_helpers {
 	Mojo::JWT->new(secret => shift->app->secrets->[0] || die)
     });
 
+    $self->helper( selected_field => sub {
+                    my $self = shift;
+                    my @options = shift;
+                    my $selected = shift;
+                    my $count = 0;
+                    # search for occurence of value $selected in arrays; if found add selected => 'selected'
+                    for  (my $i = 0; $i <= $#{$options[0]} ; $i++){
+                      if (grep /^$selected$/,  @{$options[0][$i]}) {
+                        push( @{$options[0][$i]} ,'selected', 'selected' );
+                        $count++;last;
+                      }
+                    }
+                    push ( @{$options[0]} ,[ ucfirst( $selected), $selected, 'selected', 'selected'] ) if ($count <1);
+                    return @options;
+
 }
 
 
