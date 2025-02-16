@@ -226,6 +226,7 @@ sub setup_helpers {
                     }
                     push ( @{$options[0]} ,[ ucfirst( $selected), $selected, 'selected', 'selected'] ) if ($count <1);
                     return @options;
+    });
 
 }
 
