@@ -134,7 +134,7 @@ sub networkAccess_list {
     return [
         [ $c->l('rma_NO_ACCESS')         => 'off' ],
         [ $c->l('NETWORKS_ALLOW_LOCAL')  => 'private' ],
-        [ $c->l('NETWORKS_ALLOW_PUBLIC') => 'public' ]
+        [ $c->l('NETWORKS_ALLOW_PUBLIC') => 'normal' ]
     ];
 } ## end sub networkAccess_list
 
