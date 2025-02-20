@@ -1847,7 +1847,7 @@ sub showSize {
 } ## end sub showSize
 
 sub desktopBackupRecordStatus {
-    my ($backup, $phase, $status) = @_;
+    my ($c,$backup, $phase, $status) = @_;
     my $now = time();
     warn("Backup terminated: $phase failed - status: $status\n");
     $backup->set_prop('EndEpochTime', "$now");
