@@ -145,7 +145,7 @@ true
 %changelog
 * Thu Feb 20 2025 Brian Read <brianr@koozali.org> 11.0.0-56.sme
 - open db in routes for backup controller file  [SME: 12933]
-- Fix error handling for pre-backup fail [SME: 
+- Fix error handling for pre-backup fail [SME: 12934]
 
 * Tue Feb 18 2025 Brian Read <brianr@koozali.org> 11.0.0-55.sme
 - fix public ftp access not showing on panel [SME: 12927]
