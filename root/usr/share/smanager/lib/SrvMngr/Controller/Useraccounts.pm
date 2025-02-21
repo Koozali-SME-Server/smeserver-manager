@@ -14,7 +14,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session
-    is_normal_password email_simple);
+    validate_password email_simple);
 
 #use esmith::FormMagick qw( validate_password );
 #use CGI::FormMagick::Validator qw( call_fm_validation );
@@ -433,31 +433,6 @@ sub check_password {
     $check_type = ($rec ? ($rec->prop('Users') || 'none') : 'none');
     return validate_password($c, $check_type, $pass1);
 } ## end sub check_password
-
-sub validate_password {
-    my ($c, $strength, $pass) = @_;
-    use Crypt::Cracklib;
-    my $reason;
-
-    if ($strength eq "none") {
-        return $c->l("Passwords must be at least 7 characters long") unless (length($pass) > 6);
-        return "OK";
-    }
-    $reason = is_normal_password($c, $pass, undef);
-    return $reason unless ($reason eq "OK");
-    return "OK" unless ($strength eq "strong");
-
-    if (-f '/usr/lib64/cracklib_dict.pwd') {
-        $reason = fascist_check($pass, '/usr/lib64/cracklib_dict');
-    } else {
-        $reason = fascist_check($pass, '/usr/lib/cracklib_dict');
-    }
-    $reason ||= "Software error: password check failed";
-    return "OK" if ($reason eq "ok");
-    return $c->l("Bad Password Choice") . ": "
-        . $c->l("The password you have chosen is not a good choice, because") . " "
-        . $c->l($reason) . ".";
-} ## end sub validate_password
 
 sub emailForward_list {
     my $c = shift;

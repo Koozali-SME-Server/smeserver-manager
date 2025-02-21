@@ -43,7 +43,7 @@ $VERSION = eval $VERSION;
 use Exporter 'import';
 our @EXPORT_OK = qw( 
 	init_session get_mod_url theme_list
-	getNavigation ip_number is_normal_password email_simple
+	getNavigation ip_number validate_password is_normal_password email_simple
 	mac_address_or_blank mac_address ip_number_or_blank
 	lang_space get_routes_list subnet_mask get_reg_mask
 	gen_locale_date_string get_public_ip_address
@@ -788,7 +788,23 @@ sub ip_number {
     return 'OK';
 }
 
+sub validate_password {
+    my ($c, $strength, $pass) = @_;
+    use esmith::util;
+    use POSIX qw(locale_h);
+    use locale;
+    my $old_locale = setlocale(LC_ALL);
+    setlocale(LC_ALL, "en_US");
+    my $reason = esmith::util::validatePassword($pass,$strength);
+    return "OK" if ($reason eq "ok");
+    setlocale(LC_ALL, $old_locale);
+    return
+          $c->l("Bad Password Choice") . ": "
+        . $c->l("The password you have chosen is not a good choice, because") . " "
+        . $c->l($reason). ".";
+} ## end sub validate_password
 
+# to deprecate : this is not anymore a way to validate our passwords
 sub is_normal_password {
 
 #  from CGI::FormMagick::Validator qw( password );

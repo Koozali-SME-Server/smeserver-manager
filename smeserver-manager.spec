@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 56
+%define release 57
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Feb 21 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-57.sme
+- upgrade validate_password sub to use esmith::util [SME: 12937]
+  and deduplicate code
+
 * Thu Feb 20 2025 Brian Read <brianr@koozali.org> 11.0.0-56.sme
 - open db in routes for backup controller file  [SME: 12933]
 - Fix error handling for pre-backup fail [SME: 12934]
