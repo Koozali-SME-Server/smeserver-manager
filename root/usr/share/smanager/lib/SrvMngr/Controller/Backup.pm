@@ -32,7 +32,7 @@ use esmith::util;
 use esmith::lockfile;
 use esmith::BlockDevices;
 use constant DEBUG => $ENV{MOJO_SMANAGER_DEBUG} || 0;
-#our $cdb = esmith::ConfigDB->open   || die "Couldn't open config db";
+#our $cdb = esmith::ConfigDB->open   || die "Couldn't open config db"; #remove as cached gives problems
 #our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
 #our $rdb = esmith::ConfigDB->open('/etc/e-smith/restore') || die "Couldn't open restore db";
 my ($cdb,$adb,$rdb);
