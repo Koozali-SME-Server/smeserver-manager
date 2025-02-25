@@ -16,8 +16,10 @@
     }
 
     my $clvl = $c->stash('compressionlevel');
-    my $cmd = "/bin/tar --directory / --create @{$c->stash('directories')} --file=-"
-        . "@{$c->stash('exclude')} | /usr/bin/gzip $clvl ";
+    my $cmd = "/bin/tar --create --file=- --directory / @{$c->stash('exclude')}  "
+        . "@{$c->stash('directories')} | /usr/bin/gzip $clvl ";
+
+    #die("$cmd");
 
     my $success = open my $fh, '-|', $cmd;
     unless ($success) { return "Error dowload command."; };
