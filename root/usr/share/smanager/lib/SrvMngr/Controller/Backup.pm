@@ -32,10 +32,10 @@ use esmith::util;
 use esmith::lockfile;
 use esmith::BlockDevices;
 use constant DEBUG => $ENV{MOJO_SMANAGER_DEBUG} || 0;
-our $cdb = esmith::ConfigDB->open   || die "Couldn't open config db";
-our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
-our $rdb = esmith::ConfigDB->open('/etc/e-smith/restore')
-    || die "Couldn't open restore db";
+#our $cdb = esmith::ConfigDB->open   || die "Couldn't open config db";
+#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+#our $rdb = esmith::ConfigDB->open('/etc/e-smith/restore') || die "Couldn't open restore db";
+my ($cdb,$adb,$rdb);
 my $es_backup = new esmith::Backup or die "Couldn't create Backup object\n";
 my @directories = $es_backup->restore_list;
 @directories = grep { -e "/$_" } @directories;
@@ -52,6 +52,9 @@ sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
     my %bac_datas = ();
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open config db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$rdb = esmith::ConfigDB->open('/etc/e-smith/restore');
     my $title     = $c->l('bac_BACKUP_TITLE');
     my $notif;
     $bac_datas{'function'} = 'desktop_backup';
@@ -108,6 +111,9 @@ sub do_display {
     my $rt = $c->current_route;
     my ($res, $result) = '';
     my $function = $c->param('Function');
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open config db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$rdb = esmith::ConfigDB->open('/etc/e-smith/restore');
 
     if ($function =~ /^(\S+)$/) {
         $function = $1;
@@ -265,6 +271,9 @@ sub do_update {
     my $c = shift;
     $c->app->log->info($c->log_req);
     my $rt       = $c->current_route;
+	$cdb = esmith::ConfigDB->open   || die "Couldn't open config db";
+	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$rdb = esmith::ConfigDB->open('/etc/e-smith/restore');
     my $function = $c->param('Function');
     DEBUG && warn("do_update $function");
     my %bac_datas = ();
