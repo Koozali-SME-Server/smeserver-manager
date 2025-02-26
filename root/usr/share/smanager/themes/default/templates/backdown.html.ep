@@ -19,29 +19,38 @@
     my $cmd = "/bin/tar --create --file=- --directory / @{$c->stash('exclude')}  "
         . "@{$c->stash('directories')} | /usr/bin/gzip $clvl ";
 
-    #die("$cmd");
-
     my $success = open my $fh, '-|', $cmd;
-    unless ($success) { return "Error dowload command."; };
- 
-  # Write chunk
-  $c->res->headers->content_type('application/x-tar');
-  $c->res->headers->content_disposition(qq/attachment; filename="smeserver.tgz"/);
-
-  my $cb;
-  $cb = sub {
-    my $c = shift;
-    my $size = 500 * 1024;
-    my $length = sysread($fh, my $buffer, $size);
-    unless ($length) {
-      close $fh;
-      undef $cb;
-      $c->finish;
-      return;
-    }
-    $c->write_chunk($buffer, $cb);
-  };
-  $c->$cb;
+    #unless ($success) { return "Error download command."; };
+    if ($success) {
+		# Try with download plugin - seems to fail to complete download and also 
+		# name of file deposited is not as required.
+		#my $output = do { local $/; <$fh> };
+		#close $fh;
+		#$c->render_file(
+			#data => $output,
+			#filename => 'output.txt',
+			#content_type => 'text/plain'
+		#);
+		# So organise it ourselves.
+		$c->res->headers->content_type('application/x-tar');
+		$c->res->headers->content_disposition(qq/attachment; filename="smeserver.tgz"/);
+		my $cb;
+		$cb = sub {
+		my $c = shift;
+		my $size = 500 * 1024;
+		my $length = sysread($fh, my $buffer, $size);
+		unless ($length) {
+		  close $fh;
+		  undef $cb;
+		  $c->finish;
+		  return;
+		}
+		$c->write_chunk($buffer, $cb);
+		};
+		$c->$cb;
+	} else {
+		$c->render(text => "Failed to execute command: $!", status => 500);
+	}
 
     # Remove the dumped tables.
     $status = system("/sbin/e-smith/signal-event", "post-backup", "desktop");
@@ -55,3 +64,4 @@
     $backup_rec->set_prop('Result', "0");
 
 %>
+1;

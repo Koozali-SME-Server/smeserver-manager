@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 57
+%define release 58
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Feb 25 2025 Brian Read <brianr@koozali.org> 11.0.0-58.sme
+- re-organise open db placement [SME: 12695]
+- Re-arrange parameters to tar to avoid warning message in logs [SME: 12943]
+
 * Fri Feb 21 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-57.sme
 - upgrade validate_password sub to use esmith::util [SME: 12937]
   and deduplicate code

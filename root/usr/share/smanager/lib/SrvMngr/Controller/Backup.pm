@@ -135,7 +135,11 @@ sub do_display {
         $c->stash(compressionlevel => $CompressionLevel, exclude => \@exclude, directories => \@directories);
 
         # streaming download in template
-        return $c->render("/backdown");
+        $c->render(template=>"backdown");
+        #sleep(30);
+        # Redirect to the front page
+		#$c->redirect_to('/backup');
+        return ""
     } ## end if ($function eq 'desktop_backup')
 
     if ($function eq 'tape_configure') {
