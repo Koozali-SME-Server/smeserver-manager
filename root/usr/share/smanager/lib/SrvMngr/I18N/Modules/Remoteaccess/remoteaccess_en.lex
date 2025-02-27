@@ -26,7 +26,9 @@ experienced administrators
 for remote problem diagnosis and resolution. 
 We recommend leaving this
 parameter set to "No Access"
-unless you have a specific reason to do otherwise.',
+unless you have a specific reason to do otherwise.
+Note that an "Autoblock" feature is enabled by default when public access is enabled; to disable or tune this feature, refer to the manual at https://wiki.koozali.org/AutoBlock
+',
 'rma_TITLE_FTP_ACCESS' => 'FTP Settings',
 'rma_DESC_FTP_ACCESS' => 'You can also control <b>FTP</b> access to your server. We
 recommend leaving this parameter set to \'no access\' unless you

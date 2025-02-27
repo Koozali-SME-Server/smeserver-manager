@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 59
+%define release 60
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Feb 27 2025 Brian Read <brianr@koozali.org> 11.0.0-60.sme
+- Enhance ssh security wording to mention autoblock in remoteaccess panel  [SME: 8309]
+
 * Thu Feb 27 2025 Brian Read <brianr@koozali.org> 11.0.0-59.sme
 - Arrange for Urgent notice to be displayed if date is past Rocky 8 EOL [SME: 12918]
 
