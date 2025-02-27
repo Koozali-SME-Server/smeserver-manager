@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 58
+%define release 59
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Feb 27 2025 Brian Read <brianr@koozali.org> 11.0.0-59.sme
+- Arrange for Urgent notice to be displayed if date is past Rocky 8 EOL [SME: 12918]
+
 * Tue Feb 25 2025 Brian Read <brianr@koozali.org> 11.0.0-58.sme
 - re-organise open db placement [SME: 12695]
 - Re-arrange parameters to tar to avoid warning message in logs [SME: 12943]

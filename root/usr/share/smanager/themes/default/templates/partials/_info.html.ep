@@ -1,3 +1,4 @@
+<%     use POSIX qw(strftime); %>
 <div id="info">
     <% if (! $c->session->{PwdSet} ) { %>
 	<div class="sme-error"><h5>
@@ -12,5 +13,13 @@
 	<div class="sme-error"><h5>
         Warning: Development or debug mode enabled AND public access is offered !
         </h5></div>
+    <% } %>
+    <% my $curdate = strftime '%Y%m%d', localtime; %>
+    <% if ( "$curdate"  >= "20290531" ) { %>
+	<div class="sme-error"><h5>
+      URGENT NOTICE: As per May 31st 2029, SME Server 11 is obsolete, and potentially INSECURE. NO support will be offered for any issue found with this installed version.
+      Please migrate IMMEDIATELY to Koozali SME Server 12 or higher version. Failure to upgrade may lead to the compromise of this server.
+      </br>Please, consult <a href="https://wiki.koozali.org/SME_Server:Download" target="_blank">https://wiki.koozali.org/SME_Server:Download</a> to get the latest version
+     </h5></div>
     <% } %>
 </div>
