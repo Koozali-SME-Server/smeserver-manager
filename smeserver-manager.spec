@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 60
+%define release 61
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Mar 04 2025 Brian Read <brianr@koozali.org> 11.0.0-61.sme
+- Arrange for the version in the footer to be suppressed if non admin login  [SME: 12887]
+
 * Thu Feb 27 2025 Brian Read <brianr@koozali.org> 11.0.0-60.sme
 - Enhance ssh security wording to mention autoblock in remoteaccess panel  [SME: 8309]
 
