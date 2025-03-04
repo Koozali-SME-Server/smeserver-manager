@@ -4,7 +4,7 @@
 'grp_ACCOUNT_CONFLICT' => 'Error: the group "[_1]" can\'t be created because there is
 already a [_2] account of that name.',
 'grp_INVALID_GROUP_DESCRIPTION' => 'Error: unexpected or missing characters in group description',
-'grp_NO_MEMBERS' => 'Error: no members in group.Did not create new group.',
+'grp_NO_MEMBERS' => 'Error: no members in group. Did not create new group.',
 'grp_CREATED_GROUP' => 'Successfully created user group',
 'grp_DELETED_GROUP' => 'Successfully removed user group',
 'grp_MODIFIED_GROUP' => 'Successfully modifed user group',

@@ -77,11 +77,11 @@ connected to a server serial port.',
 'rma_LABEL_PPTP_ACCESS' => 'PPTP default user access',
 'rma_TITLE_TELNET_ACCESS' => 'Telnet Settings',
 'rma_DESC_TELNET_ACCESS' => 'WARNING:Telnet is currently enabled, but this feature is
-no longer supported.Telnet is inherently insecure and should only
+no longer supported. Telnet is inherently insecure and should only
 be used in circumstances where no practical alternative exists. You
 should change option to [_1] and use
 secure shell if remote access is
-required.Once disabled, telnet will no longer appear on this 
+required. Once disabled, telnet will no longer appear on this 
 screen. ',
 'rma_TITLE_IPSECRW' => 'IPSEC Client (Roadwarrior) Settings',
 'rma_DESC_IPSECRW' => 'You can allow IPSEC client access to your server, authenticated by

@@ -128,7 +128,7 @@
 'FM_IP_NUMBER3' => '[_1] is more than 255',
 'FM_USERNAME' => 'This field must look like a valid username (3 to 8 letters and numbers)',
 'FM_PASSWORD1' => 'You must provide a password.',
-'FM_PASSWORD2' => 'The password you provided was not a good password.A good password must contain all of the following: upper case letter, lower case letter, number, non-alphanumeric character, be at least 7 characters long.',
+'FM_PASSWORD2' => 'The password you provided was not a good password. A good password must contain all of the following: upper case letter, lower case letter, number, non-alphanumeric character, be at least 7 characters long.',
 'FM_MAC_ADDRESS1' => 'You must provide a MAC address.',
 'FM_MAC_ADDRESS2' => 'The MAC address you provided was not valid.',
 'FM_ERR_UNEXPECTED_DESC' => 'Error: unexpected or missing characters in description',

@@ -4,7 +4,7 @@
 by the services running on your server.',
 'log_LOG_FILE_SELECT_DESC' => 'Choose a log file to view',
 'log_FILTER_PATTERN_DESC' => 'You may optionally specify a filter pattern to display only the
-lines from the log file which match this pattern.If you leave
+lines from the log file which match this pattern. If you leave
 this field blank, all available lines of the log file will be
 displayed. Note that this option is not used if you download the
 logfile.',

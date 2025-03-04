@@ -34,17 +34,17 @@ the local network. Please enter a valid IP address in the
 format "aaa.bbb.ccc.ddd".',
 'hos_ETHERNET_ADDRESS_DESCRIPTION' => 'The ethernet address is optional and causes the DHCP server to
 statically bind the local IP address to the computer with this
-ethernet address.If specified, it must be of the form
+ethernet address. If specified, it must be of the form
 "AA:BB:CC:DD:EE:FF" and must contain only the numbers 0-9 and
 the letters A-F.',
 'hos_CREATE_LOCAL_HOST_TITLE' => 'Create a new hostname referring to a local host.',
-'hos_DIDNT_ENTER_LOCAL_IP' => 'Error: You did not specify a Local IP address.IP
+'hos_DIDNT_ENTER_LOCAL_IP' => 'Error: You did not specify a Local IP address. IP
 addresses must contain only numbers and periods and
 be in the form "aaa.bbb.ccc.ddd".Did not create hostname.',
 'hos_IP_VALIDATION_ERROR' => 'Error: IP Address [_1] is
 invalid. IP Addresses must contain only numbers and periodsand be in the form "aaa.bbb.ccc.ddd". Did not create hostname.',
 'hos_MAC_ADDRESS_VALIDATION_ERROR' => 'Error: Ethernet address [_1]
-is invalid.Ethernet addresses must be in the
+is invalid. Ethernet addresses must be in the
 form "AA:BB:CC:DD:EE:FF" and only contain the
 numbers 0-9 and the letters A-F. Did not create
 hostname.',

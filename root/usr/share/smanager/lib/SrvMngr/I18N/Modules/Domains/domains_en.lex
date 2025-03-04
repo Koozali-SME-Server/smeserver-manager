@@ -14,26 +14,26 @@ web site for that domain.',
 i-bay as the content.',
 'dom_DOMAIN_NAME_VALIDATION_ERROR' => 'Error: unexpected or missing characters in domain name
 [_1].The domain name should contain one or more
-letters, numbers, periods and minus signs.Did not create new domain.',
+letters, numbers, periods and minus signs. Did not create new domain.',
 'dom_DOMAIN_DESCRIPTION_VALIDATION_ERROR' => 'Error: unexpected or missing characters in domain description
 [_1]. Did not create new domain.',
-'dom_DOMAIN_IN_USE_ERROR' => 'Error: domain [_1] is already in use.Did not create
+'dom_DOMAIN_IN_USE_ERROR' => 'Error: domain [_1] is already in use. Did not create
 new domain.',
-'dom_SYSTEM_DOMAIN_ERROR' => 'Error: domain [_1] is your system domain name.You
-cannot have a domain with the same name.Did not create new domain.',
+'dom_SYSTEM_DOMAIN_ERROR' => 'Error: domain [_1] is your system domain name. You
+cannot have a domain with the same name. Did not create new domain.',
 'dom_SUCCESSFULLY_CREATED' => 'Successfully created domain [_1].Your web
-server is now being restarted.The links on this page will be
+server is now being restarted. The links on this page will be
 inactive until the web server restart is complete.',
 'dom_MODIFY_TITLE' => 'Modify domain',
 'dom_NONEXISTENT_DOMAIN_ERROR' => 'Error: [_1] is not an existing domain.',
 'dom_SUCCESSFULLY_MODIFIED' => 'Successfully modified domain [_1].Your web
-server is now being restarted.The links on this page will be inactive until the web server restart is complete.',
+server is now being restarted. The links on this page will be inactive until the web server restart is complete.',
 'dom_REMOVE_TITLE' => 'Remove domain',
 'dom_REMOVE_DESCRIPTION' => 'You are about to remove the domain "[_1]" ([_2]).',
 'dom_ABOUT_TO_REMOVE' => 'Are you sure you wish to remove this domain ?',
 'dom_ERROR_WHILE_REMOVING_DOMAIN' => 'Error: internal failure while removing domain [_1].',
 'dom_SUCCESSFULLY_DELETED' => 'Successfully deleted domain [_1]. Your web server
-is now being restarted.The links on this page will be inactive
+is now being restarted. The links on this page will be inactive
 until the web server restart is complete.',
 'dom_DESC_CORPORATE_DNS_CURRENT' => 'Corporate DNS Settings',
 'dom_DOMAINS_PAGE_CORPORATE_DNS' => 'Modify corporate DNS settings',

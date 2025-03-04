@@ -2,7 +2,7 @@
 'rvw_FORM_TITLE' => 'Review configuration',
 'rvw_DESCRIPTION' => 'This report summarizes the networking, server, and domain
 parameters on this server relevant to configuring
-the client computers on your network.You may wish to print this
+the client computers on your network. You may wish to print this
 page and use it as a reference.',
 'rvw_NETWORKING_PARAMS' => 'Networking Parameters',
 'rvw_SERVER_MODE' => 'Server Mode',

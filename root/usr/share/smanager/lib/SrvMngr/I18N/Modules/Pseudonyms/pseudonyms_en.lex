@@ -14,7 +14,7 @@ For example, you may wish to create a pseudonym
 "webmaster" for your "webdevelopers" group or a
 pseudonym "joe" for the user "joseph".</p>
 <p>The server automatically creates pseudonyms of the form
-firstname.lastname and firstname_lastname for every user
+firstname. lastname and firstname_lastname for every user
 on the system and a pseudonym "everyone" which contains
 all users on the system.</p>
 <p>Pseudonyms also allow you to create e-mail aliases for valid
