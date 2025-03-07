@@ -1,0 +1,9 @@
+[Unit]
+Description=Koozali SME Server boot diagnostic tool
+After=sme-server.target
+PartOf=sme-server.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "/usr/bin/systemd-analyze plot > /usr/share/smanager/themes/default/public/images/boot.svg"
+RemainAfterExit=yes

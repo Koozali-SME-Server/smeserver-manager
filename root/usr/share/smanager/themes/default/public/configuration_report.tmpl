@@ -1,0 +1,38 @@
+Configuration report created {$report_creation_time}
+
+==================
+Base configuration
+==================
+SME server version: 	  {$releaseversion}
+SME server mode:    	  {$systemmode}
+SME server previous mode: {$previoussystemmode }
+Running Kernel:     	  {$curkernel}
+===========================
+New RPMs not in base system
+===========================     
+{ foreach $i (@newrpms) {
+            $OUT .= "$i";
+          }    
+} 
+===========================
+Custom and modified templates
+===========================
+{ foreach $i (@templates) {
+            $OUT .= "$i";
+          }
+}
+===========================
+Modified events
+===========================
+{ foreach $i (@events) {
+            $OUT .= "$i";
+          }
+}
+=======================
+Additional repositories
+=======================
+{ foreach $r (@repositories) {
+            $OUT .= "$r";
+          }
+}   		
+DONE!

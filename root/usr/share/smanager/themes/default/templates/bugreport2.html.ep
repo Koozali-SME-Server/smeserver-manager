@@ -18,9 +18,16 @@
     <% my $btn = l('bugr_Download this report'); %>
 
     %= form_for 'bugreportD' => (method => 'POST') => begin
-	%= submit_button "$btn", class => 'action'
-	%= hidden_field 'trt' => $bugr_datas->{trt}
-    % end    
+		%= submit_button "$btn", class => 'action'
+		%= hidden_field 'trt' => $bugr_datas->{trt}
+    % end   
+    
+    % my $out = "================== <br />";
+    % $out .= "Boot anaysis image (right click and save image to download)<br />";
+    % $out .= "================== <br />";
+    % $out .= "<img src='images/boot.svg' alt='boot timing image' width=95% >";
+    
+   <br><%= $c->render_to_string(inline=>$out) %><br>
 
 </div>
 

@@ -78,7 +78,7 @@ sub create_configuration_report {
     # create the reporting template
     my $configreport_template = Text::Template->new(
         TYPE    => 'FILE',
-        SOURCE  => '/etc/e-smith/web/common/configuration_report.tmpl',
+        SOURCE  => '/usr/share/smanager/themes/default/public/configuration_report.tmpl',
         UNTAINT => 1
     );
     my $report_creation_time = gen_locale_date_string;
@@ -114,11 +114,23 @@ sub create_configuration_report {
 
     # prcess template
     my $result = $configreport_template->fill_in(HASH => \%vars);
+    
+    #take out any multiple blank lines
+    #$result =~ s/\n{3,}/\n/g;
+    
 
     # write processed template to file
     open(my $cfgrep, '>', $configreportfile) or die "Could not create temporary file for config report!";
     print $cfgrep $result;
     close $cfgrep;
+    
+    #And create boot analysis image - now run externally by systemd, only run once per boot.
+    $result = `/usr/bin/systemctl start bootsequence.service`;
+    if (!$? == 0) {
+		warn "/usr/bin/systemd-analyze plot Command failed \n";
+	}
+
+    
 } ## end sub create_configuration_report
 
 sub show_config_report {

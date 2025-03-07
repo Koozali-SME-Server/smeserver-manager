@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 62
+%define release 63
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 06 2025 Brian Read <brianr@koozali.org> 11.0.0-63.sme
+- Add boot.svg image to Bug Report panel [SME: 12953]
+- Move report template to inside smanager tree
+- Add one-off systemd task to create boot.svg run from panel
+
 * Tue Mar 04 2025 Brian Read <brianr@koozali.org> 11.0.0-62.sme
 - Update *_en.lex files to conform to standard english punctuation  [SME: 11809]
 
