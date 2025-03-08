@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 63
+%define release 64
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Mar 08 2025 Brian Read <brianr@koozali.org> 11.0.0-64.sme
+- Add code to check for boot phase completion [SME: 12953]
+
 * Thu Mar 06 2025 Brian Read <brianr@koozali.org> 11.0.0-63.sme
 - Add boot.svg image to Bug Report panel [SME: 12953]
 - Move report template to inside smanager tree

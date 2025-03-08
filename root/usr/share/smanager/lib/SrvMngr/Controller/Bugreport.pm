@@ -17,6 +17,9 @@ use File::Basename;
 use SrvMngr qw( gen_locale_date_string );
 our $cdb = esmith::ConfigDB->open or die "Couldn't open ConfigDB\n";
 
+use constant FALSE => 0;
+use constant TRUE  => 1;
+
 # Get some basic info on the current SME install
 our $sysconfig          = $cdb->get('sysconfig');
 our $systemmode         = $cdb->get('SystemMode')->value;
@@ -124,14 +127,29 @@ sub create_configuration_report {
     print $cfgrep $result;
     close $cfgrep;
     
-    #And create boot analysis image - now run externally by systemd, only run once per boot.
-    $result = `/usr/bin/systemctl start bootsequence.service`;
-    if (!$? == 0) {
-		warn "/usr/bin/systemd-analyze plot Command failed \n";
+    #check if boot phase has completed.
+	if (wait_for_boot_completion()) {
+		#And create boot analysis image - now run externally following boot.
+		$result = `/usr/bin/systemctl start bootsequence.service`;
+		if (!$? == 0) {
+			warn "/usr/bin/systemd-analyze plot Command failed \n";
+		}
 	}
-
-    
+  
 } ## end sub create_configuration_report
+
+sub wait_for_boot_completion {
+    my $timeout = 60;  # 1-minute timeout
+    my $end_time = time() + $timeout;
+    while (time() < $end_time) {
+        if (`systemctl list-jobs 2>&1` =~ /No jobs running/) {
+            return TRUE;  # Success
+        }
+        sleep 5;
+    }
+    warn "Boot did not complete within $timeout seconds.\n";
+    return FALSE;  # Failure
+} ## end wait_for_boot_completion
 
 sub show_config_report {
     my $c   = shift;
