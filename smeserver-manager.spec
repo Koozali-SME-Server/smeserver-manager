@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 64
+%define release 65
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Mar 09 2025 Brian Read <brianr@koozali.org> 11.0.0-65.sme
+- Sort out missing hostname on nfs and cifs workstation backup on error [SME: 12948]
+
 * Sat Mar 08 2025 Brian Read <brianr@koozali.org> 11.0.0-64.sme
 - Add code to check for boot phase completion [SME: 12953]
 

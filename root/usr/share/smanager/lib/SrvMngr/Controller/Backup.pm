@@ -526,13 +526,13 @@ sub do_update {
 
     # common part for all functions
     if ($res ne 'OK') {
-
         if ($res eq 'NEXT') {
             $dest = 'back_' . $bac_datas{"function"};
         } else {
             $c->stash(error => $result);
             $dest = "back_$function";
         }
+        $bac_datas{vfstype}        = $c->param('VFSType');
         $c->stash(title => $title, bac_datas => \%bac_datas);
         return $c->render($dest);
     } ## end if ($res ne 'OK')
