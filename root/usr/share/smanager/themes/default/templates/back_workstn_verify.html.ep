@@ -44,9 +44,7 @@
 
 	<br><br>
 	%= hidden_field 'Function' => $bac_datas->{'function'} . '1'
-    <div class='center'>
 	%= submit_button $c->l('bac_VERIFY'), class => 'action'
-    </div>
 
     % end
 </div>

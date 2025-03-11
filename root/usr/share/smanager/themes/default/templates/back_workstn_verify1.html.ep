@@ -28,9 +28,7 @@
 
     %= hidden_field 'Function' => $bac_datas->{'function'}
 
-    <div class='center'>
     %= submit_button $c->l('NEXT'), class => 'action'
-    </div>
 
     % end
 </div>

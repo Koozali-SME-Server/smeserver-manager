@@ -41,9 +41,7 @@
 	%= hidden_field 'Backupset' => $bac_datas->{'backupset'}
 	%= hidden_field 'Filterexp' => $bac_datas->{'filterexp'}
 
-    <div class='center'>
 	%= submit_button $c->l('PERFORM'), class => 'action'
-    </div>
 
     % end
 

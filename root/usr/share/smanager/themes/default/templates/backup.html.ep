@@ -70,10 +70,8 @@
 	</span></p>
 
 	<br>
-    <div class='center'>
-	%= submit_button $c->l('PERFORM'), class => 'action'
-    </div>
-
+ 	%= submit_button $c->l('PERFORM'), class => 'action'
+ 
     % end
 
 </div>

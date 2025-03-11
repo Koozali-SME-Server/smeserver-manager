@@ -30,9 +30,7 @@
 
 	%= hidden_field 'Function' => $bac_datas->{'function'}
 
-    <div class='center'>
 	%= submit_button $c->l('bac_RESTORE_FROM_TAPE'), class => 'action'
-    </div>
 
     % end
 </div>

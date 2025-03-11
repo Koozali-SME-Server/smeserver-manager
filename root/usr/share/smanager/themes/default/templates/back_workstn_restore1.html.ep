@@ -29,9 +29,7 @@
 	%=l 'bac_YOU_MUST_REBOOT'
 	</p>
 	%= hidden_field 'Function' => $bac_datas->{'function'}
-    <div class='center'>
 	%= submit_button $c->l('bac_REBOOT'), class => 'action'
-    </div>
     % end
 </div>
 

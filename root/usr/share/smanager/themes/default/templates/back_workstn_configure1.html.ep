@@ -148,9 +148,7 @@
 
 	%= hidden_field 'Function' => $bac_datas->{function}
 	%= hidden_field 'VFSType' => $bac_datas->{vfstype}
-    <div class='center'>
 	%= submit_button $c->l('bac_UPDATE_CONF'), class => 'action'
-    </div>
     % end
 </div>
 % end
