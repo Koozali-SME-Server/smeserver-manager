@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 66
+%define release 67
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Mar 17 2025 Brian Read <brianr@koozali.org> 11.0.0-67.sme
+- re-write qmailanalog for postfix [SME: 12951]
+- Clean up backup.pm 
+- Enhance module panel - used by mail log analysis and Licence display 
+
 * Tue Mar 11 2025 Brian Read <brianr@koozali.org> 11.0.0-66.sme
 - Move the button for each backup panel to the left to conform to all the other panels.
 
