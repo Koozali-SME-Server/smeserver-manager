@@ -151,4 +151,4 @@ SMALL => 'Small',
 MEDIUM => 'Medium',
 LARGE => 'Large',
 FIELD_INVALID_CHARS => 'A field you entered contains invalid characters.',
-
+'REPORT_GENERATED' => "Report generated",

@@ -32,6 +32,10 @@ use esmith::util;
 use esmith::lockfile;
 use esmith::BlockDevices;
 use constant DEBUG => $ENV{MOJO_SMANAGER_DEBUG} || 0;
+
+use constant FALSE => 0;
+use constant TRUE  => 1;
+
 #our $cdb = esmith::ConfigDB->open   || die "Couldn't open config db"; #remove as cached gives problems
 #our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
 #our $rdb = esmith::ConfigDB->open('/etc/e-smith/restore') || die "Couldn't open restore db";
@@ -932,7 +936,7 @@ sub workstnVerify {
 
 sub workstnRestore {
     my ($c) = @_;
-    my $out;
+    my $out = '';
     my $restoreref = $c->param('Backupset');
     my $set        = $restoreref;
     $set =~ s/\/[^\/]*$//;
@@ -1015,6 +1019,7 @@ sub workstnRestore {
         return "$c->l('bac_OPERATION_STATUS_REPORT') $c->l('bac_ERR_PRE_RESTORE')";
     }
     $| = 1;
+    my $RD;
 
     if (open(RD, "-|")) {
 
@@ -1047,8 +1052,8 @@ sub workstnRestore {
                     or warn($c->l('bac_ERR_RESTORING_INITIAL_GRP') . "\n");
                 esmith::util::backgroundCommand(0, "/sbin/e-smith/signal-event", "post-upgrade");
 
-                #	system("/sbin/e-smith/signal-event", "post-upgrade") == 0
-                #	    or die ($c->l('bac_ERROR_UPDATING_CONFIGURATION')."\n");
+                	#system("/sbin/e-smith/signal-event", "post-upgrade") == 0 
+                	#    or die ($c->l('bac_ERROR_UPDATING_CONFIGURATION')."\n");
             } else {
                 $message = $c->l('bac_RESTORE_FAILED');
             }
@@ -1076,9 +1081,111 @@ sub workstnRestore {
         die($error_message) if $error_message;
         exit(0);
     } ## end else [ if (open(RD, "-|")) ]
-    $rdb->reload;
-    $error_message .= $c->bunmount($mntdir, $VFSType);
-    return '#OK#' . $out;
+    
+	#my $RD;
+
+	## Fork-safe open with explicit error handling
+	#unless (open($RD, "-|")) {
+		## Child process
+		#local $SIG{__DIE__} = sub { exit 255 };
+		#$| = 1;  # Autoflush
+
+		#eval {
+			#foreach my $file (@restorefiles) {
+				## Security: strict filename validation
+				#unless ($file =~ m{^[\w\/.-]+$}) {
+					#die "Invalid filename: $file";
+				#}
+				
+				## Check file existence
+				#unless (-e $file) {
+					#die "Backup file $file does not exist";
+				#}
+
+				## Execute dar with error checking
+				#system("/usr/bin/dar", "-Q", "-x", $file, "-v", "-N", "-R", "/", "-wa");
+				#if ($? == -1) {
+					#die "Failed to execute dar: $!";
+				#} elsif ($? & 127) {
+					#die sprintf("dar died with signal %d, %s coredump",
+						#($? & 127), ($? & 128) ? 'with' : 'without');
+				#} elsif ($? >> 8 != 0) {
+					#die "dar exited with error code " . ($? >> 8);
+				#}
+			#}
+
+			## Unmount with error checking
+			#if (my $unmount_err = $c->bunmount($mntdir, $VFSType)) {
+				#die "Unmount failed: $unmount_err";
+			#}
+		#};
+
+		#if (my $child_err = $@) {
+			#print STDERR "CHILD ERROR: $child_err";
+			#exit 254;
+		#}
+		#exit 0;
+	#} 
+	#else {
+		## Parent process
+		#eval {
+			## Verify fork succeeded
+			#unless (defined $RD) {
+				#die "Fork failed: $!";
+			#}
+
+			#$out .= $c->l('bac_FILES_HAVE_BEEN_RESTORED') . "\n<UL>";
+			#my $complete = 0;
+
+			## Read from child process
+			#while (<$RD>) {
+				#$complete++ if /etc\/samba\/smbpasswd$/;
+				#$out .= "<li>$_</li>\n";
+			#}
+			#$out .= "</UL>";
+
+			## Close pipe and check status
+			#unless (close $RD) {
+				#die "Pipe close failed: $!";
+			#}
+
+			#my $child_status = $?;
+			#if ($child_status != 0) {
+				#die "Child process failed with status " . ($child_status >> 8);
+			#}
+
+			## Post-restore actions
+			#if ($complete) {
+				#system("/usr/sbin/groupmod", "-g", $www_gid, "www");
+				#if ($? != 0) {
+					#die $c->l('bac_ERR_RESTORING_GID') . ": $! (status $?)";
+				#}
+
+				#system("/usr/sbin/usermod", "-g", $www_gid, "www");
+				#if ($? != 0) {
+					#die $c->l('bac_ERR_RESTORING_INITIAL_GRP') . ": $! (status $?)";
+				#}
+
+				#my $bg_result = esmith::util::backgroundCommand(0, "/sbin/e-smith/signal-event", "post-upgrade");
+				#unless ($bg_result) {
+					#die "Failed to schedule post-upgrade event";
+				#}
+			#} else {
+				#die $c->l('bac_RESTORE_FAILED');
+			#}
+		#};
+
+		## Error handling
+		#if (my $err = $@) {
+			#$rec->set_prop('state', 'failed');
+			#$rec->set_prop('error', "$err");
+			#esmith::lockfile::UnlockFile($file_handle);
+			#return $c->l('bac_RESTORE_FAILED_MSG') . ": $err";
+		#}
+	#}       
+	$rdb->reload;
+	$error_message .= $c->bunmount($mntdir, $VFSType);
+	return '#OK#' . $out;
 } ## end sub workstnRestore
 
 sub workstnSelRestore() {
@@ -1455,6 +1562,7 @@ sub performReboot {
 
     #print "$c->l('bac_SERVER_REBOOT')";
     #print "$c->l('bac_SERVER_WILL_REBOOT')";
+    warn "reboot coming";
     esmith::util::backgroundCommand(2, "/sbin/e-smith/signal-event", "reboot");
     return "#OK#" . $c->l('bac_SERVER_WILL_REBOOT');
 } ## end sub performReboot
@@ -1985,7 +2093,7 @@ sub bunmount {
         system('/bin/umount', '-f', $mount) == 0
             or return ($c->l('bac_ERR_WHILE_UNMOUNTING'));
     }
-    return;
+    return "";
 } ## end sub bunmount
 
 sub findmnt {

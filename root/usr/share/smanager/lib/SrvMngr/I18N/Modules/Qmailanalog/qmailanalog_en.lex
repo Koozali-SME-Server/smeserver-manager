@@ -8,6 +8,14 @@ reports are available.</P>
 these reports</P>',
 'qma_REPORT_TYPE' => 'Choose a report type',
 'qma_GENERATE_REPORT' => 'Generate report',
+'qma_INVALID_REPORT_TYPE' => 'Invalid report type: ',
+'qma_REPORT_GENERATED' => 'Report generated: ',
+'qma_END_OF_REPORT' => 'End of Report',
+'Mail log file analysis' => 'Mail log file analysis',
+
+'qma_Daily_Summary_Report_yesterday' => 'Summary report for yesterday',
+'qma_Daily_Summary_Report_today' => 'Summary report for today up to now',
+
 'qma_LIST_OUTGOING' => 'List outgoing messages and recipients',
 'qma_SUMMARIZE_QUEUE' => 'Summarize status of mail queue',
 'qma_SUCCESSFUL_DELIVERY_DELAY' => 'Successful delivery delay distribution',
@@ -21,8 +29,3 @@ these reports</P>',
 'qma_SENDMAIL_STYLE' => 'Sendmail style log',
 'qma_REASONS_SUCCESS' => 'Reasons for success',
 'qma_SENDER_UIDS' => 'Sender uids',
-'qma_INVALID_REPORT_TYPE' => 'Invalid report type: ',
-'qma_REPORT_GENERATED' => 'Report generated: ',
-'qma_END_OF_REPORT' => 'End of Report',
-'Mail log file analysis' => 'Mail log file analysis',
-

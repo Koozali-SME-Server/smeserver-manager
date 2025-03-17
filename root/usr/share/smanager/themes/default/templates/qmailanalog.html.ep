@@ -1,6 +1,6 @@
 % layout 'default', title => "Sme server 2 - qmailanalog";
-
 % content_for 'module' => begin
+%= javascript '/js/qmailanalog.js'
 <div id='module' class='module qmailanalog-panel'>
     %if (config->{debug} == 1) {
 	<p>
@@ -11,17 +11,34 @@
     <br>
     <%= $modul %>
     <% 	my $btn = l('qma_GENERATE_REPORT'); %>
-
     %= form_for 'qmailanalog' => (method => 'POST') => begin
-	<p>
-	<span class=label>
-	%=l 'qma_REPORT_TYPE'
-	</span><span class=data>
-	<!-- (to be sorted) -->
-	%= select_field 'report_type' => $c->reportType_list()
-	</span>
-	</p>
-	%= submit_button "$btn", class => 'action'
+		<p>
+		<span class=label>
+		%=l 'qma_REPORT_TYPE'
+		</span><span class=data>
+		<!-- (to be sorted) -->
+		%= select_field 'report_type' => $c->reportType_list(), id => 'analysis_type'
+		</span>
+		</p>
+
+		<!--And optional parameters, depending on the choice.-->
+		<div id="message_id_group">
+			<span class=label>
+			%= label_for message_id => 'Message ID:'
+			</span><span class=data>
+			%= text_field 'message_id', placeholder => 'Enter Postfix Message ID', id => 'message_id_group'
+			</span>
+		</div>
+
+		<div id="email_address_group">
+			<span class=label>
+			%= label_for email_address => 'Email Address:'
+			</span><span class=data>
+			%= email_field 'email_address', placeholder => 'Enter email address', id => 'email_address_group'
+			</span>
+		</div>
+
+		%= submit_button "$btn", class => 'action'
     % end
 </div>
 %end
