@@ -15,6 +15,7 @@ these reports</P>',
 
 'qma_Daily_Summary_Report_yesterday' => 'Summary report for yesterday',
 'qma_Daily_Summary_Report_today' => 'Summary report for today up to now',
+'qma_Daily_Summary_Report_all' => 'Summary report for all time up to now',
 
 'qma_LIST_OUTGOING' => 'List outgoing messages and recipients',
 'qma_SUMMARIZE_QUEUE' => 'Summarize status of mail queue',

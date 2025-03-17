@@ -68,6 +68,9 @@ sub generateReport {
     elsif ($selected_report eq 'daily_summary_today') {
         $out .= daily_summary_report_today($log_path);  
     }
+    elsif ($selected_report eq 'daily_summary_all') {
+        $out .= daily_summary_report_all($log_path);  
+    }
     elsif ($selected_report eq 'top_senders') {
         $out .= top_senders_and_recipients($log_path);  
     }
@@ -118,6 +121,7 @@ sub reportType_list {
     my @array = (
 		[$c->l('qma_Daily_Summary_Report_yesterday') => 'daily_summary'],
 		[$c->l('qma_Daily_Summary_Report_today') => 'daily_summary_today'],
+		[$c->l('qma_Daily_Summary_Report_all') => 'daily_summary_all'],
 		#[$c->l('qma_Top Senders and Recipients') => 'top_senders'],
 		#[$c->l('qma_Bounce Rate Analysis') => 'bounce_analysis'],
 		#[$c->l('qma_Spam and Virus Filtering Report') => 'spam_and_virus'],
@@ -144,6 +148,12 @@ sub daily_summary_report_today {
     my $log_file = shift;  # Path to log file
     my $output = qx(ls -1 /var/log/maillog* | xargs cat |pflogsumm -d today --detail 0 --no-no-msg-size);
     return format_as_html("Daily Summary Report", $output);
+}
+
+sub daily_summary_report_all {
+    my $log_file = shift;  # Path to log file
+    my $output = qx(ls -1 /var/log/maillog* | xargs cat |pflogsumm --detail 0 --no-no-msg-size);
+    return format_as_html("Summary Report across all logs", $output);
 }
 
 sub top_senders_and_recipients {
