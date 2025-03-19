@@ -2,7 +2,7 @@
 
 % content_for 'module' => begin
 
-<div id="central" class="sme-error">
+<div id="central module" class="sme-error">
     <p><br>dev<br> Oups !!! 
         The page you were requesting
         "<%= $self->req->url->path || '/' %>"

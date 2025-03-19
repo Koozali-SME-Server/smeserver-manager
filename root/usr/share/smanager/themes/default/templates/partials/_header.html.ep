@@ -1,98 +1,5 @@
-<style>
-#h2l1 {
-    display: flex;                  /* Use flexbox layout */
-    justify-content: space-between; /* Space between child elements */
-    align-items: center;           /* Center items vertically */
-}
 
-#h2e11 {
-    flex: 1;                       /* Allow the first div to take available space on the left */
-}
-
-#h2e12 { 
-    display: flex;                 /* Make this div a flex container */
-    align-items: center;           /* Vertically center content in this div */
-    margin-left: 20px;            /* Add margin to the left of this div */
-}
-
-#flag-container {
-    display: flex;                 /* Make this div a flex container */
-    align-items: center;           /* Vertically center content in this div */
-    margin-left: 20px;             /* Add margin to the left of the flag container */
-    padding-right: 20px;           /* Add padding to the right side of the flag container */
-}
-
-.flag-icon {
-    width: 43px;
-    font-size: 20px;
-}
-
-#legacy-button button {
-    background-color: #98d36e; /* Button background color */
-    font-weight: lighter;      /* Lighter text for the button */
-    color: #063;               /* Button text color */
-    padding: 5px 10px;         /* Padding for the button */
-    border: none;              /* Remove default button border */
-    border-radius: 4px;        /* Rounded corners for button */
-    cursor: pointer;           /* Change cursor on hover */
-}
-
-#legacy-button button:hover {
-    background-color: #82c961; /* Change color on hover */
-}
-
-.infobar {
-    display: flex;                  /* Use flexbox for alignment */
-    justify-content: space-between; /* Space between child elements */
-    align-items: center;            /* Center items vertically */
-    padding: 10px;                  /* Adjust padding as desired */
-}
-
-#h2e21 {
-    flex: 1;                        /* Allow the first div to take available space on the left */
-}
-
-#h2e22 {
-    display: flex;                  /* Make this div a flex container */
-    justify-content: center;        /* Center the help button */
-    align-items: center;            /* Center vertically */
-    flex: none;                    /* Prevent this div from growing */
-    position: relative;             /* Relative position for centering */
-    width: 100px;                  /* Set a width for the help button container */
-}
-
-#h2e23 {
-    margin-left: auto;              /* Push the third div to the right */
-}
-
-.login-button {
-    background-color: #98d36e;     /* Button background color */
-    font-weight: bold;              /* Bold text */
-    color: #ffffff;                 /* Button text color */
-    padding: 8px 12px;              /* Adjust padding for button height */
-    border: none;                   /* Remove default border */
-    border-radius: 4px;             /* Rounded corners */
-    cursor: pointer;                /* Change cursor on hover */
-}
-
-.login-button:hover {
-    background-color: #82c961;      /* Change color on hover */
-}
-
-#help-button {
-    text-decoration: none;          /* Remove underline from link */
-    font-size: 20px;                /* Adjust font size as needed */
-    padding: 8px 12px;              /* Add padding to the help link */
-    background-color: #98d36e;      /* Background for visibility */
-    border-radius: 4px;             /* Rounded corners */
-    color: #000;                    /* Button text color */
-}
-
-#help-button:hover {
-    background-color: #82c961;      /* Change background on hover */
-}
-</style>
-
+<!--
 <div id="header2" class="hd2">
     <div id="h2l1"> 
 		<div id="h2e11">
@@ -103,9 +10,11 @@
 			<button type='button'class="login-button"><a id="help-button" target="_parent" href="manual">?</a></button>
 		</div>
     
+
         <div id="h2e12">
 			<button type='button' class="login-button"><a id="legacy-button" href="/server-manager" target='_blank'>Legacy SM</a></button>
         </div>
+
 		<div id="h2e23">
 			% if ( not defined $c->session->{username} ) {
 				<button type='button' class="login-button"><a target="_parent" href="login">Login</a></button>
@@ -114,7 +23,7 @@
 			% }
 		</div>
 		<div id="flag-container">
-			<!-- The flag icon will be inserted here -->
+			 The flag icon will be inserted here 
 		</div>
     </div>
 	<div id="h2l2" class="infobar"> 
@@ -124,5 +33,17 @@
 		</div>
 		
 		
+	</div>
+</div>-->
+
+<div id="header2" class="hd2 module gradient-panel">
+	<img src="images/KoozaliServerManager.png" alt="Koozali Logo" class="logo" >
+	% if ( not defined $c->session->{username} ) {
+		<button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="login">Login</a></button>
+	% } else {
+		<button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="logout"><%= $c->session->{username} %> Logout</a></button>
+	% }
+	<div id="flag-container" class = "flag-style">
+		<!--			 The flag icon will be inserted here -->
 	</div>
 </div>

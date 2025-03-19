@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 69
+%define release 70
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,13 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Mar 19 2025 Brian Read <brianr@koozali.org> 11.0.0-70.sme
+- Re-cast the default theme - use proper koozali logo image, unwind multiple divs
+- Enhance responsiveness 
+- Revert Ibay menu name to Ibays
+- Remove legacy SM1 button on header
+- Remove "?" access to wiki help on header
+
 * Mon Mar 17 2025 Brian Read <brianr@koozali.org> 11.0.0-69.sme
 - Add a total summary report across all existing logs [SME: 12951]
 

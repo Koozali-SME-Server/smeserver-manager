@@ -70,7 +70,7 @@
 	    %= content 'js_toggleMenu'
 	% }
 
-	<div id="navigation" class="col-md-3">
+	<div id="navigation" class="col-md-3 module">
 	    %= include 'partials/_nav_menu'
 %	if ( $c->is_logged_in ) {
 	    %= include 'partials/_user_menu'
@@ -84,17 +84,17 @@
 	    %= include 'partials/_info'
 
 	    % if (flash 'success') {
-		<br><div class=success>
+		<br><div class="success module">
 		%= $c->render_to_string(inline => flash 'success') 
 		</div>
 	    % }
 	    % if ( flash 'warning' ) {
-		<br><div class=sme-warning>
+		<br><div class="sme-warning  module">
 		%= $c->render_to_string(inline => flash 'warning') 
 		</div>
 	    %}
 	    % if ( flash 'error' ) {
-		<br><div class=sme-error>
+		<br><div class="sme-error module">
 		%= $c->render_to_string(inline => flash 'error') 
 		</div>
 	    %}

@@ -2,7 +2,7 @@ package SrvMngr::Controller::Ibays;
 
 #----------------------------------------------------------------------
 # heading     : Network
-# description : Shared areas (was ibays)
+# description : Ibays
 # navigation  : 6000 100
 #
 #

@@ -1,5 +1,5 @@
-<div id="footer">
-<HR class="sme-copyrightbar">
+<div id="footer" class="module">
+<!--<HR class="sme-copyrightbar">-->
 <a href="https://mojolicious.org" target="_blank"><img src="images/sme-mojo-logo-white.png" style="position:relative;"></a>
 <font class="sme-copyright">
 %	if ( $c->is_logged_in && $c->is_admin) {

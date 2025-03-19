@@ -25,6 +25,32 @@
  *----------------------------------------------------------------------
  */
 
+/* DO NOT MODIFY THIS FILE! It is updated automatically */
+
+/*	smeserver_manager2  */
+
+/*----------------------------------------------------------------------
+ * copyright (C) 1999-2003 Mitel Networks Corporation
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *
+ * Technical support for this program is available from Mitel Networks
+ * Please visit our web site www.mitel.com for details.
+ *----------------------------------------------------------------------
+ */
+
 /* This is the basic stylesheet originally used in the mojo version.
    */
 
@@ -36,6 +62,21 @@ body{
     max-width: 100%;
     position: relative;
     margin: auto;
+}
+
+#header2 {
+	width:96.5%;
+	margin-left:1px;
+	margin-right:0px;
+	margin-top:4px;
+}
+
+.module {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #navigation{
@@ -64,7 +105,9 @@ body{
 }
 
 #header {
-    background: #bee6a2;
+    /*background: #bee6a2;*/
+    width:100%
+    margin:auto;
 }
 
 #header h1, a:link, a:visited {
@@ -227,7 +270,7 @@ a.menu-title {
 
 #module {
 /*    height: 600px; */
-    overflow: auto;
+/*    overflow: auto; */
 }
 
 
@@ -285,6 +328,71 @@ a.menu-title {
 	margin-top:1%;
 	height:95%;
 	width:100%;
+}
+
+#help-button {
+    text-decoration: none;          /* Remove underline from link */
+    font-size: 20px;                /* Adjust font size as needed */
+    padding: 8px 12px;              /* Add padding to the help link */
+    background-color: #98d36e;      /* Background for visibility */
+    border-radius: 4px;             /* Rounded corners */
+    color: #000;                    /* Button text color */
+}
+
+#help-button:hover {
+    background-color: #82c961;      /* Change background on hover */
+}
+
+        .gradient-panel {
+            width: 100%;
+            height: 40px; /* Fixed height for the panel */
+			background: linear-gradient(to right, white , #c0e7a5 ); /* Deep green to light green */
+            display: flex;
+            align-items: center;
+            postion:relative;
+        }
+
+        .logo {
+            height: 142%; /* Fixed height for the logo */
+            width: auto; /* Width will adjust to maintain aspect ratio */
+            margin-left: -16px;
+        }
+        
+        .login-button {
+            position: absolute;
+            left: 7%; /* Positions the button 2/3 across the panel */
+            transform: translateX(-50%); /* Centers the button on its position */
+            background-color: #4caf50b8;
+            color: white !important;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left:77%
+        }
+
+        .login-button:hover {
+            background-color: #45a049;
+        }
+        
+.flag-style {
+    position: absolute;
+    transform: translateY(-50%);
+    left: 95%;
+    /*right: 20px;*/
+    width: 24px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.no-visited-state:visited {
+  color: inherit; /* Or specify the desired color */
+  text-decoration: none; /* Or any other style you want to reset */
 }
 
 

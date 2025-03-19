@@ -8,7 +8,7 @@
 	</p>
     % }
 
-<div id='central' class='central initial-panel'>
+<div id='central' class='central initial-panel module'>
 
     % if ( stash 'error' ) {
     	<br><div class=sme-error>

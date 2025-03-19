@@ -230,6 +230,7 @@ a.error:link, a.error:visited, a.error:hover, a.error:active {
 /* these two are for any success messages that pop up*/
 div.success, span.success {
     color: #006400;
+    /*
     background-color: #ffffff;
     border-width: 1px;
     border-style: solid;
@@ -238,7 +239,8 @@ div.success, span.success {
     margin-left: 20px;
     margin-right: 20px;
     margin-top:0px;
-    margin-bottom:0px;
+    */
+    margin-bottom:4px;
 	 
 }
 
