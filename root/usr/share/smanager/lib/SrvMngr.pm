@@ -31,7 +31,7 @@ use SrvMngr::Plugin::WithoutCache;
 use esmith::I18N;
 
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '51.el8.sme'; 
+our $VERSION = '70.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -565,8 +565,8 @@ sub getNavigation {
     # Determine the directory where the functions are kept
     #----------------------------------------------------- 
 	my $navigation_ctlr_ignore = 
-	"(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm|Legacypanel\.pm(-.*)?)";
-#	"(\.\.?|Initial\.pm|Manual\.pm|Swttheme\.pm|Request\.pm|Modules\.pm(-.*)?)";
+	"(\.\.?|.*\-Custom\.pm|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm|Legacypanel\.pm(-.*)?)";
+#	"(\.\.?|Initial\.pm|.*Manual\.pm|Swttheme\.pm|Request\.pm|Modules\.pm(-.*)?)";
 	my $navigation_cgi_ignore = 
 	"(\.\.?|navigation|noframes|online-manual|(internal|pleasewait)(-.*)?)";
 

@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 70
+%define release 71
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 20 2025 Brian Read <brianr@koozali.org> 11.0.0-71.sme
+- Sort out navigation menu error on startup [SME: 12946]
+- More places where floating panel needed
+- Adjust floating panel to make space around it the same 
+- clean up some css
+
 * Wed Mar 19 2025 Brian Read <brianr@koozali.org> 11.0.0-70.sme
 - Re-cast the default theme - use proper koozali logo image, unwind multiple divs
 - Enhance responsiveness 

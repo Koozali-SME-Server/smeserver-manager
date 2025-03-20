@@ -3,7 +3,7 @@
 % content_for 'module' => begin
 
 
-<div id='roundcube' class='roundcube roundcube-panel'>
+<div id='roundcube' class='roundcube roundcube-panel module'>
     % if (config->{debug} == 1) {
 		<p>
 			%= dumper $c->current_route

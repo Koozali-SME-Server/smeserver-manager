@@ -1,5 +1,5 @@
 % layout 'defaultlight', title => 'Sme server 2 - Error P';
-<div id='central' class='central not_found-panel'>
+<div id='central' class='central not_found-panel module'>
     <p><br><br>
         The page you were requesting
         "<%= $self->req->url->path || '/' %>"

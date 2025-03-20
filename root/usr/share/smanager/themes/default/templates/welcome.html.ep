@@ -1,7 +1,7 @@
 % layout 'default', title => 'Sme server 2 - IndexT';
 
 % content_for 'module' => begin
-<div id='central' class='central welcome-panel'>
+<div id='central' class='central welcome-panel module'>
     <p>Index on line - Welcome page<br>
     </p>
     <p>
