@@ -92,7 +92,7 @@
 	%= select_field 'uSMTPAuth' => $c->get_smtp_ssl_auth_opt(), class => 'input'
 	</span></p>
 
-	<hr class="sectionbar" />
+	<!--<hr class="sectionbar" />-->
 	<h2>
 	%=l 'mai_TITLE_SECONDARY'
 	</h2>

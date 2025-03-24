@@ -7,11 +7,18 @@
 <title><%= $title %></title>
     <link rel="made" href="mailto:bugs%40koozali.org">
     <meta name="copyright" content="(head.tmpl)Copyright 2003-2004 Mitel Corporation">
-    %= stylesheet '/css/sme_core.css'
-    %= stylesheet '/css/sme_main.css'
-    %= stylesheet '/css/sme_menu.css'
-    %= stylesheet '/css/styles.css'
-    %= stylesheet '/css/sme-password.css'
+
+    %= stylesheet '/css/new_sme.css'
+    %= stylesheet '/css/new-sme-main.css'
+
+
+    %# Replaced by consolidated (and rationlised) CSS files as above March 2025
+    %#= stylesheet '/css/sme_core.css'
+    %#= stylesheet '/css/sme_main.css'
+    %#= stylesheet '/css/sme_menu.css'
+    %#= stylesheet '/css/styles.css'
+    %#= stylesheet '/css/sme-password.css'
+
     %= content_for 'head_contrib'
     % if (config 'hasJquery') {
 	%= include 'partials/_js_imports'

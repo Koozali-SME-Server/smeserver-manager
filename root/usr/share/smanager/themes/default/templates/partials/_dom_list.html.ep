@@ -85,7 +85,8 @@
 
     %= form_for '/domains' => (method => 'POST') => begin
 
-		<HR class="sectionbar">
+		<!-- <HR class="sectionbar">-->
+		<br>
 
 		% my $btn2 = l('dom_DOMAINS_PAGE_CORPORATE_DNS');
 

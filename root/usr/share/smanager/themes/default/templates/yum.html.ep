@@ -55,7 +55,7 @@
 	% end
     %}
 
-    <br><hr class=sectionbar /><br>
+    <!--<br><hr class=sectionbar /><br>-->
 
     %= form_for 'yum' => (method => 'POST') => begin
 

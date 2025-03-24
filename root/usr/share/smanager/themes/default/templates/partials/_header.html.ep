@@ -1,47 +1,10 @@
 
-<!--
-<div id="header2" class="hd2">
-    <div id="h2l1"> 
-		<div id="h2e11">
-			<a target='_blank' href="http://www.koozali.org"><img src="images/smeserver_logo.jpg" height="40" alt="SME Server"></a>
-		</div> 
-
-		<div id="h2e22">
-			<button type='button'class="login-button"><a id="help-button" target="_parent" href="manual">?</a></button>
-		</div>
-    
-
-        <div id="h2e12">
-			<button type='button' class="login-button"><a id="legacy-button" href="/server-manager" target='_blank'>Legacy SM</a></button>
-        </div>
-
-		<div id="h2e23">
-			% if ( not defined $c->session->{username} ) {
-				<button type='button' class="login-button"><a target="_parent" href="login">Login</a></button>
-			% } else {
-				<button type='button' class="login-button"><a target="_parent" href="logout"><%= $c->session->{username} %> Logout</a></button>
-			% }
-		</div>
-		<div id="flag-container">
-			 The flag icon will be inserted here 
-		</div>
-    </div>
-	<div id="h2l2" class="infobar"> 
-		<div id="h2e21">
-			<b>
-				<%= session 'SystemName' %>@<%= session 'DomainName' %></b> 
-		</div>
-		
-		
-	</div>
-</div>-->
-
 <div id="header2" class="hd2 module gradient-panel">
 	<img src="images/KoozaliServerManager.png" alt="Koozali Logo" class="logo" >
 	% if ( not defined $c->session->{username} ) {
 		<button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="login">Login</a></button>
 	% } else {
-		<button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="logout"><%= $c->session->{username} %> Logout</a></button>
+		<button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="logout">Logout <%= $c->session->{username} %></a></button>
 	% }
 	<div id="flag-container" class = "flag-style">
 		<!--			 The flag icon will be inserted here -->

@@ -47,9 +47,10 @@
     </div>
 
 	%= hidden_field 'trt' => 'ACC'
-    % end    
+    % end   
+    <br> 
 
-        <hr class="sectionbar" />
+    <!--<hr class="sectionbar" />-->
     
     %= form_for 'emailsettings' => (method => 'POST') => begin
 	<p><span class=label>
@@ -76,9 +77,10 @@
     </div>
 
 	%= hidden_field 'trt' => 'FIL'
-    % end    
+    % end  
+    <br>  
 
-        <hr class="sectionbar" />
+    <!--<hr class="sectionbar" />-->
 
     %= form_for 'emailsettings' => (method => 'POST') => begin
 	<p><span class=label>
@@ -118,8 +120,9 @@
 
 	%= hidden_field 'trt' => 'REC'
     % end    
+    <br>
 
-        <hr class="sectionbar" />
+    <!--<hr class="sectionbar" />-->
 
     %= form_for 'emailsettings' => (method => 'POST') => begin
 	<p><span class=label>

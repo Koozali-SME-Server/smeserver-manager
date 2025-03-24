@@ -33,7 +33,7 @@
 	%= select_field 'EmailUnknownUser' => $c->get_emailunknownuser_opt(), class => 'input'
 	</span></p>
 
-	<hr class='menubar' />
+	<!--<hr class='menubar' />-->
 	<h2>
 	%=l 'mai_TITLE_DELEGATE'
 	</h2>
@@ -47,7 +47,7 @@
 	%= text_field 'DelegateMailServer', class => 'input'
 	</span></p>
 
-	<hr class='sectionbar' />
+	<!--<hr class='sectionbar' />-->
 	<h2>
 	%=l 'mai_TITLE_SMARTHOST'
 	</h2>

@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 71
+%define release 72
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Mar 24 2025 Brian Read <brianr@koozali.org> 11.0.0-72.sme
+- Remove css files from template structure [SME: 12967]
+- Rationalise and merge css files 
+- Adjust some gaps around panels
+- Remove HR lines
+
 * Thu Mar 20 2025 Brian Read <brianr@koozali.org> 11.0.0-71.sme
 - Sort out navigation menu error on startup [SME: 12946]
 - More places where floating panel needed

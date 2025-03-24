@@ -1,0 +1,283 @@
+/* css/sme-password.css */
+.input-container {
+    position: relative;
+    display: inline-block;
+}
+.sme-password {
+    padding-right: 5px; /* Ensure space for the toggle icon */
+}
+.toggle-password {
+    position: absolute;
+    right: 4px; /* Position it towards the right */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust for exact centering */
+    cursor: pointer;
+    width: 20px; /* Set the width of the icon */
+    height: 20px; /* Set the height of the icon */
+}
+
+.module {
+    padding: 20px;
+    border: 1px ;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 10px !important;
+    margin-top: 10px;
+}
+
+.sme-copyright {
+    color: #777;
+    font-family: Verdana, Tahoma, sans-serif;
+    font-size: 10px;
+}
+
+.logo {
+    height: 142%;
+    width: auto;
+    margin-left: -16px;
+}
+
+.gradient-panel {
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to right, white ,#c0e7a5 );
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.sme-error {
+    color: #d9534f;
+    display: block;
+    background-color: #fff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: red;
+    padding: 2px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.login-button {
+    position: absolute;
+    left: 7%;
+    transform: translateX(-50%);
+    background-color: #4caf50b8;
+    color: white !important;
+    border: none;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 77%;
+}
+
+.sme-warning {
+    color: orange;
+    display: block;
+    background-color: #fff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: orange;
+    padding: 2px;
+}
+
+.infobar {
+    font-family: Verdana, Tahoma, sans-serif;
+    font-size: 11px;
+    background-color: #98d36e;
+}
+
+.module-content {
+    font-family: Georgia, Garamond, serif;
+    font-size: 13px;
+    line-height: 1.2;
+    color: #555;
+}
+
+#help-button {
+    text-decoration: none;
+    font-size: 20px;
+    padding: 8px;
+    background-color: #98d36e;
+    border-radius: 4px;
+    color: #000;
+}
+
+/*
+#module {
+    padding: 20px;
+    border: 1px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+*/
+
+#container {
+    max-width: 100%;
+    position: relative;
+    margin: auto;
+}
+
+#header2 {
+    width: 94.2%;
+    margin-left: 1px;
+    margin-top: 4px;
+}
+
+#main {
+    margin-left: 200px;
+    padding: 10px;
+}
+
+#central {
+    padding: 5px;
+}
+
+#footer {
+    padding-left: 5px;
+}
+
+#header {
+    width: 100%;
+    margin: auto;
+}
+
+#navigation {
+    width: 190px;
+    position: absolute;
+    padding: 5px;
+    background-color: #E8F3E1;
+    overflow: auto;
+    margin-top:20px;
+}
+
+#footer img {
+     float: right;
+     position: fixed;
+     /*margin-left: 40%;*/
+}
+
+.flag-style {
+     position: absolute;
+     transform: translateY(-50%);
+     left: 95%;
+    /*right: 20px;
+    */
+     width: 24px;
+     height: 14px;
+     display: inline-block;
+     vertical-align: middle;
+}
+
+
+/* flag container*/
+#flag-container span {
+	font-size: 24px;
+    display: flex;                     /* Allows for easy centering */
+    justify-content: center;           /* Center horizontally */
+    align-items: center;               /* Center vertically */
+    width: 100%;                       /* Full width of parent */
+    height: 24px;                      /* Set a fixed height */
+    border: 1px solid #ccc;            /* Light gray border */
+    border-radius: 5px;                /* Rounded corners */
+    cursor: default;                   /* Prevent text cursor */
+
+}
+
+.fallback-box {
+  display: inline-block; /* Make it inline-block to fit around the content */
+  border: 2px solid gray; /* Change the border color as desired */
+  padding: 10px; /* Add some padding */
+  border-radius: 10px; /* Round the corners of the box */
+  font-size: 60px; /* Adjust size if needed */
+  margin-top: 10px; /* Add some margin */
+  text-align: center; /* Center text inside the box */
+}
+
+ table.sme-border {
+     border-collapse: collapse;
+     border: 2px solid #cccccc;
+     empty-cells: show;
+     margin: 5px 5px 5px 2px;
+}
+ td.sme-border, td.sme-border-warning, td.sme-border-right, td.sme-border-center {
+     border: 1px solid #cccccc;
+     font-family: Verdana, Arial, Helvetica, sans-serif;
+     font-size: 10px;
+     font-weight: normal;
+     color: #000000;
+     text-align: left;
+     padding-left: 2px;
+     padding-right: 2px;
+     padding-top: 3px;
+     padding-bottom: 3px;
+}
+ td.sme-border-warning {
+     color: red;
+}
+ td.sme-border-right {
+    text-align: right;
+}
+ td.sme-border-center {
+    text-align: center;
+}
+ th.sme-border {
+     border: 1px solid #cccccc;
+     background-color: #bee6a2;
+     font-family: Verdana, Arial, Helvetica, sans-serif;
+     font-size: 10px;
+     font-weight: bold;
+     color: #000000;
+     text-align: center;
+     vertical-align: bottom;
+     padding-left: 3px;
+     padding-right: 3px;
+     padding-top: 3px;
+     padding-bottom: 3px;
+    /*border-width: 1px;
+     border-style: solid;
+     border-color: #F2F0EE #75736E #75736E #F2F0EE ;
+    */
+}
+ td.sme-border a, td.sme-border-right a, td.sme-border-center a {
+     font-size: 10px;
+}
+
+th.sme-layout {
+border: 1px solid #8ebe43;
+background-color: #bee6a2;
+    }
+table.sme-border {
+border: 2px solid #dddddd;
+    }
+td.sme-border-warning,
+td.sme-border-right,
+td.sme-border-center {
+border: 1px solid #dddddd;
+    }
+td.sme-border-right {text-align: right;}
+td.sme-border-center {text-align: center;}
+th.sme-border {
+border: 1px solid #dddddd;
+background-color: #e8f3e1;
+    }
+    
+.no-visited-state {
+     color: inherit;
+    /* Or specify the desired color */
+     text-decoration: none;
+    /* Or any other style you want to reset */
+}
+
+.no-visited-state:visited {
+     color: inherit;
+    /* Or specify the desired color */
+     text-decoration: none;
+    /* Or any other style you want to reset */
+}
