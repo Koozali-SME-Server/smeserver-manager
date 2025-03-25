@@ -142,6 +142,10 @@ sub do_display {
     if ($trt eq 'LIST') {
 
         #List all the port forwards
+        # Open them again as maybe written to above 
+        $tcp_db = esmith::ConfigDB->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
+		$udp_db = esmith::ConfigDB->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
+
         my @tcpforwards = $tcp_db->get_all;
         my @udpforwards = $udp_db->get_all;
         my $empty       = 1 if not @tcpforwards and not @udpforwards;

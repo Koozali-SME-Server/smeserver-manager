@@ -201,11 +201,13 @@ body.menu {
 
 div.error, div.sme-error, span.error, span.sme-error {
     color: red;
-    background-color: #fff;
+    background-color: #f9f9f9;
     border-width: 1px;
     border-style: solid;
     border-color: red;
-    padding: 2px;
+    padding: 10px;
+    border-radius: 10px;
+    
 }
 
 form {
@@ -493,5 +495,6 @@ div.success, span.success {
      border-width: 1px;
      border-style: solid;
      border-color: #006400 ;
-     padding: 8px;
+     padding: 10px;
+     border-radius: 10px;
 }

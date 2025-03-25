@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 72
+%define release 73
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Mar 25 2025 Brian Read <brianr@koozali.org> 11.0.0-73.sme
+- Some changes to error message format in css.
+- Fix DB Cache problem with port forwarding panel [SME: 12970]
+- Fix error and success message display for port forwarding panel [SME: 12969]
+
 * Mon Mar 24 2025 Brian Read <brianr@koozali.org> 11.0.0-72.sme
 - Remove css files from template structure [SME: 12967]
 - Rationalise and merge css files 
