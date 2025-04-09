@@ -215,6 +215,7 @@ sub add_portforward {
 
 sub get_destination_host {
     my $q           = shift;
+	$cdb = esmith::ConfigDB->open || die "Can't open configuration database: $!\n";
     my $dhost       = $q->param("dhost");
     my $localip     = $cdb->get_prop('InternalInterface', 'IPAddress');
     my $external_ip = $cdb->get_prop('ExternalInterface', 'IPAddress') || $localip;
@@ -361,6 +362,7 @@ sub isValidPort() {
 
 sub validate_destination_host {
     my $c     = shift;
+	$cdb = esmith::ConfigDB->open || die "Can't open configuration database: $!\n";
     my $dhost = $c->param('dhost');
     $dhost =~ s/^\s+|\s+$//g;
     my $localip = $cdb->get_prop('InternalInterface', 'IPAddress');

@@ -1,0 +1,3 @@
+* Wed Apr 09 2025 Brian Read <brianr@koozali.org> 11.0.0-75.sme
+- Move review configuration to behind login [SME: 12984]
+- Fix crash in port forwarding [SME: 12985]

@@ -1,15 +1,10 @@
 package SrvMngr::Controller::Review;
 
 #----------------------------------------------------------------------
-# heading     : Support
+# heading     : Investigation
 # description : Review configuration
-# navigation  : 000 500
-# menu        : N
+# navigation  : 6000 6800
 # routes : end
-#----------------------------------------------------------------------
-# heading-o     : Configuration
-# description-o : Review configuration
-# navigation-o  : 6000 6800
 #----------------------------------------------------------------------
 use strict;
 use warnings;

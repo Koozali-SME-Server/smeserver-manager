@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 74
+%define release 75
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Apr 09 2025 Brian Read <brianr@koozali.org> 11.0.0-75.sme
+- Move review configuration to behind login [SME: 12984]
+- Fix crash in port forwarding [SME: 12985]
+
 * Wed Mar 26 2025 Brian Read <brianr@koozali.org> 11.0.0-74.sme
 - Fix error message and success message format in Local Networking panel [SME: 12969]
 
