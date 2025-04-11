@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 75
+%define release 76
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Apr 11 2025 Brian Read <brianr@koozali.org> 11.0.0-76.sme
+- Restore css for roundcube embedded  [SME: 12987]
+
 * Wed Apr 09 2025 Brian Read <brianr@koozali.org> 11.0.0-75.sme
 - Move review configuration to behind login [SME: 12984]
 - Fix crash in port forwarding [SME: 12985]

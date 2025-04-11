@@ -498,3 +498,8 @@ div.success, span.success {
      padding: 10px;
      border-radius: 10px;
 }
+
+div.roundcube #roundcube{
+	width:100%;
+	height:600px;
+}
