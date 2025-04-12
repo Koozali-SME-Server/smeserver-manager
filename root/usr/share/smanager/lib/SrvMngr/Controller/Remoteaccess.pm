@@ -30,7 +30,7 @@ our @EXPORT = qw( networkAccess_list passwordLogin_list get_ssh_permit_root_logi
 );
 
 #		get_pptp_sessions
-our $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
+my  $db; # = esmith::ConfigDB->open || warn "Couldn't open configuration database"; 
 
 sub main {
     my $c = shift;
@@ -134,7 +134,7 @@ sub networkAccess_list {
     return [
         [ $c->l('rma_NO_ACCESS')         => 'off' ],
         [ $c->l('NETWORKS_ALLOW_LOCAL')  => 'private' ],
-        [ $c->l('NETWORKS_ALLOW_PUBLIC') => 'normal' ]
+        [ $c->l('NETWORKS_ALLOW_PUBLIC') => 'public' ]
     ];
 } ## end sub networkAccess_list
 
@@ -144,6 +144,7 @@ sub passwordLogin_list {
 }
 
 sub get_prop {
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     my ($c, $item, $prop) = @_;
     warn "You must specify a record key"    unless $item;
     warn "You must specify a property name" unless $prop;
@@ -154,6 +155,8 @@ sub get_prop {
 sub get_value {
     my $c    = shift;
     my $item = shift;
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     return ($db->get($item)->value());
 } ## end sub get_value
 
@@ -179,8 +182,8 @@ sub get_ssh_password_auth {
 }
 
 sub get_ssh_access {
-    my $status = get_prop('', 'sshd', 'status');
-
+	my $c = shift;
+    my $status = $c->get_prop('sshd', 'status');
     if (defined($status) && ($status eq 'enabled')) {
         my $access = get_prop('', 'sshd', 'access');
         $access = ($access eq 'public') ? 'public' : 'private';
@@ -202,6 +205,7 @@ sub get_ftp_password_login_access {
 } ## end sub get_ftp_password_login_access
 
 sub get_telnet_mode {
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     my $telnet = $db->get('telnet');
     return ('off') unless $telnet;
     my $status = $telnet->prop('status') || 'disabled';
@@ -211,8 +215,8 @@ sub get_telnet_mode {
 } ## end sub get_telnet_mode
 
 sub get_ipsecrw_sessions {
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     my $status = $db->get('ipsec')->prop('RoadWarriorStatus');
-
     if (defined($status) && ($status eq 'enabled')) {
         return ($db->get('ipsec')->prop('RoadWarriorSessions') || '0');
     } else {
@@ -221,6 +225,7 @@ sub get_ipsecrw_sessions {
 } ## end sub get_ipsecrw_sessions
 
 sub get_ipsecrw_status {
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     return undef unless ($db->get('ipsec'));
     return $db->get('ipsec')->prop('RoadWarriorStatus');
 }
@@ -228,6 +233,7 @@ sub get_ipsecrw_status {
 sub pptp_and_dhcp_range {
     my $c           = shift;
     my $val         = shift || 0;
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     my $dhcp_status = $db->get_prop('dhcpd', 'status') || 'disabled';
     my $dhcp_end    = $db->get_prop('dhcpd', 'end') || '';
     my $dhcp_start  = $db->get_prop('dhcpd', 'start') || '';
@@ -245,6 +251,7 @@ sub pptp_and_dhcp_range {
 
 sub _get_valid_from {
     my $c   = shift;
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     my $rec = $db->get('httpd-admin');
     return undef unless ($rec);
     my @vals = (split ',', ($rec->prop('ValidFrom') || ''));
@@ -287,12 +294,12 @@ sub validate_network_and_mask {
 
 sub change_settings {
     my ($c, %rma_datas) = @_;
-
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     #------------------------------------------------------------
     # good; go ahead and change the access.
     #------------------------------------------------------------
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     my $rec = $db->get('telnet');
-
     if ($rec) {
         if ($rma_datas{telnetAccess} eq "off") {
             $rec->set_prop('status', 'disabled');
@@ -363,7 +370,7 @@ sub change_settings {
 sub set_ipsecrw_sessions {
     my $c        = shift;
     my $sessions = shift;
-
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
     if (defined $sessions) {
         $db->get('ipsec')->set_prop('RoadWarriorSessions', $sessions);
 
@@ -378,6 +385,7 @@ sub add_new_valid_from {
     my $c    = shift;
     my $net  = shift;
     my $mask = shift;
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
 
     # we transform bit mask to regular mask
     $mask = get_reg_mask($net, $mask);
@@ -400,6 +408,7 @@ sub remove_valid_from {
     my $c           = shift;
     my $remove_nets = shift;
     my @remove      = split /,/, $remove_nets;
+    $db = esmith::ConfigDB->open || warn "Couldn't open configuration database";
 
     #	my @remove = $c->param('Remove_nets');
     my @vals = $c->_get_valid_from();

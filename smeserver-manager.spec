@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 76
+%define release 77
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Apr 12 2025 Brian Read <brianr@koozali.org> 11.0.0-77.sme
+- Sort out local and pulic access setting in remote panel  [SME: 12988]
+- caching problem, plus confusion between normal and public setting in sshd / access in DB
+
 * Fri Apr 11 2025 Brian Read <brianr@koozali.org> 11.0.0-76.sme
 - Restore css for roundcube embedded  [SME: 12987]
 
