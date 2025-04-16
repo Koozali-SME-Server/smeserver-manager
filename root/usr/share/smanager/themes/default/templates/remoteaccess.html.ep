@@ -85,7 +85,7 @@
             %= t td => (class => 'sme-border') => $net
             %= t td => (class => 'sme-border') => $mask
             %= t td => (class => 'sme-border') => $numhosts
-            <td class='sme-border'><input type='checkbox' name='Remote_nets' value='<%= $net.'/'.$mask %>'> </td>
+            <td class='sme-border'><input type='checkbox' name='Remove_nets' value='<%= $net.'/'.$mask %>'> </td>
     	</tr>
     %    }
 
