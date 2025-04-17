@@ -31,7 +31,8 @@ sub main {
     my %log_datas = ();
     my $title     = $c->l('log_FORM_TITLE');
     my $notif     = '';
-    $log_datas{default_op} = ($cdb->get('viewlogfiles')->prop('DefaultOperation')) || 'view';
+    my $viewlog = $cdb->get('viewlogfiles');
+    $log_datas{default_op} = ($viewlog ? $viewlog->prop('DefaultOperation') : undef) || 'view';
     $c->stash(title => $title, notif => $notif, log_datas => \%log_datas);
     $c->render(template => 'viewlogfiles');
 } ## end sub main
