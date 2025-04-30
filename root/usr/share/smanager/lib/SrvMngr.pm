@@ -30,8 +30,11 @@ use SrvMngr::Plugin::WithoutCache;
 
 use esmith::I18N;
 
+# Import the function(s) you need
+use SrvMngr_Auth qw(check_admin_access);
+
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '70.el8.sme'; 
+our $VERSION = '78.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -46,7 +49,7 @@ our @EXPORT_OK = qw(
 	getNavigation ip_number validate_password is_normal_password email_simple
 	mac_address_or_blank mac_address ip_number_or_blank
 	lang_space get_routes_list subnet_mask get_reg_mask
-	gen_locale_date_string get_public_ip_address
+	gen_locale_date_string get_public_ip_address simpleNavMerge
 	);
 
 has home => sub {
@@ -301,10 +304,11 @@ sub setup_routing {
     $if_logged_in->get('/userpassword')->to('userpassword#main')->name('passwd');
     $if_logged_in->post('/userpassword')->to('userpassword#change_password')->name('passwd2');
 
-    my $if_admin = $r->under( sub {
-	my $c =shift;
-	return $c->is_admin || $c->auth_fail($c->l("acs_ADMIN"));
-    });
+	my $if_admin = $r->under( sub {
+	    my $c = shift;
+	    # Call the imported function directly
+	    return check_admin_access($c) || $c->auth_fail($c->l("acs_ADMIN"));
+	});
 
     $if_admin->get('/backup')->to('backup#main')->name('backup');
     $if_admin->post('/backup')->to('backup#do_display')->name('backupd');
@@ -549,9 +553,10 @@ sub getNavigation {
 
     use esmith::NavigationDB;
 
-    my $c  = shift;
+    my $class  = shift; #not the controller as it is called as an external, not part of the controller.
     my $lang = shift || 'en-us';
     my $menu = shift || 'N';
+    my $username = shift || ''; #Username when logged in as a user not admin
 
 #    my $lang = $c->session->{lang} || 'en-us';
 
@@ -560,6 +565,26 @@ sub getNavigation {
 
     my @files = ();
     my %files_hash = ();
+    
+    # Added: Store allowed admin panels for non-admin users
+    my @allowed_admin_panels = ();
+    my $is_admin = 1;  # Default to admin (full access)
+    
+    # Added: Check if user is non-admin and get their allowed panels
+    if ($username ne '') {
+        # Get the AccountsDB to check user permissions
+        my $accountsdb = esmith::AccountsDB->open_ro() or
+            die "Couldn't open AccountsDB\n";
+            
+        # Check if user has AdminPanels property
+        my $user_rec = $accountsdb->get($username);
+        if (defined $user_rec && $user_rec->prop('AdminPanels')) {
+            $is_admin = 0;  # User is non-admin with specific panel access
+            # Get comma-separated list of allowed admin panels
+            my $admin_panels = $user_rec->prop('AdminPanels');
+            @allowed_admin_panels = split(/,/, $admin_panels);
+        }
+    }
 
     #-----------------------------------------------------
     # Determine the directory where the functions are kept
@@ -638,69 +663,109 @@ sub getNavigation {
     }
 
     foreach my $file (keys %files_hash)
-    {
-	#my $heading = 'Unknown';
-	my $heading = 'Legacy';
-	
-	my $description = $file;
-	my $headingWeight = 99999;
-	my $descriptionWeight = 99999;
-	my $urlpath = '';
-	my $menucat = 'A';	# admin menu (default)
+		{
+		#my $heading = 'Unknown';
+		my $heading = 'Legacy';
+		
+		my $description = $file;
+		my $headingWeight = 99999;
+		my $descriptionWeight = 99999;
+		my $urlpath = '';
+		my $menucat = 'A';	# admin menu (default)
 
-	my $rec = $navdb->get($file);
+		my $rec = $navdb->get($file);
 
-	if (defined $rec)
-	{
-	    $heading = $rec->prop('Heading');
-	    $description = $rec->prop('Description');
-	    $headingWeight = $rec->prop('HeadingWeight') || 99999; #Stop noise in logs if file in dir does not have nav header.
-	    $descriptionWeight = $rec->prop('DescriptionWeight');
-	    $urlpath = $rec->prop('UrlPath') || '';
-	    $menucat = $rec->prop('MenuCat') || 'A';	# admin menu (default)
-	}
-	next if $menu ne $menucat;
+		if (defined $rec)
+		{
+			$heading = $rec->prop('Heading');
+			$description = $rec->prop('Description');
+			$headingWeight = $rec->prop('HeadingWeight') || 99999; #Stop noise in logs if file in dir does not have nav header.
+			$descriptionWeight = $rec->prop('DescriptionWeight');
+			$urlpath = $rec->prop('UrlPath') || '';
+			$menucat = $rec->prop('MenuCat') || 'A';	# admin menu (default)
+		}
+		
+		# Added: Check if this is an admin menu item and if user has access
+		if ($menucat eq 'A' && !$is_admin) {
+			# Skip this admin panel if user doesn't have access to it
+			my $has_access = 0;
+			my $file_no_ext = $file;
+			$file_no_ext =~ s/\.pm$//;  # Remove .pm extension if present
+			foreach my $allowed_panel (@allowed_admin_panels) {
+				if ($file_no_ext eq lc($allowed_panel)) {
+					#die("Here!!$file $file_no_ext $allowed_panel ");
+					$has_access = 1;
+					last;
+				}
+			}
+			next if !$has_access;
+		}
 
-	#-------------------------------------------------- 
-	# add heading, description and weight information to data structure
-	#-------------------------------------------------- 
+		next if $menu ne $menucat;
 
-	unless (exists $nav {$heading})
-	{
-	    $nav {$heading} = { COUNT => 0, WEIGHT => 0, DESCRIPTIONS => [] };
-	}
+		#-------------------------------------------------- 
+		# add heading, description and weight information to data structure
+		#-------------------------------------------------- 
 
-	$nav {$heading} {'COUNT'} ++;
-	$nav {$heading} {'WEIGHT'} += $headingWeight;
+		unless (exists $nav {$heading})
+		{
+			$nav {$heading} = { COUNT => 0, WEIGHT => 0, DESCRIPTIONS => [] };
+		}
 
-	# Check for manager panel, and assign the appropriate
-	#  cgi-bin prefix for the links.
-	# Grab the last 2 directories by splitting for '/'s and
-	#  then concatenating the last 2
-	# probably a better way, but I don't know it.
+		$nav {$heading} {'COUNT'} ++;
+		$nav {$heading} {'WEIGHT'} += $headingWeight;
 
-	my $path;
-	if ( $files_hash{$file} eq 'ctrl') {
-	    $path = "2";
-	} elsif ( $files_hash{$file} eq 'cgim') {
-		$path = "/cgi-bin";
-	} else {
-		my @filename = split /\//, $files_hash{$file};
-		$path = "/$filename[scalar @filename - 2]/$filename[scalar @filename - 1]";
-	};
+		# Check for manager panel, and assign the appropriate
+		#  cgi-bin prefix for the links.
+		# Grab the last 2 directories by splitting for '/'s and
+		#  then concatenating the last 2
+		# probably a better way, but I don't know it.
 
-	push @{ $nav {$heading} {'DESCRIPTIONS'} },
-		{ DESCRIPTION => $description,
-		  WEIGHT => $descriptionWeight, 
-		  FILENAME => $urlpath ? $urlpath : "$path/$file",
-		  CGIPATH => $path,
-		  MENUCAT => $menucat
+		my $path;
+		if ( $files_hash{$file} eq 'ctrl') {
+			$path = "2";
+		} elsif ( $files_hash{$file} eq 'cgim') {
+			$path = "/cgi-bin";
+		} else {
+			my @filename = split /\//, $files_hash{$file};
+			$path = "/$filename[scalar @filename - 2]/$filename[scalar @filename - 1]";
 		};
+
+		push @{ $nav {$heading} {'DESCRIPTIONS'} },
+			{ DESCRIPTION => $description,
+			  WEIGHT => $descriptionWeight, 
+			  FILENAME => $urlpath ? $urlpath : "$path/$file",
+			  CGIPATH => $path,
+			  MENUCAT => $menucat
+			};
     }
 
 	return \%nav;
 
 }
+
+sub simpleNavMerge {
+	#Used to merge two nav structures - used for the user and selected admin menu.
+    my ($class,$nav1, $nav2) = @_;
+    my %result = %$nav1;  # Start with a copy of first nav
+    
+    # Merge in second nav
+    foreach my $heading (keys %$nav2) {
+        if (exists $result{$heading}) {
+            # Add counts and weights
+            $result{$heading}{COUNT} += $nav2->{$heading}{COUNT};
+            $result{$heading}{WEIGHT} += $nav2->{$heading}{WEIGHT};
+            # Append descriptions
+            push @{$result{$heading}{DESCRIPTIONS}}, @{$nav2->{$heading}{DESCRIPTIONS}};
+        } else {
+            # Just copy the heading
+            $result{$heading} = $nav2->{$heading};
+        }
+    }
+    
+    return \%result;
+}
+
 
 
 sub _lang_space {

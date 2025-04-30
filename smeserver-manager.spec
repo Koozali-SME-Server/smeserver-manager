@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 78
+%define release 79
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Apr 30 2025 Brian Read <brianr@koozali.org> 11.0.0-79.sme
+- Add code in SrvMngr to take note of user panel setting 
+
 * Thu Apr 17 2025 Brian Read <brianr@koozali.org> 11.0.0-78.sme
 - typo in remoteaccess panel
 - Fix crash in veiwlogfiles if viewlogfiles key not in DB 
