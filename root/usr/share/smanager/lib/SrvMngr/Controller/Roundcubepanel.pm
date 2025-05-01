@@ -1,9 +1,9 @@
 package SrvMngr::Controller::Roundcubepanel;
 
 #----------------------------------------------------------------------
-# heading     : System
+# heading     : Network
 # description : Webmail
-# navigation  : 99999 9999
+# navigation  : 6000 900
 #----------------------------------------------------------------------
 #----------------------------------------------------------------------
 # name   : roundcubepanel,    method : get,   url : /roundcubepanel,     ctlact : Roundcubepanel#main

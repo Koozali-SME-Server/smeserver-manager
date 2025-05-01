@@ -3,7 +3,7 @@ package SrvMngr::Controller::Review;
 #----------------------------------------------------------------------
 # heading     : Investigation
 # description : Review configuration
-# navigation  : 6000 6800
+# navigation  : 7000 600
 # routes : end
 #----------------------------------------------------------------------
 use strict;

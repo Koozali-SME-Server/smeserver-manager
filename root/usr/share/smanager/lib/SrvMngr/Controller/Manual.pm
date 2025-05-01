@@ -3,7 +3,7 @@ package SrvMngr::Controller::Manual;
 #----------------------------------------------------------------------
 # heading     : Support
 # description : Online manual
-# navigation  : 0000 100
+# navigation  : 0 300
 # menu        : N
 #
 # routes : end

@@ -3,7 +3,7 @@ package  SrvMngr::Controller::Support;
 #----------------------------------------------------------------------
 # heading     : Support
 # description : Support and licensing
-# navigation  : 0000 200
+# navigation  : 0 400
 # menu        : N
 #
 # routes : end
