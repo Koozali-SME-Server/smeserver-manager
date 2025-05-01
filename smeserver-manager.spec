@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 79
+%define release 80
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Apr 30 2025 Brian Read <brianr@koozali.org> 11.0.0-80.sme
+- Remove expansion of css files from createlinks [SME: 12989]
+
 * Wed Apr 30 2025 Brian Read <brianr@koozali.org> 11.0.0-79.sme
 - Add code in SrvMngr to take note of user panel setting 
 

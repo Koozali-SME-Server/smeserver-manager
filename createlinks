@@ -8,12 +8,12 @@ use esmith::Build::CreateLinks  qw(:all);
 my $mngrdir = '/usr/share/smanager';
 
 # templates to expand
-for (  qw( sme_core.css sme_main.css sme_menu.css styles.css ) )
-{
-    templates2events("$mngrdir/themes/default/public/css/$_", qw(
-        bootstrap-console-save smeserver-manager-update
-        ));
-}
+#for (  qw( sme_core.css sme_main.css sme_menu.css styles.css ) )
+#{
+#    templates2events("$mngrdir/themes/default/public/css/$_", qw(
+#        bootstrap-console-save smeserver-manager-update
+#        ));
+#}
 
 templates2events("$mngrdir/conf/srvmngr.conf", 
         qw( smeserver-manager-update smanager-theme-change smanager-modify bootstrap-console-save ));
