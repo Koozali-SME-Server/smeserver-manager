@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 80
+%define release 81
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu May 01 2025 Brian Read <brianr@koozali.org> 11.0.0-81.sme
+- Correct Weights for menus [SME: 12996]
+
 * Wed Apr 30 2025 Brian Read <brianr@koozali.org> 11.0.0-80.sme
 - Remove expansion of css files from createlinks [SME: 12989]
 
