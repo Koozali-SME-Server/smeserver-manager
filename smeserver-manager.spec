@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 82
+%define release 83
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,6 +143,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon May 05 2025 Brian Read <brianr@koozali.org> 11.0.0-83.sme
+- Mod to SrvMngr-Auth to account for partials matching AdminPanels options 
+
 * Thu May 01 2025 Brian Read <brianr@koozali.org> 11.0.0-82.sme
 - Correct Weights for menus [SME: 12996]
 

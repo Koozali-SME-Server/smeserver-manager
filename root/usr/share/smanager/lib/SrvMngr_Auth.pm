@@ -69,7 +69,8 @@ sub has_panel_access {
     
     # Check if requested panel is in allowed panels
     foreach my $allowed_panel (@{$auth_info->{allowed_panels}}) {
-        return 1 if $panel eq lc($allowed_panel); #Controller files are capitalised, but that is lost in panel id.
+		return 1 if lc($panel) eq lc($allowed_panel) 
+         || lc(substr($panel, 0, length($allowed_panel))) eq lc($allowed_panel);
     }
     
     return 0;
