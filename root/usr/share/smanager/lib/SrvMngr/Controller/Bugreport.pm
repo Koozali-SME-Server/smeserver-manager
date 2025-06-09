@@ -15,7 +15,8 @@ use SrvMngr qw(theme_list init_session);
 use Text::Template;
 use File::Basename;
 use SrvMngr qw( gen_locale_date_string );
-our $cdb = esmith::ConfigDB->open or die "Couldn't open ConfigDB\n";
+use esmith::ConfigDB::UTF8;
+our $cdb = esmith::ConfigDB::UTF8->open or die "Couldn't open ConfigDB\n";
 
 use constant FALSE => 0;
 use constant TRUE  => 1;

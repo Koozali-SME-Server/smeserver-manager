@@ -15,28 +15,20 @@ use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session
     validate_password email_simple);
-
-#use esmith::FormMagick qw( validate_password );
-#use CGI::FormMagick::Validator qw( call_fm_validation );
-use esmith::AccountsDB;
-use esmith::ConfigDB;
+use esmith::AccountsDB::UTF8;
+use esmith::ConfigDB::UTF8;
 use esmith::util;
 
-#use esmith::FormMagick;
-#use esmith::cgi;
 #use File::Basename;
 #use Exporter;
 #use Carp qw(verbose);
-#use esmith::FormMagick::Panel::useraccounts;
-#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
-#our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
 my ($cdb,$adb);
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
-	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
+	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     my $notif     = '';
     my %usr_datas = ();
     my $title     = $c->l('usr_FORM_TITLE');
@@ -55,8 +47,8 @@ sub do_display {
     my %usr_datas = ();
     my $title     = $c->l('usr_FORM_TITLE');
     my ($notif, $modul) = '';
-	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
+	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $usr_datas{'trt'} = $trt;
 
     if ($trt eq 'ADD') {
@@ -143,8 +135,8 @@ sub do_update {
     $usr_datas{trt} = $trt;
     my $title = $c->l('usr_FORM_TITLE');
     my ($res, $result) = '';
-	$cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
+	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
 
     if ($trt eq 'ADD') {
 
@@ -759,8 +751,7 @@ sub system_validate_password {
 sub system_check_password {
     my $c     = shift;
     my $pass1 = shift;
-    use esmith::ConfigDB;
-    my $conf = esmith::ConfigDB->open();
+    my $conf = esmith::ConfigDB::UTF8->open();
     my ($check_type, $rec);
 
     if ($conf) {

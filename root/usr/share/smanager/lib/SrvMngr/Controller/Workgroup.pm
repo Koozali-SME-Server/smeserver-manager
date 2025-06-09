@@ -13,11 +13,13 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-our $db = esmith::ConfigDB->open || die "Couldn't open config db";
+use esmith::ConfigDB::UTF8;
+our $db ;
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    $db = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my %wkg_datas = ();
     my $title     = $c->l('wkg_FORM_TITLE');
     my $modul     = '';

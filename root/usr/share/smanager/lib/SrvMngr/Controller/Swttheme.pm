@@ -5,19 +5,18 @@ package SrvMngr::Controller::Swttheme;
 use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
-
+use esmith::ConfigDB::UTF8;
 #use SrvMngr qw(theme_list init_session);
-our $db = esmith::ConfigDB->open() || die "Couldn't open config db";
 
 sub main {
     my $c     = shift;
+    my $db = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my $from  = $c->param('From') || '/';
     my $theme = $c->param('Theme');
     $c->app->log->info(" swt theme '$from'  '$theme' ");
     my $oldTheme = $c->session->{CurrentTheme};
 
     if ($theme ne $oldTheme) {
-
         #	$c->app->renderer->paths([$c->app->home->rel_file('themes/default/templates')]);
         #	$c->app->static->paths([$c->app->home->rel_file('themes/default/public')]);
         #	if ( $theme ne 'default' ) {
@@ -31,7 +30,7 @@ sub main {
         system("/sbin/e-smith/signal-event smanager-theme-change") == 0
             or warn "$c->l('ERROR_UPDATING')";
     } ## end if ($theme ne $oldTheme)
-## (not sure)     $c->flash( warning => $c->l('swt_LOGIN_AGAIN') );
+    ## (not sure)     $c->flash( warning => $c->l('swt_LOGIN_AGAIN') );
     $from = '/initial'  if $from eq '/';
     $from = '/' . $from if ($from !~ m|^\/|);
     $c->redirect_to($from);

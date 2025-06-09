@@ -17,10 +17,9 @@ use SrvMngr qw(theme_list init_session);
 #use Regexp::Common qw /net/;
 #use Data::Dumper;
 use esmith::util;
-use esmith::HostsDB;
-#our $db = esmith::ConfigDB->open || die "Can't open configuration database: $!\n";
-#our $tcp_db = esmith::ConfigDB->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
-#our $udp_db = esmith::ConfigDB->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
+#use esmith::HostsDB;
+use esmith::ConfigDB::UTF8; 
+
 my ($cdb,$tcp_db,$udp_db);
 
 my %ret = ();
@@ -34,9 +33,9 @@ sub main {
     $pf_datas{return} = "";
     my $title = $c->l('pf_FORM_TITLE');
     my $modul = '';
-	$cdb = esmith::ConfigDB->open || die "Can't open configuration database: $!\n";
-	$tcp_db = esmith::ConfigDB->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
-	$udp_db = esmith::ConfigDB->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Can't open configuration database: $!\n";
+    $tcp_db = esmith::ConfigDB::UTF8->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
+    $udp_db = esmith::ConfigDB::UTF8->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
     $pf_datas{trt} = 'LIST';
     my @tcpforwards = $tcp_db->get_all;
     my @udpforwards = $udp_db->get_all;
@@ -57,9 +56,9 @@ sub do_display {
     $c->app->log->info($c->log_req);
     my $rt = $c->current_route;
     my $trt = ($c->param('trt') || 'LIST');
-	my $cdb = esmith::ConfigDB->open || die "Can't open configuration database: $!\n";
-	my $tcp_db = esmith::ConfigDB->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
-	my $udp_db = esmith::ConfigDB->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
+    my $cdb = esmith::ConfigDB::UTF8->open || die "Can't open configuration database: $!\n";
+    my $tcp_db = esmith::ConfigDB::UTF8->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
+    my $udp_db = esmith::ConfigDB::UTF8->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
     $trt = 'DEL'  if ($rt eq 'portforwardingdel');
     $trt = 'ADD'  if ($rt eq 'portforwardingadd');
     $trt = 'ADD1' if ($rt eq 'portforwardingadd1');
@@ -143,8 +142,8 @@ sub do_display {
 
         #List all the port forwards
         # Open them again as maybe written to above 
-        $tcp_db = esmith::ConfigDB->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
-		$udp_db = esmith::ConfigDB->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
+        $tcp_db = esmith::ConfigDB::UTF8->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
+        $udp_db = esmith::ConfigDB::UTF8->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
 
         my @tcpforwards = $tcp_db->get_all;
         my @udpforwards = $udp_db->get_all;
@@ -172,10 +171,10 @@ sub add_portforward {
     my $fdb;
 
     if ($proto eq 'TCP') {
-        $tcp_db = esmith::ConfigDB->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
+        $tcp_db = esmith::ConfigDB::UTF8->open('portforward_tcp') || die "Can't open portforward_tcp database: $!\n";
         $fdb = $tcp_db;
     } else {
-        $udp_db = esmith::ConfigDB->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
+        $udp_db = esmith::ConfigDB::UTF8->open('portforward_udp') || die "Can't open portforward_udp database: $!\n";
         $fdb = $udp_db;
     }
 
@@ -215,7 +214,7 @@ sub add_portforward {
 
 sub get_destination_host {
     my $q           = shift;
-	$cdb = esmith::ConfigDB->open || die "Can't open configuration database: $!\n";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Can't open configuration database: $!\n";
     my $dhost       = $q->param("dhost");
     my $localip     = $cdb->get_prop('InternalInterface', 'IPAddress');
     my $external_ip = $cdb->get_prop('ExternalInterface', 'IPAddress') || $localip;
@@ -362,7 +361,7 @@ sub isValidPort() {
 
 sub validate_destination_host {
     my $c     = shift;
-	$cdb = esmith::ConfigDB->open || die "Can't open configuration database: $!\n";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Can't open configuration database: $!\n";
     my $dhost = $c->param('dhost');
     $dhost =~ s/^\s+|\s+$//g;
     my $localip = $cdb->get_prop('InternalInterface', 'IPAddress');

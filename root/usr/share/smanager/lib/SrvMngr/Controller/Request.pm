@@ -8,6 +8,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
+use esmith::ConfigDB::UTF8 qw(open_ro);
+use esmith::AccountsDB::UTF8 qw(open_ro);
 
 # retrieve a configuration db record
 sub getconfig {
@@ -16,8 +18,7 @@ sub getconfig {
     $c->app->log->info($c->log_req . ' ' . $key);
 
     if ($key) {
-        use esmith::ConfigDB qw(open_ro);
-        my $cdb = esmith::ConfigDB->open_ro;
+        my $cdb = esmith::ConfigDB::UTF8->open_ro;
         return getdb($c, $cdb, $key);
     } ## end if ($key)
 } ## end sub getconfig
@@ -29,8 +30,7 @@ sub getaccount {
     $c->app->log->info($c->log_req . ' ' . $key);
 
     if ($key) {
-        use esmith::AccountsDB qw(open_ro);
-        my $adb = esmith::AccountsDB->open_ro;
+        my $adb = esmith::AccountsDB::UTF8->open_ro;
         return getdb($c, $adb, $key);
     } ## end if ($key)
 } ## end sub getaccount

@@ -13,6 +13,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session ip_number_or_blank);
+# dnf_* should remain ASCII; yum_repositories do not need to be UTF-8
+# leavig raw read/write esmith::ConfigDB
 use esmith::ConfigDB;
 use esmith::util;
 use File::Basename;

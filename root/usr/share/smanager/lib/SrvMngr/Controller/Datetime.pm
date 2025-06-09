@@ -353,4 +353,19 @@ sub getMonth_list {
         [ $c->l('dat_DECEMBER')  => '12' ]
     ];
 } ## end sub getMonth_list
+
+sub getYear_list {
+    my $c= shift;
+    my @yearArray;
+    #TODO set thoses year depending on build date in spec file
+    for ( my $i = 2020; $i < 2060; $i++ ) {
+
+        push @yearArray,$i;
+    }
+
+    my @yearList = sort @yearArray;
+    return \@yearList;
+
+} ## end sub getYear_list
+
 1;

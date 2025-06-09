@@ -14,15 +14,10 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
+use esmith::AccountsDB::UTF8;
+use esmith::DomainsDB::UTF8;
 
-#use Data::Dumper;
-#use esmith::FormMagick::Panel::pseudonyms;
-use esmith::AccountsDB;
-
-#use URI::Escape;
-#our $cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
-my ($cdb,$adb);
+our ($cdb,$adb);
 
 sub main {
     my $c = shift;
@@ -32,8 +27,7 @@ sub main {
     my $notif     = '';
     $pse_datas{trt} = 'LST';
     my @pseudonyms;
-	#$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
 
     if ($adb) {
         @pseudonyms = $adb->pseudonyms();
@@ -50,8 +44,7 @@ sub do_display {
     my $pseudonym = $c->param('pseudonym') || '';
     my $title     = $c->l('pse_FORM_TITLE');
     my %pse_datas = ();
- 	#$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
 	$pse_datas{'trt'} = $trt;
 
     if ($trt eq 'ADD') {
@@ -97,8 +90,7 @@ sub do_update {
     my $rt        = $c->current_route;
     my $trt       = ($c->param('trt') || 'LST');
     my $title     = $c->l('pse_FORM_TITLE');
-   	#$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     my %pse_datas = ();
     $pse_datas{'trt'} = $trt;
     my ($res, $result) = '';
@@ -331,8 +323,7 @@ sub validate_new_pseudonym_name {
     if (defined $acct) {
         return ($c->l('pse_NAME_IN_USE'));
     } elsif ($pseudonym =~ /@/) {
-        use esmith::DomainsDB;
-        my $ddb = esmith::DomainsDB->open_ro
+        my $ddb = esmith::DomainsDB::UTF8->open_ro
             or die "Couldn't open DomainsDB\n";
         my ($lhs, $rhs) = split /@/, $pseudonym;
         return ($c->l('pse_PSEUDONYM_INVALID_DOMAIN')) unless ($ddb->get($rhs));
