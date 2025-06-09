@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 83
+%define release 84
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -22,8 +22,9 @@ BuildRequires: smeserver-devtools
 #BuildRequires:  perl(Net::Netmask) >= 1.9
 #</Build tests>
 
-Requires: smeserver-lib >= 1.18.0-26
-Requires: smeserver-manager >= 2.4.0-22
+Requires: smeserver-lib >= 11.0.0-13
+# old manager is needed to handle access (ValidFrom)
+Requires: e-smith-manager >= 2.4.0-22
 Requires: smeserver-apache >= 2.6.0-19
 Requires: smeserver-php >= 3.0.0-43
 #Requires: smeserver-manager-locale >= 11.0.0
@@ -143,6 +144,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Jun 09 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-84.sme
+- fix Directory caching issue [SME: 13026]
+- WIP use esmith::*DB::UTF8 to access db flat files [SME: 13027]
+
 * Mon May 05 2025 Brian Read <brianr@koozali.org> 11.0.0-83.sme
 - Mod to SrvMngr-Auth to account for partials matching AdminPanels options 
 

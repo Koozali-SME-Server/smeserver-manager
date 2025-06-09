@@ -12,13 +12,15 @@ use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
+use esmith::ConfigDB::UTF8;
 use SrvMngr qw(theme_list init_session);
 
-our $db = esmith::ConfigDB->open() || die "Couldn't open config db";
+our $db; 
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    $db = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my %dir_datas = ();
     my $title     = $c->l('dir_FORM_TITLE');
     my $modul     = $c->render_to_string(inline => $c->l('dir_DESCRIPTION'));
