@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 84
+%define release 85
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -38,7 +38,6 @@ Requires: perl(Mojo::JWT) >= 0.08-1
 #Requires: perl(Time::TAI64) >= 2.11
 Requires: mutt >= 1.5.21
 Requires: smeserver-manager-jsquery >= 1.0
-Requires: smeserver-lib >= 11.0
 Requires: smeserver-certificates >= 11.0
 #Requires: js-jquery > 2.2.4-3 (optional)
 
@@ -131,7 +130,7 @@ true
 %post
 if [ -f /usr/share/javascript/jquery/latest/jquery.min.js ]
 then
-    [ -d %{dir_mngr}/themes/default/public/js ] || 
+    [ -d %{dir_mngr}/themes/default/public/js ] ||
 	mkdir %{dir_mngr}/themes/default/public/js
     [ -h %{dir_mngr}/themes/default/public/js/jquery.min.js ] ||
 	ln -s /usr/share/javascript/jquery/latest/jquery.min.js %{dir_mngr}/themes/default/public/js/jquery.min.js
@@ -144,12 +143,16 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Jun 09 2025 John Crisp <jcrisp@safeandsoundit.co.uk> 11.0.0-85.sme
+- fix ln_add templates for UTF8
+- remove extraneous require line in spec file
+
 * Mon Jun 09 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-84.sme
 - fix Directory caching issue [SME: 13026]
 - WIP use esmith::*DB::UTF8 to access db flat files [SME: 13027]
 
 * Mon May 05 2025 Brian Read <brianr@koozali.org> 11.0.0-83.sme
-- Mod to SrvMngr-Auth to account for partials matching AdminPanels options 
+- Mod to SrvMngr-Auth to account for partials matching AdminPanels options
 
 * Thu May 01 2025 Brian Read <brianr@koozali.org> 11.0.0-82.sme
 - Correct Weights for menus [SME: 12996]
@@ -158,11 +161,11 @@ true
 - Remove expansion of css files from createlinks [SME: 12989]
 
 * Wed Apr 30 2025 Brian Read <brianr@koozali.org> 11.0.0-79.sme
-- Add code in SrvMngr to take note of user panel setting 
+- Add code in SrvMngr to take note of user panel setting
 
 * Thu Apr 17 2025 Brian Read <brianr@koozali.org> 11.0.0-78.sme
 - typo in remoteaccess panel
-- Fix crash in veiwlogfiles if viewlogfiles key not in DB 
+- Fix crash in veiwlogfiles if viewlogfiles key not in DB
 
 * Sat Apr 12 2025 Brian Read <brianr@koozali.org> 11.0.0-77.sme
 - Sort out local and pulic access setting in remote panel  [SME: 12988]
@@ -185,19 +188,19 @@ true
 
 * Mon Mar 24 2025 Brian Read <brianr@koozali.org> 11.0.0-72.sme
 - Remove css files from template structure [SME: 12967]
-- Rationalise and merge css files 
+- Rationalise and merge css files
 - Adjust some gaps around panels
 - Remove HR lines
 
 * Thu Mar 20 2025 Brian Read <brianr@koozali.org> 11.0.0-71.sme
 - Sort out navigation menu error on startup [SME: 12946]
 - More places where floating panel needed
-- Adjust floating panel to make space around it the same 
+- Adjust floating panel to make space around it the same
 - clean up some css
 
 * Wed Mar 19 2025 Brian Read <brianr@koozali.org> 11.0.0-70.sme
 - Re-cast the default theme - use proper koozali logo image, unwind multiple divs
-- Enhance responsiveness 
+- Enhance responsiveness
 - Revert Ibay menu name to Ibays
 - Remove legacy SM1 button on header
 - Remove "?" access to wiki help on header
@@ -207,8 +210,8 @@ true
 
 * Mon Mar 17 2025 Brian Read <brianr@koozali.org> 11.0.0-68.sme
 - re-write qmailanalog for postfix [SME: 12951]
-- Clean up backup.pm 
-- Enhance module panel - used by mail log analysis and Licence display 
+- Clean up backup.pm
+- Enhance module panel - used by mail log analysis and Licence display
 
 * Tue Mar 11 2025 Brian Read <brianr@koozali.org> 11.0.0-66.sme
 - Move the button for each backup panel to the left to conform to all the other panels.
@@ -264,7 +267,7 @@ true
 
 * Sun Feb 09 2025 Brian Read <brianr@koozali.org> 11.0.0-50.sme
 - Move all routines from FormMagic still called by SM2 panels to SM2 [SME: 12906]
-- delete all references to FormMagic 
+- delete all references to FormMagic
 
 * Fri Feb 07 2025 Brian Read <brianr@koozali.org> 11.0.0-49.sme
 - Fix delete of ibay - typo in link
@@ -276,7 +279,7 @@ true
 
 * Tue Jan 28 2025 Brian Read <brianr@koozali.org> 11.0.0-47.sme
 - Temp (we hope) remove CSRF protection plugin  [SME: ]
-- Fix comparison in footer with config->mode 
+- Fix comparison in footer with config->mode
 
 * Tue Jan 28 2025 Brian Read <brianr@koozali.org> 11.0.0-46.sme
 - Adjust conditions for showing "Reconfigure required" to only check UnSavedChanges DB entry [SME: 12891]
@@ -334,7 +337,7 @@ true
 
 * Wed Dec 18 2024 Brian Read <brianr@koozali.org> 11.0.0-32.sme
 - Fix for User and localnetwork panel [SME: 6278]
-- Fix menu entry for proxy to stop it moving 
+- Fix menu entry for proxy to stop it moving
 
 * Tue Dec 17 2024 Brian Read <brianr@koozali.org> 11.0.0-31.sme
 - Edit html to avoid w3c html validation warnings [SME: 6278]
@@ -386,7 +389,7 @@ true
 
 * Wed Aug 21 2024 Brian Read <brianr@koozali.org> 11.0.0-16.sme
 - Typo uc DNF changed to lc dnf in Yum.pm [SME: 127245]
-- Monitor dnf running using dnf status file 
+- Monitor dnf running using dnf status file
 
 * Wed Aug 21 2024 Brian Read <brianr@koozali.org> 11.0.0-15.sme
 - Migrate SM2 Software installer panel from use of yum to dnf [SME: 12718]
@@ -517,7 +520,7 @@ true
 - untainting printer [SME: 12110]
 
 * Fri Jan 21 2022 Michel Begue <mab974@misouk.com> 0.1.4-14.sme
-- Fix jquery map link missing 
+- Fix jquery map link missing
 - Fix jquery link deleted during update
 - Remove generated file during remove
 
@@ -554,7 +557,7 @@ true
 * Mon Nov 15 2021 Michel Begue <mab974@misouk.com> 0.1.4-3.sme
 - Fix error message when linking, unlinking jquery in spec
 - Correct the 'review' panel presentation
-- Modify CSRFDefender plugin to take into account GET method 
+- Modify CSRFDefender plugin to take into account GET method
 - Add TOKEN param where the GET method is used in templates
 - Remove smanager from local url address
 
@@ -789,7 +792,7 @@ true
 * Sun Feb 04 2018 Jean-Philipe Pialasse <tests@pialasse.com> 0.1.0-1.sme
 - first smeserver-manager package [SME: 10506]
   this is a sandbox to dev the next server-manager based on mojolicious
-  this package is based on part of the old e-smith-manager and needs it 
+  this package is based on part of the old e-smith-manager and needs it
   to work until we moved the httpd-admin part.
 
 * Sun Apr 16 2017 Jean-Philipe Pialasse <tests@pialasse.com> 2.8.0-26.sme
@@ -821,7 +824,7 @@ true
 
 * Tue Jul 19 2016 Jean-Philipe Pialasse <tests@pialasse.com> 2.8.0-12.sme
 - Update server-manager to Koozali branding [SME: 9676]
-- We thanks John Crisp for his wonderful work. 
+- We thanks John Crisp for his wonderful work.
 
 * Wed Jun 15 2016 Jean-Philipe Pialasse <tests@pialasse.com> 2.8.0-11.sme
 - change link for donation to koozali.org  [SME: 9599]
@@ -873,7 +876,7 @@ true
   [SME: 9163]
 
 * Sun Mar 23 2014 Ian Wells <esmith@wellsi.com> 2.6.0-1.sme
-- Roll new stream to remove obsolete images [SME: 7962] 
+- Roll new stream to remove obsolete images [SME: 7962]
 
 * Sun Mar 23 2014 Ian Wells <esmith@wellsi.com> 2.4.0-9.sme
 - Remove references to obsolete images, by Stephane de Labrusse [SME: 7962]
@@ -911,10 +914,10 @@ true
 * Wed Dec  9 2009 Charlie Brady <charlieb@budge.apana.org.au> 2.2.0-4.sme
 - Fix css validation errors. [SME: 5656]
 
-* Fri Sep 18 2009 Stephen Noble <support@dungog.net> 2.2.0-4.sme 
+* Fri Sep 18 2009 Stephen Noble <support@dungog.net> 2.2.0-4.sme
 - display reconfigure warning once if UnsavedChanges=yes [SME: 5475]
 
-* Fri Sep 18 2009 Stephen Noble <support@dungog.net> 2.2.0-3.sme 
+* Fri Sep 18 2009 Stephen Noble <support@dungog.net> 2.2.0-3.sme
 - display reconfigure warning if UnsavedChanges=yes [SME: 5475]
 
 * Sun Apr 26 2009 Jonathan Martens <smeserver-contribs@snetram.nl> 2.2.0-2.sme
@@ -955,13 +958,13 @@ true
 - Fix UTF-8 encoding in header and nav-conf [SME: 4072]
 
 * Tue Jan 08 2008 Stephen Noble <support@dungog.net> 1.14.0-11
-- Fix to remove spaces and newlines in panel headers [SME: 3346] 
+- Fix to remove spaces and newlines in panel headers [SME: 3346]
 
 * Tue Jan 08 2008 Stephen Noble <support@dungog.net> 1.14.0-10
 - remove the FormMagick session files [SME: 3723]
 
 * Tue Jan 08 2008 Stephen Noble <support@dungog.net> 1.14.0-9
-- Remove spaces and newlines in panel headers [SME: 3346] 
+- Remove spaces and newlines in panel headers [SME: 3346]
 
 * Sun Jul 01 2007 Shad L. Lords <slords@mail.com> 1.14.0-8
 - Make login/logout no quite so verbose. [SME: 2660]
@@ -1254,10 +1257,10 @@ true
 
 * Wed Jan  1 2003 Gordon Rowell <gordonr@e-smith.com>
 - [1.9.3-08]
-- Generate navigation.info files (config db format) for each supported 
+- Generate navigation.info files (config db format) for each supported
   language in /etc/e-smith/locale/{language}/etc/e-smith/web/functions
-- Read the navigation.info file for the preferred language when 
-  displaying the navigation bar 
+- Read the navigation.info file for the preferred language when
+  displaying the navigation bar
 - TODO: Actually select the correct navigation.info file [gordonr 5493]
 
 * Tue Dec 31 2002 Gordon Rowell <gordonr@e-smith.com>
@@ -1298,7 +1301,7 @@ true
 * Fri Nov 22 2002 Gordon Rowell <gordonr@e-smith.com>
 - [1.9.1-02]
 - templated header.htm [miked 5826]
-- modified header.htm template to link to online-manual and blades 
+- modified header.htm template to link to online-manual and blades
   [gordonr 5826]
 
 * Thu Nov 21 2002 Mike Dickson <miked@e-smith.com>
@@ -1345,7 +1348,7 @@ true
 * Thu May 16 2002 Tony Clayton <apc@e-smith.com>
 - [1.5.8-01]
 - Remove unnecessary <p> tags in navigation html [tonyc 3377]
-- Fix navigation panel to not import symbols from fm subclasses 
+- Fix navigation panel to not import symbols from fm subclasses
   [tonyc 3109]
 
 * Mon May 13 2002 Tony Clayton <apc@e-smith.com>
@@ -1390,7 +1393,7 @@ true
 
 * Thu Mar 14 2002 Gordon Rowell <gordonr@e-smith.com>
 - [1.4.3-01]
-- Fixed regexp for ignoring pleasewait(-.*?). Two each in 
+- Fixed regexp for ignoring pleasewait(-.*?). Two each in
   pleasewait/noframes. Reduced to one in each [gordonr]
 
 * Fri Mar 1 2002 Tony Clayton <tonyc@e-smith.com>
@@ -1423,7 +1426,7 @@ true
 
 * Wed Nov 21 2001 Charlie Brady <charlieb@e-smith.com>
 - [1.3.0-06]
-- Remove troublesome "Requires: e-smith-base". 
+- Remove troublesome "Requires: e-smith-base".
 - Remove obsolete "Requires: e-smith".
 
 * Thu Nov 1 2001 Gordon Rowell <gordonr@e-smith.com>
@@ -1462,7 +1465,7 @@ true
 * Tue Jul 31 2001 Adrian Chung <adrianc@e-smith.com>
 - [1.1.0-03]
 - Adding SSL enabling templates for port 981.
-- Adding 01localAccessString fragment for use in SSL 
+- Adding 01localAccessString fragment for use in SSL
   enabling templates.
 
 * Fri Jul 27 2001 Charlie Brady <charlieb@e-smith.com>

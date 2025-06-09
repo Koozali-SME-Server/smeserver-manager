@@ -4,7 +4,7 @@
 	% my %ret;
 	% unless (length($retref)) {%ret = (ret=>"");}
 	% else {%ret = %$retref;}
-	
+
 	% my @vars = split(",",$ret{vars});
 	% my $var1 = @vars[0];
 	% my $var2 = @vars[1];
@@ -15,13 +15,13 @@
 
    <br>
 	%if ($ret{'ret'} eq "") {
-   	
+
 	%} elsif (index($ret{ret},"SUCCESS") != -1) {
 	   <div class='success'>
 	       <!--<h2> Operation Status Report</h2>-->
 		%= $c->render_to_string(inline => l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6));
 		</div>
-	   %} else { 
+	   %} else {
 	   <div class='sme-error'>
 	       <!--<h2> Operation Status Report - Error</h2>-->
 		%= $c->render_to_string(inline => l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6));
@@ -29,15 +29,15 @@
 	%}
 	<br />
     % my $btn = l('ADD');
-    % my $network_db = esmith::NetworksDB->open();
-    
+    % my $network_db = esmith::NetworksDB::UTF8->open() || die "Couldn't open NetworksDB db";
+
    % if (config->{debug} == 1) {
 	<p>
 	%= dumper $c->current_route
 	%= dumper $c->stash("ret")
 	</p>
     % }
-     
+
     %= form_for '/localnetworksb' => (method => 'POST') => begin
 		<h2>
 		%=l "ln_ADD_TITLE"
