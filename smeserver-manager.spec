@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 85
+%define release 86
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -143,8 +143,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Jun 09 2025 John Crisp <jcrisp@safeandsoundit.co.uk> 11.00.0-86.sme
+- Fix datetime gen_locale_date_string reference [SME: 13017]
+
 * Mon Jun 09 2025 John Crisp <jcrisp@safeandsoundit.co.uk> 11.0.0-85.sme
-- fix ln_add templates for UTF8
+- fix ln_add templates for UTF8 [SME: 13030]
 - remove extraneous require line in spec file
 
 * Mon Jun 09 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-84.sme

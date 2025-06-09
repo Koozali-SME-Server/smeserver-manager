@@ -70,7 +70,7 @@ sub do_update {
         } else {
             $dat_datas{ntpserver} = ($cdb->get_prop('ntpd', 'NTPServer')) || '';
         }
-        $dat_datas{now_string} = esmith::FormMagick->gen_locale_date_string();
+        $dat_datas{now_string} = gen_locale_date_string();
         $c->stash(title => $title, modul => $modul, dat_datas => \%dat_datas);
         return $c->render('datetime');
     } ## end if ($dat_datas{ntpstatus...})
