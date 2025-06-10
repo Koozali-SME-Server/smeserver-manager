@@ -13,11 +13,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-
 #use Regexp::Common qw /net/;
-#use Data::Dumper;
 use esmith::util;
-#use esmith::HostsDB;
 use esmith::ConfigDB::UTF8; 
 
 my ($cdb,$tcp_db,$udp_db);

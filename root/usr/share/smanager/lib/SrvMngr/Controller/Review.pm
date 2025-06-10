@@ -13,17 +13,20 @@ use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
 use SrvMngr qw(gen_locale_date_string);
-
+use esmith::ConfigDB::UTF8;
+use esmith::DomainsDB::UTF8;
+use esmith::NetworksDB::UTF8;
 
 #use SrvMngr::Review_sub qw(print_page);
 #use smeserver::Panel::review;
-our $db       = esmith::ConfigDB->open_ro   || die "Couldn't open config db";
-our $domains  = esmith::DomainsDB->open_ro  || die "Couldn't open domains";
-our $networks = esmith::NetworksDB->open_ro || die "Couldn't open networks";
+our $db;
+our $domains ;
+our $networks;
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    $db       = esmith::ConfigDB::UTF8->open_ro   || die "Couldn't open config db";
     my $title     = $c->l('rvw_FORM_TITLE');
     my $modul     = $c->render_to_string(inline => $c->l('rvw_DESCRIPTION'));
     my %rvw_datas = ();
@@ -97,6 +100,7 @@ sub gen2_email_addresses {
 
 sub gen2_domains {
     my $c          = shift;
+    $domains  = esmith::DomainsDB::UTF8->open_ro  || die "Couldn't open domains";
     my @virtual    = $domains->get_all_by_prop(type => 'domain');
     my $numvirtual = @virtual;
 
@@ -125,6 +129,7 @@ serving.	(mojo ver)
 
 sub get2_local_networks {
     my $c           = shift;
+    $networks = esmith::NetworksDB::UTF8->open_ro || die "Couldn't open networks";
     my @nets        = $networks->get_all_by_prop('type' => 'network');
     my $numNetworks = @nets;
 
@@ -151,7 +156,7 @@ sub get_net_prop {
   my $fm = shift;
   my $item = shift;
   my $prop = shift;
-
+  $networks = esmith::NetworksDB::UTF8->open_ro || die "Couldn't open networks";
   my $record = $networks->get($item);
   if ($record) {
     return $record->prop($prop);
@@ -165,7 +170,7 @@ sub get_net_prop {
 
 sub get_local_networks {
     my $fm = shift;
-
+    $networks = esmith::NetworksDB::UTF8->open_ro || die "Couldn't open networks";
     my @nets = $networks->get_all_by_prop('type' => 'network');
 
     my $numNetworks = @nets;
@@ -265,6 +270,7 @@ sub print2_dhcp_stanza {
 sub get_value {
   my $fm = shift;
   my $item = shift;
+  $db       = esmith::ConfigDB::UTF8->open_ro   || die "Couldn't open config db";
   my $record = $db->get($item);
   if ($record) {
     return $record->value();
@@ -281,7 +287,7 @@ sub get_prop {
 				 #otherwise, we don't want to grab it
   my $item = shift;
   my $prop = shift;
-
+  $db       = esmith::ConfigDB::UTF8->open_ro   || die "Couldn't open config db";
   my $record = $db->get($item);
   if ($record) {
     return $record->prop($prop);
@@ -295,6 +301,7 @@ sub get_prop {
 sub get_public_ip_address
 {
     my $self = shift;
+    $db       = esmith::ConfigDB::UTF8->open_ro   || die "Couldn't open config db";
     my $sysconfig = $db->get('sysconfig');
     if ($sysconfig)
     {

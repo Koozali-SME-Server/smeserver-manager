@@ -4,19 +4,19 @@ use strict;
 use warnings;
 use utf8;
 
-use esmith::ConfigDB;
-use esmith::AccountsDB;
+use esmith::ConfigDB::UTF8;
+use esmith::AccountsDB::UTF8;
 use esmith::util;
 
 use Net::LDAP qw/LDAP_INVALID_CREDENTIALS/;
-
+our ($cdb,$adb);
 
 
 sub init_data {
 
     my %datas = ();
 
-    my $cdb = esmith::ConfigDB->open_ro() or die("can't open Config DB");
+    $cdb = esmith::ConfigDB::UTF8->open_ro() or die("can't open Config DB");
     my $sysconfig = $cdb->get("sysconfig");
 
     $datas{'lang'} = $sysconfig->prop('Language') || 'en_US';
@@ -42,7 +42,7 @@ sub init_data {
 
 sub reconf_needed {
 
-    my $cdb = esmith::ConfigDB->open_ro() or die("can't open Config DB");
+    $cdb = esmith::ConfigDB::UTF8->open_ro() or die("can't open Config DB");
     #my $unsafe = ($cdb->get('bootstrap-console') and $cdb->get('bootstrap-console')->prop('Run') eq 'yes') ||
     #     ($cdb->get('UnsavedChanges') and $cdb->get('UnsavedChanges')->value eq 'yes') || '0';
 	my $unsafe = ($cdb->get('UnsavedChanges') and $cdb->get('UnsavedChanges')->value eq 'yes') || '0';   
@@ -55,7 +55,7 @@ sub check_credentials {
     my ($c, $username, $password) = @_;
     return unless $username || $password;
 
-    my $cdb = esmith::ConfigDB->open_ro() or die("can't open Configuration DB");
+    $cdb = esmith::ConfigDB::UTF8->open_ro() or die("can't open Configuration DB");
     my $l = $cdb->get('ldap');
     my $status = $l->prop('status') || "disabled";
     unless ($status eq "enabled" ) {
@@ -88,13 +88,13 @@ sub check_adminalias {
     my $c = shift;
 
     my $alias;
-    my $cdb = esmith::ConfigDB->open_ro() or die("can't open Configuration DB");
+    $cdb = esmith::ConfigDB::UTF8->open_ro() or die("can't open Configuration DB");
     if (defined $cdb->get('AdminAlias')) {
 	$alias = $cdb->get('AdminAlias')->value;
     }
     return undef unless $alias;
 
-    my $adb = esmith::AccountsDB->open_ro() or die("can't open Accounts DB");
+    $adb = esmith::AccountsDB::UTF8->open_ro() or die("can't open Accounts DB");
     my $arec = $adb->get( $alias );
     return undef unless $arec;
 

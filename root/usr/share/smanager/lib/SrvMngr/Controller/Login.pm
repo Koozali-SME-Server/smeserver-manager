@@ -18,7 +18,7 @@ use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
-use esmith::AccountsDB;
+use esmith::AccountsDB::UTF8;
 use SrvMngr::I18N;
 use SrvMngr::Model::Main;
 use SrvMngr qw( theme_list init_session );
@@ -26,7 +26,7 @@ my $MAX_LOGIN_ATTEMPTS   = 3;
 my $DURATION_BLOCKED     = 30 * 60;        # access blocked for 30 min
 my $TIMEOUT_FAILED_LOGIN = 1;
 my $RESET_DURATION       = 2 * 60 * 60;    # 2 hours for resetting
-our $adb = esmith::AccountsDB->open() or die "Couldn't open DB Accounts\n";
+our $adb;
 my $allowed_user_re = qr/^\w{5,10}$/;
 my %Login_Attempts;
 
@@ -39,6 +39,7 @@ sub main {
 sub login {
     my $c   = shift;
     my $trt = $c->param('Trt');
+    $adb = esmith::AccountsDB::UTF8->open() or die "Couldn't open DB Accounts\n";
 
     # password reset request
     if ($trt eq 'RESET') {
@@ -85,13 +86,13 @@ sub login {
         $c->session(logged_in => 1);        # set the logged_in flag
         $c->session(username  => $name);    # keep a copy of the username
 
-        #    if ( $name eq 'admin' || $adb->is_user_in_group($name, 'AdmiN') )  # for futur use
+        #    if ( $name eq 'admin' || $adb->is_user_in_group($name, 'Admin') )  # for futur use
         if ($name eq 'admin') {
             $c->session(is_admin => 1);
         } else {
             $c->session(is_admin => 0);
         }
-        $c->session(expiration => 600);     # expire this session in 10 minutes
+        $c->session(expiration => $c->config->{timeout} );     # expire this session in the time set  in config
         $c->flash(success => $c->l('use_WELCOME'));
         record_login_attempt($c, 'SUCCESS');
     } else {
@@ -114,6 +115,7 @@ sub mail_rescue {
     my $c    = shift;
     my $name = $c->param('Username');
     my $from = $c->param('From');
+    $adb = esmith::AccountsDB::UTF8->open() or die "Couldn't open DB Accounts\n";
     my $res;
     $res .= $c->l('use_TOO_MANY_LOGIN') if (is_denied($c));
 

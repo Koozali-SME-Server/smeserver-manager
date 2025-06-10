@@ -355,10 +355,10 @@ sub lock_account {
         $user = $1;
 
         if (system("/sbin/e-smith/signal-event", "user-lock", $user)) {
-            $adb = esmith::AccountsDB->open();
+            $adb = esmith::AccountsDB::UTF8->open();
             return $c->l("usr_ERR_OCCURRED_LOCKING");
         }
-        $adb = esmith::AccountsDB->open();
+        $adb = esmith::AccountsDB::UTF8->open();
         return 'OK';
     } else {
         return $c->l('NO_SUCH_USER', $user);
@@ -379,10 +379,10 @@ sub remove_account {
         $user = $1;
 
         if (system("/sbin/e-smith/signal-event", "user-delete", $user)) {
-            $adb = esmith::AccountsDB->open();
+            $adb = esmith::AccountsDB::UTF8->open();
             return $c->l("ERR_OCCURRED_DELETING");
         }
-        $adb = esmith::AccountsDB->open();
+        $adb = esmith::AccountsDB::UTF8->open();
         $adb->get($user)->delete;
         return 'OK';
     } else {
@@ -398,7 +398,7 @@ sub reset_password {
         return $c->l('usr_TAINTED_USER');
     }
     $user = $1;
-	my $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+	my $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     my $acct = $adb->get($user);
 
     if ($acct->prop('type') eq "user") {
@@ -407,10 +407,10 @@ sub reset_password {
         undef $adb;
 
         if (system("/sbin/e-smith/signal-event", "password-modify", $user)) {
-            $adb = esmith::AccountsDB->open();
+            $adb = esmith::AccountsDB::UTF8->open();
             return $c->l("usr_ERR_OCCURRED_MODIFYING_PASSWORD");
         }
-        $adb = esmith::AccountsDB->open();
+        $adb = esmith::AccountsDB::UTF8->open();
         return 'OK';
     } else {
         return $c->l('NO_SUCH_USER', $user);
@@ -663,10 +663,10 @@ sub modify_user {
         undef $adb;
 
         unless (system("/sbin/e-smith/signal-event", "user-modify", $acctName) == 0) {
-            $adb = esmith::AccountsDB->open();
+            $adb = esmith::AccountsDB::UTF8->open();
             return $c->l('usr_CANNOT_MODIFY_USER');
         }
-        $adb = esmith::AccountsDB->open();
+        $adb = esmith::AccountsDB::UTF8->open();
     } ## end if ($acctType eq "user")
     return 'OK';
 } ## end sub modify_user
@@ -699,10 +699,10 @@ sub create_user {
     $acctName = $1;
 
     if (system("/sbin/e-smith/signal-event", "user-create", $acctName)) {
-        $adb = esmith::AccountsDB->open();
+        $adb = esmith::AccountsDB::UTF8->open();
         return $c->l("usr_ERR_OCCURRED_CREATING");
     }
-    $adb = esmith::AccountsDB->open();
+    $adb = esmith::AccountsDB::UTF8->open();
     $c->set_groups();
     return 'OK';
 } ## end sub create_user
@@ -727,7 +727,7 @@ sub modify_admin {
     $acct->merge_props(%newProperties);
     undef $adb;
     my $status = system("/sbin/e-smith/signal-event", "user-modify-admin", 'admin');
-    $adb = esmith::AccountsDB->open();
+    $adb = esmith::AccountsDB::UTF8->open();
 
     if ($status == 0) {
         return 'OK';

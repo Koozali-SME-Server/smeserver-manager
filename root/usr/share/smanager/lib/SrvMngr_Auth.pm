@@ -5,7 +5,7 @@ package SrvMngr_Auth;
 use strict;
 use warnings;
 use Exporter qw(import); # Import the Exporter module
-use esmith::AccountsDB;
+use esmith::AccountsDB::UTF8;
 
 # Define functions to be exported upon request
 our @EXPORT_OK = qw(check_admin_access load_user_auth_info has_panel_access get_panel_from_path);
@@ -42,7 +42,7 @@ sub load_user_auth_info {
     
     # If not admin, get allowed panels
     if (!$auth_info{is_admin} && $auth_info{username}) {
-        my $accountsdb = esmith::AccountsDB->open_ro();
+        my $accountsdb = esmith::AccountsDB::UTF8->open_ro();
         if ($accountsdb) {
             my $user_rec = $accountsdb->get($auth_info{username});
             # Check if the property exists before trying to get its value

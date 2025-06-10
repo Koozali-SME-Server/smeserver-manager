@@ -14,21 +14,18 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
+use esmith::AccountsDB::UTF8;
+use esmith::ConfigDB::UTF8;
 
-#use Data::Dumper;
-#use esmith::FormMagick::Panel::groups;
-use esmith::AccountsDB;
-#our $cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
-my ($cdb,$adb);
+our ($cdb,$adb);
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
     my %grp_datas = ();
     my $title     = $c->l('grp_FORM_TITLE');
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $grp_datas{trt} = 'LST';
     my @groups;
 
@@ -47,8 +44,8 @@ sub do_display {
     my $group     = $c->param('group');
     my %grp_datas = ();
     my $title     = $c->l('grp_FORM_TITLE');
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $grp_datas{'trt'} = $trt;
 
     if ($trt eq 'ADD') {
@@ -104,8 +101,8 @@ sub do_update {
     my $title     = $c->l('grp_FORM_TITLE');
     my ($res, $result) = '';
     my %grp_datas = ();
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $grp_datas{'trt'}   = $trt;
     $grp_datas{'group'} = $groupName;
     my @members = ();

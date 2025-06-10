@@ -1,6 +1,6 @@
 <%
 
-    my $backups = esmith::BackupHistoryDB->open;
+    my $backups = esmith::BackupHistoryDB->open; # no UTF8
     my $now = time();
     my $backup_rec = $backups->new_record($now, {
 	type => 'backup_record', BackupType => 'desktop',

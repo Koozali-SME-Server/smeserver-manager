@@ -7,7 +7,7 @@
 use strict;
 use warnings;
 
-use esmith::ConfigDB;
+use esmith::ConfigDB::UTF8;
 
 sub gen_pwd {
     use MIME::Base64 qw(encode_base64);
@@ -29,7 +29,7 @@ sub gen_pwd {
     return $p;
 }
 
-my $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+my $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
 
 my $pwds = $cdb->get_prop('smanager','Secrets');
 

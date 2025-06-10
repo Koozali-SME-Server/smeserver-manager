@@ -15,14 +15,15 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-use esmith::ConfigDB;
 use File::Basename;
 use HTML::Entities;
 use SrvMngr qw(gen_locale_date_string);
 use File::Temp qw(tempfile);
 use constant TRUE  => 1;
 use constant FALSE => 0;
-our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+use esmith::ConfigDB::UTF8;
+
+our $cdb;
 our @logfiles = ();    # with array
 
 sub main {
@@ -31,6 +32,7 @@ sub main {
     my %log_datas = ();
     my $title     = $c->l('log_FORM_TITLE');
     my $notif     = '';
+    $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my $viewlog = $cdb->get('viewlogfiles');
     $log_datas{default_op} = ($viewlog ? $viewlog->prop('DefaultOperation') : undef) || 'view';
     $c->stash(title => $title, notif => $notif, log_datas => \%log_datas);
@@ -231,6 +233,7 @@ sub showlogFile {
 sub download_logFile {
     my ($c, %log_datas) = @_;
     my $fullpath = "/var/log/$log_datas{filename}";
+    $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
 
     # Save this information for later.
     $cdb->get('viewlogfiles')->merge_props('DefaultOperation', $log_datas{operation});

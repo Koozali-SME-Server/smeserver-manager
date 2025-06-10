@@ -14,29 +14,29 @@ use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session ip_number_or_blank);
 # dnf_* should remain ASCII; yum_repositories do not need to be UTF-8
-# leavig raw read/write esmith::ConfigDB
-use esmith::ConfigDB;
+use esmith::ConfigDB::UTF8;
 use esmith::util;
 use File::Basename;
-our $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+our $cdb;
 my $dnf_status_file = '/var/cache/dnf/dnf.status';
 
 #use File::stat;
 our %dbs;
 
 for (qw(available installed updates)) {
-    $dbs{$_} = esmith::ConfigDB->open_ro("dnf_$_")
+    $dbs{$_} = esmith::ConfigDB::UTF8->open_ro("dnf_$_")
         or die "Couldn't open dnf_$_ DB\n";
 }
 
 for (qw(repositories)) {
-    $dbs{$_} = esmith::ConfigDB->open("yum_$_")
+    $dbs{$_} = esmith::ConfigDB::UTF8->open("yum_$_")
         or die "Couldn't open yum_$_ DB\n";
 }
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my %yum_datas = ();
     my $title     = $c->l('yum_FORM_TITLE');
     my $dest      = 'yum';
@@ -62,6 +62,7 @@ sub do_display {
     my $c         = shift;
     my $rt        = $c->current_route;
     my $trt       = ($c->param('trt') || 'STAT');
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my %yum_datas = ();
     my $title     = $c->l('yum_FORM_TITLE');
     my ($notif, $dest) = '';

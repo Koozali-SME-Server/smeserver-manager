@@ -13,16 +13,10 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
+use esmith::DomainsDB::UTF8;
+use esmith::AccountsDB::UTF8;
 
-#use Data::Dumper;
-#use esmith::FormMagick::Panel::domains;
-use esmith::DomainsDB;
-use esmith::AccountsDB;
-
-#use URI::Escape;
-my ($ddb,$cdb,$adb);
-#our $cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+our ($ddb,$cdb,$adb);
 our $REGEXP_DOMAIN = qq([a-zA-Z0-9\-\.]+);
 
 sub main {
@@ -30,9 +24,9 @@ sub main {
     $c->app->log->info($c->log_req);
     my %dom_datas = ();
     my $title     = $c->l('dom_FORM_TITLE');
-	$ddb = esmith::DomainsDB->open  || die "Couldn't open domains db";
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $ddb = esmith::DomainsDB::UTF8->open  || die "Couldn't open domains db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $dom_datas{trt} = 'LST';
     my @domains;
 
@@ -57,9 +51,9 @@ sub do_display {
     my $rt     = $c->current_route;
     my $trt    = $c->param('trt');
     my $domain = $c->param('Domain') || '';
-	$ddb = esmith::DomainsDB->open  || die "Couldn't open domains db";
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $ddb = esmith::DomainsDB::UTF8->open  || die "Couldn't open domains db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
 
     #$trt = 'DEL' if ( $rt eq 'domaindel1' );
     #$trt = 'UPD' if ( $rt eq 'domainupd1' );
@@ -127,9 +121,9 @@ sub do_update {
     $c->app->log->info($c->log_req);
     my $rt        = $c->current_route;
     my $trt       = $c->param('trt');
-	$ddb = esmith::DomainsDB->open  || die "Couldn't open domains db";
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $ddb = esmith::DomainsDB::UTF8->open  || die "Couldn't open domains db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     my %dom_datas = ();
     my ($res, $result) = '';
 
@@ -246,6 +240,7 @@ sub create_modify_domain {
                 . ' Ctl'
         );
     } ## end unless ($domain)
+    $ddb = esmith::DomainsDB::UTF8->open  || die "Couldn't open domains db";
     my $rec = $ddb->get($domain);
 
     if ($rec and $action eq 'create') {
@@ -375,6 +370,7 @@ sub nameserver_options_list {
 
 sub get_nameserver_value {
     my $c = shift;
+    $ddb = esmith::DomainsDB::UTF8->open  || die "Couldn't open domains db";
     my $domain = $c->param('Domain') || undef;
     return ($ddb->get_prop($domain, 'Nameservers') || 'internet');
 } ## end sub get_nameserver_value

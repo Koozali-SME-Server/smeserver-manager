@@ -14,11 +14,14 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-our $db = esmith::ConfigDB->open || die "Couldn't open config db";
+use esmith::ConfigDB::UTF8;
+
+our $db;
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    $db = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my %prx_datas = ();
     my $title     = $c->l('prx_TITLE');
     my $modul     = $c->render_to_string(inline => $c->l('prx_FIRST_PAGE_DESCRIPTION'));

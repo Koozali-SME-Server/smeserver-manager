@@ -16,16 +16,18 @@ use constant TRUE  => 1;
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session ip_number_or_blank);
-use esmith::ConfigDB;
-use esmith::AccountsDB;
+use esmith::ConfigDB::UTF8;
+use esmith::AccountsDB::UTF8;
 use esmith::util;
 use File::Basename;
-our $pattern_db = esmith::ConfigDB->open("mailpatterns");
-our $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+our $pattern_db;
+our $cdb;
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    $pattern_db = esmith::ConfigDB::UTF8->open("mailpatterns");
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my %mai_datas = ();
     my $title     = $c->l('mai_FORM_TITLE');
     $mai_datas{'trt'} = 'LIST';
@@ -42,7 +44,7 @@ sub do_display {
     my $title     = $c->l('mai_FORM_TITLE');
     my ($notif, $dest) = '';
     $mai_datas{'trt'} = $trt;
-    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
 
     if ($trt eq 'ACC') {
         $dest = 'emailaccess';
@@ -94,7 +96,7 @@ sub do_update {
     my $trt       = $c->param('trt');
     my %mai_datas = ();
     $mai_datas{trt} = $trt;
-    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my $title = $c->l('mai_FORM_TITLE');
     my ($dest, $res, $result) = '';
 
@@ -231,7 +233,7 @@ sub get_patterns_status {
 sub adjust_patterns {
     my $c        = shift;
     my @selected = @{ $c->every_param('BlockExecutableContent') };
-
+    $pattern_db = esmith::ConfigDB::UTF8->open("mailpatterns");
     foreach my $pattern ($pattern_db->get_all_by_prop(type => "pattern")) {
         my $status
             = (grep $pattern->key eq $_, @selected)
@@ -284,7 +286,7 @@ sub get_current_imap_access {
 sub get_current_smtp_ssl_auth {
     my ($c, $localise, $soru, $debug) = @_;
     die "Error: \$soru must be either 's' or 'u':$soru.\n" unless $soru eq 's' || $soru eq 'u';
-    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
 
     # Initialize variables with default values
     my $smtpStatus = 'none';
@@ -485,7 +487,7 @@ sub get_retrieval_opt {
 
 sub get_emailunknownuser_options {
     my $c                = shift;
-    my $accounts         = esmith::AccountsDB->open_ro();
+    my $accounts         = esmith::AccountsDB::UTF8->open_ro();
     my %existingAccounts = (
         'admin'          => $c->l("mai_FORWARD_TO_ADMIN"),
         'returntosender' => $c->l("mai_RETURN_TO_SENDER")
@@ -503,7 +505,7 @@ sub get_emailunknownuser_options {
 
 sub get_emailunknownuser_opt {
     my $c        = shift;
-    my $accounts = esmith::AccountsDB->open_ro();
+    my $accounts = esmith::AccountsDB::UTF8->open_ro();
     my @existingAccounts
         = ([ $c->l("mai_FORWARD_TO_ADMIN") => 'admin' ], [ $c->l("mai_RETURN_TO_SENDER") => 'returntosender' ]);
 
@@ -580,14 +582,13 @@ sub display_multidrop {
 
 sub change_settings_reception {
     my $c = shift;
-    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+    $cdb = esmith::ConfigDBi::UTF8->open || die "Couldn't open config db";
     my $FetchmailMethod      = ($c->param('FetchmailMethod') || 'standard');
     my $FetchmailFreqOffice  = ($c->param('FreqOffice')      || 'every15min');
     my $FetchmailFreqOutside = ($c->param('FreqOutside')     || 'everyhour');
     my $FetchmailFreqWeekend = ($c->param('FreqWeekend')     || 'everyhour');
     my $SpecifyHeader        = ($c->param('SpecifyHeader')   || 'off');
-    my $fetchmail
-        = $cdb->get('fetchmail') || $cdb->new_record("fetchmail", { type => "service", status => "disabled" });
+    my $fetchmail = $cdb->get('fetchmail') || $cdb->new_record("fetchmail", { type => "service", status => "disabled" });
 
     if ($FetchmailMethod eq 'standard') {
         $fetchmail->set_prop('status', 'disabled');
@@ -662,7 +663,7 @@ sub change_settings_reception {
 
 sub change_settings_delivery {
     my ($c) = shift;
-    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my $EmailUnknownUser = ($c->param('EmailUnknownUser') || 'returntosender');
     $cdb->set_value('SMTPSmartHost',      $c->param('SMTPSmartHost'));
     $cdb->set_value('DelegateMailServer', $c->param('DelegateMailServer'));
@@ -683,7 +684,7 @@ sub change_settings_delivery {
 
 sub change_settings_access {
     my $c = shift;
-    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my $pop3Access = ($c->param('POPAccess') || 'private');
 
     if ($pop3Access eq 'disabled') {
@@ -757,7 +758,7 @@ sub change_settings_access {
 
 sub change_settings_filtering {
     my $c = shift;
-    $cdb = esmith::ConfigDB->open || die "Couldn't open config db";
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my $virus_status = ($c->param('VirusStatus') || 'disabled');
     $cdb->set_prop("qpsmtpd", 'VirusScan', $virus_status);
 

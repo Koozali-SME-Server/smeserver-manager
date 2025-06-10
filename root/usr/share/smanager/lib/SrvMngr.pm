@@ -4,6 +4,7 @@ package SrvMngr;
 use strict;
 use warnings;
 use utf8;
+binmode(STDOUT);
 
 use Mojo::Base 'Mojolicious';
 
@@ -29,6 +30,8 @@ use SrvMngr::Model::Main;
 use SrvMngr::Plugin::WithoutCache;
 
 use esmith::I18N;
+use esmith::ConfigDB::UTF8;
+use esmith::NavigationDB; # no UTF8 raw is ok for ASCII only flat file
 
 # Import the function(s) you need
 use SrvMngr_Auth qw(check_admin_access);
@@ -550,9 +553,6 @@ sub theme_list {
 #------------------------------------------------------------
 
 sub getNavigation {
-
-    use esmith::NavigationDB;
-
     my $class  = shift; #not the controller as it is called as an external, not part of the controller.
     my $lang = shift || 'en-us';
     my $menu = shift || 'N';
@@ -573,7 +573,7 @@ sub getNavigation {
     # Added: Check if user is non-admin and get their allowed panels
     if ($username ne '') {
         # Get the AccountsDB to check user permissions
-        my $accountsdb = esmith::AccountsDB->open_ro() or
+        my $accountsdb = esmith::AccountsDB::UTF8->open_ro() or
             die "Couldn't open AccountsDB\n";
             
         # Check if user has AdminPanels property
@@ -646,8 +646,7 @@ sub getNavigation {
 
     my $navinfo = NAVIGATIONDIR . "/navigation.$lang";
 
-    my $navdb = esmith::NavigationDB->open_ro( $navinfo ) or
-	die "Couldn't open $navinfo\n";
+    my $navdb = esmith::NavigationDB->open_ro( $navinfo ) or die "Couldn't open $navinfo\n"; # no UTF8
 
     # Check the navdb for anything with a UrlPath, which means that it doesn't
     # have a cgi file to be picked up by the above code. Ideally, only pages
@@ -814,7 +813,7 @@ sub get_routes_list {
 
     my $c  = shift;
 
-    my $rtdb = esmith::ConfigDB->open_ro('routes') || die 'Cannot open Routes db';
+    my $rtdb = esmith::ConfigDB::UTF8->open_ro('routes') || die 'Cannot open Routes db';
     my @routes = $rtdb->get_all();
     my @rt;
 
@@ -896,7 +895,7 @@ sub gen_locale_date_string
 sub get_public_ip_address
 {
     my $self = shift;
-	my $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+	my $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my $sysconfig = $cdb->get('sysconfig');
     if ($sysconfig)
     {

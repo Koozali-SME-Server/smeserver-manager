@@ -14,7 +14,8 @@ use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
 use esmith::util;
 use SrvMngr qw( gen_locale_date_string );
-our $cdb = esmith::ConfigDB->open() || die "Couldn't open config db";
+use esmith::ConfigDB::UTF8;
+our $cdb ;
 
 sub main {
     my $c = shift;
@@ -23,6 +24,7 @@ sub main {
     my $title     = $c->l('dat_FORM_TITLE');
     my $modul     = $c->l('dat_INITIAL_DESC');
     $dat_datas{ntpstatus} = 'disabled';
+    $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my $rec = $cdb->get('ntpd');
 
     if ($rec) {
@@ -54,6 +56,7 @@ sub do_update {
     my $result;
     my $success;
     my $old_ntpstatus = $c->param('Old_ntpstatus');
+    $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     $dat_datas{ntpstatus} = $c->param('Ntpstatus');
 
     if ($dat_datas{ntpstatus} ne $old_ntpstatus) {
@@ -125,6 +128,7 @@ sub do_update {
 
 sub validate_change_datetime {
     my $c = shift;
+    $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
 
     #--------------------------------------------------
     # Untaint parameters and check for validity
@@ -220,15 +224,14 @@ sub validate_change_datetime {
     #--------------------------------------------------
     # Store time zone in configuration database
     #--------------------------------------------------
-    my $conf = esmith::ConfigDB->open();
-    my $old  = $conf->get('UnsavedChanges')->value;
-    my $rec  = $conf->get('TimeZone');
+    my $old  = $cdb->get('UnsavedChanges')->value;
+    my $rec  = $cdb->get('TimeZone');
 
     unless ($rec) {
-        $rec = $conf->new_record('TimeZone', undef);
+        $rec = $cdb->new_record('TimeZone', undef);
     }
     $rec->set_value($timezone);
-    $conf->get('UnsavedChanges')->set_value($old);
+    $cdb->get('UnsavedChanges')->set_value($old);
 
     #--------------------------------------------------
     # Signal event to change time zone, system time

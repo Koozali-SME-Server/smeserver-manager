@@ -13,9 +13,9 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
+use esmith::ConfigDB::UTF8;
 
-#package esmith::FormMagick::Panel::clamav;
-our $db = esmith::ConfigDB->open() || die "Couldn't open config db";
+our $db;
 
 sub main {
     my $c = shift;
@@ -23,6 +23,7 @@ sub main {
     my %clm_datas = ();
     my $title     = $c->l('clm_FORM_TITLE');
     my $modul     = $c->render_to_string(inline => $c->l('clm_DESC_FILESYSTEM_SCAN_PERIOD'));
+    $db = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     $clm_datas{'FilesystemScan'} = ($db->get_prop('clamav', 'FilesystemScan')) || 'disabled';
     $clm_datas{'Quarantine'}     = ($db->get_prop('clamav', 'Quarantine'))     || 'disabled';
     $clm_datas{'clam_versions'}  = get_clam_versions();
@@ -53,6 +54,7 @@ sub do_update {
 
 sub change_settings {
     my $c                  = shift;
+    $db = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my $status             = $c->param('status');
     my $FilesystemScan     = ($c->param('FilesystemScan') || 'disabled');
     my $Quarantine         = ($c->param('Quarantine') || 'disabled');

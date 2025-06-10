@@ -14,6 +14,10 @@ BEGIN
     $ENV{'HOME'} = '/usr/share/smanager';
     delete $ENV{'ENV'};
     esmith::util::setRealToEffective();
+    #to help debug UTF8, see perlrun and perlvar -CSAD or -CLSD
+    #print '$ENV{PERL_UNICODE}='.$ENV{'PERL_UNICODE'}."\n" if $ENV{'PERL_UNICODE'};
+    #print '${^UNICODE}='.${^UNICODE}.' ; ${^UTF8LOCALE}='.${^UTF8LOCALE} ."\n";
+    #print '${^OPEN}'.${^OPEN}."\n" if ${^OPEN} ;
 } 
 
 

@@ -27,7 +27,7 @@ use File::Basename;
 use File::Find;
 use File::Path qw(make_path remove_tree);
 use esmith::Backup;
-use esmith::BackupHistoryDB;
+use esmith::BackupHistoryDB; #no UTF8 and not in use 
 use esmith::util;
 use esmith::lockfile;
 use esmith::BlockDevices;

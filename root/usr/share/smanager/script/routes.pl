@@ -5,11 +5,11 @@
 use strict;
 use warnings;
 
-use esmith::ConfigDB;
+use esmith::ConfigDB::UTF8;
 
 use constant WEBFUNCTIONS => '/usr/share/smanager/lib/SrvMngr/Controller/';
 
-my $rtdb = esmith::ConfigDB->open('routes') or
+my $rtdb = esmith::ConfigDB::UTF8->open('routes') or
         die "Couldn't access Routes database\n";
 
 my @routes = $rtdb->get_all_by_prop( type => 'route' );

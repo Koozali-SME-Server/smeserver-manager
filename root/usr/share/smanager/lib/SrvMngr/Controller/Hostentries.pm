@@ -14,22 +14,14 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-
-#use Data::Dumper;
-#use esmith::FormMagick::Panel::hostentries;
-use esmith::DomainsDB;
-use esmith::AccountsDB;
-use esmith::HostsDB;
-use esmith::NetworksDB;
 use HTML::Entities;
 use Net::IPv4Addr qw(ipv4_in_network);
+use esmith::DomainsDB::UTF8;
+use esmith::ConfigDB::UTF8
+use esmith::HostsDB::UTF8;
+use esmith::NetworksDB::UTF8;
 
-#use URI::Escape;
-#our $ddb = esmith::DomainsDB->open  || die "Couldn't open hostentries db";
-#our $cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-#our $hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
-#our $ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
-my ($ddb,$cdb,$hdb,$ndb);
+our ($ddb,$cdb,$hdb,$ndb);
 
 sub main {
     my $c = shift;
@@ -37,10 +29,9 @@ sub main {
     my %hos_datas = ();
     my $title     = $c->l('hos_FORM_TITLE');
     my $notif     = '';
-	#my $ddb = esmith::DomainsDB->open  || die "Couldn't open hostentries db";
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
-	$ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $hdb = esmith::HostsDB::UTF8->open    || die "Couldn't open hosts db";
+    $ndb = esmith::NetworksDB::UTF8->open || die "Couldn't open networks db";
     $hos_datas{trt} = 'LIST';
     my %dom_hosts = ();
 
@@ -73,9 +64,9 @@ sub do_display {
     $trt = 'LST' if ($trt ne 'DEL' && $trt ne 'UPD' && $trt ne 'ADD');
     my %hos_datas = ();
     my $title     = $c->l('hos_FORM_TITLE');
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
-	$ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $hdb = esmith::HostsDB::UTF8->open    || die "Couldn't open hosts db";
+    $ndb = esmith::NetworksDB::UTF8->open || die "Couldn't open networks db";
     my $notif     = '';
     $hos_datas{'trt'} = $trt;
 
@@ -120,9 +111,9 @@ sub do_update {
     my $trt       = ($c->param('trt') || 'LIST');
     my %hos_datas = ();
     my $title     = $c->l('hos_FORM_TITLE');
-	$cdb = esmith::ConfigDB->open   || die "Couldn't open configuration db";
-	$hdb = esmith::HostsDB->open    || die "Couldn't open hosts db";
-	$ndb = esmith::NetworksDB->open || die "Couldn't open networks db";
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
+    $hdb = esmith::HostsDB::UTF8->open    || die "Couldn't open hosts db";
+    $ndb = esmith::NetworksDB::UTF8->open || die "Couldn't open networks db";
     my $notif     = '';
     my $result    = '';
     $hos_datas{'name'}       = lc $c->param('Name');
@@ -379,7 +370,7 @@ sub delete_hostentry {
 } ## end sub delete_hostentry
 
 sub domains_list {
-    my $d = esmith::DomainsDB->open_ro() or die "Couldn't open DomainsDB";
+    $ddb = esmith::DomainsDB::UTF8->open_ro() or die "Couldn't open DomainsDB";
     my @domains;
 
     for ($d->domains) {
@@ -516,7 +507,7 @@ sub must_be_local {
     my $localip = shift;
 
     # Make sure that the IP is indeed local.
-    #my $ndb = esmith::NetworksDB->open_ro;
+    #$ndb = esmith::NetworksDB::UTF8->open_ro;
     my @local_list = $ndb->local_access_spec;
 
     foreach my $spec (@local_list) {

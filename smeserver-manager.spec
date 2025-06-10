@@ -145,7 +145,7 @@ true
 %changelog
 * Mon Jun 09 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-87.sme
 - add datetime getYear_list [SME: 13031]
-- WIP use esmith::*DB::UTF8 to access db flat files [SME: 13027]
+- use esmith::*DB::UTF8 to access db flat files [SME: 13027]
 
 * Mon Jun 09 2025 John Crisp <jcrisp@safeandsoundit.co.uk> 11.00.0-86.sme
 - Fix datetime gen_locale_date_string reference [SME: 13017]

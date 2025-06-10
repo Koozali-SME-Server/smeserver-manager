@@ -6,8 +6,8 @@ use Test::Mojo;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 
-eval "use esmith::ConfigDB";
-plan skip_all => 'esmith::ConfigDB (and others) required for testing 002_basic' if $@;
+eval "use esmith::ConfigDB::UTF8";
+plan skip_all => 'esmith::ConfigDB::UTF8 (and others) required for testing 002_basic' if $@;
 
 plan tests => 3;
 

@@ -12,12 +12,11 @@ use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use esmith::util;
-use esmith::ConfigDB;
-use esmith::AccountsDB;
+use esmith::ConfigDB::UTF8;
+use esmith::AccountsDB::UTF8;
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw( theme_list init_session validate_password );
-#our $cdb = esmith::ConfigDB->open_ro || die "Couldn't open configuration db";
 
 sub main {
     my $c         = shift;
@@ -161,7 +160,7 @@ sub reset_password {
     my $ret;
     return $c->l('usr_TAINTED_USER') unless (($user) = ($user =~ /^(\w[\-\w_\.]*)$/));
     $user = $1;
-    my $adb  = esmith::AccountsDB->open();
+    my $adb  = esmith::AccountsDB::UTF8->open();
     my $acct = $adb->get($user);
     return $c->l('NO_SUCH_USER', $user) unless ($acct->prop('type') eq 'user');
     $ret = esmith::util::setUserPasswordRequirePrevious($user, $oldpassword, $password) if $trt ne 'RESET';
@@ -171,10 +170,10 @@ sub reset_password {
     undef $adb;
 
     if (system("/sbin/e-smith/signal-event", "password-modify", $user)) {
-        $adb = esmith::AccountsDB->open();
+        $adb = esmith::AccountsDB::UTF8->open();
         return $c->l("usr_ERR_OCCURRED_MODIFYING_PASSWORD");
     }
-    $adb = esmith::AccountsDB->open();
+    $adb = esmith::AccountsDB::UTF8->open();
     return 'OK';
 } ## end sub reset_password
 
@@ -194,7 +193,7 @@ sub check_password {
     my $c        = shift;
     my $password = shift;
     my $strength;
-   	my $cdb = esmith::ConfigDB->open_ro || die "Couldn't open configuration db";
+    my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
     my $rec = $cdb->get('passwordstrength');
     $strength = ($rec ? ($rec->prop('Users') || 'none') : 'none');
     return validate_password($c, $strength, $password);

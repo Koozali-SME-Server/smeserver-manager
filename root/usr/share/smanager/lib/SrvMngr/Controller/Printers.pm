@@ -14,15 +14,15 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
-#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
-my $adb;
+use esmith::AccountsDB::UTF8;
+our $adb;
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
     my %prt_datas = ();
     my $title     = $c->l('prt_FORM_TITLE');
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $prt_datas{'trt'} = 'LIST';
     my @printerDrivers;
 
@@ -38,7 +38,7 @@ sub do_display {
     my $rt      = $c->current_route;
     my $trt     = ($c->param('trt') || 'LIST');
     my $printer = $c->param('printer') || '';
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
 
     #$trt = 'DEL' if ( $printer );
     #$trt = 'ADD' if ( $rt eq 'printeradd' );
@@ -79,7 +79,7 @@ sub do_update {
     my $trt       = ($c->param('trt') || 'LIST');
     my %prt_datas = ();
     my $title     = $c->l('prt_FORM_TITLE');
-   	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $prt_datas{'trt'} = $trt;
     my ($res, $result) = '';
 

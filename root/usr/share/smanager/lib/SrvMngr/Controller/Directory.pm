@@ -13,6 +13,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use esmith::ConfigDB::UTF8;
+use esmith::AccountsDB::UTF8;
 use SrvMngr qw(theme_list init_session);
 
 our $db; 
@@ -54,7 +55,7 @@ sub do_update {
     $db->get('ldap')->set_prop('defaultPhoneNumber', $phonenumber);
 
     if ($existing eq 'update') {
-        my $ac = esmith::AccountsDB->open() || die "Couldn't open accounts db";
+        my $ac = esmith::AccountsDB::UTF8->open() || die "Couldn't open accounts db";
         my @users = $ac->users();
 
         foreach my $user (@users) {

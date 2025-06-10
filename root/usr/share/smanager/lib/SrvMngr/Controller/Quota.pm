@@ -16,8 +16,8 @@ use Scalar::Util qw(looks_like_number);
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session);
+use esmith::AccountsDB::UTF8;
 
-#our $adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
 my $adb;
 
 sub main {
@@ -25,7 +25,7 @@ sub main {
     $c->app->log->info($c->log_req);
     my %quo_datas = ();
     my $title     = $c->l('quo_FORM_TITLE');
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $quo_datas{'trt'} = 'LIST';
     my @userAccounts;
 
@@ -44,7 +44,7 @@ sub do_display {
     $trt = 'UPD' if ($user);
     my %quo_datas = ();
     my $title     = $c->l('quo_FORM_TITLE');
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $quo_datas{'trt'} = $trt;
 
     if ($trt eq 'UPD') {
@@ -73,7 +73,7 @@ sub do_update {
     $quo_datas{trt} = $trt;
     my $result = '';
     my $res;
-	$adb = esmith::AccountsDB->open || die "Couldn't open accounts db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
 
     if ($trt eq 'UPD') {
         $quo_datas{user}    = ($c->param('user') || '');

@@ -13,13 +13,12 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session subnet_mask get_reg_mask ip_number);
-
-#use Data::Dumper;
 use esmith::util;
-use esmith::HostsDB;
-#my $network_db = esmith::NetworksDB->open() || die("Couldn't open networks db");
+use esmith::HostsDB::UTF8;
+use esmith::NetworksDB::UTF8;
+use esmith::ConfigDB::UTF8;
 my $ret = "OK";
-my ($network_db);
+our ($network_db,$config_db);
 
 sub main {
     my $c = shift;
@@ -27,7 +26,7 @@ sub main {
     my %ln_datas = ();
     $ln_datas{return} = "";
     my $title = $c->l('ln_LOCAL NETWORKS');
-	$network_db = esmith::NetworksDB->open() || die("Couldn't open networks db");
+    $network_db = esmith::NetworksDB::UTF8->open() || die("Couldn't open networks db");
     my $modul = '';
     $ln_datas{trt} = 'LIST';
     my @localnetworks;
@@ -49,7 +48,7 @@ sub do_display {
     $c->app->log->info($c->log_req);
     my $rt = $c->current_route;
     my $trt = ($c->param('trt') || 'LIST');
-	$network_db = esmith::NetworksDB->open() || die("Couldn't open networks db");
+    $network_db = esmith::NetworksDB::UTF8->open() || die("Couldn't open networks db");
     $trt = 'DEL'  if ($rt eq 'localnetworksdel');
     $trt = 'ADD'  if ($rt eq 'localnetworksadd');
     $trt = 'ADD1' if ($rt eq 'localnetworksadd1');
@@ -77,14 +76,14 @@ sub do_display {
             #Error - return to Add page
             $trt = "ADD";
         }
-        $network_db = esmith::NetworksDB->open() || die("Failed to open Networkdb-3");    #Refresh the network DB
+	#$network_db = esmith::NetworksDB::UTF8->open() || die("Failed to open Networkdb-3");    #Refresh the network DB
         $c->stash(ret => \%ret);    #stash it away for the template
     } ## end if ($trt eq 'ADD1')
 
     if ($trt eq 'DEL1') {
 
         #After Remove clicked on Delete network panel
-        $network_db   = esmith::NetworksDB->open() || die("Failed to open Networkdb-1");
+	#$network_db   = esmith::NetworksDB::UTF8->open() || die("Failed to open Networkdb-1");
         my $localnetwork = $c->param("localnetwork");
         my $delete_hosts = $c->param("deletehost") || "1";                                    #default to deleting them.
         my $rec = $network_db->get($localnetwork) || die("Failed to find network on db:$localnetwork");
@@ -93,7 +92,7 @@ sub do_display {
             $ln_datas{localnetwork} = $localnetwork;
         }
         my %ret = remove_network($localnetwork, $delete_hosts);
-        $network_db = esmith::NetworksDB->open() || die("Failed to open Networkdb-2");        #Refresh the network DB
+	#$network_db = esmith::NetworksDB::UTF8->open() || die("Failed to open Networkdb-2");        #Refresh the network DB
         my @localnetworks;
 
         if ($network_db) {
@@ -138,7 +137,7 @@ sub do_display {
 
 sub remove_network {
     my $network      = shift;
-    $network_db   = esmith::NetworksDB->open();
+    $network_db   = esmith::NetworksDB::UTF8->open();
     my $record       = $network_db->get($network);
     my $delete_hosts = shift;
 
@@ -174,7 +173,7 @@ sub hosts_on_network {
     my $netmask = shift;
     die if not $network and $netmask;
     my $cidr             = "$network/$netmask";
-    my $hosts            = esmith::HostsDB->open() || die("Couldn't open hosts db");
+    my $hosts            = esmith::HostsDB::UTF8->open() || die("Couldn't open hosts db");
     my @localhosts       = grep { $_->prop('HostType') eq 'Local' } $hosts->hosts;
     my @hosts_on_network = ();
 
@@ -207,9 +206,9 @@ sub add_network {
 
     # we transform bit mask to regular mask
     $networkMask = get_reg_mask($networkAddress, $networkMask);
-    my $network_db = esmith::NetworksDB->open()
-        || esmith::NetworksDB->create();
-    my $config_db    = esmith::ConfigDB->open();
+    my $network_db = esmith::NetworksDB::UTF8->open()
+        || esmith::NetworksDB::UTF8->create();
+    my $config_db    = esmith::ConfigDB::UTF8->open();
     my $localIP      = $config_db->get('LocalIP');
     my $localNetmask = $config_db->get('LocalNetmask');
     my ($localNetwork, $localBroadcast)
