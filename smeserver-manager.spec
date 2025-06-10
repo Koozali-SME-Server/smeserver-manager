@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 87
+%define release 88
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -144,9 +144,10 @@ true
 %defattr(-,root,root)
 
 %changelog
-* Mon Jun 09 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-87.sme
+* Mon Jun 09 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-88.sme
 - add datetime getYear_list [SME: 13031]
 - use esmith::*DB::UTF8 to access db flat files [SME: 13027]
+- fix typo [SME: 13038]
 
 * Mon Jun 09 2025 John Crisp <jcrisp@safeandsoundit.co.uk> 11.00.0-86.sme
 - Fix datetime gen_locale_date_string reference [SME: 13017]

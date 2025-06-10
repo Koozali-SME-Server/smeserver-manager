@@ -17,7 +17,7 @@ use SrvMngr qw(theme_list init_session);
 use HTML::Entities;
 use Net::IPv4Addr qw(ipv4_in_network);
 use esmith::DomainsDB::UTF8;
-use esmith::ConfigDB::UTF8
+use esmith::ConfigDB::UTF8;
 use esmith::HostsDB::UTF8;
 use esmith::NetworksDB::UTF8;
 
@@ -373,7 +373,7 @@ sub domains_list {
     $ddb = esmith::DomainsDB::UTF8->open_ro() or die "Couldn't open DomainsDB";
     my @domains;
 
-    for ($d->domains) {
+    for ($ddb->domains) {
         my $ns = $_->prop("Nameservers") || 'localhost';
         push @domains, $_->key if ($ns eq 'localhost');
     }
