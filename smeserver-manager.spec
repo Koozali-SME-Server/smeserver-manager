@@ -82,7 +82,8 @@ This RPM contributes the navigation bars for the smeserver-manager. New Mojolici
 
 #extract the release number and drop it in to the version for SM2 footer.
 sed -i "s/our \$VERSION = '[^']*'/our \$VERSION = '%{release}'/g" root/usr/share/smanager/lib/SrvMngr.pm
-
+year=`date +%Y`
+sed -i "s/___YEAR___/$year/g" root/usr/share/smanager/lib/SrvMngr/Controller/Datetime.pm
 
 perl createlinks
 

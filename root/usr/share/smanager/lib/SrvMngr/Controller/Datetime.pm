@@ -360,8 +360,9 @@ sub getMonth_list {
 sub getYear_list {
     my $c= shift;
     my @yearArray;
-    #TODO set thoses year depending on build date in spec file
-    for ( my $i = 2020; $i < 2060; $i++ ) {
+    # could use also `/bin/date '+%Y'`
+    my $start=___YEAR___-40; my $max=___YEAR___+40;
+    for ( my $i = $start; $i <= $max; $i++ ) {
 
         push @yearArray,$i;
     }
