@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 88
+%define release 89
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -144,6 +144,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Jun 12 2025 Brian Read <brianr@koozali.org> 11.0.0-89.sme
+- rework navigation weights to avoid duplicates [SME: 12996]
+
 * Mon Jun 09 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-88.sme
 - add datetime getYear_list [SME: 13031]
 - use esmith::*DB::UTF8 to access db flat files [SME: 13027]

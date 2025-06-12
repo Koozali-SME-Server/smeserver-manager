@@ -3,7 +3,7 @@ package SrvMngr::Controller::Yum;
 #----------------------------------------------------------------------
 # heading     : System
 # description : Software installer
-# navigation  : 4000 300
+# navigation  : 4000 500
 #
 # routes : end
 #----------------------------------------------------------------------

@@ -3,7 +3,7 @@ package SrvMngr::Controller::Proxy;
 #----------------------------------------------------------------------
 # heading     : System
 # description : Proxy settings
-# navigation  : 4000 800
+# navigation  : 4000 200
 #----------------------------------------------------------------------
 #
 # routes : end

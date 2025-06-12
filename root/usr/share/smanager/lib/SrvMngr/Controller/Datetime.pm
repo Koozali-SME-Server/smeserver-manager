@@ -3,7 +3,7 @@ package SrvMngr::Controller::Datetime;
 #----------------------------------------------------------------------
 # heading     : System
 # description : Date and time
-# navigation  : 4000 400
+# navigation  : 4000 300
 # routes : end
 #------------------------------
 use strict;
@@ -361,7 +361,7 @@ sub getYear_list {
     my $c= shift;
     my @yearArray;
     # could use also `/bin/date '+%Y'`
-    my $start=___YEAR___-40; my $max=___YEAR___+40;
+    my $start=2025-40; my $max=2025+40;
     for ( my $i = $start; $i <= $max; $i++ ) {
 
         push @yearArray,$i;

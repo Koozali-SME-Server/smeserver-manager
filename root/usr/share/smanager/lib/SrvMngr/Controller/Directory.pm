@@ -3,7 +3,7 @@ package SrvMngr::Controller::Directory;
 #----------------------------------------------------------------------
 # heading     : User management
 # description : Directory
-# navigation  : 2000 300
+# navigation  : 2000 400
 #
 # routes : end
 #----------------------------------------------------------------------

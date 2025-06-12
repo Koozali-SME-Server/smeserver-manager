@@ -3,7 +3,7 @@ package SrvMngr::Controller::Pseudonyms;
 #----------------------------------------------------------------------
 # heading     : User management
 # description : Pseudonyms
-# navigation  : 2000 210
+# navigation  : 2000 300
 #----------------------------------------------------------------------
 #
 # routes : end

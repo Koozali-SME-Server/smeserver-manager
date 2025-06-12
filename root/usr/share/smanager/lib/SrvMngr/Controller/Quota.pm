@@ -3,7 +3,7 @@ package SrvMngr::Controller::Quota;
 #----------------------------------------------------------------------
 # heading     : User management
 # description : Quotas
-# navigation  : 2000 300
+# navigation  : 2000 500
 #----------------------------------------------------------------------
 #
 # routes : end

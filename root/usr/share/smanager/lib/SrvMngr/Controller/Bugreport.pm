@@ -3,7 +3,7 @@ package SrvMngr::Controller::Bugreport;
 #----------------------------------------------------------------------
 # heading     : Investigation
 # description : Report a bug
-# navigation  : 7000 500
+# navigation  : 7000 300
 # routes : end
 #------------------------------
 use strict;

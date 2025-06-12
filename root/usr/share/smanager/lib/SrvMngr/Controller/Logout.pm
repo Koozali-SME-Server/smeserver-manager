@@ -3,7 +3,7 @@ package SrvMngr::Controller::Logout;
 #----------------------------------------------------------------------
 # heading     : Current User
 # description : Logout
-# navigation  : 1000 900
+# navigation  : 1000 1000
 # menu        : U
 #
 # routes : end

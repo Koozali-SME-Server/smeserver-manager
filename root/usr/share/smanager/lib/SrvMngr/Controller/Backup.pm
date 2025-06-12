@@ -3,7 +3,7 @@ package SrvMngr::Controller::Backup;
 #----------------------------------------------------------------------
 # heading     : System
 # description : Backup or restore
-# navigation  : 4000 200
+# navigation  : 4000 100
 # Copyright (C) 2002 Mitel Networks Corporation
 #----------------------------------------------------------------------
 # routes : end

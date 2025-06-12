@@ -3,7 +3,7 @@ package SrvMngr::Controller::Emailsettings;
 #----------------------------------------------------------------------
 # heading     : System
 # description : E-mail
-# navigation  : 4000 500
+# navigation  : 4000 400
 #
 #
 # routes : end
