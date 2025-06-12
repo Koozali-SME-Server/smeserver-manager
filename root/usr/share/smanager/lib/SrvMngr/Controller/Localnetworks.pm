@@ -67,6 +67,7 @@ sub do_display {
 
         #Add a network - called after new network details filled in
         my %ret = add_network($c);
+        $network_db   = esmith::NetworksDB::UTF8->open();
 
         #Return to list page if success
         if ((index($ret{ret}, "SUCCESS") != -1)) {

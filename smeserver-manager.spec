@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 89
+%define release 90
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -144,6 +144,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Jun 12 2025 Brian Read <brianr@koozali.org> 11.0.0-90.sme
+- Error on empty extra chars for success message [SME: 13041]
+- Needed extra open for network-db after add 
+
 * Thu Jun 12 2025 Brian Read <brianr@koozali.org> 11.0.0-89.sme
 - rework navigation weights to avoid duplicates [SME: 12996]
 
