@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 90
+%define release 91
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -144,9 +144,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Jun 13 2025 Brian Read <brianr@koozali.org> 11.0.0-91.sme
+- Port Forwarding  - Same error as in local networking [SME: 13043]
+
 * Thu Jun 12 2025 Brian Read <brianr@koozali.org> 11.0.0-90.sme
-- Error on empty extra chars for success message [SME: 13041]
-- Needed extra open for network-db after add 
+- Local Networks  - Error on empty extra chars for success message [SME: 13041]
+ Needed extra open for network-db after add 
 
 * Thu Jun 12 2025 Brian Read <brianr@koozali.org> 11.0.0-89.sme
 - rework navigation weights to avoid duplicates [SME: 12996]
@@ -161,7 +164,7 @@ true
 
 * Mon Jun 09 2025 John Crisp <jcrisp@safeandsoundit.co.uk> 11.0.0-85.sme
 - fix ln_add templates for UTF8 [SME: 13030]
-- remove extraneous require line in spec file
+ remove extraneous require line in spec file
 
 * Mon Jun 09 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-84.sme
 - fix Directory caching issue [SME: 13026]
@@ -181,11 +184,11 @@ true
 
 * Thu Apr 17 2025 Brian Read <brianr@koozali.org> 11.0.0-78.sme
 - typo in remoteaccess panel
-- Fix crash in veiwlogfiles if viewlogfiles key not in DB
+ Fix crash in veiwlogfiles if viewlogfiles key not in DB
 
 * Sat Apr 12 2025 Brian Read <brianr@koozali.org> 11.0.0-77.sme
 - Sort out local and pulic access setting in remote panel  [SME: 12988]
-- caching problem, plus confusion between normal and public setting in sshd / access in DB
+ caching problem, plus confusion between normal and public setting in sshd / access in DB
 
 * Fri Apr 11 2025 Brian Read <brianr@koozali.org> 11.0.0-76.sme
 - Restore css for roundcube embedded  [SME: 12987]
@@ -198,36 +201,36 @@ true
 - Fix error message and success message format in Local Networking panel [SME: 12969]
 
 * Tue Mar 25 2025 Brian Read <brianr@koozali.org> 11.0.0-73.sme
-- Some changes to error message format in css.
+ Some changes to error message format in css.
 - Fix DB Cache problem with port forwarding panel [SME: 12970]
 - Fix error and success message display for port forwarding panel [SME: 12969]
 
 * Mon Mar 24 2025 Brian Read <brianr@koozali.org> 11.0.0-72.sme
 - Remove css files from template structure [SME: 12967]
-- Rationalise and merge css files
-- Adjust some gaps around panels
-- Remove HR lines
+ Rationalise and merge css files
+ Adjust some gaps around panels
+ Remove HR lines
 
 * Thu Mar 20 2025 Brian Read <brianr@koozali.org> 11.0.0-71.sme
 - Sort out navigation menu error on startup [SME: 12946]
-- More places where floating panel needed
-- Adjust floating panel to make space around it the same
-- clean up some css
+ More places where floating panel needed
+ Adjust floating panel to make space around it the same
+ clean up some css
 
 * Wed Mar 19 2025 Brian Read <brianr@koozali.org> 11.0.0-70.sme
-- Re-cast the default theme - use proper koozali logo image, unwind multiple divs
-- Enhance responsiveness
-- Revert Ibay menu name to Ibays
-- Remove legacy SM1 button on header
-- Remove "?" access to wiki help on header
+ Re-cast the default theme - use proper koozali logo image, unwind multiple divs
+ Enhance responsiveness
+ Revert Ibay menu name to Ibays
+ Remove legacy SM1 button on header
+ Remove "?" access to wiki help on header
 
 * Mon Mar 17 2025 Brian Read <brianr@koozali.org> 11.0.0-69.sme
 - Add a total summary report across all existing logs [SME: 12951]
 
 * Mon Mar 17 2025 Brian Read <brianr@koozali.org> 11.0.0-68.sme
 - re-write qmailanalog for postfix [SME: 12951]
-- Clean up backup.pm
-- Enhance module panel - used by mail log analysis and Licence display
+ Clean up backup.pm
+ Enhance module panel - used by mail log analysis and Licence display
 
 * Tue Mar 11 2025 Brian Read <brianr@koozali.org> 11.0.0-66.sme
 - Move the button for each backup panel to the left to conform to all the other panels.
@@ -240,8 +243,8 @@ true
 
 * Thu Mar 06 2025 Brian Read <brianr@koozali.org> 11.0.0-63.sme
 - Add boot.svg image to Bug Report panel [SME: 12953]
-- Move report template to inside smanager tree
-- Add one-off systemd task to create boot.svg run from panel
+ Move report template to inside smanager tree
+ Add one-off systemd task to create boot.svg run from panel
 
 * Tue Mar 04 2025 Brian Read <brianr@koozali.org> 11.0.0-62.sme
 - Update *_en.lex files to conform to standard english punctuation  [SME: 11809]
@@ -278,16 +281,16 @@ true
 
 * Mon Feb 10 2025 Brian Read <brianr@koozali.org> 11.0.0-51.sme
 - Replace url in call to webmail by browser url rather than system host and domain [SME: 12910]
-- Fix up CSS so not inline
+ Fix up CSS so not inline
 - Sort out reveiw panel missing routines from FormMagic [SME: 12907].
 
 * Sun Feb 09 2025 Brian Read <brianr@koozali.org> 11.0.0-50.sme
 - Move all routines from FormMagic still called by SM2 panels to SM2 [SME: 12906]
-- delete all references to FormMagic
+ delete all references to FormMagic
 
 * Fri Feb 07 2025 Brian Read <brianr@koozali.org> 11.0.0-49.sme
-- Fix delete of ibay - typo in link
-- Move across toMB() sub from formmagick to quota.pm
+ Fix delete of ibay - typo in link
+ Move across toMB() sub from formmagick to quota.pm
 - Recast DB opening so it is specific to the route rather than global [SME: 12905]
 
 * Wed Jan 29 2025 Brian Read <brianr@koozali.org> 11.0.0-48.sme
@@ -295,11 +298,11 @@ true
 
 * Tue Jan 28 2025 Brian Read <brianr@koozali.org> 11.0.0-47.sme
 - Temp (we hope) remove CSRF protection plugin  [SME: ]
-- Fix comparison in footer with config->mode
+ Fix comparison in footer with config->mode
 
 * Tue Jan 28 2025 Brian Read <brianr@koozali.org> 11.0.0-46.sme
 - Adjust conditions for showing "Reconfigure required" to only check UnSavedChanges DB entry [SME: 12891]
-- Add indication of development mode in footer
+ Add indication of development mode in footer
 
 * Sat Jan 25 2025 Brian Read <brianr@koozali.org> 11.0.0-45.sme
 - Add some space in the reboot/reconf/shutdown panel [SME: ]
@@ -313,7 +316,7 @@ true
 
 * Thu Jan 23 2025 Brian Read <brianr@koozali.org> 11.0.0-43.sme
 - fix access to config file though config plugin for mojo 9.39 [SME: 12885]
-- Fix password setting for useraccounts and also adjust DB opens
+ Fix password setting for useraccounts and also adjust DB opens
 - Add mojo version to footer for logged in [SME: 12886]
 - Fix up css for red error message when multiline [SME: 12802]
 
@@ -353,7 +356,7 @@ true
 
 * Wed Dec 18 2024 Brian Read <brianr@koozali.org> 11.0.0-32.sme
 - Fix for User and localnetwork panel [SME: 6278]
-- Fix menu entry for proxy to stop it moving
+ Fix menu entry for proxy to stop it moving
 
 * Tue Dec 17 2024 Brian Read <brianr@koozali.org> 11.0.0-31.sme
 - Edit html to avoid w3c html validation warnings [SME: 6278]
@@ -388,7 +391,7 @@ true
 
 * Mon Sep 23 2024 Brian Read <brianr@koozali.org> 11.0.0-21.sme
 - Remove both option for webmail [SME: 12744]
-- Add in re-open DB for portforwarding and email settings.
+ Add in re-open DB for portforwarding and email settings.
 
 * Mon Sep 23 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-20.sme
 - webmail switch panel to use roundcube [SME: 12742]
@@ -405,7 +408,7 @@ true
 
 * Wed Aug 21 2024 Brian Read <brianr@koozali.org> 11.0.0-16.sme
 - Typo uc DNF changed to lc dnf in Yum.pm [SME: 127245]
-- Monitor dnf running using dnf status file
+ Monitor dnf running using dnf status file
 
 * Wed Aug 21 2024 Brian Read <brianr@koozali.org> 11.0.0-15.sme
 - Migrate SM2 Software installer panel from use of yum to dnf [SME: 12718]
@@ -415,7 +418,7 @@ true
 
 * Sun Jul 28 2024 Brian Read <brianr@koozali.org> 11.0.0-13.sme
 - Fix sysles.css template - overwrote it by mistake [SME: 12706]
-- Also re-organised login and Legacy SM menus and help on top
+ Also re-organised login and Legacy SM menus and help on top
 
 * Sun Jul 28 2024 Brian Read <brianr@koozali.org> 11.0.0-12.sme
 - correct positio of flag-icon [SME: 12706]
@@ -428,7 +431,7 @@ true
 
 * Thu May 09 2024 Brian Read <brianr@koozali.org> 11.0.0-9.sme
 - Add mojo logo to footer [SME: 12679]
-- Fix default for HeaderWeight to avoid noise in logs if no Nav header in file
+ Fix default for HeaderWeight to avoid noise in logs if no Nav header in file
 - Align buttons consistently [SME: 12680]
 
 * Tue Apr 30 2024 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-8.sme
@@ -470,7 +473,7 @@ true
 
 * Tue Feb 27 2024 Brian Read <brianr@koozali.org> 0.1.4-31.sme
 - Sort options in mail log anaysis [SME: 11821]
-- Take out qmail-q options as need to run as root or qmail - see bug:12491
+ Take out qmail-q options as need to run as root or qmail - see bug:12491
 
 * Sat Feb 24 2024 Brian Read <brianr@koozali.org> 0.1.4-30.sme
 - Bring user menus into line with new menu structure  [SME: 12482]
@@ -497,17 +500,17 @@ true
 
 * Tue Jan 30 2024 Brian Read <brianr@koozali.org> 0.1.4-23.sme
 - Arrange that jquery etc is local and from rpm smeserver-manager-jsquery [SME: 12459]
-- Correct position of % end in partial .html.ep files with tables in.
-- Make smeserver-mananger-jsquery a requirement
-- Move jquery overrides to jsquery rpm
+ Correct position of % end in partial .html.ep files with tables in.
+ Make smeserver-mananger-jsquery a requirement
+ Move jquery overrides to jsquery rpm
 
 * Sat Jan 27 2024 Brian Read <brianr@koozali.org> 0.1.4-22.sme
 - Update to use jquery plugin dataTables [SME: 12458]
-- Update Copyright footer to 2024
-- Edit tables to have TableSort in class
-- Fix up tables tbody and thead correctly
-- Sort out action column to make compatible with dataTable
-- Change action links to icons
+ Update Copyright footer to 2024
+ Edit tables to have TableSort in class
+ Fix up tables tbody and thead correctly
+ Sort out action column to make compatible with dataTable
+ Change action links to icons
 
 * Sun Dec 03 2023 Brian Read <brianr@koozali.org> 0.1.4-21.sme
 - Update CSS to provide feedback to hover and click on panel submit button  [SME: 12442]
@@ -515,7 +518,7 @@ true
 * Tue Apr 25 2023 Michel Begue <mab974@misouk.com> 0.1.4-20.sme
 - general locales for awstats [SME:12324b]
 - fix reconfigure asked when not needed [SME: 12171b]
-- remove unSafe status from session data
+ remove unSafe status from session data
 
 * Wed Dec 28 2022 Brian Read <brianr@bjsystems.co.uk> 0.1.4-19.sme
 - Fix requires in systemd smanager.server file  [SME:12294]
@@ -526,8 +529,8 @@ true
 * Mon Jul 18 2022 Michel Begue <mab974@misouk.com> 0.1.4-17.sme
 - add forgotten password link to login panel [SME: 11816]
 - update to httpd 2.4 syntax [SME: 12112]
-- enable backup of /usr/share/smanager/data
-- fix target in link to 'Previous SM'
+ enable backup of /usr/share/smanager/data
+ fix target in link to 'Previous SM'
 
 * Sun Jul 17 2022 Jean-Philippe Pialasse <tests@pialasse.com> 0.1.4-16.sme
 - untainting datetime [SME: 12111]
@@ -536,17 +539,17 @@ true
 - untainting printer [SME: 12110]
 
 * Fri Jan 21 2022 Michel Begue <mab974@misouk.com> 0.1.4-14.sme
-- Fix jquery map link missing
-- Fix jquery link deleted during update
-- Remove generated file during remove
+ Fix jquery map link missing
+ Fix jquery link deleted during update
+ Remove generated file during remove
 
 * Wed Jan 05 2022 Brian Read <brianr@bjsystems.co.uk> 0.1.4-13.sme
 - Update-format-for-datetime-and-reboot [SME: 11830]
 
 * Mon Jan 03 2022 Michel Begue <mab974@misouk.com> 0.1.4-12.sme
 - Add show password icon to login panel (requires jquery)
-- Extend toggle hide to section menu (requires jquery)
-- Set layout according to jquery presence
+ Extend toggle hide to section menu (requires jquery)
+ Set layout according to jquery presence
 - Set CSRF less strict for GET method. Only if csrftoken param exists [SME: 11789]
 
 * Mon Dec 27 2021 Michel Begue <mab974@misouk.com> 0.1.4-10.sme
@@ -572,22 +575,22 @@ true
 
 * Mon Nov 15 2021 Michel Begue <mab974@misouk.com> 0.1.4-3.sme
 - Fix error message when linking, unlinking jquery in spec
-- Correct the 'review' panel presentation
-- Modify CSRFDefender plugin to take into account GET method
-- Add TOKEN param where the GET method is used in templates
-- Remove smanager from local url address
+ Correct the 'review' panel presentation
+ Modify CSRFDefender plugin to take into account GET method
+ Add TOKEN param where the GET method is used in templates
+ Remove smanager from local url address
 
 * Mon Oct 11 2021 Michel Begue <mab974@protonmail.com> 0.1.4-2.sme
-- Fix incorrect list order (users, ibays, ...)
-- Add external private access (remote management)
-- Change CSRF error message
+ Fix incorrect list order (users, ibays, ...)
+ Add external private access (remote management)
+ Change CSRF error message
 
 * Mon Jun 21 2021 Michel Begue <mab974@gmail.com> 0.1.4-1.sme
 - New version: smeserver-manager-0.1.4-1 (= 0.1.2-13)
 
 * Sat Jun 19 2021 Michel Begue <mab974@gmail.com> 0.1.2-13.sme
 - Remove non english locale files (move to smeserver-manager-locale)
-- Fix error in 'locale2-conf' action
+ Fix error in 'locale2-conf' action
 
 * Tue Jun 15 2021 Michel Begue <mab974@gmail.com> 0.1.2-12.sme
 - Fix errors in daily script

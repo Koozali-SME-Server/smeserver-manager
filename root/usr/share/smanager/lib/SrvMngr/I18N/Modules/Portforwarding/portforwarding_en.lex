@@ -1,16 +1,13 @@
 'pf_FORM_TITLE' => 'Configure Port Forwarding',
-'pf_FIRST_PAGE_DESCRIPTION' => '<p>
-                You can use this panel to modify your firewall rules so
+'pf_FIRST_PAGE_DESCRIPTION' => 'You can use this panel to modify your firewall rules so
                 as to open a specific port on this server and forward it
                 to another port on another host.  Doing so will permit
                 incoming traffic to directly access a private host on
                 your LAN.
-            </p><p>
                 WARNING: Misuse of this feature can seriously compromise the
                 security of your network. Do not use this feature
                 lightly, or without fully understanding the implications
-                of your actions.
-            </p>',
+                of your actions.',
 'pf_CREATE_RULE' => 'Create portforwarding rule',
 'pf_SUMMARY_ADD_DESC' => 'The following summarizes the port-forwarding rule
             that you are about to add. If you are satisfied with the rule,
@@ -22,13 +19,13 @@
             port-forwarding rules installed on this server. Click on the
             \'Remove\' link to remove the corresponding rule.',
 'pf_NO_FORWARDS' => 'There are currently no forwarded ports on the system.',
-'pf_CREATE_PAGE_DESCRIPTION' => '<p>Select the protocol, the port you wish to forward, the
+'pf_CREATE_PAGE_DESCRIPTION' => 'Select the protocol, the port you wish to forward, the
                 destination host, and the port on the destination host
                 that you wish to forward to. If you wish to specify a port
                 range, enter the lower and upper boundaries separated by a
                 hyphen. The destination port may be left blank, which will
                 instruct the firewall to leave the source port 
-                unaltered.</p>',
+                unaltered',
 'pf_LABEL_SOURCE_PORT' => 'Source Port(s)',
 'pf_LABEL_PROTOCOL' => 'Protocol',
 'pf_LABEL_DESTINATION_PORT' => 'Destination Port(s)',

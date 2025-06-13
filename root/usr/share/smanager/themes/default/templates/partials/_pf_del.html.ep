@@ -9,11 +9,11 @@
     % my $allow = $pf_datas->{allow};
     
    % if (config->{debug} == 1) {
-	<p>
+	<pre>
 	%= dumper $c->current_route
 	%= dumper $c->stash("ret")
     %= dumper %$pf_datas
-	</p>
+	</pre>
     % }
      
     %= form_for '/portforwardinge' => (method => 'POST') => begin

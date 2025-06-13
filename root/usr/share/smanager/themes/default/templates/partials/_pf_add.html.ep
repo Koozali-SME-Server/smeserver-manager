@@ -1,40 +1,37 @@
 <div id='pf_add'>
 
 	% my $retref= $c->stash("ret");
-	% my %ret;
-	% unless (length($retref)) {%ret = (ret=>"");}
-	% else {%ret = %$retref;}
-	
-	% my @vars = split(",",$ret{vars});
-	% my $var1 = @vars[0];
-	% my $var2 = @vars[1];
-	% my $var3 = @vars[2];
-	% my $var4 = @vars[3];
-	% my $var5 = @vars[4];
-	% my $var6 = @vars[5];
+	% my %ret = $retref ? %$retref : (ret => "");
+	% my @vars = split(/,/, $ret{vars} // '');
+	% my ($var1, $var2, $var3, $var4, $var5, $var6, $var7) = @vars;
 
+	% if ($c->app->config->{debug}) {
+	<pre>
+		%= dumper { ret_data => \%ret }
+	</pre>  
+	% }
+
+	% if ($ret{ret} eq "") {
+
+	% } elsif (index($ret{ret},"SUCCESS") != -1) {
 	<br>
-	%if ($ret{'ret'} eq "") {
-   	
-	%} elsif (index($ret{ret},"SUCCESS") != -1) {
-	   <div class='success'>
-	       <!--<h2> Operation Status Report</h2>-->
-			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
-		</div>
-	   %} else { 
-	   <div class='sme-error'>
-	       <!--<h2> Operation Status Report - Error</h2>-->
-			%= $c->l($ret{ret},$var1,$var2,$var3,$var4,$var5,$var6);
-    	</div>
-	%}
+	<div class='success'>
+		%= $c->render_to_string(inline => l($ret{ret}, @vars[0..6]))
+	</div>
+	% } else { 
+	<br>
+	<div class='sme-error'>
+		%= $c->render_to_string(inline => l($ret{ret}, @vars[0..6]))
+	</div>
+	% }
 	<br />
     % my $btn = l('ADD');
     
    % if (config->{debug} == 1) {
-	<p>
+	</pre>
 	%= dumper $c->current_route
 	%= dumper $c->stash("ret")
-	</p>
+	</pre>
     % }
      
     %= form_for '/portforwardingb' => (method => 'POST') => begin
