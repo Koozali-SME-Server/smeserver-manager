@@ -43,6 +43,7 @@ sub do_update {
     my $http_proxy_status = $c->param('http_proxy_status') || 'disabled';
     my $smtp_proxy_status = $c->param('smtp_proxy_status') || '';
     my $result            = "";
+    $db = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my $squid = $db->get('squid') or $result = $c->l('prx_ERR_NO_SQUID_REC');
 
     # smtpd is allowed to not exist, as the relevant packages may not be
@@ -54,7 +55,7 @@ sub do_update {
     # Update the system
     #
     system("/sbin/e-smith/signal-event proxy-update") == 0
-        or $result = $c->l('prx_ERR_PROXY_UPDATE_FAILED');
+        or $result = $c->l('prx_ERR_PROXY_UPDATE_FAILED');  
     my $title = $c->l('prx_TITLE');
     if ($result eq '') { $result = $c->l('prx_SUCCESS'); }
     $c->stash(title => $title, modul => $result);

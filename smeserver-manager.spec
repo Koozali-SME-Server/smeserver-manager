@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 91
+%define release 92
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -144,6 +144,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Jun 15 2025 Brian Read <brianr@koozali.org> 11.0.0-92.sme
+- rework datetime panel [SME: 13020]
+- Fix errors in error messages for local networks panel [SME: 13044]
+- Add in Config Db open in Proxy.pm needed after  UTF8 change [SME: 13046]
+
 * Fri Jun 13 2025 Brian Read <brianr@koozali.org> 11.0.0-91.sme
 - Port Forwarding  - Same error as in local networking [SME: 13043]
 

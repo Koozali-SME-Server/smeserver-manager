@@ -1,125 +1,139 @@
-% layout 'default', title => "Sme server 2 - datetime";
-
+% layout 'default', title => 'Sme server 2 - datetime';
 % content_for 'module' => begin
-<div id='module' class='module datetime-panel'>
+	%= javascript 'js/datetime.js'
+	%= stylesheet 'css/datetime.css'
+	<div id='module' class='module datetime-panel'>
+		% if (config->{debug} == 1) {
+		<p>
+		%= dumper $c->current_route
+		%= dumper $dat_data
+		</p>
+		% }
 
-    % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $dat_datas
-	</p>
-    % }
+		%if ($c->stash('first')) {
+			<br><p>
+			%=$c->render_to_string(inline =>$c->l($c->stash('first')))
+			</p>
+		%} elsif ($c->stash('success')) {
+			<div class='success '>
+				%= $c->l($c->stash('success'));
+			</div>
+		%} elsif ($c->stash('error')) { 
+			<div class='sme-error'>
+				%= $c->l($c->stash('error'));
+			</div>
+		%}
 
-    % if ( stash 'error' ) {
-   	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
+		<h1><%= $title %></h1><br>
+		%= $modul
+		<% my $btn = l('SAVE'); %>
+		<p>
+		% if ($dat_data->{ntpstatus} eq 'disabled') {
+			<div class='datetime-set-ntp'>
+				%=l 'dat_NTP_ENABLE_DESC'
+				<br>
+			</div>	
+		% } else {
+			% my $current_year = $dat_data->{year};
+			% my $year_options  = [ map { [ $_, $_ ] } ($current_year..($current_year+30)) ];
+			% my $month_options = [ map { [ sprintf('%02d', $_), sprintf('%02d', $_) ] } (1..12) ];
+			% my $hour_options  = [ map { [ sprintf('%02d', $_), sprintf('%02d', $_) ] } (0..23) ];
+			% my $mode_options = [
+			%   [ $c->l('dat_ntp_server'),   'dat_ntp_server' ],
+			%   [ $c->l('dat_manually_set'), 'dat_manually_set' ]
+			% ];
+			<h2><%= $c->l('Time Configuration') %></h2>
+			%= form_for "datetimeu" => (method => 'post') => begin
+
+				%= hidden_field 'Old_ntpstatus' => $dat_data->{ntpstatus};
+				%= hidden_field 'trt' => $dat_data->{trt};
+
+				<span class=label>
+					%= label_for time_mode => $c->l('Time Setting Mode:')
+				</span><span class=data2>
+					% param 'time_mode' => $dat_data->{time_mode} unless param 'time_mode';
+					%= select_field time_mode => ($mode_options, id => 'time_mode_select')
+				</span>
+
+				<div id='ntp_section'>
+					<p>
+						%= $c->l('dat_NTP_CONFIGURE_DESC')
+					</p>
+					<div class='datetime-config-row'>
+						<div class='datetime-label-col'>
+							<span class='datetime-label'>
+								%= label_for ntpserver => $c->l('dat_NTP_Server_URL')
+							</span>
+						</div>	
+						<div class=datetime-fields-col>
+							% my $server_check = '^([a-zA-Z0-9][a-zA-Z0-9\.\-]{0,253}[a-zA-Z0-9]|(\d{1,3}\.){3}\d{1,3})$';
+							% param 'ntpserver' => $dat_data->{ntpserver} unless param 'ntpserver';
+							%= text_field ntpserver => placeholder => 'e.g. smeserver.pool.ntp.org',id => 'ntpserver', pattern => $server_check, title => 'Enter a valid hostname or IPv4 address',required => 'required'
+						</div>
+					</div>
+				</div>
+
+				<div id='manual_section'>
+					<p>
+						%= $c->l('dat_NTP_DISABLE_DESC')
+					</p>
+					<div class='datetime-config-row'>
+						<div class='datetime-label-col'>
+							<span class='datetime-label'>
+								%= label_for 'datetime_manual' => $c->l('dat_set_manually')
+							</span>
+						</div>
+						<div class='datetime-fields-col' id='datetime_manual'>
+							<fieldset>
+								<legend><%= $c->l('Date') %></legend>
+								%= label_for year => $c->l('Year:')
+								% param 'year' => ($dat_data->{year}) unless param 'year';
+								%= select_field year => ($year_options, id => 'year'), required => 'required'
+								&nbsp;
+
+								%= label_for month => $c->l('Month:')
+								% param 'month' => ($dat_data->{month}) unless param 'month';
+								%= select_field month => ($month_options, id => 'month'), required => 'required'
+								&nbsp;
+
+								%= label_for day => $c->l('Day:')
+								% param 'day' => ($dat_data->{day}) unless param 'day';
+								%= text_field day => id => 'day', size => 2, maxlength => 2, placeholder => 'DD', pattern => '^(0[1-9]|[12][0-9]|3[01])$', title => 'Day (01-31)', required => 'required', inputmode => 'numeric', autocomplete => 'off'
+							</fieldset>
+								
+							<fieldset>
+								<legend><%= $c->l('Time') %></legend>
+								%= label_for hour => $c->l('Hour:')
+								% param 'hour' => ($dat_data->{hour}) unless param 'hour';
+								%= select_field hour => ($hour_options, id => 'hour'), required => 'required'
+								&nbsp;
+
+								%= label_for minute => $c->l('Minute:')
+								% param 'minute' => ($dat_data->{minute}) unless param 'minute';
+								%= text_field minute => id => 'minute', size => 2, maxlength => 2, placeholder => 'MM', pattern => '^[0-5][0-9]$', title => 'Minute (00-59)', required => 'required', inputmode => 'numeric', autocomplete => 'off'
+								&nbsp;
+
+								%= label_for second => $c->l('Second:')
+								% param 'second' => ($dat_data->{second}) unless param 'second';
+								%= text_field second => id => 'second', size => 2, maxlength => 2, placeholder => 'SS', pattern => '^[0-5][0-9]$', title => 'Second (00-59)', required => 'required', inputmode => 'numeric', autocomplete => 'off'
+							</fieldset>
+						</div>
+					</div>
+					<div class='datetime-config-row'>
+						<div class='datetime-label-col'>
+							<span class='datetime-label'>
+								%=l 'dat_TZ'
+							</span>
+						</div>
+						<div class='datetime-fields-col' id='datetime_manual'>
+									% param 'Timezone' => $c->getTimezone() unless param 'Timezone';
+									%= select_field 'Timezone' =>  $c->getZone_list(), class => 'input'
+						</div>
+					</div>
+				</div>
+				%= submit_button $btn, class => 'action'
+			% end
+		% }
 	</div>
-    %}
-
-    <h1><%= $title %></h1><br>
-    %= $modul
-    <% my $btn = l('SAVE'); %>
-
-    %= form_for '/datetime' => (method => 'POST') => begin
-	<p>
-	%= hidden_field 'Old_ntpstatus' => $dat_datas->{ntpstatus};
-
-	% param 'Ntpstatus' => $dat_datas->{ntpstatus} unless param 'Ntpstatus';
-	%= radio_button Ntpstatus => 'enabled'
-	<span class=label>
-	%=l 'dat_NTP_CONFIGURE_TITLE'
-	</span>
-	<br>
-    % if ($dat_datas->{ntpstatus} eq 'disabled') {
-	<div class='datetime-set-ntp'>
-		%=l 'dat_NTP_ENABLE_DESC'
-		<br>
-	</div>	
-    % } else {
-	<div class='datetime-set-ntp'>
-		%=l 'dat_NTP_CONFIGURE_DESC'
-		<br><br>
-		<p>
-		%=l 'dat_CURRENT_SETTING'
-		<b>
-		%= $dat_datas->{now_string}
-		</b>
-		</p>
-		<p>
-		<br>
-		<span class=label>
-		%=l 'dat_NTP_SERVER'
-		</span><span class=data2>
-		%= text_field 'Ntpserver' =>  $dat_datas->{ntpserver}, class => 'input'
-		</span>
-		</p>
-	</div>
-	% }	
-	%= radio_button Ntpstatus => 'disabled'
-	<span class=label datetime-set-ntp>
-	%=l 'dat_NTP_DISABLE_TITLE'
-	</span>
-
-    % if ($dat_datas->{ntpstatus} eq 'enabled') {
-
-	<br><BR>
-	<div class='datetime-set-ntp'>
-		%=l 'dat_NTP_DISABLE_DESC'
-	</div>	
-	% } else {
-	<div class='datetime-set-ntp'>
-		<br>
-		</p>
-		<p>
-		%=l 'dat_CURRENT_SETTING'
-		<b>
-		%= $dat_datas->{now_string}
-		</b>
-		<br>
-		<span class=label>
-		%=l 'dat_NEW_M/D/Y'
-		</span><span class=data2>
-		% param 'Month' => $dat_datas->{month} unless param 'Month';
-		%= select_field 'Month' => $c->getMonth_list(), class => 'input'
-		</span><span class=data2>
-		% param 'Day' => $dat_datas->{day} unless param 'Day';
-		%= text_field 'Day', size => '2', class => 'input'
-		</span><span class=data2>
-		% param 'Year' => $dat_datas->{year} unless param 'Year';
-		%= text_field 'Year', size => '4', class => 'input'
-		</span>
-		<br>
-		<span class=label>
-		%=l 'dat_NEW_H/M/S'
-		</span><span class=data2>
-		% param 'Hour' => $dat_datas->{hour} unless param 'Hour';
-		%= text_field 'Hour', size => '2', class => 'input'
-		</span><span class=data2>
-		% param 'Minute' => $dat_datas->{minute} unless param 'Minute';
-		%= text_field 'Minute', size => '2', class => 'input'
-		</span><span class=data2>
-		% param 'Second' => $dat_datas->{second} unless param 'Second';
-		%= text_field 'Second', size => '2', class => 'input'
-		</span>
-		<br>
-		<span class=label>
-		%=l 'dat_AM/PM_AND_TZ'
-		</span><span class=data2>
-		% param 'Ampm' => $dat_datas->{ampm} unless param 'Ampm';
-		%= select_field 'Ampm' =>  ['AM', 'PM'], class => 'input'
-		</span><span class=data2>
-		% param 'Timezone' => $c->getTimezone() unless param 'Timezone';
-		%= select_field 'Timezone' =>  $c->getZone_list(), class => 'input'
-		</span>
-		</p>
-	</div>	
-    % }
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
-
-    % end    
-
-</div>
-%end
+% end
+1;

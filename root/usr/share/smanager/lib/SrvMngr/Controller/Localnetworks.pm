@@ -73,7 +73,6 @@ sub do_display {
         if ((index($ret{ret}, "SUCCESS") != -1)) {
             $trt = "LIST";
         } else {
-
             #Error - return to Add page
             $trt = "ADD";
         }
@@ -222,17 +221,18 @@ sub add_network {
     # in the form itself, but it just seemed too fiddly to do that
     # at the moment.  -- Skud 2002-04-11
     # I agree --bjr 2020-04-18
-    if ($routerNetwork ne $localNetwork) {
-        return (ret => 'ln_NOT_ACCESSIBLE_FROM_LOCAL_NETWORK');
-    }
     my ($network, $broadcast) = esmith::util::computeNetworkAndBroadcast($networkAddress, $networkMask);
 
+    if ($routerNetwork ne $localNetwork) {
+        return (ret => 'ln_NOT_ACCESSIBLE_FROM_LOCAL_NETWORK', vars => "$network,$networkMask,$networkRouter");
+    }
+
     if ($network eq $localNetwork) {
-        return (ret => 'ln_NETWORK_ALREADY_LOCAL');
+        return (ret => 'ln_NETWORK_ALREADY_LOCAL', vars => "$network,$networkMask,$networkRouter");
     }
 
     if ($network_db->get($network)) {
-        return (ret => 'ln_NETWORK_ALREADY_ADDED');
+        return (ret => 'ln_NETWORK_ALREADY_ADDED', vars => "$network,$networkMask,$networkRouter");
     }
     $network_db->new_record(
         $network,
@@ -246,7 +246,7 @@ sub add_network {
     $network =~ /(.+)/;
     $network = $1;
     system("/sbin/e-smith/signal-event", "network-create", $network) == 0
-        or (return (ret => 'ln_ERROR_CREATING_NETWORK'));
+        or (return (ret => 'ln_ERROR_CREATING_NETWORK', vars => "$network,$networkMask,$networkRouter"));
     my ($totalHosts, $firstAddr, $lastAddr) = esmith::util::computeHostRange($network, $networkMask);
     my $msg;
 
