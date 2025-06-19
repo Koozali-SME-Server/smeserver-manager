@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 92
+%define release 93
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -144,6 +144,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Jun 19 2025 Brian Read <brianr@koozali.org> 11.0.0-93.sme
+- Sort out case of first letter of ctlact in routes added in from header on controller file [SME: 13053]
+
 * Sun Jun 15 2025 Brian Read <brianr@koozali.org> 11.0.0-92.sme
 - rework datetime panel [SME: 13020]
 - Fix errors in error messages for local networks panel [SME: 13044]

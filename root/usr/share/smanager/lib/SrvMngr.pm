@@ -37,7 +37,7 @@ use esmith::NavigationDB; # no UTF8 raw is ok for ASCII only flat file
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '91.el8.sme'; 
+our $VERSION = '92.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -421,28 +421,59 @@ sub setup_routing {
     # additional routes (for contribs) got from 'routes' db
     #my @routes = @{SrvMngr::get_routes_list()};
 
-    foreach (@{SrvMngr::get_routes_list()}) {
-
-	if ( defined $_->{method} and defined $_->{url} and defined $_->{ctlact} and defined $_->{name} ) {
-	    my $menu = defined $_->{menu} ? $_->{menu} : 'A';
-	    if ( $menu eq 'N' ) {
-	    	$r->get($_->{url})->to($_->{ctlact})->name($_->{name}) 
-			if ( $_->{method} eq 'get');
-		$r->post($_->{url})->to($_->{ctlact})->name($_->{name})
-			if ( $_->{method} eq 'post');
-	    } elsif ( $menu eq 'U' ) {
-	    	$if_logged_in->get($_->{url})->to($_->{ctlact})->name($_->{name}) 
-			if ( $_->{method} eq 'get');
-		$if_logged_in->post($_->{url})->to($_->{ctlact})->name($_->{name})
-			if ( $_->{method} eq 'post');
-	    } else {
-	    	$if_admin->get($_->{url})->to($_->{ctlact})->name($_->{name}) 
-			if ( $_->{method} eq 'get');
-		$if_admin->post($_->{url})->to($_->{ctlact})->name($_->{name})
-			if ( $_->{method} eq 'post');
-	    }
+    #foreach (@{SrvMngr::get_routes_list()}) {
+		#if ( defined $_->{method} and defined $_->{url} and defined $_->{ctlact} and defined $_->{name} ) {
+			#my $menu = defined $_->{menu} ? $_->{menu} : 'A';
+			#if ( $menu eq 'N' ) {
+				#$r->get($_->{url})->to($_->{ctlact})->name($_->{name}) 
+				#if ( $_->{method} eq 'get');
+			#$r->post($_->{url})->to($_->{ctlact})->name($_->{name})
+				#if ( $_->{method} eq 'post');
+			#} elsif ( $menu eq 'U' ) {
+				#$if_logged_in->get($_->{url})->to($_->{ctlact})->name($_->{name}) 
+				#if ( $_->{method} eq 'get');
+			#$if_logged_in->post($_->{url})->to($_->{ctlact})->name($_->{name})
+				#if ( $_->{method} eq 'post');
+			#} else {
+				#$if_admin->get($_->{url})->to($_->{ctlact})->name($_->{name}) 
+				#if ( $_->{method} eq 'get');
+			#$if_admin->post($_->{url})->to($_->{ctlact})->name($_->{name})
+				#if ( $_->{method} eq 'post');
+			#}
+		#}
+    #}
+    
+    foreach my $route (@{SrvMngr::get_routes_list()}) {
+		if (defined $route->{method} && defined $route->{url} && defined $route->{ctlact} && defined $route->{name}) {
+			my $menu = defined $route->{menu} ? $route->{menu} : 'A';
+			
+			# Fix controller case: convert "ControllerName" to "controllername" in "ControllerName#action"
+			# this is so that AdminLTE breadcrumb works  - it appears that perl Packages names are NOT case sensitive 
+			# and that the breadcrumb package assumes that the package name is the same as the main route.
+			my ($controller, $action) = split /#/, $route->{ctlact}, 2;
+			my $fixed_ctlact = lc($controller) . '#' . $action;
+			
+			if ($menu eq 'N') {
+				$r->get($route->{url})->to($fixed_ctlact)->name($route->{name}) 
+					if $route->{method} eq 'get';
+				$r->post($route->{url})->to($fixed_ctlact)->name($route->{name})
+					if $route->{method} eq 'post';
+			}
+			elsif ($menu eq 'U') {
+				$if_logged_in->get($route->{url})->to($fixed_ctlact)->name($route->{name}) 
+					if $route->{method} eq 'get';
+				$if_logged_in->post($route->{url})->to($fixed_ctlact)->name($route->{name})
+					if $route->{method} eq 'post';
+			}
+			else {  # Default: menu 'A'
+				$if_admin->get($route->{url})->to($fixed_ctlact)->name($route->{name}) 
+					if $route->{method} eq 'get';
+				$if_admin->post($route->{url})->to($fixed_ctlact)->name($route->{name})
+					if $route->{method} eq 'post';
+			}
+		}
 	}
-    }
+
 
     $if_admin->get('/config/:key' => {key => qr/[a-z0-9]{2,32}/})->to('request#getconfig')->name('getconfig');
     $if_admin->get('/account/:key' => {key => qr/[a-z0-9]{2,32}/})->to('request#getaccount')->name('getaccount');
