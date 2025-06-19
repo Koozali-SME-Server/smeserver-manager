@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 93
+%define release 94
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -144,6 +144,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Jun 19 2025 Brian Read <brianr@koozali.org> 11.0.0-94.sme
+- re-instate datetime routes in SrvMngr.pm - removed by mistake [SME: 13053]
+
 * Thu Jun 19 2025 Brian Read <brianr@koozali.org> 11.0.0-93.sme
 - Sort out case of first letter of ctlact in routes added in from header on controller file [SME: 13053]
 
