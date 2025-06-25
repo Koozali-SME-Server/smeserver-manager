@@ -8,6 +8,9 @@ package SrvMngr::Controller::Datetime;
 # heading     : System
 # description : Date and time
 # navigation  : 4000 300
+#
+# ######name   : datetimet,    method : post,   url : /datetimet,     ctlact : datetime#testntp
+#
 # routes : end
 #
 # Documentation: https://wiki.contribs.org/Datetime
@@ -115,7 +118,7 @@ sub do_update {
     my $c = shift;
     $c->app->log->info($c->log_req);
     
-    $c->app->log->info($c->param('month'));
+    #$c->app->log->info($c->param('month'));
     
 
 	#The most common ones - you might want to delete some of these if they are not used.
@@ -173,7 +176,7 @@ sub do_update {
 					$c->render(template => "datetime");	
 					return
 				} else {
-					if ($c->param('time_mode') eq 'data_manually_set') {
+					if ($c->param('time_mode') eq 'dat_manually_set') {
 						$c->stash( success => $c->l('dat_UPDATING_CLOCK')); 
 					} else {
 						$c->stash( success => $c->l('dat_SETTINGS_CHANGED')); 
@@ -279,5 +282,52 @@ sub do_display {
 		dat_data  => \%dat_data
 	);
 	$c->render(template => "datetime");
-}    
+}  
+
+sub do_testntp {
+    my $c = shift;
+    my $server = $c->req->json->{ntpserver} // '';
+
+    # Strict validation: hostname or IPv4
+    unless ($server =~ /^(?=.{1,253}$)([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*|\d{1,3}(?:\.\d{1,3}){3})$/) {
+        return $c->render(json => { success => 0, error => 'Invalid server name or IP' });
+    }
+
+    my $timeout = 5;
+    my @cmd = ('timeout', $timeout, 'ntpdate', '-q', $server);
+
+    # Run ntpdate and capture output
+    my $output = qx{@cmd 2>&1};
+    $c->app->log->info($output);
+    my $exit_code = $? >> 8;
+
+    # Parse for known errors
+    if ($exit_code == 124) {
+        return $c->render(json => { success => 0, error => "Timeout: NTP server did not respond within $timeout seconds" });
+    }
+    if ($output =~ /no server suitable for synchronization found/i) {
+        return $c->render(json => { success => 0, error => "No suitable NTP server found or server unreachable" });
+    }
+    if ($output =~ /Name or service not known|Temporary failure in name resolution/i) {
+        return $c->render(json => { success => 0, error => "DNS resolution failed for $server" });
+    }
+    if ($output =~ /ntpdig: no eligible servers/i) {
+        return $c->render(json => { success => 0, error => "Not a an NTP server" });
+    }
+    if ($output =~ /permission denied/i) {
+        return $c->render(json => { success => 0, error => "Permission denied running ntpdate" });
+    }
+    if ($exit_code != 0) {
+        return $c->render(json => { success => 0, error => "ntpdate failed (exit code $exit_code): $output" });
+    }
+
+    # Extract date and time down to seconds from adjust line
+	my ($datetime) = $output =~ /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/m;
+
+	if ($datetime) {
+		return $c->render(json => { success => 1, time => $datetime });
+	} else {
+		return $c->render(json => { success => 0, error => "Could not parse date/time from NTP server response." });}
+}
+
 1;

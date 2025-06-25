@@ -37,7 +37,7 @@ use esmith::NavigationDB; # no UTF8 raw is ok for ASCII only flat file
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '93.el8.sme'; 
+our $VERSION = '94.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -328,6 +328,7 @@ sub setup_routing {
     $if_admin->get('/datetime')->to('datetime#main')->name('datetime');
     $if_admin->post('/datetimeu')->to('datetime#do_update')->name('datetimeu');
     $if_admin->get('/datetimed')->to('datetime#do_display')->name('datetimed');
+    $if_admin->post('/datetimet')->to('datetime#do_testntp')->name('datetimet');
 
 
     $if_admin->get('/directory')->to('directory#main')->name('directory');

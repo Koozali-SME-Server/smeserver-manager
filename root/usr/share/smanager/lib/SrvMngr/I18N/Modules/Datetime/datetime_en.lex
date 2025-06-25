@@ -1,5 +1,5 @@
-
 'dat_FORM_TITLE' => 'Date and time configuration',
+'dat_The_time_is_currently' => 'The time is currently:',
 'dat_INITIAL_DESC' => 'This is where you configure the date and time of this server. You may use an existing network time server or
 manually set the date and time for your time zone.',
 'dat_SET_DATE_TITLE' => 'Set Date and Time',
@@ -59,3 +59,4 @@ clock, and <b>will not</b> try to synchronize from a time server.',
 'dat_manually_set' => 'Set manually',
 'dat_NTP_Server_URL' =>'NTP Server URL:',
 'dat_set_manually' =>'Set Date and Time:',
+'dat_Invalid_date' => 'Invalid date',

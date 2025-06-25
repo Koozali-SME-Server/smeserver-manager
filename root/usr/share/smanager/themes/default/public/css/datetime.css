@@ -7,7 +7,7 @@
 .datetime-label-col {
   background: #e8f3e2; /* light green */
   padding: 1em 0em 0em 0em;
-  min-width: 192px;
+  min-width: 30%;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -16,7 +16,7 @@
 }
 
 .datetime-label {
-  display: block;
+	display:inline-flex;
 }
 
 .datetime-fields-col {
@@ -27,3 +27,25 @@
   border-left: none;
   border-radius: 0 4px 4px 0;
 }
+
+.datetime-clock {
+	min-width: 20em;
+	display:inline-flex;
+	border:0px;
+	padding:5px;
+}
+
+.datetime-clock-label {
+	background-color:#e8f3e2;
+	display:inline-flex;
+	width:30%;
+	font-weight:bold;
+	text-align:right;
+	
+	
+}
+
+.ntp-test-result { font-weight: bold; }
+.ntp-test-success { color: green; }
+.ntp-test-error   { color: red; }
+.ntp-test-wait    { color: #333; }

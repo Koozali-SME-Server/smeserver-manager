@@ -13,6 +13,8 @@ use esmith::NetworksDB::UTF8;
 use esmith::HostsDB;
 use esmith::DomainsDB::UTF8;
 
+use DateTime;
+
 use constant FALSE => 0;
 use constant TRUE  => 1;
 
@@ -79,6 +81,7 @@ my $ddb;
 		my $now_sec     = sprintf('%02d', $today_sec);
 		my $current_year = $today_year;
 		my $ntpserverurl = $cdb->get_prop('ntpd','NTPServer');
+		my $now = DateTime->now( time_zone => 'local' );
 		my %ret = (
 			# fields from Inputs 
 			'time_mode'=>($ntpserverurl eq '' ? 'dat_manually_set' : 'dat_ntp_server'),
@@ -90,6 +93,8 @@ my $ddb;
 			'minute'=>"$now_min",
 			'second'=>"$now_sec",
 			'ntpstatus' => $cdb->get_prop('ntpd','status') || 'disabled',
+			# and the current time as a full format 
+			'currentdatetime' => $now->strftime('%Y-%m-%dT%H:%M:%S')
 			
 		);
 		return %ret;
@@ -224,38 +229,12 @@ sub validate_change_datetime {
         $timezone = "US/Eastern";
     }
     my $month = $c->param('month');
-
-    if ($month =~ /^(\d{1,2})$/) {
-        $month = $1;
-    } else {
-        $month = "1";
-    }
-
-    if (($month < 1) || ($month > 12)) {
-        return $c->l('dat_INVALID_MONTH') . " $month. " . $c->l('dat_MONTH_BETWEEN_1_AND_12');
-    }
     my $day = $c->param('day');
-
-    if ($day =~ /^(\d{1,2})$/) {
-        $day = $1;
-    } else {
-        $day = "1";
-    }
-
-    if (($day < 1) || ($day > 31)) {
-        return $c->l('dat_INVALID_DAY') . " $day. " . $c->l('dat_BETWEEN_1_AND_31');
-    }
     my $year = $c->param('year');
+    if (!is_valid_date($year, $month, $day)){
+		return $c->l('dat_Invalid_date')
+	}
 
-    if ($year =~ /^(\d{4})$/) {
-        $year = $1;
-    } else {
-        $year = "2000";
-    }
-
-    if (($year < 1900) || ($year > 2200)) {
-        return $c->l('dat_INVALID_YEAR') . " $year. " . $c->l('dat_FOUR_DIGIT_YEAR');
-    }
     my $hour = $c->param('hour');
 
     if ($hour =~ /^(\d{1,2})$/) {
@@ -289,24 +268,6 @@ sub validate_change_datetime {
     if (($second < 0) || ($second > 59)) {
         return $c->l('dat_INVALID_SECOND') . " $second. " . $c->l('dat_BETWEEN_0_AND_59');
     }
-    #my $ampm = $c->param('Ampm');
-
-	#Move to 24 hours clock  - not using AM/PM.
-    #if ($ampm =~ /^(AM|PM)$/) {
-        #$ampm = $1;
-    #} else {
-        #$ampm = "AM";
-    #}
-    # force AM so that it actually works on 24hr clock.
-    #$ampm = "AM";
-    
-
-    # convert to 24 hour time
-    #$hour = $hour % 12;
-
-    #if ($ampm eq "PM") {
-    #    $hour = $hour + 12;
-    #}
 
     #--------------------------------------------------
     # Store time zone in configuration database
@@ -325,9 +286,26 @@ sub validate_change_datetime {
     # and hardware clock
     #--------------------------------------------------
     my $newdate = sprintf "%02d%02d%02d%02d%04d.%02d", $month, $day, $hour, $minute, $year, $second;
-    esmith::util::backgroundCommand(2, "/sbin/e-smith/signal-event", "timezone-update", $newdate);
+    $c->app->log->info("Changing date manually to $newdate");
+    esmith::util::backgroundCommand(2, "/sbin/e-smith/signal-event", "timezone-update", $newdate); #TEMP!!!
     return '';
 } ## end sub validate_change_datetime
+
+sub is_valid_date {
+  my ($year, $month, $day) = @_;
+
+  # Check if all parts are defined and integers
+  return 0 unless defined $year && defined $month && defined $day;
+  return 0 unless $year =~ /^\d+$/ && $month =~ /^\d+$/ && $day =~ /^\d+$/;
+
+  # Try to construct a DateTime object
+  eval {
+    DateTime->new(year => $year, month => $month, day => $day);
+    1;
+  } or return 0;
+
+  return 1;
+}
 
 sub update_ntpserver {
     my $c         = shift;
@@ -377,7 +355,5 @@ sub disable_ntp {
     $cdb->get('UnsavedChanges')->set_value($old);
     return '';
 } ## end sub disable_ntp
-
-
 
 1;
