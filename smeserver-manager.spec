@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 95
+%define release 96
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -138,12 +138,16 @@ then
     [ -h %{dir_mngr}/themes/default/public/js/jquery.min.map ] ||
 	ln -s /usr/share/javascript/jquery/latest/jquery.min.map %{dir_mngr}/themes/default/public/js/jquery.min.map
 fi
+find %{dir_mngr}/lib/SrvMngr/I18N/Modules -type f -name '*.pm' -exec rm '{}' \;
 true
 
 %files -f %{name}-%{version}-%{release}-filelist
 %defattr(-,root,root)
 
 %changelog
+* Fri Jun 27 2025 Brian Read <brianr@koozali.org> 11.0.0-96.sme
+- fix [SME: ]
+
 * Tue Jun 24 2025 Brian Read <brianr@koozali.org> 11.0.0-95.sme
 - Add clock ticker to datetime panel [SME: 13054]
 - Add Test Server button for ntp server [SME: 13048]
