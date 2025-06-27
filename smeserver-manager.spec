@@ -146,7 +146,7 @@ true
 
 %changelog
 * Fri Jun 27 2025 Brian Read <brianr@koozali.org> 11.0.0-96.sme
-- fix [SME: ]
+- Remove *.en files on install in spec file [SME: 13061]
 
 * Tue Jun 24 2025 Brian Read <brianr@koozali.org> 11.0.0-95.sme
 - Add clock ticker to datetime panel [SME: 13054]
