@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 96
+%define release 98
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -36,6 +36,7 @@ Requires: perl(Net::Netmask) >= 1.9
 Requires: perl(DBM::Deep) >= 2.0011-1
 Requires: perl(Mojo::JWT) >= 0.08-1
 #Requires: perl(Time::TAI64) >= 2.11
+Requires: perl(Data::Validate::IP)
 Requires: mutt >= 1.5.21
 Requires: smeserver-manager-jsquery >= 1.0
 Requires: smeserver-certificates >= 11.0
@@ -145,6 +146,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Jun 29 2025 Brian Read <brianr@koozali.org> 11.0.0-98.sme
+- Re-factor email settings panel as error handling not working as expected.  [SME: 12973]
+
+* Sat Jun 28 2025 Brian Read <brianr@koozali.org> 11.0.0-97.sme
+- fix error handling in emailsettings panel [SME: 12973]
+
 * Fri Jun 27 2025 Brian Read <brianr@koozali.org> 11.0.0-96.sme
 - Remove *.en files on install in spec file [SME: 13061]
 

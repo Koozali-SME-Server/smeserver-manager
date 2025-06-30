@@ -1,6 +1,5 @@
-
 'mai_FORM_TITLE' => 'E-mail settings',
-'E-mail' => 'E-mail',
+'mai_E-Mail' => 'E-mail',
 'mai_SUCCESS' => 'The new e-mail settings have been saved.',
 'mai_NEVER' => 'not at all',
 'mai_EVERY5MIN' => 'Every 5 minutes',
@@ -20,7 +19,7 @@ for dialup connections), or multi-drop (for dialup connections if
 ETRN is not supported by your Internet provider). Note that
 multi-drop mode is the only option available when the server is
 configured in private server and gateway mode.',
-'mai_LABEL_DELEGATE' => 'Address of internal mail server',
+'mai_LABEL_DELEGATE' => 'IP Address of internal mail server',
 'mai_TITLE_DELEGATE' => 'Delegate mail servers',
 'mai_DESC_DELEGATE' => 'Your server includes a complete, full-featured e-mail server. However,
 if for some reason you wish to delegate e-mail processing to
@@ -79,10 +78,9 @@ destination (recommended in most cases) or can deliver them via
 your Internet provider\'s SMTP server (recommended if you have an
 unreliable Internet connection or are using a residential Internet
 service). If using your Internet provider\'s SMTP server, specify
-its hostname or IP address below. Otherwise leave this field
-blank.',
-'mai_INVALID_SMARTHOST' => 'The smarthost name you entered is not a valid internet domain name
-and is not blank',
+its hostname or IP address below. Otherwise leave this field blank.',
+'mai_INVALID_SMARTHOST' => 'The smarthost name you entered is not a valid internet domain name and is not blank',
+'mai_INVALID_DELEGATE' => 'The delegate host name you entered is not a valid IP Address and is not blank',
 'mai_DESC_POP_ACCESS_CONTROL' => 'You can control POP3 server access. The setting \'Allow access
 only from local networks\' allows POP3 access only from your
 local network(s). The POP3S setting can be used to provide
@@ -150,5 +148,9 @@ The value for this tag can be defined below.',
 'mai_LABEL_SMARTHOST_SMTPAUTH_STATUS' => 'SMTP Authentication for Internet provider',
 'mai_LABEL_SMARTHOST_SMTPAUTH_USERID' => 'Mail server user id',
 'mai_LABEL_SMARTHOST_SMTPAUTH_PASSWD' => 'Mail server password',
-'mai_VALIDATION_SMTPAUTH_NONBLANK' => 'This field cannot be left blank if SMTP Authentication is
+'mai_VALIDATION_SMTPAUTH_NONBLANK' => 'The user id and password fields cannot be left blank if SMTP Authentication is
 enabled.',
+'mai_ACC_panel_action_was_successful' => 'Email access settings saved sucessfully',
+'mai_DEL_panel_action_was_successful' => 'Email delivery settings saved sucessfully',
+'mai_FIL_panel_action_was_successful' => 'Email filtering settings saved sucessfully',
+'mai_REC_panel_action_was_successful' => 'Email receive settings saved sucessfully',
