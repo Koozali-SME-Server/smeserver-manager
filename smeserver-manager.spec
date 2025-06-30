@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 98
+%define release 99
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Jun 30 2025 Brian Read <brianr@koozali.org> 11.0.0-99.sme
+- Directory panel  - Add in open for config db as required by cacheing  [SME: 13059]
+
 * Sun Jun 29 2025 Brian Read <brianr@koozali.org> 11.0.0-98.sme
 - Re-factor email settings panel as error handling not working as expected.  [SME: 12973]
 

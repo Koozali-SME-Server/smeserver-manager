@@ -39,6 +39,7 @@ sub main {
 sub do_update {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    $db = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my $access      = $c->param('access');
     my $department  = $c->param('department');
     my $company     = $c->param('company');
@@ -84,7 +85,7 @@ sub get_ldap_base {
 sub get_value {
     my $fm = shift;
     my $item = shift;
-
+    $db = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my $record = $db->get($item);
     if ($record) {
         return $record->value();
