@@ -1,6 +1,5 @@
 % layout 'default', title => "Sme server 2 - qmailanalog";
 % content_for 'module' => begin
-%= javascript '/js/qmailanalog.js'
 <div id='module' class='module qmailanalog-panel'>
     %if (config->{debug} == 1) {
 	<p>

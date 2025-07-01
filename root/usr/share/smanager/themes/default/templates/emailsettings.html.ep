@@ -4,8 +4,6 @@
 % layout 'default', title => "Sme server 2 - E-Mail", share_dir => './';
 %# css specific to this panel:
 % content_for 'module' => begin
-%= stylesheet '/css/emailsettings.css'
-%= javascript '/js/emailsettings.js'
 
 % use constant FALSE => 0;
 % use constant TRUE  => 1;

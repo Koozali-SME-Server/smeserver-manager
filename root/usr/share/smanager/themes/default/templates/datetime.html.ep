@@ -1,7 +1,5 @@
 % layout 'default', title => 'Sme server 2 - datetime';
 % content_for 'module' => begin
-	%= javascript 'js/datetime.js'
-	%= stylesheet 'css/datetime.css'
 	<div id='module' class='module datetime-panel'>
 		% if (config->{debug} == 1) {
 		<p>

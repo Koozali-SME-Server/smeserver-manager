@@ -2,7 +2,6 @@
     PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- default +jquery -->
 <head>
 <title><%= $title %></title>
     <link rel="made" href="mailto:bugs%40koozali.org">
@@ -11,27 +10,16 @@
     %= stylesheet '/css/new_sme.css'
     %= stylesheet '/css/new-sme-main.css'
 
-
-    %# Replaced by consolidated (and rationlised) CSS files as above March 2025
-    %#= stylesheet '/css/sme_core.css'
-    %#= stylesheet '/css/sme_main.css'
-    %#= stylesheet '/css/sme_menu.css'
-    %#= stylesheet '/css/styles.css'
-    %#= stylesheet '/css/sme-password.css'
-
     %= content_for 'head_contrib'
-    % if (config 'hasJquery') {
-	%= include 'partials/_js_imports'
-	%= include 'common_js'
+    % if (config 'hasJquery') { 
+		%= include 'partials/_js_imports'
+		%= include 'common_js'
     % }
-    %= content_for 'refresh'
-    
+
+    %= content_for 'refresh' 
     %= stylesheet '/js/datatables.min.css'
-
 	%= javascript '/js/datatables.min.js'
-
 	%= stylesheet '/js/jquery-ui.min.css'
-
 	%= javascript '/js/jquery-ui.min.js'
 	%= javascript '/js/dataTables.buttons.min.js'
 	%= javascript '/js/jszip.min.js'
@@ -46,24 +34,33 @@
 	%= stylesheet '/css/sme-jquery-overrides.css'
 	
 	<style>
-	#busy-indicator {
-		display: none;
-		margin-top: 10px;
-		font-weight: bold;
-		color: red;
-	}
-	.busy {
-		cursor: wait; /* Change the cursor to a 'wait' cursor */
-	}
+		#busy-indicator {
+			display: none;
+			margin-top: 10px;
+			font-weight: bold;
+			color: red;
+		}
+		.busy {
+			cursor: wait; /* Change the cursor to a 'wait' cursor */
+		}
 	</style>
-
+	
+	%# panel specific css file 
+	% my $controller = stash('controller');
+	% if ($controller) {
+		% my $css_path = "css/$controller.css";
+		%# Use the url_for helper to generate the correct static file URL
+		% if (app->static->file($css_path)) {
+		  <link rel="stylesheet" href="<%= url_for("/$css_path") %>">
+		% }
+	% }
 
 </head>
-
 <body>
-%   if ( not defined $c->session->{lang} ) {
-%	SrvMngr::init_session ( $c );
-%    }
+	%   if ( not defined $c->session->{lang} ) {
+		% SrvMngr::init_session ( $c );
+	%    }
+
     <div id="header">
 	%= include 'partials/_header'
         % if ($c->is_logged_in && scalar @{SrvMngr::theme_list( $c )} > 1) {
@@ -72,42 +69,40 @@
     </div>
 
     <div id="container">
+		% if (config 'hasJquery') {
+			%= content 'js_toggleMenu'
+		% }
 
-	% if (config 'hasJquery') {
-	    %= content 'js_toggleMenu'
-	% }
-
-	<div id="navigation" class="col-md-3 module">
-	    %= include 'partials/_nav_menu'
-%	if ( $c->is_logged_in ) {
-	    %= include 'partials/_user_menu'
-%	}
-%	if ( $c->is_admin ) {
-	    %= include 'partials/_navig2'
-%	}
-	</div>
-	<div id="main" class="col-md-9">
-
-	    %= include 'partials/_info'
-
-	    % if (flash 'success') {
-		<br><div class="success module">
-		%= $c->render_to_string(inline => flash 'success') 
+		<div id="navigation" class="col-md-3 module">
+			%= include 'partials/_nav_menu'
+			% if ( $c->is_logged_in ) {
+				%= include 'partials/_user_menu'
+			% }
+			% if ( $c->is_admin ) {
+				%= include 'partials/_navig2'
+			% }
 		</div>
-	    % }
-	    % if ( flash 'warning' ) {
-		<br><div class="sme-warning  module">
-		%= $c->render_to_string(inline => flash 'warning') 
+
+		<div id="main" class="col-md-9">
+			%= include 'partials/_info'
+			% if (flash 'success') {
+			<br><div class="success module">
+			%= $c->render_to_string(inline => flash 'success') 
+			</div>
+			% }
+			% if ( flash 'warning' ) {
+			<br><div class="sme-warning  module">
+			%= $c->render_to_string(inline => flash 'warning') 
+			</div>
+			%}
+			% if ( flash 'error' ) {
+			<br><div class="sme-error module">
+			%= $c->render_to_string(inline => flash 'error') 
+			</div>
+			%}
+			%= content 'module'
+			%= include 'partials/_footer'
 		</div>
-	    %}
-	    % if ( flash 'error' ) {
-		<br><div class="sme-error module">
-		%= $c->render_to_string(inline => flash 'error') 
-		</div>
-	    %}
-	    %= content 'module'
-	    %= include 'partials/_footer'
-	</div>
     </div>
 
     % if (config 'hasJquery') {
@@ -115,7 +110,7 @@
 	%= content 'js_togglePassword'
     % }
 
-%= javascript '/js/sme-dataTable-setup.js'
+	%= javascript '/js/sme-dataTable-setup.js'
 
 	<script>
 		$(document).ready(function() {
@@ -123,15 +118,22 @@
 			$('form').on('submit', function(event) {
 				// Disable the submit button
 				$(this).find('button[type="submit"], input[type="submit"]').prop('disabled', true);
-				// Show the busy indicator
-//				$('#busy-indicator').show();
-				
+				// Show the busy indicator		
 				// Change the cursor to "wait"
 				$('body').addClass('busy');
 			});
 		});
 	</script>
 
+	%# Specific panel js code
+	% $controller = stash('controller');
+	% if ($controller) {
+		% my $js_path  = "js/$controller.js";
+		%# Use the url_for helper to generate the correct static file URL
+		% if (app->static->file($js_path)) {
+		  <script src="<%= url_for("/$js_path") %>"></script>
+		% }
+	% }
   
 </body>
 </html>
