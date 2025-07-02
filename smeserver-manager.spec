@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 100
+%define release 101
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Jul 02 2025 Brian Read <brianr@koozali.org> 11.0.0-101.sme
+- Fix busy cursor, csp intervened. [SME: 13064]
+
 * Tue Jul 01 2025 Brian Read <brianr@koozali.org> 11.0.0-100.sme
 - Add code in top template default.html.ep to incorporate any panel specific js and css [SME: 13062]
 

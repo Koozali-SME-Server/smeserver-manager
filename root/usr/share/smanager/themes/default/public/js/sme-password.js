@@ -29,3 +29,15 @@ $(document).ready(function() {
         $(this).attr('src', iconSrc);
     });
 });
+
+// and busy cursor 
+$(document).ready(function() {
+	// Handle form submission for any form
+	$('form').on('submit', function(event) {
+	  // Disable all submit buttons and update their labels
+	  $(this).find('button[type="submit"]').prop('disabled', true).text('Please wait...');
+	  $(this).find('input[type="submit"]').prop('disabled', true).val('Please wait...');
+	  // Add busy cursor
+	  $('body').addClass('busy');
+	});
+});

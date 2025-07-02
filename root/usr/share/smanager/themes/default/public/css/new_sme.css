@@ -281,3 +281,13 @@ background-color: #e8f3e1;
      text-decoration: none;
     /* Or any other style you want to reset */
 }
+
+#busy-indicator {
+	display: none;
+	margin-top: 10px;
+	font-weight: bold;
+	color: red;
+}
+.busy {
+	cursor: wait; /* Change the cursor to a 'wait' cursor */
+}
