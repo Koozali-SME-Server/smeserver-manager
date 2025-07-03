@@ -28,3 +28,4 @@
 'ln_REMOVE_HOSTS_LABEL' => 'Remove hosts on network',
 'ln_extra' => '[_1]/[_2] via router  $networkRouter}.',
 'ln_SUCCESS_NONSTANDARD_RANGE' =>'<p>Successfully added network [_1]/[_2] via router [_3].</p><p>  Your server will grant local access privileges to [_4] IP addresses in the range [_5] to [_6].</p><p>  Warning: the ProFTPd FTP server cannot handle this nonstandard subnet mask. The simpler specification  <b>[_7]</b> will be used instead.</p>',
+'ln_Failed to find network in Db' => 'Failed to find network in Db',

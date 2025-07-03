@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 102
+%define release 103
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Jul 03 2025 Brian Read <brianr@koozali.org> 11.0.0-103.sme
+- Fix a couple of typos [SME: 13065]
+
 * Thu Jul 03 2025 Brian Read <brianr@koozali.org> 11.0.0-102.sme
 - Local Network panel: Make DEL and ADD robust even if called more than once by browser [SME: 13065]
 

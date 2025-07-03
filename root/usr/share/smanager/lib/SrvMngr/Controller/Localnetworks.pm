@@ -102,7 +102,7 @@ sub do_display {
 			%ret = $c->remove_network($localnetwork, $delete_hosts);
 		} else {
 			$c->app->log->info("Local network: delete failed to find network in db: $localnetwork");
-			%ret = ();
+			%ret = (ret => "");
 		}
 		#$network_db = esmith::NetworksDB::UTF8->open() || die("Failed to open Networkdb-2");        #Refresh the network DB
         my @localnetworks;
@@ -134,7 +134,7 @@ sub do_display {
 			$ln_datas{deletehosts} = $numhosts > 0 ? 1 : 0;
 		} else {
 			$c->app->log->info("Local network:Initial Failed to find network in Db: $localnetwork");
-			$c->flash('error',$c->l('ln_Failed to find network in Db'));
+			$c->flash('error',$c->l('ln_Failed to find network in Db'));		
 			$trt = 'LIST';
 		}
     } ## end if ($trt eq 'DEL')
