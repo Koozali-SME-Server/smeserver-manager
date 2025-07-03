@@ -5,6 +5,12 @@ package SrvMngr::Controller::Localnetworks;
 # description : Local networks
 # navigation  : 6000 500
 #
+#$if_admin->get('/localnetworks')->to('localnetworks#main')->name('localnetworks');
+#$if_admin->post('/localnetworks')->to('localnetworks#do_display')->name('localnetworks');
+#$if_admin->post('/localnetworksa')->to('localnetworks#do_display')->name('localnetworksadd');
+#$if_admin->post('/localnetworksb')->to('localnetworks#do_display')->name('localnetworksadd1');
+#$if_admin->get('/localnetworksd')->to('localnetworks#do_display')->name('localnetworksdel');
+#$if_admin->post('/localnetworkse')->to('localnetworks#do_display')->name('localnetworksdel1');
 # routes : end
 #----------------------------------------------------------------------
 use strict;
@@ -53,6 +59,7 @@ sub do_display {
     $trt = 'ADD'  if ($rt eq 'localnetworksadd');
     $trt = 'ADD1' if ($rt eq 'localnetworksadd1');
     $trt = 'DEL1' if ($rt eq 'localnetworksdel1');
+    $c->app->log->info("Localnetworks:trt:$trt");
     my %ln_datas = ();
     my $title    = $c->l('ln_LOCAL NETWORKS');
     my $modul    = '';
@@ -83,16 +90,21 @@ sub do_display {
     if ($trt eq 'DEL1') {
 
         #After Remove clicked on Delete network panel
-	#$network_db   = esmith::NetworksDB::UTF8->open() || die("Failed to open Networkdb-1");
+		#$network_db   = esmith::NetworksDB::UTF8->open() || die("Failed to open Networkdb-1");
         my $localnetwork = $c->param("localnetwork");
-        my $delete_hosts = $c->param("deletehost") || "1";                                    #default to deleting them.
-        my $rec = $network_db->get($localnetwork) || die("Failed to find network on db:$localnetwork");
-
-        if ($rec and $rec->prop('type') eq 'localnetwork') {
-            $ln_datas{localnetwork} = $localnetwork;
-        }
-        my %ret = remove_network($localnetwork, $delete_hosts);
-	#$network_db = esmith::NetworksDB::UTF8->open() || die("Failed to open Networkdb-2");        #Refresh the network DB
+        my $delete_hosts = $c->param("deletehost") || "1"; #default to deleting them.
+        $c->app->log->info("Localnetworks:deleting $localnetwork");
+        my ($rec,%ret);
+        if ($rec = $network_db->get($localnetwork)){  #|| die("Failed to find network on db:$localnetwork");
+			if ($rec and $rec->prop('type') eq 'localnetwork') {
+				$ln_datas{localnetwork} = $localnetwork;
+			}
+			%ret = $c->remove_network($localnetwork, $delete_hosts);
+		} else {
+			$c->app->log->info("Local network: delete failed to find network in db: $localnetwork");
+			%ret = ();
+		}
+		#$network_db = esmith::NetworksDB::UTF8->open() || die("Failed to open Networkdb-2");        #Refresh the network DB
         my @localnetworks;
 
         if ($network_db) {
@@ -100,8 +112,10 @@ sub do_display {
         }
 
         # Load up ln_datas with values need by template
-        $ln_datas{subnet} = $rec->prop('Mask');
-        $ln_datas{router} = $rec->prop('Router');
+        if ($rec){
+			$ln_datas{subnet} = $rec->prop('Mask');
+			$ln_datas{router} = $rec->prop('Router');
+		}
         $c->stash(ln_datas => \%ln_datas, localnetworks => \@localnetworks, ret => \%ret);
     } ## end if ($trt eq 'DEL1')
 
@@ -109,14 +123,20 @@ sub do_display {
 
         #Initial delete panel requiring confirmation
         my $localnetwork = $c->param("localnetwork") || '';
+        my ($rec,%ret);
         $c->stash(localnetwork => $localnetwork);
-        my $rec = $network_db->get($localnetwork) || die("Failed to get local network in db::$localnetwork");
-        my $subnet = $rec->prop('Mask');
-        $ln_datas{subnet} = $subnet;
-        $ln_datas{router} = $rec->prop('Router');
-        my $numhosts = hosts_on_network($localnetwork, $subnet);
-        $ln_datas{localnetwork} = $localnetwork;
-        $ln_datas{deletehosts} = $numhosts > 0 ? 1 : 0;
+        if ($rec = $network_db->get($localnetwork)){
+			my $subnet = $rec->prop('Mask');
+			$ln_datas{subnet} = $subnet;
+			$ln_datas{router} = $rec->prop('Router');
+			my $numhosts =$c->hosts_on_network($localnetwork, $subnet);
+			$ln_datas{localnetwork} = $localnetwork;
+			$ln_datas{deletehosts} = $numhosts > 0 ? 1 : 0;
+		} else {
+			$c->app->log->info("Local network:Initial Failed to find network in Db: $localnetwork");
+			$c->flash('error',$c->l('ln_Failed to find network in Db'));
+			$trt = 'LIST';
+		}
     } ## end if ($trt eq 'DEL')
 
     if ($trt eq 'LIST') {
@@ -136,6 +156,7 @@ sub do_display {
 } ## end sub do_display
 
 sub remove_network {
+	my $c = shift;
     my $network      = shift;
     $network_db   = esmith::NetworksDB::UTF8->open();
     my $record       = $network_db->get($network);
@@ -152,7 +173,7 @@ sub remove_network {
 
         if (system("/sbin/e-smith/signal-event", "network-delete", $network) == 0) {
             if ($delete_hosts) {
-                my @hosts_to_delete = hosts_on_network($network, $subnet);
+                my @hosts_to_delete = $c->hosts_on_network($network, $subnet);
 
                 foreach my $host (@hosts_to_delete) {
                     $host->delete;
@@ -169,6 +190,7 @@ sub remove_network {
 } ## end sub remove_network
 
 sub hosts_on_network {
+	my $c = shift;
     my $network = shift;
     my $netmask = shift;
     die if not $network and $netmask;
@@ -191,17 +213,20 @@ sub hosts_on_network {
 } ## end sub hosts_on_network
 
 sub add_network {
-    my ($fm)           = @_;
-    my $networkAddress = $fm->param('networkAddress');
-    my $networkMask    = $fm->param('networkMask');
-    my $networkRouter  = $fm->param('networkRouter');
+    my ($c)           = @_;
+    my $networkAddress = $c->param('networkAddress');
+    my $networkMask    = $c->param('networkMask');
+    my $networkRouter  = $c->param('networkRouter');
+    
+    #Start by checking that the network does not already exist
+    
 
     #Validate Ips and subnet mask
-    my $res = ip_number($fm, $networkAddress);
+    my $res = ip_number($c, $networkAddress);
     return (ret => 'ln_INVALID_IP_ADDRESS', vars => "Network Address $res") unless $res eq 'OK';
     $res = subnet_mask($networkMask);
     return (ret => 'ln_INVALID_SUBNET_MASK', vars => "$networkMask") unless $res eq 'OK';
-    $res = ip_number($fm, $networkRouter);
+    $res = ip_number($c, $networkRouter);
     return (ret => 'ln_INVALID_IP_ADDRESS', vars => "Routeur Address $res") unless $res eq 'OK';
 
     # we transform bit mask to regular mask
@@ -234,19 +259,25 @@ sub add_network {
     if ($network_db->get($network)) {
         return (ret => 'ln_NETWORK_ALREADY_ADDED', vars => "$network,$networkMask,$networkRouter");
     }
-    $network_db->new_record(
+    $res = $network_db->new_record(
         $network,
         {   Mask   => $networkMask,
             Router => $networkRouter,
             type   => 'network',
         }
     );
-
-    # Untaint $network before use in system()
-    $network =~ /(.+)/;
-    $network = $1;
-    system("/sbin/e-smith/signal-event", "network-create", $network) == 0
-        or (return (ret => 'ln_ERROR_CREATING_NETWORK', vars => "$network,$networkMask,$networkRouter"));
+    if (! $res) {
+		#Record already existed
+		$c->app->log->info("Local Network:Network already exists:$network");
+		#return success message 
+	} else {
+		#Only call underlying batch if new record created
+		# Untaint $network before use in system()
+		$network =~ /(.+)/;
+		$network = $1;
+		system("/sbin/e-smith/signal-event", "network-create", $network) == 0
+			or (return (ret => 'ln_ERROR_CREATING_NETWORK', vars => "$network,$networkMask,$networkRouter"));
+	}
     my ($totalHosts, $firstAddr, $lastAddr) = esmith::util::computeHostRange($network, $networkMask);
     my $msg;
 
