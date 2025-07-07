@@ -34,6 +34,7 @@ sub main {
 sub do_update {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    $db = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my $result          = "";
     my $workgroup       = ($c->param('Workgroup') || 'no');
     my $servername      = ($c->param('ServerName') || 'WS');
