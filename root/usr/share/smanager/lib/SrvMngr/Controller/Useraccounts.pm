@@ -176,7 +176,7 @@ sub do_update {
             $result .= $res unless $res eq 'OK';
 
             if (!$result) {
-                $result = $c->l('usrUSER_CREATED') . ' ' . $user;
+                $result = $c->l('usr_USER_CREATED') . ' ' . $user;
                 $usr_datas{trt} = 'SUC';
             }
         } ## end if (!$result)

@@ -132,7 +132,7 @@ sub do_update {
             # Untaint groupName before use in system()
             ($groupName) = ($groupName =~ /^([a-z][\-\_\.a-z0-9]*)$/);
             system("/sbin/e-smith/signal-event", "group-create", "$groupName") == 0
-                or $result .= $c->l('qgp_CREATE_ERROR') . "\n";
+                or $result .= $c->l('grp_CREATE_ERROR') . "\n";
         } ## end if (!$result)
 
         if (!$result) {
@@ -161,7 +161,7 @@ sub do_update {
             # Untaint groupName before use in system()
             ($groupName) = ($groupName =~ /^([a-z][\-\_\.a-z0-9]*)$/);
             system("/sbin/e-smith/signal-event", "group-modify", "$groupName") == 0
-                or $result .= $c->l('qgp_MODIFY_ERROR') . "\n";
+                or $result .= $c->l('grp_MODIFY_ERROR') . "\n";
         } ## end if (!$result)
 
         if (!$result) {

@@ -255,7 +255,7 @@ sub validate_change_datetime {
     }
 
     if (($minute < 0) || ($minute > 59)) {
-        return $c->l('datINVALID_MINUTE') . " $minute. " . $c->l('dat_BETWEEN_0_AND_59');
+        return $c->l('dat_INVALID_MINUTE') . " $minute. " . $c->l('dat_BETWEEN_0_AND_59');
     }
     my $second = $c->param('second');
 
