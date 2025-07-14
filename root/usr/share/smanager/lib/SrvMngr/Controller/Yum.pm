@@ -4,6 +4,12 @@ package SrvMngr::Controller::Yum;
 # heading     : System
 # description : Software installer
 # navigation  : 4000 500
+
+    #$if_admin->get('/yum')->to('yum#main')->name('yum');
+    #$if_admin->post('/yum')->to('yum#do_display')->name('yumd1');
+    #$if_admin->get('/yumd')->to('yum#do_display')->name('yumd');
+    #$if_admin->post('/yumd')->to('yum#do_update')->name('yumu');
+
 #
 # routes : end
 #----------------------------------------------------------------------
@@ -23,20 +29,20 @@ my $dnf_status_file = '/var/cache/dnf/dnf.status';
 #use File::stat;
 our %dbs;
 
-for (qw(available installed updates)) {
-    $dbs{$_} = esmith::ConfigDB::UTF8->open_ro("dnf_$_")
-        or die "Couldn't open dnf_$_ DB\n";
-}
-
-for (qw(repositories)) {
-    $dbs{$_} = esmith::ConfigDB::UTF8->open("yum_$_")
-        or die "Couldn't open yum_$_ DB\n";
-}
 
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
     $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
+	for (qw(available installed updates)) {
+		$dbs{$_} = esmith::ConfigDB::UTF8->open_ro("dnf_$_")
+			or die "Couldn't open dnf_$_ DB\n";
+	}
+
+	for (qw(repositories)) {
+		$dbs{$_} = esmith::ConfigDB::UTF8->open("yum_$_")
+			or die "Couldn't open yum_$_ DB\n";
+	}
     my %yum_datas = ();
     my $title     = $c->l('yum_FORM_TITLE');
     my $dest      = 'yum';
@@ -63,6 +69,15 @@ sub do_display {
     my $rt        = $c->current_route;
     my $trt       = ($c->param('trt') || 'STAT');
     $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
+	for (qw(available installed updates)) {
+		$dbs{$_} = esmith::ConfigDB::UTF8->open_ro("dnf_$_")
+			or die "Couldn't open dnf_$_ DB\n";
+	}
+
+	for (qw(repositories)) {
+		$dbs{$_} = esmith::ConfigDB::UTF8->open("yum_$_")
+			or die "Couldn't open yum_$_ DB\n";
+	}
     my %yum_datas = ();
     my $title     = $c->l('yum_FORM_TITLE');
     my ($notif, $dest) = '';
@@ -113,6 +128,16 @@ sub do_update {
     $c->app->log->info($c->log_req);
     my $rt        = $c->current_route;
     my $trt       = $c->param('trt');
+    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
+	for (qw(available installed updates)) {
+		$dbs{$_} = esmith::ConfigDB::UTF8->open_ro("dnf_$_")
+			or die "Couldn't open dnf_$_ DB\n";
+	}
+
+	for (qw(repositories)) {
+		$dbs{$_} = esmith::ConfigDB::UTF8->open("yum_$_")
+			or die "Couldn't open yum_$_ DB\n";
+	}
     my %yum_datas = ();
     $yum_datas{trt} = $trt;
     my $title = $c->l('yum_FORM_TITLE');
