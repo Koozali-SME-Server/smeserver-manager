@@ -154,3 +154,10 @@ enabled.',
 'mai_DEL_panel_action_was_successful' => 'Email delivery settings saved sucessfully',
 'mai_FIL_panel_action_was_successful' => 'Email filtering settings saved sucessfully',
 'mai_REC_panel_action_was_successful' => 'Email receive settings saved sucessfully',
+
+'mai_SMTP_port_authenticate' => 'Smtp port %u allow client to authenticate:',
+'mai_SMTP_port_(25)' => 'Smtp port (25) main purpose is to receive emails from another server, starttls is always offered, but auth if offered is only if starttls is also used by client.',
+'mai_SMTP_Submission' => 'Smtp submission port (587) will require starttls, then authenticate to send.',
+'mai_SMTPS_port_(465)' => 'Smtps port (465) will require implicit ssl/tls then authenticate to send.',
+'mai_SMTPS_SSL/TLS' => 'Smtps ssl/tls auth: port %u status:',
+'mai_Submission_port' => 'Submission port %u status:'

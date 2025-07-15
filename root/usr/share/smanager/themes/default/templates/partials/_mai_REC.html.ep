@@ -38,14 +38,14 @@
 
 		%#=l 'mai_DESC_SMTP_AUTH_CONTROL'
 		<br />
-		%= l "SMTP port (25) main purpose is to receive emails from another server, STARTTLS is always offered, but auth if offered is only if STARTTLS is also used by client."
+		%= l "mai_SMTP_port_(25)"
 		<br />
-		%= l "SMTPS port (465) will require implicit SSL/TLS then authenticate to send."
+		%= l "mai_SMTPS_port_(465)"
 		<br />
-		%= l "SMTP Submission port (587) will require STARTTLS, then authenticate to send."
+		%= l "mai_SMTP_Submission"
 		<br />
 
-		% my $smtp_mesg=l('SMTP port %u allow client to authenticate:');
+		% my $smtp_mesg=l('mai_SMTP_port_authenticate');
 		<p><span class=label>
 			%= sprintf($smtp_mesg,$c->get_db_prop('qpsmtpd','TCPPort',25)); 
 		</span><span class=input>

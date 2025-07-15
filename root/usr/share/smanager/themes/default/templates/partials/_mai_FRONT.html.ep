@@ -89,21 +89,21 @@
 		
 		% my $smtp_mesg;
 
-		% $smtp_mesg=l('SMTP port %u allow client to authenticate:');
+		% $smtp_mesg=l('mai_SMTP_port_authenticate');
 		<p><span class=label>
 			%= sprintf($smtp_mesg,$c->get_db_prop('qpsmtpd','TCPPort',25)); 
 		</span><span class=data2>
 		%= $c->get_current_smtp_auth( TRUE )
 		</span></p>
 
-		% $smtp_mesg=l('SMTPS SSL/TLS auth: port %u status:');
+		% $smtp_mesg=l('mai_SMTPS_SSL/TLS');
 		<p><span class=label>
 			%= sprintf($smtp_mesg,$c->get_db_prop('sqpsmtpd','TCPPort',465)); 
 		</span><span class=data2>
 		%= $c->get_current_smtp_ssl_auth( TRUE, 's', FALSE )
 		</span></p>
 
-		% $smtp_mesg=l 'Submission port %u status:';
+		% $smtp_mesg=l 'mai_Submission_port';
 		<p><span class=label>
 			%= sprintf($smtp_mesg,$c->get_db_prop('uqpsmtpd','TCPPort',587)); 
 		</span><span class=data2>

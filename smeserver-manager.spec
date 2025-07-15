@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 106
+%define release 107
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Jul 15 2025 Brian Read <brianr@koozali.org> 11.0.0-107.sme
+- Email Settings panel: Fix lex strings with long names and no prefix [SME: 13080]
+
 * Mon Jul 14 2025 Brian Read <brianr@koozali.org> 11.0.0-106.sme
 - Datetime panel: Typo in error message - missing _ [SME: 13078]
 - ditto user accounts panel                         [SME: 13078]
