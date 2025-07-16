@@ -21,6 +21,7 @@ use SrvMngr qw( theme_list init_session validate_password );
 sub main {
     my $c         = shift;
     my %pwd_datas = ();
+    my $title = $c->l("pwd_ACCOUNT_PASSWORD_CHANGE");
 
     if ($c->is_logged_in) {
         $pwd_datas{Account} = $c->session->{username};
@@ -34,7 +35,7 @@ sub main {
 
         # request already treated or outdated
         if ($c->pwdrst->{$name}{confirmed} != 1 or $c->pwdrst->{$name}{date} < time()) {
-            $mess = $c->l('use_INVALID_REQUEST') . ' -step 1-';
+            $mess = $c->l('pwd_INVALID_REQUEST') . ' -step 1-';
         }
 
         if ($mess) {
@@ -47,7 +48,7 @@ sub main {
         $pwd_datas{Account}            = $name;
         $pwd_datas{trt}                = 'RESET';
         $pwd_datas{jwt}                = $jwt;
-        $c->flash(success => $c->l('use_OK_FOR_RESET'));
+        $c->flash(success => $c->l('pwd_OK_FOR_RESET'));
     } ## end else [ if ($c->is_logged_in) ]
     $c->stash(pwd_datas => \%pwd_datas);
     $c->render('userpassword');
@@ -74,7 +75,7 @@ sub change_password {
 
         # request already treated or outdated
         if ($c->pwdrst->{$name}{confirmed} != 2 or $c->pwdrst->{$name}{date} < time()) {
-            $mess = $c->l('use_INVALID_REQUEST') . ' -step 2-';
+            $mess = $c->l('pwd_INVALID_REQUEST') . ' -step 2-';
         }
 
         if (!$name or $c->is_logged_in or $name ne $acctName) {
@@ -158,7 +159,7 @@ sub change_password {
 sub reset_password {
     my ($c, $trt, $user, $password, $oldpassword) = @_;
     my $ret;
-    return $c->l('usr_TAINTED_USER') unless (($user) = ($user =~ /^(\w[\-\w_\.]*)$/));
+    return $c->l('pwd_TAINTED_USER') unless (($user) = ($user =~ /^(\w[\-\w_\.]*)$/));
     $user = $1;
     my $adb  = esmith::AccountsDB::UTF8->open();
     my $acct = $adb->get($user);
@@ -171,7 +172,7 @@ sub reset_password {
 
     if (system("/sbin/e-smith/signal-event", "password-modify", $user)) {
         $adb = esmith::AccountsDB::UTF8->open();
-        return $c->l("usr_ERR_OCCURRED_MODIFYING_PASSWORD");
+        return $c->l("pwd_ERR_OCCURRED_MODIFYING_PASSWORD");
     }
     $adb = esmith::AccountsDB::UTF8->open();
     return 'OK';

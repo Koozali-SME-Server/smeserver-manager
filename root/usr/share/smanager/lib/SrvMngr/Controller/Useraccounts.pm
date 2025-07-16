@@ -361,7 +361,7 @@ sub lock_account {
         $adb = esmith::AccountsDB::UTF8->open();
         return 'OK';
     } else {
-        return $c->l('NO_SUCH_USER', $user);
+        return $c->l('usr_NO_SUCH_USER', $user);
     }
 } ## end sub lock_account
 
@@ -380,13 +380,13 @@ sub remove_account {
 
         if (system("/sbin/e-smith/signal-event", "user-delete", $user)) {
             $adb = esmith::AccountsDB::UTF8->open();
-            return $c->l("ERR_OCCURRED_DELETING");
+            return $c->l("usr_ERR_OCCURRED_DELETING");
         }
         $adb = esmith::AccountsDB::UTF8->open();
         $adb->get($user)->delete;
         return 'OK';
     } else {
-        return $c->l('NO_SUCH_USER', $user);
+        return $c->l('usr_NO_SUCH_USER', $user);
     }
 } ## end sub remove_account
 
@@ -413,7 +413,7 @@ sub reset_password {
         $adb = esmith::AccountsDB::UTF8->open();
         return 'OK';
     } else {
-        return $c->l('NO_SUCH_USER', $user);
+        return $c->l('usr_NO_SUCH_USER', $user);
     }
 } ## end sub reset_password
 
@@ -788,7 +788,7 @@ sub system_change_password {
     if ($result == 0) {
         return 'OK';
     } else {
-        return $c->l("Error occurred while modifying password for admin.", 'First');
+        return $c->l("Error occurred while modifying password for admin.");
     }
 } ## end sub system_change_password
 1
