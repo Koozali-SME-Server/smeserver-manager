@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 107
+%define release 108
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Jul 16 2025 Brian Read <brianr@koozali.org> 11.0.0-108.sme
+- Password change panel - add extra descriptive text [SME: 13081]
+
 * Tue Jul 15 2025 Brian Read <brianr@koozali.org> 11.0.0-107.sme
 - Email Settings panel: Fix lex strings with long names and no prefix [SME: 13080]
 

@@ -19,3 +19,5 @@
 'pwd_PASSWORD_CHANGE_SUCCESS' => 'Your password has been successfully changed.',
 'pwd_DESCRIPTION' => '<P>To change your account password, please fill out the following form. You will need to provide the name of your account, your old password, and your desired new password. (You must type the new password twice.)</P><P>If you cannot change your password because you have forgotten the old one, your local system administrator can reset your password using the <EM>server manager</EM>.</P>',
 'pwd_DESCRIPTION_RESET' => '<P>To reset your account password, please fill out the following form. You will need to provide your desired new password. (You must type it twice.)</P><P>In cas of problem, your local system administrator can reset your password using the <EM>server manager</EM>.</P>',
+'pwd_PASSWORD_DESCRIPTION' => 'The password must be composed of at least twelve characters with uppercase and lowercase letters, numbers and non-alphanumeric characters.',
+'pwd_PASSWORD_WIKI' => "If you want to know more about passwords, then please refer to the <a href='https://wiki.koozali.org/Useful_Commands#Password_strength'>Wiki</a>",
