@@ -1,8 +1,8 @@
-<div id='pf_add'>
+<div id="pf_add">
 
 	% my $retref= $c->stash("ret");
 	% my %ret = $retref ? %$retref : (ret => "");
-	% my @vars = split(/,/, $ret{vars} // '');
+	% my @vars = split(/,/, $ret{vars} // "");
 	% my ($var1, $var2, $var3, $var4, $var5, $var6, $var7) = @vars;
 
 	% if ($c->app->config->{debug}) {
@@ -15,17 +15,17 @@
 
 	% } elsif (index($ret{ret},"SUCCESS") != -1) {
 	<br>
-	<div class='success'>
+	<div class="success">
 		%= $c->render_to_string(inline => l($ret{ret}, @vars[0..6]))
 	</div>
 	% } else { 
 	<br>
-	<div class='sme-error'>
+	<div class="sme-error">
 		%= $c->render_to_string(inline => l($ret{ret}, @vars[0..6]))
 	</div>
 	% }
 	<br />
-    % my $btn = l('ADD');
+    % my $btn = l("ADD");
     
    % if (config->{debug} == 1) {
 	</pre>
@@ -34,7 +34,7 @@
 	</pre>
     % }
      
-    %= form_for '/portforwardingb' => (method => 'POST') => begin
+    %= form_for "/portforwardingb" => (method => "POST") => begin
 		<h2>
 		%=l "pf_CREATE_RULE"
 		</h2>
@@ -42,42 +42,42 @@
 				%=l "pf_SUMMARY_ADD_DESC"
 			</p><br>
 			<span class=label>
-				%=l "pf_LABEL_PROTOCOL"
+				%=l "Protocol"
 			</span><span class=data>
-				%=select_field  'proto'=>["TCP","UDP"]
+				%=select_field  "proto"=>["TCP","UDP"]
 			</span><br><br>
 			<span class=label>
 				%=l "pf_LABEL_SOURCE_PORT"
 			</span><span class=data>
-				%=text_field 'sport'
+				%=text_field "sport"
 			</span><br><br>
 			<span class=label>
 				%=l "pf_LABEL_DESTINATION_PORT"
 			</span>
 			<span class=data>
-				%=text_field 'dport'
+				%=text_field "dport"
 			</span><br><br>
 			<span class=label>
 				%=l "pf_LABEL_DESTINATION_HOST"
 			</span>
 			<span class=data>
-				%=text_field 'dhost'
+				%=text_field "dhost"
 			</span><br><br>
 			<span class=label>
 				%=l "pf_ALLOW_HOSTS"
 			</span>
 			<span class=data>
-				%=text_field 'allow'
+				%=text_field "allow"
 			</span><br><br>
 			<span class=label>
 				%=l "pf_RULE_COMMENT"
 			</span>
 			<span class=data>
-				%=text_field 'cmmnt'
+				%=text_field "cmmnt"
 			</span><br><br>
 			<p>
 			<br>
-			%= submit_button "$btn", class => 'action'
+			%= submit_button "$btn", class => "action"
 			</p>
 
 	%end

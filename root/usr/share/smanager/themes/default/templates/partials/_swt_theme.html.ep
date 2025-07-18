@@ -1,6 +1,6 @@
 <div id='swt_theme'>
     <font class="sme-copyright">
-    % my $btn = l('swt_THEME');
+    % my $btn = l('THEME');
     %= form_for $c->url_for('swttheme') => (method => 'POST') => begin
 	% my $value = $c->session->{'CurrentTheme'};
 	% $value = session 'CurrentTheme';

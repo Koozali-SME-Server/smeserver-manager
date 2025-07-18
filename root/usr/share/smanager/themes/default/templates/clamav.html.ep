@@ -1,7 +1,7 @@
-% layout 'default', title => "Sme server 2 - clamav";
+% layout "default", title => "Sme server 2 - clamav";
 
-% content_for 'module' => begin
-<div id='module' class='module clamav-panel'>
+% content_for "module" => begin
+<div id="module" class="module clamav-panel">
     %if (config->{debug} == 1) {
 	<p>(DBG)route: <%= $c->current_route %><br>
 	(DBG)FsS stat: <%= $clm_datas->{FilesystemScan}%> <br>
@@ -11,35 +11,35 @@
     <h1><%= $title %></h1>
     <br>
     <%= $modul %>
-    <% 	my $btn = l('SAVE'); %>
+    <% 	my $btn = l("SAVE"); %>
 
-    %= form_for 'clamav' => (method => 'POST') => begin
+    %= form_for "clamav" => (method => "POST") => begin
 	<p>
 	<span class=label>
-	%=l 'clm_LABEL_FILESYSTEM_SCAN_PERIOD'
+	%=l "clm_LABEL_FILESYSTEM_SCAN_PERIOD"
 	</span><span class=data>
-	% param 'FilesystemScan' => $clm_datas->{FilesystemScan} unless param 'FilesystemScan';
-	%= select_field 'FilesystemScan' =>  [[ (l 'clm_DAILY') => 'daily'], [ (l 'clm_NEVER') => 'disabled'], [ (l 'clm_WEEKLY') => 'weekly']], class => 'input'
+	% param "FilesystemScan" => $clm_datas->{FilesystemScan} unless param "FilesystemScan";
+	%= select_field "FilesystemScan" =>  [[ (l "Daily") => "daily"], [ (l "Never") => "disabled"], [ (l "Weekly") => "weekly"]], class => "input"
 	</span>
 	</p>
 	<p>
 	<span class=label>
-	%=l 'clm_LABEL_QUARANTINE'
+	%=l "clm_LABEL_QUARANTINE"
 	</span><span class=data>
-	% param 'Quarantine' => $clm_datas->{Quarantine} unless param 'Quarantine';
-	%= select_field 'Quarantine' => [[ (l 'ENABLED') => 'enabled'], [ (l 'DISABLED') => 'disabled']], class => 'input'
+	% param "Quarantine" => $clm_datas->{Quarantine} unless param "Quarantine";
+	%= select_field "Quarantine" => [[ (l "ENABLED") => "enabled"], [ (l "DISABLED") => "disabled"]], class => "input"
 	<br>
 	</span>
 	</p>
 	<p>
 	<span class=label>
-	%=l 'clm_LABEL_CLAM_VERSIONS'
+	%=l "clm_LABEL_CLAM_VERSIONS"
 	</span><span class=data>
 	%= $clm_datas->{clam_versions}
 	<br>
 	</span>
 	</p>
-	%= submit_button "$btn", class => 'action'
+	%= submit_button "$btn", class => "action"
     % end
 </div>
 %end

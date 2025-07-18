@@ -1,13 +1,13 @@
-<div id='pf_list'>
-    % my $btn = l('pf_CREATE_RULE');
-    %= form_for '/portforwardinga' => (method => 'POST') => begin
+<div id="pf_list">
+    % my $btn = l("pf_CREATE_RULE");
+    %= form_for "/portforwardinga" => (method => "POST") => begin
 
     % my $numtcpforwards = @$tcpforwards;
 	% my $numudpforwards = @$udpforwards;
 
 	% my $retref= $c->stash("ret");
 	% my %ret = $retref ? %$retref : (ret => "");
-	% my @vars = split(/,/, $ret{vars} // '');
+	% my @vars = split(/,/, $ret{vars} // "");
 	% my ($var1, $var2, $var3, $var4, $var5, $var6, $var7) = @vars;
 
 	% if ($c->app->config->{debug}) {
@@ -20,12 +20,12 @@
 		%=l "pf_FIRST_PAGE_DESCRIPTION"
 	% } elsif (index($ret{ret},"SUCCESS") != -1) {
 	<br>
-	<div class='success'>
+	<div class="success">
 		%= $c->render_to_string(inline => l($ret{ret}, @vars[0..6]))
 	</div>
 	% } else { 
 	<br>
-	<div class='sme-error'>
+	<div class="sme-error">
 		%= $c->render_to_string(inline => l($ret{ret}, @vars[0..6]))
 	</div>
 	% }
@@ -34,7 +34,7 @@
 
 	<p>
 	<br>
-	%= submit_button "$btn", class => 'action'
+	%= submit_button "$btn", class => "action"
 	</p>
 
 
@@ -42,33 +42,33 @@
    
     %	if ($empty){
             <br>
-		%=l 'pf_NO_FORWARDS'
+		%=l "pf_NO_FORWARDS"
     %	} else {
         <br>
-		%=l 'pf_SHOW_FORWARDS'
+		%=l "pf_SHOW_FORWARDS"
 	<br><br />
 		<table class="sme-border TableSort"><thead>
 		<tr>
-			<th class='sme-border'>
-				%=l 'pf_LABEL_PROTOCOL'
+			<th class="sme-border">
+				%=l "Protocol"
 			</th>
-			<th class='sme-border'>
-				%=l 'pf_LABEL_SOURCE_PORT'
+			<th class="sme-border">
+				%=l "pf_LABEL_SOURCE_PORT"
 			</th>
-			<th class='sme-border'>
-				%=l 'pf_LABEL_DESTINATION_HOST'
+			<th class="sme-border">
+				%=l "pf_LABEL_DESTINATION_HOST"
 			</th>
-			<th class='sme-border'>
-				%=l 'pf_LABEL_DESTINATION_PORT'
+			<th class="sme-border">
+				%=l "pf_LABEL_DESTINATION_PORT"
 			</th>
-			<th class='sme-border'>
-				%=l 'pf_ALLOW_HOSTS'
+			<th class="sme-border">
+				%=l "pf_ALLOW_HOSTS"
 			</th>
-			<th class='sme-border'>
-				%=l 'pf_RULE_COMMENT'
+			<th class="sme-border">
+				%=l "pf_RULE_COMMENT"
 			</th>
-			<th class='sme-border'>
-				%=l 'ACTION'
+			<th class="sme-border">
+				%=l "ACTION"
 			</th>
 		</tr>
 		</thead><tbody>
@@ -82,22 +82,22 @@
         %        foreach my $entry (@{ $forwards{$proto} }) {
 			<tr>
         %           my $sport = $entry->key;
-        %           my $dhost = $entry->prop('DestHost');
-        %           my $dport = $entry->prop('DestPort') || '';
-        %           my $cmmnt  = $entry->prop('Comment') || '';
-        %           my $allow  = $entry->prop('AllowHosts') || '';
-		%= 			t td => (class => 'sme-border') => $proto
-		%= 			t td => (class => 'sme-border') => $sport
-		%= 			t td => (class => 'sme-border') => $dhost
-		%= 			t td => (class => 'sme-border') => $dport
-		%= 			t td => (class => 'sme-border') => $allow
-		%= 			t td => (class => 'sme-border') => $cmmnt
-					<td class='sme-border'>
-						%my $remove_text = l('REMOVE');  # Localized text
+        %           my $dhost = $entry->prop("DestHost");
+        %           my $dport = $entry->prop("DestPort") || "";
+        %           my $cmmnt  = $entry->prop("Comment") || "";
+        %           my $allow  = $entry->prop("AllowHosts") || "";
+		%= 			t td => (class => "sme-border") => $proto
+		%= 			t td => (class => "sme-border") => $sport
+		%= 			t td => (class => "sme-border") => $dhost
+		%= 			t td => (class => "sme-border") => $dport
+		%= 			t td => (class => "sme-border") => $allow
+		%= 			t td => (class => "sme-border") => $cmmnt
+					<td class="sme-border">
+						%my $remove_text = l("REMOVE");  # Localized text
 						%my $csrf_token = "TOKEN";  # CSRF token for security
 						%my $actionRemove = qq{
                                                 %       <a href="portforwardingd?CsrfDef=$csrf_token&trt=DEL&sport=$sport&proto=$proto">
-						%	<button type='button' class='sme-remove-button' title='$remove_text' >
+						%	<button type="button" class="sme-remove-button" title="$remove_text" >
 						%		$remove_text
 						%	</button>
                                                 %       </a>
@@ -111,6 +111,6 @@
 	%}
 	</tbody>
 	</table>
-	%= hidden_field 'trt' => $pf_datas->{trt}
+	%= hidden_field "trt" => $pf_datas->{trt}
  
 </div>

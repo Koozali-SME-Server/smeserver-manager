@@ -1,6 +1,6 @@
-<div id='ln_del'>
+<div id="ln_del">
 
-    % my $btn = l('REMOVE');
+    % my $btn = l("REMOVE");
     % my $proto = $pf_datas->{proto};
     % my $sport = $pf_datas->{sport};
     % my $dport = $pf_datas->{dport};
@@ -16,12 +16,12 @@
 	</pre>
     % }
      
-    %= form_for '/portforwardinge' => (method => 'POST') => begin
+    %= form_for "/portforwardinge" => (method => "POST") => begin
         <br>
 		%= l "pf_SUMMARY_REMOVE_DESC"
 			</p><br>
 			<span class=label>
-				%=l "pf_LABEL_PROTOCOL"
+				%=l "Protocol"
 			</span><span class=data>
 				%=$proto
 			</span><br><br>
@@ -58,7 +58,7 @@
 			%= hidden_field sport=>$sport
 			%= hidden_field proto=>$proto
 			<br>
-			%= submit_button "$btn", class => 'action'
+			%= submit_button "$btn", class => "action"
 			</p>
 
 	%end

@@ -1,14 +1,14 @@
-<div id='hos_list'>
+<div id="hos_list">
 
-    % my $btn = l('hos_ADD_HOSTNAME');
+    % my $btn = l("hos_ADD_HOSTNAME");
 
-    %= form_for '/hostentries' => (method => 'POST') => begin
+    %= form_for "/hostentries" => (method => "POST") => begin
 
 	<p>
-	%= submit_button "$btn", class => 'action'
+	%= submit_button "$btn", class => "action"
 	<br></p>
 
-        %= hidden_field 'trt' => $hos_datas->{trt}
+        %= hidden_field "trt" => $hos_datas->{trt}
 
     % end
 
@@ -16,59 +16,59 @@
     %  foreach my $domain ( sort ( keys %dom_hos ) ) {
 
 	<p><br><b>
-	%= $c->l('hos_CURRENT_HOSTNAMES_FOR_LOCAL_DOMAIN', $domain);
+	%= $c->l("hos_CURRENT_HOSTNAMES_FOR_LOCAL_DOMAIN", $domain);
 	</b><br></p>
 	
 	<table class="sme-border TableSort"><thead>
 	<tr>
-    	    <th class='sme-border'>
-    	    %=l 'hos_HOSTNAME'
+    	    <th class="sme-border">
+    	    %=l "Hostname"
     	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'hos_HOSTTYPE'
+    	    <th class="sme-border">
+    	    %=l "Location"
     	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'IP_ADDRESS_OR_FQDN'
+    	    <th class="sme-border">
+    	    %=l "IP_ADDRESS_OR_FQDN"
     	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'hos_ETHERNET_ADDRESS'
+    	    <th class="sme-border">
+    	    %=l "hos_ETHERNET_ADDRESS"
     	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'COMMENT'
+    	    <th class="sme-border">
+    	    %=l "COMMENT"
     	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'ACTION'
+    	    <th class="sme-border">
+    	    %=l "ACTION"
     	    </th>
     	</tr>
        </thead><tbody>
 
-    %   foreach (@{$dom_hos{$domain}{'HOSTS'}}) {  
+    %   foreach (@{$dom_hos{$domain}{"HOSTS"}}) {  
         <tr>
-            %= t td => (class => 'sme-border') => $_->{'HostName'};
-            %= t td => (class => 'sme-border') => $_->{'HostType'};
-            %= t td => (class => 'sme-border') => $_->{'IP'};
-            %= t td => (class => 'sme-border') => $_->{'MACAddress'};
-            %= t td => (class => 'sme-border') => $_->{'Comment'};
-			<td class='sme-border' style="min-width:15em">
-				%my ($actionModify, $actionRemove) = '&nbsp;';
-				%my $static = $_->{'static'} || "no";
-				%if ($static ne 'yes') {
-					%my $modify_text = l('MODIFY');  # Localized text
+            %= t td => (class => "sme-border") => $_->{"HostName"};
+            %= t td => (class => "sme-border") => $_->{"HostType"};
+            %= t td => (class => "sme-border") => $_->{"IP"};
+            %= t td => (class => "sme-border") => $_->{"MACAddress"};
+            %= t td => (class => "sme-border") => $_->{"Comment"};
+			<td class="sme-border" style="min-width:15em">
+				%my ($actionModify, $actionRemove) = "&nbsp;";
+				%my $static = $_->{"static"} || "no";
+				%if ($static ne "yes") {
+					%my $modify_text = l("MODIFY");  # Localized text
 					%my $csrf_token = "TOKEN";  # CSRF token for security
-					%my $hostentries_name = $_->{'HostName'};  # hostentries name extracted from the data structure
+					%my $hostentries_name = $_->{"HostName"};  # hostentries name extracted from the data structure
 					%$actionModify = qq{
                                         %       <a href="hostentriesd?CsrfDef=$csrf_token&trt=UPD&Hostname=$hostentries_name">
-					%	<button type='button' class='sme-modify-button' title='$modify_text' > 
+					%	<button type="button" class="sme-modify-button" title="$modify_text" > 
 					%		$modify_text
 					%	</button>
                                         %       </a>
 					%};
-					%my $remove_text = l('REMOVE');  # Localized text
+					%my $remove_text = l("REMOVE");  # Localized text
 					%$csrf_token = "TOKEN";  # CSRF token for security
-					%#my $hostentries_name = $_->{'HostName'};  # hostentries name extracted from the data structure
+					%#my $hostentries_name = $_->{"HostName"};  # hostentries name extracted from the data structure
 					%$actionRemove = qq{
                                         %       <a href="hostentriesd?CsrfDef=$csrf_token&trt=DEL&Hostname=$hostentries_name">
-					%	<button type='button' class='sme-remove-button' title='$remove_text' >
+					%	<button type="button" class="sme-remove-button" title="$remove_text" >
 					%		$remove_text
 					%	</button>
                                         %       </a>
