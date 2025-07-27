@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 109
+%define release 110
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Jul 26 2025 Brian Read <brianr@koozali.org> 11.0.0-110.sme
+- Get cifs workstation backup restore to show backup sets [SME: 12645]
+  Add lex file for roundcubepanel to provide lex environment for lex strings 
+
 * Wed Jul 16 2025 Brian Read <brianr@koozali.org> 11.0.0-109.sme
 - A few more error message corrections [SME: 13078]
 

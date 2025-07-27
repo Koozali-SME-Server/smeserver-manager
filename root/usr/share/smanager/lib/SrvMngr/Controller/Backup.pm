@@ -25,6 +25,8 @@ use esmith::AccountsDB::UTF8;
 use esmith::util;
 use File::Basename;
 use File::Find;
+# Set to avoid using link counts as it may not work for cifs shares.
+$File::Find::dont_use_nlink = 1;
 use File::Path qw(make_path remove_tree);
 use esmith::Backup;
 use esmith::BackupHistoryDB; #no UTF8 and not in use 
@@ -1670,7 +1672,7 @@ sub get_Backupset_options () {
     my $err;
     $mntdir = "/$smbshare" if ($VFSType eq 'usb');
     my $setbackuplist = sub {
-
+		$c->app->log->info("File presented: $_");
         if ($_ =~ /\.dar/) {
             my $dir = $File::Find::dir;
             my $backupref;
@@ -1696,6 +1698,7 @@ sub get_Backupset_options () {
     }
 
     # Finding existing backups
+    
     find { wanted => \&$setbackuplist, untaint => 1, untaint_pattern => qr|^([-+@\w\s./]+)$| }, $mntbkdir;
     my %blabels = ();
     my @list;
@@ -1703,6 +1706,7 @@ sub get_Backupset_options () {
     foreach $key (sort keys %backupfiles) {
         my $labkey = $mntbkdir . '/' . $backupfiles{$key}[0] . '/' . $backupfiles{$key}[1];
         $blabels{$labkey} = $backupfiles{$key}[1] . " (" . $backupfiles{$key}[0] . ")";
+        $c->app->log->info("Pushing $blabels{$labkey} to $labkey");
         push @list, [ "$blabels{$labkey}" => "$labkey" ];
     } ## end foreach $key (sort keys %backupfiles)
     $error_message .= $c->bunmount($mntdir, $VFSType);
