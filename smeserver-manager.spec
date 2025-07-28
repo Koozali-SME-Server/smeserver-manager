@@ -2,7 +2,7 @@ Summary: Sme server  navigation module : manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 110
+%define release 111
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Jul 28 2025 Brian Read <brianr@koozali.org> 11.0.0-111.sme
+- Add password strength details to passowrd panels [SME: 13081]
+
 * Sat Jul 26 2025 Brian Read <brianr@koozali.org> 11.0.0-110.sme
 - Get cifs workstation backup restore to show backup sets [SME: 12645]
   Add lex file for roundcubepanel to provide lex environment for lex strings 

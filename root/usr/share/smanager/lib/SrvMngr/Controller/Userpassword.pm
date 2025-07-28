@@ -50,6 +50,18 @@ sub main {
         $pwd_datas{jwt}                = $jwt;
         $c->flash(success => $c->l('pwd_OK_FOR_RESET'));
     } ## end else [ if ($c->is_logged_in) ]
+
+	my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
+    my $rec = $cdb->get('passwordstrength');
+	$pwd_datas{passwdlength} = ($rec ? ($rec->prop('length') || 12) : 12);
+	if ($c->is_admin){
+		$pwd_datas{passwdstrength} = ($rec ? ($rec->prop('Admin') || 'none') : 'none');
+	} else {
+		$pwd_datas{passwdstrength} = ($rec ? ($rec->prop('Users') || 'none') : 'none');
+	}
+	if ( !(defined $pwd_datas{passwdstrength} && $pwd_datas{passwdstrength} =~ /^(none|normal|intermediate|strong)$/)) {
+		$pwd_datas{passwdstrength} = 'strong';
+	}
     $c->stash(pwd_datas => \%pwd_datas);
     $c->render('userpassword');
 } ## end sub main

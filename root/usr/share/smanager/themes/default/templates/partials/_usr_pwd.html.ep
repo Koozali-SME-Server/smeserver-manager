@@ -13,6 +13,14 @@
 	<br>
 	%= l 'usr_RESET_DESC2'
 	</p>
+	
+	<p>
+    % my $strength = uc($usr_datas->{passwdstrength});
+    <%= $c->render_to_string( inline => l('usr_'.$strength.'_PASSWORD_DESCRIPTION',$usr_datas->{passwdlength})) %>
+    <br /><br />
+    <%= $c->render_to_string( inline => l('usr_PASSWORD_WIKI')) %>
+    </p>
+
 
 	<p>
 	<span class=label>

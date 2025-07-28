@@ -120,6 +120,20 @@ sub do_display {
         }
         $c->stash(useraccounts => \@useraccounts);
     } ## end if ($trt eq 'LIST')
+    
+	my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
+    my $rec = $cdb->get('passwordstrength');
+	$usr_datas{passwdlength} = ($rec ? ($rec->prop('length') || 12) : 12);
+	if ($trt eq 'PWS'){
+		$usr_datas{passwdstrength} = ($rec ? ($rec->prop('Admin') || 'none') : 'none');
+	} else {
+		$usr_datas{passwdstrength} = ($rec ? ($rec->prop('Users') || 'none') : 'none');
+	}
+	
+	if ( !(defined $usr_datas{passwdstrength} && $usr_datas{passwdstrength} =~ /^(none|normal|intermediate|strong)$/)) {
+		$usr_datas{passwdstrength} = 'strong';
+	}
+
     $c->stash(title => $title, notif => $notif, usr_datas => \%usr_datas);
     $c->render(template => 'useraccounts');
 } ## end sub do_display
