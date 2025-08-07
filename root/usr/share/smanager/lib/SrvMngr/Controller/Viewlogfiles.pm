@@ -211,8 +211,8 @@ sub showlogFile {
         $_                = timestamp2local($_);
         $_                = HTML::Entities::encode_entities($_);
         ($log_datas{highlightpattern} && /$log_datas{highlightpattern}/)
-            ? $out .= sprintf("<b>$_</b>")
-            : $out .= sprintf("$_");
+            ? $out .= "<b>$_</b>"
+            : $out .= "$_";
     } ## end while (<LOGFILE>)
     $out .= sprintf("</PRE>");
 

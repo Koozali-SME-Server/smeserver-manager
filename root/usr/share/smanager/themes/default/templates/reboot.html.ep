@@ -34,7 +34,7 @@
 
     % end
 
-    %= hidden_field 'debug' => '1'
+    %= hidden_field 'debug' => '0'
 
 </div>
 %end

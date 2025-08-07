@@ -1,8 +1,8 @@
-Summary: Sme server  navigation module : manager 2
+Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 111
+%define release 112
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -17,7 +17,7 @@ BuildRequires: smeserver-devtools
 #BuildRequires:  perl >= 0:5.016
 #BuildRequires:  perl(Test::More)
 #BuildRequires:  perl(Test::Mojo)
-#BuildRequires:  perl(Mojolicious) >= 7.56
+#BuildRequires:  perl(Mojolicious) >= 9.39
 #BuildRequires:  perl(Mojolicious::Plugin::I18N) >= 1.6
 #BuildRequires:  perl(Net::Netmask) >= 1.9
 #</Build tests>
@@ -146,12 +146,16 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Aug 07 2025 Brian Read <brianr@koozali.org> 11.0.0-112.sme
+- Fix sprintf fail in viewlogfiles when % in log line [SME: 13099]
+- Fix reboot/shutdown failure - reported by Massimo  - fixed by JC [SME: 13097]
+
 * Mon Jul 28 2025 Brian Read <brianr@koozali.org> 11.0.0-111.sme
-- Add password strength details to passowrd panels [SME: 13081]
+- Add password strength details to password panels [SME: 13081]
 
 * Sat Jul 26 2025 Brian Read <brianr@koozali.org> 11.0.0-110.sme
 - Get cifs workstation backup restore to show backup sets [SME: 12645]
-  Add lex file for roundcubepanel to provide lex environment for lex strings 
+  Add lex file for roundcubepanel to provide lex environment for lex strings
 
 * Wed Jul 16 2025 Brian Read <brianr@koozali.org> 11.0.0-109.sme
 - A few more error message corrections [SME: 13078]
@@ -218,7 +222,7 @@ true
 
 * Thu Jun 12 2025 Brian Read <brianr@koozali.org> 11.0.0-90.sme
 - Local Networks  - Error on empty extra chars for success message [SME: 13041]
- Needed extra open for network-db after add 
+ Needed extra open for network-db after add
 
 * Thu Jun 12 2025 Brian Read <brianr@koozali.org> 11.0.0-89.sme
 - rework navigation weights to avoid duplicates [SME: 12996]
