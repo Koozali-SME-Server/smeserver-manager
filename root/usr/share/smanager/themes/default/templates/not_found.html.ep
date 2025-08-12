@@ -1,10 +1,10 @@
 % layout 'defaultlight', title => 'Sme server 2 - Error P';
 <div id='central' class='central not_found-panel module'>
-    <p><br><br>
-        The page you were requesting
-        "<%= $self->req->url->path || '/' %>"
-        could not be found.
+  <p><br><br>
+    The page you were requesting
+    "<%= $self->req->url->path || '/' %>"
+    could not be found.
     <br><br>
-    	%= link_to Welcome => '/'
-    </p>
+    %= link_to Welcome => '/'
+  </p>
 </div>

@@ -1,46 +1,46 @@
 <div id='prt_add'>
 
-    % 	my $btn = l('ADD');
+  % my $btn = l('ADD');
 
-    %= form_for '/printers2' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'prt_CREATE_NEW_PRINTER'
-	</h2><br>
-	%=l 'prt_CREATE_NEW_DESC'
-	</p><br>
+  %= form_for '/printers2' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'prt_CREATE_NEW_PRINTER'
+      </h2><br>
+      %= l 'prt_CREATE_NEW_DESC'
+    </p><br>
 
-	<p>
-	<span class=label>
-	%=l 'prt_PRINTER_NAME', class => 'label'
-	</span><span class=data>
-	%= text_field 'Name', class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'prt_PRINTER_NAME', class => 'label'
+      </span><span class=data>
+        %= text_field 'Name', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'DESCRIPTION_BRIEF', class => 'label'
-	</span><span class=data>
-	%= text_field 'Description', class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'DESCRIPTION_BRIEF', class => 'label'
+      </span><span class=data>
+        %= text_field 'Description', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'LOCATION', class => 'label'
-	</span><span class=data>
-	%= select_field 'Location' => $c->printerLocation_list(), class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'LOCATION', class => 'label'
+      </span><span class=data>
+        %= select_field 'Location' => $c->printerLocation_list(), class => 'input'
+      </span>
+    </p>
 
-	<p>
-	<br><br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    <p>
+      <br><br>
+      %= submit_button "$btn", class => 'action'
+    </p>
 
-	%= hidden_field 'trt' => $prt_datas->{trt}
-	
-    % end    
+    %= hidden_field 'trt' => $prt_datas->{trt}
+
+  % end
 
 </div>

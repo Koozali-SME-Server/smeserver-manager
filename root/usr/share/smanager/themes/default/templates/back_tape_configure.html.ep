@@ -2,80 +2,80 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module back_tape_configure-panel'>
+  <div id='module' class='module back_tape_configure-panel'>
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $bac_datas
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $bac_datas
+      </p>
     % }
 
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
-    %}
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
 
-    <h1><%= $title%></h1>
+  <h1><%= $title %></h1>
 
-    <h2>
-    %=l 'bac_ENABLE_DISABLE_TAPE'
-    </h2><br>
+  <h2>
+    %= l 'bac_ENABLE_DISABLE_TAPE'
+  </h2><br>
 
-    %= $c->render_to_string(inline => (l 'bac_TAPE_CONFIG_DESC'))
+  %= $c->render_to_string( inline => ( l 'bac_TAPE_CONFIG_DESC' ) )
 
-    %= form_for '/backupd' => (method => 'POST') => begin
+  %= form_for '/backupd' => ( method => 'POST' ) => begin
 
-	<p>
-	<span class=label>
-	%=l 'bac_ENABLE_TAPE_BACKUP'
-	</span><span class=data>
-    % if ( $bac_datas->{status} eq 'checked' ) {
-	<input type='checkbox' name='Tapebackup' checked >
-    %} else {
-	%= check_box 'Tapebackup'
-    %}
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'bac_ENABLE_TAPE_BACKUP'
+      </span><span class=data>
+        % if ( $bac_datas->{status} eq 'checked' ) {
+          <input type='checkbox' name='Tapebackup' checked >
+        % } else {
+        %= check_box 'Tapebackup'
+      % }
+    </span>
+  </p>
 
 
-	<p>
-	<span class=label>
-	%=l 'bac_TAPE_BACKUP_TIME'
-	</span><span class=data>
-	% param 'BackupHour' => $bac_datas->{backupHour} unless param 'BackupHour';
-	%= text_field 'BackupHour', size => '2'
-	% param 'BackupMin' => $bac_datas->{backupMin} unless param 'BackupMin';
-	%= text_field 'BackupMin', size => '2'
-	</span>
-	<!--span class=label-->
-	%=l 'AM/PM:'
-	<!--/span--><span class=data>
-	% param 'BackupAMPM' => $bac_datas->{backupAMPM} unless param 'BackupAMPM';
-	%= select_field 'BackupAMPM' => ['AM', 'PM'], class => 'input'
-	</span>
-	</p>
+  <p>
+    <span class=label>
+      %= l 'bac_TAPE_BACKUP_TIME'
+    </span><span class=data>
+      % param 'BackupHour' => $bac_datas->{backupHour} unless param 'BackupHour';
+      %= text_field 'BackupHour', size => '2'
+      % param 'BackupMin' => $bac_datas->{backupMin} unless param 'BackupMin';
+      %= text_field 'BackupMin', size => '2'
+    </span>
+    <!--span class=label-->
+    %= l 'AM/PM:'
+    <!--/span--><span class=data>
+      % param 'BackupAMPM' => $bac_datas->{backupAMPM} unless param 'BackupAMPM';
+      %= select_field 'BackupAMPM' => [ 'AM', 'PM' ], class => 'input'
+    </span>
+  </p>
 
-	<p>
-	<span class=label>
-	%=l 'bac_LOAD_TAPE_REMINDER_TIME'
-	</span><span class=data>
-	% param 'ReminderHour' => $bac_datas->{reminderHour} unless param 'ReminderHour';
-	%= text_field 'ReminderHour', size => '2'
-	% param 'ReminderMin' => $bac_datas->{reminderMin} unless param 'ReminderMin';
-	%= text_field 'ReminderMin', size => '2'
-	</span>
-	<!--span class=label-->
-	%=l 'AM/PM:'
-	<!--/span--><span class=data>
-	% param 'ReminderAMPM' => $bac_datas->{reminderAMPM} unless param 'ReminderAMPM';
-	%= select_field 'ReminderAMPM' => ['AM', 'PM'], class => 'input'
-	</span>
-	</p><br>
+  <p>
+    <span class=label>
+      %= l 'bac_LOAD_TAPE_REMINDER_TIME'
+    </span><span class=data>
+      % param 'ReminderHour' => $bac_datas->{reminderHour} unless param 'ReminderHour';
+      %= text_field 'ReminderHour', size => '2'
+      % param 'ReminderMin' => $bac_datas->{reminderMin} unless param 'ReminderMin';
+      %= text_field 'ReminderMin', size => '2'
+    </span>
+    <!--span class=label-->
+    %= l 'AM/PM:'
+    <!--/span--><span class=data>
+      % param 'ReminderAMPM' => $bac_datas->{reminderAMPM} unless param 'ReminderAMPM';
+      %= select_field 'ReminderAMPM' => [ 'AM', 'PM' ], class => 'input'
+    </span>
+  </p><br>
 
-	%= hidden_field 'Function' => $bac_datas->{'function'}
-	%= submit_button $c->l('bac_UPDATE_CONF'), class => 'action'
+  %= hidden_field 'Function' => $bac_datas->{'function'}
+  %= submit_button $c->l('bac_UPDATE_CONF'), class => 'action'
 
-    % end
+  % end
 </div>
 % end

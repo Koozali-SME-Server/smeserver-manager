@@ -2,43 +2,43 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module back_workstn_restore-panel'>
+  <div id='module' class='module back_workstn_restore-panel'>
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $bac_datas
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $bac_datas
+      </p>
     % }
 
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
-    %}
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
 
-    <h1><%= $title%></h1>
+  <h1><%= $title %></h1>
 
-    %= form_for '/backupd' => (method => 'POST') => begin
+  %= form_for '/backupd' => ( method => 'POST' ) => begin
 
-	<h2>
-	%=l 'bac_WORKSTN_RESTORE'
-	</h2>
+    <h2>
+      %= l 'bac_WORKSTN_RESTORE'
+    </h2>
 
-	<br><br>
+    <br><br>
     % if ($bac_datas->{status} ne 'enabled') {
-	%= $c->render_to_string(inline => (l 'bac_CONFIGURATION_TO_BE_DONE'))
+      %= $c->render_to_string( inline => ( l 'bac_CONFIGURATION_TO_BE_DONE' ) )
     % } else {
-	%= $c->render_to_string(inline => (l 'bac_RESTORE_CONF_FROM_WORKSTN_DESC') . ' ' . $c->get_shared_folder_to_verify())
-    %}
+    %= $c->render_to_string( inline => ( l 'bac_RESTORE_CONF_FROM_WORKSTN_DESC' ) . ' ' . $c->get_shared_folder_to_verify() );
+  % }
 
-	<br><br><span class=label>
-	%=l 'bac_SELECT_BACKUP_FILE'
-	</span><span class=data>
-	%= select_field 'Backupset' => $c->get_Backupset_options(), class => 'input'
-	</span><br><br>
+  <br><br><span class=label>
+    %= l 'bac_SELECT_BACKUP_FILE'
+  </span><span class=data>
+    %= select_field 'Backupset' => $c->get_Backupset_options(), class => 'input'
+  </span><br><br>
 
-	%= hidden_field 'Function' => $bac_datas->{'function'}
-	%= submit_button $c->l('bac_RESTORE_FROM_WORKSTN'), class => 'action'
-    % end
+  %= hidden_field 'Function' => $bac_datas->{'function'}
+  %= submit_button $c->l('bac_RESTORE_FROM_WORKSTN'), class => 'action'
+  % end
 </div>
 % end

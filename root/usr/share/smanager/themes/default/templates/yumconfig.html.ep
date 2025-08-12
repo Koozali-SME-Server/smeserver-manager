@@ -2,88 +2,88 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module yumconfig-panel'>
+  <div id='module' class='module yumconfig-panel'>
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $yum_datas
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $yum_datas
+      </p>
     % }
-    
-    <h1><%= $title%></h1>
 
-    % if ( $notif ) {
-	<br><div class=sme-error>
-	%= $notif
-	</div>
-    %}
+  <h1><%= $title %></h1>
 
-    %= form_for 'yumd' => (method => 'POST') => begin
+  % if ( $notif ) {
+    <br><div class=sme-error>
+      %= $notif
+    </div>
+  % }
 
-	<p><span class=label>
-	%=l 'yum_LABEL_YUM_STATUS'
-	</span><span class=data>
-	% param 'yum_check4updates' => $c->get_status('check4updates') unless param 'yum_check4updates';
-	%= select_field 'yum_check4updates' => $c->get_check_freq_opt()
-	</span></p>
+  %= form_for 'yumd' => ( method => 'POST' ) => begin
 
-	<br>
-	%=l 'yum_DESC_YUM_PACKAGEFUNCTIONS'
+    <p><span class=label>
+        %= l 'yum_LABEL_YUM_STATUS'
+      </span><span class=data>
+        % param 'yum_check4updates' => $c->get_status('check4updates') unless param 'yum_check4updates';
+        %= select_field 'yum_check4updates' => $c->get_check_freq_opt()
+    </span></p>
 
-	<p><span class=label>
-	%=l 'yum_LABEL_YUM_PACKAGEFUNCTIONS'
-	</span><span class=data>
-	% param 'yum_PackageFunctions' => $c->get_status('PackageFunctions') unless param 'yum_PackageFunctions';
-	%= select_field 'yum_PackageFunctions' => [[ $c->l('DISABLED') => 'disabled'], [ $c->l('ENABLED') => 'enabled']]
-	</span></p>
+    <br>
+    %= l 'yum_DESC_YUM_PACKAGEFUNCTIONS'
 
-	<br>
-	%=l 'yum_DESC_ENABLED_REPOSITORIES'
+    <p><span class=label>
+        %= l 'yum_LABEL_YUM_PACKAGEFUNCTIONS'
+      </span><span class=data>
+        % param 'yum_PackageFunctions' => $c->get_status('PackageFunctions') unless param 'yum_PackageFunctions';
+        %= select_field 'yum_PackageFunctions' => [ [ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ] ];
+    </span></p>
 
-	<p><span class=label>
-	%=l 'yum_LABEL_ENABLED_REPOSITORIES'
-	</span><span class=data>
-	% param 'SelectedRepositories' => $c->get_repository_current_options() unless param 'SelectedRepositories';
-	%= select_field 'SelectedRepositories' => $c->get_repository_options2(), class => 'input', multiple => '1'
-	</span></p>
+    <br>
+    %= l 'yum_DESC_ENABLED_REPOSITORIES'
 
-	<br>
-	%=l 'yum_DESC_YUM_DELTARPMPROCESS'
+    <p><span class=label>
+        %= l 'yum_LABEL_ENABLED_REPOSITORIES'
+      </span><span class=data>
+        % param 'SelectedRepositories' => $c->get_repository_current_options() unless param 'SelectedRepositories';
+        %= select_field 'SelectedRepositories' => $c->get_repository_options2(), class => 'input', multiple => '1';
+    </span></p>
 
-	<p><span class=label>
-	%=l 'yum_LABEL_YUM_DELTARPMPROCESS'
-	</span><span class=data>
-	% param 'yum_DeltaRpmProcess' => $c->get_status('DeltaRpmProcess') unless param 'yum_DeltaRpmProcess';
-	%= select_field 'yum_DeltaRpmProcess' => [[ $c->l('DISABLED') => 'disabled'], [ $c->l('ENABLED') => 'enabled']]
-	</span></p>
+    <br>
+    %= l 'yum_DESC_YUM_DELTARPMPROCESS'
 
-	<br>
-	%=l 'yum_DESC_YUM_DOWNLOADONLY'
+    <p><span class=label>
+        %= l 'yum_LABEL_YUM_DELTARPMPROCESS'
+      </span><span class=data>
+        % param 'yum_DeltaRpmProcess' => $c->get_status('DeltaRpmProcess') unless param 'yum_DeltaRpmProcess';
+        %= select_field 'yum_DeltaRpmProcess' => [ [ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ] ];
+    </span></p>
 
-	<p><span class=label>
-	%=l 'yum_LABEL_YUM_DOWNLOADONLY'
-	</span><span class=data>
-	% param 'yum_DownloadOnly' => $c->get_status('DownloadOnly') unless param 'yum_DownloadOnly';
-	%= select_field 'yum_DownloadOnly' => [[ $c->l('DISABLED') => 'disabled'], [ $c->l('ENABLED') => 'enabled']]
-	</span></p>
+    <br>
+    %= l 'yum_DESC_YUM_DOWNLOADONLY'
 
-	<br>
-	%=l 'yum_DESC_YUM_AUTOINSTALLUPDATES'
+    <p><span class=label>
+        %= l 'yum_LABEL_YUM_DOWNLOADONLY'
+      </span><span class=data>
+        % param 'yum_DownloadOnly' => $c->get_status('DownloadOnly') unless param 'yum_DownloadOnly';
+        %= select_field 'yum_DownloadOnly' => [ [ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ] ];
+    </span></p>
 
-	<p><span class=label>
-	%=l 'yum_LABEL_YUM_AUTOINSTALLUPDATES'
-	</span><span class=data>
-	% param 'yum_AutoInstallUpdates' => $c->get_status('AutoInstallUpdates') unless param 'yum_AutoInstallUpdates';
-	%= select_field 'yum_AutoInstallUpdates' => [[ $c->l('DISABLED') => 'disabled'], [ $c->l('ENABLED') => 'enabled']]
-	</span></p>
+    <br>
+    %= l 'yum_DESC_YUM_AUTOINSTALLUPDATES'
 
-    	%=  hidden_field 'trt' => 'CONF'
-	<br>
+    <p><span class=label>
+        %= l 'yum_LABEL_YUM_AUTOINSTALLUPDATES'
+      </span><span class=data>
+        % param 'yum_AutoInstallUpdates' => $c->get_status('AutoInstallUpdates') unless param 'yum_AutoInstallUpdates';
+        %= select_field 'yum_AutoInstallUpdates' => [ [ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ] ];
+    </span></p>
+
+    %= hidden_field 'trt' => 'CONF'
+    <br>
     <!--<div class='center'>-->
-	%= submit_button $c->l('SAVE'), class => 'action'
-    <!--</div>-->
+      %= submit_button $c->l('SAVE'), class => 'action'
+      <!--</div>-->
 
-    % end
+  % end
 
 </div>
 

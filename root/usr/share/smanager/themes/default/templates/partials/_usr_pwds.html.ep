@@ -1,53 +1,53 @@
 <div id='usr_pwds'>
 
-    % 	my $btn = l('SAVE');
+  % my $btn = l('SAVE');
 
-    %= form_for '/useraccountsd' => (method => 'POST') => begin
-	<p>
-	%= l 'usr_SYSTEM_PASSWORD_DESCRIPTION'
-	</p>
-	
-	<p>
-    % my $strength = uc($usr_datas->{passwdstrength});
-    <%= $c->render_to_string( inline => l('usr_'.$strength.'_PASSWORD_DESCRIPTION',$usr_datas->{passwdlength})) %>
-    <br /><br />
-    <%= $c->render_to_string( inline => l('usr_PASSWORD_WIKI')) %>
+  %= form_for '/useraccountsd' => ( method => 'POST' ) => begin
+    <p>
+      %= l 'usr_SYSTEM_PASSWORD_DESCRIPTION'
+    </p>
+
+    <p>
+      % my $strength = uc( $usr_datas->{passwdstrength} );
+      <%= $c->render_to_string( inline => l( 'usr_' . $strength . '_PASSWORD_DESCRIPTION', $usr_datas->{passwdlength} ) ); %>
+      <br /><br />
+      <%= $c->render_to_string( inline => l('usr_PASSWORD_WIKI') ) %>
     </p>
 
 
-	<p>
-	<span class=label>
-	%=l 'usr_CURRENT_SYSTEM_PASSWORD', class => 'label'
-	</span><span class=data>
-	%= password_field 'CurPass', class => 'input', class=>'sme-password'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'usr_CURRENT_SYSTEM_PASSWORD', class => 'label'
+      </span><span class=data>
+        %= password_field 'CurPass', class => 'input', class => 'sme-password'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_NEW_SYSTEM_PASSWORD', class => 'label'
-	</span><span class=data>
-	%= password_field 'Pass', class => 'input', class=>'sme-password'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'usr_NEW_SYSTEM_PASSWORD', class => 'label'
+      </span><span class=data>
+        %= password_field 'Pass', class => 'input', class => 'sme-password'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_NEW_SYSTEM_PASSWORD_VERIFY', class => 'label'
-	</span><span class=data>
-	%= password_field 'PassVerify', class => 'input', class=>'sme-password'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'usr_NEW_SYSTEM_PASSWORD_VERIFY', class => 'label'
+      </span><span class=data>
+        %= password_field 'PassVerify', class => 'input', class => 'sme-password'
+      </span>
+    </p>
 
-	<p>
-	<br><br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    <p>
+      <br><br>
+      %= submit_button "$btn", class => 'action'
+    </p>
 
-	%= hidden_field 'trt' => $usr_datas->{trt}
-	%= hidden_field 'user' => $usr_datas->{user}
-	%= hidden_field 'name' => $usr_datas->{name}
-	
-    % end
+    %= hidden_field 'trt' => $usr_datas->{trt}
+    %= hidden_field 'user' => $usr_datas->{user}
+    %= hidden_field 'name' => $usr_datas->{name}
+
+  % end
 
 </div>

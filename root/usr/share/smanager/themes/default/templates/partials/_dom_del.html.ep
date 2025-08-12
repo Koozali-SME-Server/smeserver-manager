@@ -1,29 +1,29 @@
 <div id='dom_del'>
 
-    %	my $btn = l('REMOVE');
-    %= form_for '/domains2' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'dom_REMOVE_TITLE'
-	</h2>
-	</p>
+  % my $btn = l('REMOVE');
+  %= form_for '/domains2' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'dom_REMOVE_TITLE'
+      </h2>
+    </p>
 
-	<p>
-	%= $c->l('dom_REMOVE_DESCRIPTION', $dom_datas->{domain}, $dom_datas->{description});
-	</p>
-	
-	<p><b>
-	%= l('dom_ABOUT_TO_REMOVE')
-	<b></p>
+    <p>
+      %= $c->l( 'dom_REMOVE_DESCRIPTION', $dom_datas->{domain}, $dom_datas->{description} );
+    </p>
 
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    <p><b>
+        %= l('dom_ABOUT_TO_REMOVE')
+        <b></p>
+
+        <p>
+          <br>
+          %= submit_button "$btn", class => 'action'
+        </p>
 
         %= hidden_field 'trt' => $dom_datas->{trt}
         %= hidden_field 'Domain' => $dom_datas->{domain}
 
-    % end    
+      % end
 
-</div>
+    </div>

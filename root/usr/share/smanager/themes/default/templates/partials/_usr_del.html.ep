@@ -1,28 +1,28 @@
 <div id='usr_del'>
 
-    % 	my $btn = l('REMOVE');
+  % my $btn = l('REMOVE');
 
-    %= form_for '/useraccountsd' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'usr_REMOVE_ACCOUNT_TITLE'
-	</h2>
-	
-	<br>
-	%= $c->l('usr_REMOVE_DESC', $usr_datas->{user}, $usr_datas->{name} );
-	<br>
-	%= $c->render_to_string(inline => $c->l('usr_REMOVE_DESC2'))
-	</p>
+  %= form_for '/useraccountsd' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'usr_REMOVE_ACCOUNT_TITLE'
+      </h2>
 
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+      <br>
+      %= $c->l( 'usr_REMOVE_DESC', $usr_datas->{user}, $usr_datas->{name} );
+      <br>
+      %= $c->render_to_string( inline => $c->l('usr_REMOVE_DESC2') )
+    </p>
 
-	%= hidden_field 'trt' => $usr_datas->{trt}
-	%= hidden_field 'user' => $usr_datas->{user}
-	%= hidden_field 'name' => $usr_datas->{name}
-	
-    % end    
+    <p>
+      <br>
+      %= submit_button "$btn", class => 'action'
+    </p>
+
+    %= hidden_field 'trt' => $usr_datas->{trt}
+    %= hidden_field 'user' => $usr_datas->{user}
+    %= hidden_field 'name' => $usr_datas->{name}
+
+  % end
 
 </div>

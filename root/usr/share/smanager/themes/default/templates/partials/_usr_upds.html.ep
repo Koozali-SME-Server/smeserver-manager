@@ -1,89 +1,89 @@
 <div id='usr_upds'>
 
-	% my $btn = l('SAVE');
+  % my $btn = l('SAVE');
 
-    %= form_for '/useraccountsd' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'usr_MODIFY_ADMIN_TITLE'
-	</h2><br>
-	</p>
+  %= form_for '/useraccountsd' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'usr_MODIFY_ADMIN_TITLE'
+      </h2><br>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_ACCOUNT_NAME'
-	</span><span class=data>
-	% $btn = l('SAVE');
-	%= $usr_datas->{user}, class => 'data'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'usr_ACCOUNT_NAME'
+      </span><span class=data>
+        % $btn = l('SAVE');
+        %= $usr_datas->{user}, class => 'data'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_FIRSTNAME'
-	</span><span class=data>
-	% param 'FirstName' => $usr_datas->{firstname} unless param 'FirstName';
-	%= text_field 'FirstName', class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_LASTNAME'
-	</span><span class=data>
-	% param 'LastName' => $usr_datas->{lastname} unless param 'LastName';
-	%= text_field 'LastName', class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'usr_FIRSTNAME'
+      </span><span class=data>
+        % param 'FirstName' => $usr_datas->{firstname} unless param 'FirstName';
+        %= text_field 'FirstName', class => 'input'
+      </span>
+    </p>
+    <p>
+      <span class=label>
+        %= l 'usr_LASTNAME'
+      </span><span class=data>
+        % param 'LastName' => $usr_datas->{lastname} unless param 'LastName';
+        %= text_field 'LastName', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_EMAIL_DELIVERY'
-	</span><span class=data>
-	% param 'EmailForward' => $usr_datas->{emailforward} unless param 'EmailForward';
-	%= select_field 'EmailForward' => $c->emailForward_list(), class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_FORWARDING_ADDRESS'
-	</span><span class=data>
-	% param 'ForwardAddress' => $usr_datas->{forwardaddress} unless param 'ForwardAddress';
-	%= text_field 'ForwardAddress', class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'usr_EMAIL_DELIVERY'
+      </span><span class=data>
+        % param 'EmailForward' => $usr_datas->{emailforward} unless param 'EmailForward';
+        %= select_field 'EmailForward' => $c->emailForward_list(), class => 'input'
+      </span>
+    </p>
+    <p>
+      <span class=label>
+        %= l 'usr_FORWARDING_ADDRESS'
+      </span><span class=data>
+        % param 'ForwardAddress' => $usr_datas->{forwardaddress} unless param 'ForwardAddress';
+        %= text_field 'ForwardAddress', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_VPN_CLIENT_ACCESS'
-	</span><span class=data>
-	% param 'VPNClientAccess' => $usr_datas->{vpnclientaccess} unless param 'VPNClientAccess';
-	%= select_field 'VPNClientAccess' => [[ (l 'NO') => 'no'], [ (l 'YES') => 'yes']], class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'usr_VPN_CLIENT_ACCESS'
+      </span><span class=data>
+        % param 'VPNClientAccess' => $usr_datas->{vpnclientaccess} unless param 'VPNClientAccess';
+        %= select_field 'VPNClientAccess' => [ [ ( l 'NO' ) => 'no' ], [ ( l 'YES' ) => 'yes' ] ], class => 'input';
+      </span>
+    </p>
 
-    %	if ( $c->ipsec_for_acct eq 'OK' ) {
-    %	my $btn2 = $c->l('DOWNLOAD');
-	%= form_for '/useraccountso' => (method => 'POST') => begin
-	<p>
-	<span class=label>
-	%=l 'usr_LABEL_IPSECRW_DOWNLOAD'
-	</span><span class=data>
-	%= submit_button $btn2, class => 'action'
-	</span>
-	</p>
-	%= hidden_field 'trt' => 'CRT'
+    % if ( $c->ipsec_for_acct eq 'OK' ) {
+      % my $btn2 = $c->l('DOWNLOAD');
+      %= form_for '/useraccountso' => ( method => 'POST' ) => begin
+        <p>
+          <span class=label>
+            %= l 'usr_LABEL_IPSECRW_DOWNLOAD'
+          </span><span class=data>
+            %= submit_button $btn2, class => 'action'
+          </span>
+        </p>
+        %= hidden_field 'trt' => 'CRT'
         %= hidden_field 'user' => $usr_datas->{user}
-	%end
-    %	}
+      % end
+    % }
 
-	<p>
-	<br>
-	%= submit_button $btn, class => 'action'
-	</p>
+  <p>
+    <br>
+    %= submit_button $btn, class => 'action'
+  </p>
 
-	%= hidden_field 'trt' => $usr_datas->{trt}
-    	%= hidden_field 'user' => $usr_datas->{user}
-	
-    % end
+  %= hidden_field 'trt' => $usr_datas->{trt}
+  %= hidden_field 'user' => $usr_datas->{user}
+
+  % end
 
 </div>

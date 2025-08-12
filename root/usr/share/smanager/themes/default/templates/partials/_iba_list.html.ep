@@ -1,111 +1,111 @@
 <div id='iba_list'>
 
 
-    % my $btn = l('iba_ADD_IBAY');
+  % my $btn = l('iba_ADD_IBAY');
 
-    %= form_for '/ibays' => (method => 'POST') => begin
+  %= form_for '/ibays' => ( method => 'POST' ) => begin
 
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    <p>
+      <br>
+      %= submit_button "$btn", class => 'action'
+    </p>
     %= hidden_field 'trt' => 'ADD';
 
-    % end    
+  % end
 
-	<p>
-	%=l 'iba_FIRSTPAGE_DESC'
-	<br><br>
-	</p>
-	
-    % 	my $numIbays = @$ibays;
-    %	if ($numIbays == 0){
-        %=l 'iba_NO_IBAYS'
-    %	} else {
-	<table class="sme-border TableSort"><thead>
-	<tr>
-    	    <th class='sme-border'>
-    	    %=l 'NAME'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'DESCRIPTION'
-    	    </th>
-    	    <th class='sme-border'>
-				%=l 'ACTION'
-    	    </th>
-    	</tr>
-    	</thead><tbody>
-    %    foreach my $ibay (@$ibays)
-    %    {
-    %	    my $modifiable = $ibay->prop('Modifiable') || 'yes';
-    %	    my $passwordable = $ibay->prop('Passwordable') || 'yes';
-    %	    my $removable = $ibay->prop('Removable') || 'yes';
-    %	    my $needPassword = grep { $_ eq $ibay->prop('PublicAccess') } 
-    %                            qw(local-pw global-pw global-pw-remote);
+  <p>
+    %= l 'iba_FIRSTPAGE_DESC'
+    <br><br>
+  </p>
+
+  % my $numIbays = @$ibays;
+  % if ($numIbays == 0){
+    %= l 'iba_NO_IBAYS'
+  % } else {
+  <table class="sme-border TableSort"><thead>
+      <tr>
+        <th class='sme-border'>
+          %= l 'NAME'
+        </th>
+        <th class='sme-border'>
+          %= l 'DESCRIPTION'
+        </th>
+        <th class='sme-border'>
+          %= l 'ACTION'
+        </th>
+      </tr>
+    </thead><tbody>
+      % foreach my $ibay (@$ibays)
+      % {
+        % my $modifiable = $ibay->prop('Modifiable') || 'yes';
+        % my $passwordable = $ibay->prop('Passwordable') || 'yes';
+        % my $removable = $ibay->prop('Removable') || 'yes';
+        % my $needPassword = grep { $_ eq $ibay->prop('PublicAccess') }
+        % qw(local-pw global-pw global-pw-remote);
 
         <tr>
-            %= t td => (class => 'sme-border') => $ibay->key
-            %= t td => (class => 'sme-border') => $ibay->prop('Name')
-			<td class='sme-border' style="min-width:15em">
-				%my ($actionModify, $actionResetPw, $actionRemove) = '&nbsp;';
-				%if ($modifiable eq 'yes') { 
-					%my $modify_text = l('MODIFY');  # Localized text
-					%my $csrf_token = "TOKEN";  # CSRF token for security
-					%my $ibays_entry_name = $ibay->key;  # ibays_entry name extracted from the data structure
-					%$actionModify = qq{
-                                        %       <a href="ibaysd?CsrfDef=$csrf_token&trt=UPD&ibay=$ibays_entry_name">
-					%	<button type='button' class='sme-modify-button' title='$modify_text' > 
-					%		$modify_text
-					%	</button>
-                                        %       </a>
-					%};
-				%}
-				
-				%if ($passwordable eq 'yes')  { 
-					%my $password_text = l('PASSWORD_RESET');  # Localized text
-					%my $csrf_token = "TOKEN";  # CSRF token for security
-					%my $ibays_entry_name = $ibay->key;  # ibays_entry name extracted from the data structure
-					%if ($ibay->prop('PasswordSet') ne 'yes' && $needPassword) {
-						%$actionResetPw = qq{
-                                                %       <a href="ibaysd?CsrfDef=$csrf_token&trt=PWD&ibay=$ibays_entry_name">
-						%	<button type='button' class='sme-password-button unset' title="$password_text - currently unset" style = background:pink; >
-						%		$password_text
-						%	</button>
-                                                %       </a>
-						%};
-					%} else {
-						%$actionResetPw = qq{
-                                                %       <a href="ibaysd?CsrfDef=$csrf_token&trt=PWD&ibay=$ibays_entry_name">
-						%	<button type='button' class='sme-password-button' title='$password_text' > 
-						%		$password_text
-						%	</button>
-                                                %       </a>
-						%};
-					%}
-					
-				%}
+          %= t td => ( class => 'sme-border' ) => $ibay->key
+          %= t td => ( class => 'sme-border' ) => $ibay->prop('Name')
+          <td class='sme-border' style="min-width:15em">
+            % my ( $actionModify, $actionResetPw, $actionRemove ) = '&nbsp;';
+            % if ($modifiable eq 'yes') {
+              % my $modify_text = l('MODIFY'); # Localized text
+              % my $csrf_token = "TOKEN"; # CSRF token for security
+              % my $ibays_entry_name = $ibay->key; # ibays_entry name extracted from the data structure
+              % $actionModify = qq{
+                % <a href="ibaysd?CsrfDef=$csrf_token&trt=UPD&ibay=$ibays_entry_name">
+                  % <button type='button' class='sme-modify-button' title='$modify_text' >
+                    % $modify_text
+                    % </button>
+                  % </a>
+              % };
+          % }
 
-				%if ($removable eq 'yes')  { 
-					%my $remove_text = l('REMOVE');  # Localized text
-					%my $csrf_token = "TOKEN";  # CSRF token for security
-					%my $ibays_entry_name = $ibay->key;  # ibays_entry name extracted from the data structure
-					%$actionRemove = qq{
-                                        %       <a href="ibaysd?CsrfDef=$csrf_token&trt=DEL&ibay=$ibays_entry_name">
-					%	<button type='button' class='sme-remove-button' title='$remove_text' >
-					%		$remove_text
-					%	</button>
-                                        %       </a>
-					%};
-				%}
-				<%= $c->render_to_string(inline => $actionModify) %>
-				<%= $c->render_to_string(inline => $actionResetPw)%>
-				<%= $c->render_to_string(inline => $actionRemove) %>
-    	    </td>
-   	</tr>
-    %    }
-    	</tbody>
-    	</table>
-	<%} %>
+          % if ($passwordable eq 'yes') {
+            % my $password_text = l('PASSWORD_RESET'); # Localized text
+            % my $csrf_token = "TOKEN"; # CSRF token for security
+            % my $ibays_entry_name = $ibay->key; # ibays_entry name extracted from the data structure
+            % if ($ibay->prop('PasswordSet') ne 'yes' && $needPassword) {
+              % $actionResetPw = qq{
+                % <a href="ibaysd?CsrfDef=$csrf_token&trt=PWD&ibay=$ibays_entry_name">
+                  % <button type='button' class='sme-password-button unset' title="$password_text - currently unset" style = background:pink; >
+                    % $password_text
+                    % </button>
+                  % </a>
+              % };
+          % } else {
+          % $actionResetPw = qq{
+            % <a href="ibaysd?CsrfDef=$csrf_token&trt=PWD&ibay=$ibays_entry_name">
+              % <button type='button' class='sme-password-button' title='$password_text' >
+                % $password_text
+                % </button>
+              % </a>
+          % };
+          % }
+
+          % }
+
+          % if ($removable eq 'yes') {
+            % my $remove_text = l('REMOVE'); # Localized text
+            % my $csrf_token = "TOKEN"; # CSRF token for security
+            % my $ibays_entry_name = $ibay->key; # ibays_entry name extracted from the data structure
+            % $actionRemove = qq{
+              % <a href="ibaysd?CsrfDef=$csrf_token&trt=DEL&ibay=$ibays_entry_name">
+                % <button type='button' class='sme-remove-button' title='$remove_text' >
+                  % $remove_text
+                  % </button>
+                % </a>
+            % };
+          % }
+          <%= $c->render_to_string( inline => $actionModify ) %>
+          <%= $c->render_to_string( inline => $actionResetPw ) %>
+          <%= $c->render_to_string( inline => $actionRemove ) %>
+        </td>
+      </tr>
+      % }
+    </tbody>
+  </table>
+  <% } %>
 
 
 </div>

@@ -1,69 +1,69 @@
 <div id='grp_upd'>
 
-    % 	my $btn = l('SAVE');
+  % my $btn = l('SAVE');
 
-    %= form_for '/groups2' => (method => 'POST') => begin
+  %= form_for '/groups2' => ( method => 'POST' ) => begin
 
-	<p><h2>
-	%=l 'MODIFY_USER_GROUP'
-	</h2><br></p>
+    <p><h2>
+        %= l 'MODIFY_USER_GROUP'
+      </h2><br></p>
 
-	<p>
-	<span class=label>
-	%=l 'GROUP_NAME', class => 'label'
-	</span><span class=data>
-	%= $grp_datas->{group}, class => 'data'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'GROUP_NAME', class => 'label'
+      </span><span class=data>
+        %= $grp_datas->{group}, class => 'data'
+      </span>
+    </p>
 
-	<p>
-	%=l 'grp_GROUP_DESC_EXPL'
-	<br><br>
-	<span class=label>
-	%=l 'grp_GROUP_DESC', class => 'label'
-	</span><span class=data>
-	% param 'groupDesc' => $grp_datas->{description} unless param 'groupDesc';
-	%= text_field 'groupDesc', class => 'input'
-	</span>
-	</p>
+    <p>
+      %= l 'grp_GROUP_DESC_EXPL'
+      <br><br>
+      <span class=label>
+        %= l 'grp_GROUP_DESC', class => 'label'
+      </span><span class=data>
+        % param 'groupDesc' => $grp_datas->{description} unless param 'groupDesc';
+        %= text_field 'groupDesc', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'GROUP_MEMBERS', class => 'label'
-	</span>
-	<br>
-    <span class=data>
-	% if ( $members->{'admin'} ) {
-	    %= check_box 'groupMembers', value => 'admin', checked => undef
-	%} else {
-	    %= check_box 'groupMembers' => 'admin'
-	%}
-	Administrator (admin)
-	<br>
+    <p>
+      <span class=label>
+        %= l 'GROUP_MEMBERS', class => 'label'
+      </span>
+      <br>
+      <span class=data>
+        % if ( $members->{'admin'} ) {
+          %= check_box 'groupMembers', value => 'admin', checked => undef
+        % } else {
+        %= check_box 'groupMembers' => 'admin'
+      % }
+      Administrator (admin)
+      <br>
 
-    %	 my $users = $c->gen_users_list();
-    %    foreach my $key ( sort keys %$users )
-    %    {
-	    % if ( $members->{ $key } ) {
-		<!-- % = check_box 'groupMembers', value => $key, checked => 'checked' -->
-		<input type='checkbox' name='groupMembers' checked value='<%= $key %>'>
-	    %} else {
-		%= check_box 'groupMembers' => $key
-	    %}
-	    %=$users->{$key} . " (" . $key . ")"
-            <br>
-    %    }
+      % my $users = $c->gen_users_list();
+      % foreach my $key ( sort keys %$users )
+      % {
+        % if ( $members->{ $key } ) {
+          <!-- % = check_box 'groupMembers', value => $key, checked => 'checked' -->
+          <input type='checkbox' name='groupMembers' checked value='<%= $key %>'>
+        % } else {
+        %= check_box 'groupMembers' => $key
+      % }
+      %= $users->{$key} . " (" . $key . ")"
+      <br>
+      % }
     </span>
-	</p>
+  </p>
 
-	<p>
-	<br><br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+  <p>
+    <br><br>
+    %= submit_button "$btn", class => 'action'
+  </p>
 
-	%= hidden_field 'trt' => $grp_datas->{trt}
-        %= hidden_field 'groupName' => $grp_datas->{group}
-	
-    % end    
+  %= hidden_field 'trt' => $grp_datas->{trt}
+  %= hidden_field 'groupName' => $grp_datas->{group}
+
+  % end
 
 </div>

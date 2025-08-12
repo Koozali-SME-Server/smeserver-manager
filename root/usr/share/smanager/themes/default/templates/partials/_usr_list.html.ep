@@ -1,158 +1,158 @@
 <div id='usr_list'>
 
 
-    % my $btn = l('usr_ADD_USER');
+  % my $btn = l('usr_ADD_USER');
 
-    %= form_for '/useraccounts' => (method => 'POST') => begin
+  %= form_for '/useraccounts' => ( method => 'POST' ) => begin
 
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    <p>
+      <br>
+      %= submit_button "$btn", class => 'action'
+    </p>
 
-    % end    
+  % end
 
-	<p>
-	%= $c->render_to_string(inline => $c->l('usr_FIRSTPAGE_DESC'))
-	<br>
-	</p>
-	
-    % 	my $numUsers = @$users;
-    %	if ($numUsers == 0){
-        %=l 'usr_NO_USER_ACCOUNTS'
-    %	} else {
-	<table class="sme-border TableSort"><thead>
-	<tr>
-    	    <th class='sme-border'>
-    	    %=l 'ACCOUNT'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'USER_NAME'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'usr_VPN_CLIENT_ACCESS'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'usr_FORWARDING_ADDRESS'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'ACTION'
-    	    </th>
-    	</tr>
-        </thead><tbody>
-    	
-    %    foreach my $user (@$users) {
+  <p>
+    %= $c->render_to_string( inline => $c->l('usr_FIRSTPAGE_DESC') )
+    <br>
+  </p>
 
-    %        my $username = $user->key();
-    %        my $first    = $user->prop('FirstName');
-    %        my $last     = $user->prop('LastName');
-    %        my $lockable = $user->prop('Lockable') || 'yes';
-    %        my $removable = $user->prop('Removable') || 'yes';
-    %        my $fwd       = (($user->prop('EmailForward') || 'local') =~ m/^forward|both$/) ?
-    %                       $user->prop('ForwardAddress') : '';
-    %        my $vpnaccess = $user->prop('VPNClientAccess') || 'no';
-    %        $vpnaccess = $vpnaccess eq 'yes' ? $c->l('YES') : $c->l('NO');
-    %        my $password_set = $user->prop('PasswordSet');
+  % my $numUsers = @$users;
+  % if ($numUsers == 0){
+    %= l 'usr_NO_USER_ACCOUNTS'
+  % } else {
+  <table class="sme-border TableSort"><thead>
+      <tr>
+        <th class='sme-border'>
+          %= l 'ACCOUNT'
+        </th>
+        <th class='sme-border'>
+          %= l 'USER_NAME'
+        </th>
+        <th class='sme-border'>
+          %= l 'usr_VPN_CLIENT_ACCESS'
+        </th>
+        <th class='sme-border'>
+          %= l 'usr_FORWARDING_ADDRESS'
+        </th>
+        <th class='sme-border'>
+          %= l 'ACTION'
+        </th>
+      </tr>
+    </thead><tbody>
+
+      % foreach my $user (@$users) {
+
+        % my $username = $user->key();
+        % my $first = $user->prop('FirstName');
+        % my $last = $user->prop('LastName');
+        % my $lockable = $user->prop('Lockable') || 'yes';
+        % my $removable = $user->prop('Removable') || 'yes';
+        % my $fwd = (($user->prop('EmailForward') || 'local') =~ m/^forward|both$/) ?
+        % $user->prop('ForwardAddress') : '';
+        % my $vpnaccess = $user->prop('VPNClientAccess') || 'no';
+        % $vpnaccess = $vpnaccess eq 'yes' ? $c->l('YES') : $c->l('NO');
+        % my $password_set = $user->prop('PasswordSet');
 
         <tr>
-            %= t td => (class => 'sme-border') => $username
-            %= t td => (class => 'sme-border') => "$first  $last"
-            %= t td => (class => 'sme-border') => $vpnaccess
-            %= t td => (class => 'sme-border') => $fwd
-			% my ($actionModify, $actionLock, $actionResetPw, $actionRemove,$actionroundcube) = '&nbsp;';
-			% my $modify_text = l('MODIFY');  # Localized text
-			% my $csrf_token = "TOKEN";  # CSRF token for security
-			% my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
-			% my $password_text = l("PASSWORD_RESET");
-			%if ($useraccounts_user_name eq 'admin')  { 
-				%$actionModify = qq{
-					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=UPS&user=$useraccounts_user_name">
-					%	<button type='button' class='sme-modify-button' title='$modify_text'>
-					%		$modify_text
-					%	</button>
-					%</a>
-				%};                             
-				%$actionResetPw = qq{
-					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=PWS&user=$useraccounts_user_name">
-					%	<button type='button' class='sme-password-button' title='$password_text' >
-					%		$password_text
-					%	</button>
-					%</a>
-				%};
-			%} else {
-				%$actionModify = qq{
-					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=UPD&user=$useraccounts_user_name">
-					%	<button type='button' class='sme-modify-button' title='$modify_text' >
-					%		$modify_text
-					%	</button>
-					%</a>
-				%};
-			%}
-			%if ($password_set ne 'yes') {
-				%$actionLock = l('ACCOUNT_LOCKED');
-				%$actionResetPw = qq{
-					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name">
-						%	<button type='button' class='sme-password-button unset' title="$password_text - currently unset" style = background:pink; >
-						%		$password_text
-						%	</button>
-					%</a>
-				%};
-			%} elsif ($useraccounts_user_name ne 'admin') {
-				% my $lock_text = l('ACCOUNT LOCKED');  # Localized text
-				% my $csrf_token = "TOKEN";  # CSRF token for security
-				% my $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
-				%$actionLock = qq{
-					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=LCK&user=$useraccounts_user_name">
-						%	<button type='button' class='sme-lock-button' title='$lock_text' >
-						%		$lock_text
-						%	</button>
-					%</a>
-					%};
-				%$actionResetPw = qq{
-					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name">
-					%	<button type='button' class='sme-password-button' title='$password_text' >
-					%		$password_text
-					%	</button>
-					%</a>
-					%};
-			%}
-			%if ( $removable eq 'yes' )  { 
-				% my $remove_text = l('REMOVE');  # Localized text
-				% my $csrf_token = "TOKEN";  # CSRF token for security
-				%$actionRemove = qq{
-					%<a href="useraccountsd?CsrfDef=$csrf_token&trt=DEL&user=$useraccounts_user_name">
-					%	<button type='button' class='sme-remove-button' title='$remove_text' >
-					%		$remove_text
-					%	</button>
-					%</a>
-				%};
-			%}
-			
-		    % my $thisdomain = $c->req->url->to_abs->host;
-			% my $roundcube_text = l('Webmail');  # Localized text
-			% $csrf_token = "TOKEN";  # CSRF token for security
-			% $useraccounts_user_name = $user->key;  # useraccountss_entry name extracted from the data structure
-			% $actionroundcube = qq{
-				%<a href="roundcubepanel?CsrfDef=$csrf_token&url=https://$thisdomain/roundcube?_user=$useraccounts_user_name&height=600px">
-				%	<button type='button' class='sme-email-button' title='$roundcube_text' >
-				%		$roundcube_text
-				%	</button>
-				%</a>
-			%};
-			<td class='sme-border' style="min-width:35em">
-					<%= $c->render_to_string(inline => $actionModify) %>
-					<%= $c->render_to_string(inline => $actionResetPw) %>
-					<%= $c->render_to_string(inline => $actionLock) %>
-					<%= $c->render_to_string(inline => $actionRemove) %>
-					<%= $c->render_to_string(inline => $actionroundcube) %>
-			</td>
-    	</tr>
-    %    }
-    	</tbody>
-    	</table>
+          %= t td => ( class => 'sme-border' ) => $username
+          %= t td => ( class => 'sme-border' ) => "$first $last"
+          %= t td => ( class => 'sme-border' ) => $vpnaccess
+          %= t td => ( class => 'sme-border' ) => $fwd
+          % my ( $actionModify, $actionLock, $actionResetPw, $actionRemove, $actionroundcube ) = '&nbsp;';
+          % my $modify_text = l('MODIFY'); # Localized text
+          % my $csrf_token = "TOKEN"; # CSRF token for security
+          % my $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure
+          % my $password_text = l("PASSWORD_RESET");
+          % if ($useraccounts_user_name eq 'admin') {
+            % $actionModify = qq{
+              % <a href="useraccountsd?CsrfDef=$csrf_token&trt=UPS&user=$useraccounts_user_name">
+                % <button type='button' class='sme-modify-button' title='$modify_text'>
+                  % $modify_text
+                  % </button>
+                % </a>
+            % };
+          % $actionResetPw = qq{
+            % <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWS&user=$useraccounts_user_name">
+              % <button type='button' class='sme-password-button' title='$password_text' >
+                % $password_text
+                % </button>
+              % </a>
+          % };
+        % } else {
+        % $actionModify = qq{
+          % <a href="useraccountsd?CsrfDef=$csrf_token&trt=UPD&user=$useraccounts_user_name">
+            % <button type='button' class='sme-modify-button' title='$modify_text' >
+              % $modify_text
+              % </button>
+            % </a>
+        % };
+        % }
+        % if ($password_set ne 'yes') {
+          % $actionLock = l('ACCOUNT_LOCKED');
+          % $actionResetPw = qq{
+            % <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name">
+              % <button type='button' class='sme-password-button unset' title="$password_text - currently unset" style = background:pink; >
+                % $password_text
+                % </button>
+              % </a>
+          % };
+        % } elsif ($useraccounts_user_name ne 'admin') {
+        % my $lock_text = l('ACCOUNT LOCKED'); # Localized text
+        % my $csrf_token = "TOKEN"; # CSRF token for security
+        % my $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure
+        % $actionLock = qq{
+          % <a href="useraccountsd?CsrfDef=$csrf_token&trt=LCK&user=$useraccounts_user_name">
+            % <button type='button' class='sme-lock-button' title='$lock_text' >
+              % $lock_text
+              % </button>
+            % </a>
+        % };
+        % $actionResetPw = qq{
+          % <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name">
+            % <button type='button' class='sme-password-button' title='$password_text' >
+              % $password_text
+              % </button>
+            % </a>
+        % };
+        % }
+        % if ( $removable eq 'yes' ) {
+          % my $remove_text = l('REMOVE'); # Localized text
+          % my $csrf_token = "TOKEN"; # CSRF token for security
+          % $actionRemove = qq{
+            % <a href="useraccountsd?CsrfDef=$csrf_token&trt=DEL&user=$useraccounts_user_name">
+              % <button type='button' class='sme-remove-button' title='$remove_text' >
+                % $remove_text
+                % </button>
+              % </a>
+          % };
+        % }
 
-	<%} %>
+        % my $thisdomain = $c->req->url->to_abs->host;
+        % my $roundcube_text = l('Webmail'); # Localized text
+        % $csrf_token = "TOKEN"; # CSRF token for security
+        % $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure
+        % $actionroundcube = qq{
+          % <a href="roundcubepanel?CsrfDef=$csrf_token&url=https://$thisdomain/roundcube?_user=$useraccounts_user_name&height=600px">
+            % <button type='button' class='sme-email-button' title='$roundcube_text' >
+              % $roundcube_text
+              % </button>
+            % </a>
+        % };
+        <td class='sme-border' style="min-width:35em">
+          <%= $c->render_to_string( inline => $actionModify ) %>
+          <%= $c->render_to_string( inline => $actionResetPw ) %>
+          <%= $c->render_to_string( inline => $actionLock ) %>
+          <%= $c->render_to_string( inline => $actionRemove ) %>
+          <%= $c->render_to_string( inline => $actionroundcube ) %>
+        </td>
+      </tr>
+      % }
+    </tbody>
+  </table>
 
-        %= hidden_field 'trt' => $usr_datas->{trt}
+  <% } %>
+
+  %= hidden_field 'trt' => $usr_datas->{trt}
 
 </div>

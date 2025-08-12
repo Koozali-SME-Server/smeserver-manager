@@ -1,82 +1,82 @@
 <div id='quo_list'>
 
-	<p>
-    %    my $modul = $c->render_to_string(inline => $c->l('quo_QUOTA_DESC'));
-	%= $modul
-	
-	<h3>
-	%=l 'quo_CURRENT_USAGE_AND_SETTINGS'
-	</h3>
+  <p>
+    % my $modul = $c->render_to_string( inline => $c->l('quo_QUOTA_DESC') );
+    %= $modul
 
-	<br>
-    % 	my $numUsers = @$userAccounts;
-    %	if ($numUsers == 0){
-        %=l 'ACCOUNT_USER_NONE'
-    %	} else {
+    <h3>
+      %= l 'quo_CURRENT_USAGE_AND_SETTINGS'
+    </h3>
 
-    %    my $limit = l('quo_LIMIT_WITH_GRACE_MB'); $limit =~ s#(graceX)#<br>$1#;
-    %	 my $absolute = l('quo_ABS_LIMIT_MB');     $absolute =~ s#(limitX)#<br>$1#;
-    %    my $current = l('quo_CURRENT_USAGE');     $current =~ s#(usageX)#<br>$1#;
+    <br>
+    % my $numUsers = @$userAccounts;
+    % if ($numUsers == 0){
+      %= l 'ACCOUNT_USER_NONE'
+    % } else {
 
-	<table class="sme-border TableSort"><thead>
-	<tr>
-    	    <th class='sme-border'>
-    	    %=l 'ACCOUNT'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'USER_NAME'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %= $limit
-    	    </th>
-    	    <th class='sme-border'>
-    	    %= $absolute
-    	    </th>
-    	    <th class='sme-border'>
-    	    %= $current
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'ACTION'
-    	    </th>
-    	</tr>
-    	</thead><tbody>
+    % my $limit = l('quo_LIMIT_WITH_GRACE_MB'); $limit =~ s#(graceX)#<br>$1#;
+    % my $absolute = l('quo_ABS_LIMIT_MB'); $absolute =~ s#(limitX)#<br>$1#;
+    % my $current = l('quo_CURRENT_USAGE'); $current =~ s#(usageX)#<br>$1#;
 
-    %    foreach my $user (@$userAccounts)
-    %    {
-    %	    my $uid = getpwnam($user->key);
-    %       unless ($uid) {
-    %		warn($self->localise('COULD_NOT_GET_UID'),$user->key);
-    %		next;
-    %	    }
-    %	    my $name = $user->prop("FirstName")." ".$user->prop("LastName");
-    %	    my $dev = Quota::getqcarg('/home/e-smith/files');
-    %	    my ($bc, $bs, $bh, $bt, $ic, $is, $ih, $it) = Quota::query($dev, $uid);
+    <table class="sme-border TableSort"><thead>
         <tr>
-            %= t td => (class => 'sme-border') => $user->key
-            %= t td => (class => 'sme-border') => $name
-            %= t td => (class => 'sme-border') => sprintf("%.2f", $bs / 1024 )
-            %= t td => (class => 'sme-border') => sprintf("%.2f", $bh / 1024 )
-            %= t td => (class => 'sme-border') => sprintf("%.2f", $bc / 1024 )
-			<td class='sme-border'>
-				%my $modify_text = l('MODIFY');  # Localized text
-				%my $csrf_token = "TOKEN";  # CSRF token for security
-				%my $quota_user_name = $user->key;  # quotas_entry name extracted from the data structure
-				%my $actionModify = qq{
-                                %       <a href="quotad?CsrfDef=$csrf_token&trt=UPD&user=$quota_user_name">
-				%	<button type='button' class='sme-modify-button' title='$modify_text' >
-				%		$modify_text
-				%	</button>
-                                %       </a>
-				%};
-				<%= $c->render_to_string(inline => $actionModify) %>
-			</td>
-    	</tr>
-    %    }
-    	</tbody>
-    	</table>
-	<%} %>
-	</p>
+          <th class='sme-border'>
+            %= l 'ACCOUNT'
+          </th>
+          <th class='sme-border'>
+            %= l 'USER_NAME'
+          </th>
+          <th class='sme-border'>
+            %= $limit
+          </th>
+          <th class='sme-border'>
+            %= $absolute
+          </th>
+          <th class='sme-border'>
+            %= $current
+          </th>
+          <th class='sme-border'>
+            %= l 'ACTION'
+          </th>
+        </tr>
+      </thead><tbody>
 
-        %= hidden_field 'trt' => $quo_datas->{trt}
+        % foreach my $user (@$userAccounts)
+        % {
+          % my $uid = getpwnam( $user->key );
+          % unless ($uid) {
+            % warn( $self->localise('COULD_NOT_GET_UID'), $user->key );
+            % next;
+          % }
+        % my $name = $user->prop("FirstName") . " " . $user->prop("LastName");
+        % my $dev = Quota::getqcarg('/home/e-smith/files');
+        % my ( $bc, $bs, $bh, $bt, $ic, $is, $ih, $it ) = Quota::query( $dev, $uid );
+        <tr>
+          %= t td => ( class => 'sme-border' ) => $user->key
+          %= t td => ( class => 'sme-border' ) => $name
+          %= t td => ( class => 'sme-border' ) => sprintf( "%.2f", $bs / 1024 )
+          %= t td => ( class => 'sme-border' ) => sprintf( "%.2f", $bh / 1024 )
+          %= t td => ( class => 'sme-border' ) => sprintf( "%.2f", $bc / 1024 )
+          <td class='sme-border'>
+            % my $modify_text = l('MODIFY'); # Localized text
+            % my $csrf_token = "TOKEN"; # CSRF token for security
+            % my $quota_user_name = $user->key; # quotas_entry name extracted from the data structure
+            % my $actionModify = qq{
+              % <a href="quotad?CsrfDef=$csrf_token&trt=UPD&user=$quota_user_name">
+                % <button type='button' class='sme-modify-button' title='$modify_text' >
+                  % $modify_text
+                  % </button>
+                % </a>
+            % };
+            <%= $c->render_to_string( inline => $actionModify ) %>
+          </td>
+        </tr>
+        % }
+      </tbody>
+    </table>
+    <% } %>
+  </p>
+
+  %= hidden_field 'trt' => $quo_datas->{trt}
 
 </div>

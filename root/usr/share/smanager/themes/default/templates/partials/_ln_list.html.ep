@@ -1,97 +1,97 @@
 <div id='ln_list'>
-    % my $btn = l('ln_LOCALNETWORK_ADD');
-    %= form_for '/localnetworksa' => (method => 'POST') => begin
+  % my $btn = l('ln_LOCALNETWORK_ADD');
+  %= form_for '/localnetworksa' => ( method => 'POST' ) => begin
 
-	% my $retref= $c->stash("ret");
-	% my %ret = $retref ? %$retref : (ret => "");
-	% my @vars = split(/,/, $ret{vars} // '');
-	% my ($var1, $var2, $var3, $var4, $var5, $var6, $var7) = @vars;
+    % my $retref = $c->stash("ret");
+    % my %ret = $retref ? %$retref : ( ret => "" );
+    % my @vars = split( /,/, $ret{vars} // '' );
+    % my ( $var1, $var2, $var3, $var4, $var5, $var6, $var7 ) = @vars;
 
-	% if ($c->app->config->{debug}) {
-	<pre>
+    % if ($c->app->config->{debug}) {
+      <pre>
 		%= dumper { ret_data => \%ret }
-	</pre>  
-	% }
+      </pre>
+    % }
 
-	% if ($ret{ret} eq "") {
-		%=l "ln_FIRSTPAGE_DESC"
-	% } elsif (index($ret{ret},"SUCCESS") != -1) {
-	<br>
-	<div class='success'>
-		%= $c->render_to_string(inline => l($ret{ret}, @vars[0..6]))
-	</div>
-	% } else { 
-	<br>
-	<div class='sme-error'>
-		%= $c->render_to_string(inline => l($ret{ret}, @vars[0..6]))
-	</div>
-	% }
+  % if ($ret{ret} eq "") {
+    %= l "ln_FIRSTPAGE_DESC"
+  % } elsif (index($ret{ret},"SUCCESS") != -1) {
+  <br>
+  <div class='success'>
+    %= $c->render_to_string( inline => l( $ret{ret}, @vars[ 0 .. 6 ] ) )
+  </div>
+  % } else {
+  <br>
+  <div class='sme-error'>
+    %= $c->render_to_string( inline => l( $ret{ret}, @vars[ 0 .. 6 ] ) )
+  </div>
+  % }
 
 
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+  <p>
+    <br>
+    %= submit_button "$btn", class => 'action'
+  </p>
 
-    % end    
+  % end
 
-	<br>
-    % my $numlocalnetworks = @$localnetworks;
-    %	if ($numlocalnetworks == 0){
-        %=l 'ln_LOCAL_NETWORK_NONE'
-    %	} else {
-        <br>
-		<table class="sme-border TableSort"><thead>
-		<tr>
-			<th class='sme-border'>
-				%=l 'NETWORK'
-			</th>
-			<th class='sme-border'>
-				%=l 'ln_SUBNET_MASK'
-			</th>
+  <br>
+  % my $numlocalnetworks = @$localnetworks;
+  % if ($numlocalnetworks == 0){
+    %= l 'ln_LOCAL_NETWORK_NONE'
+  % } else {
+  <br>
+  <table class="sme-border TableSort"><thead>
+      <tr>
+        <th class='sme-border'>
+          %= l 'NETWORK'
+        </th>
+        <th class='sme-border'>
+          %= l 'ln_SUBNET_MASK'
+        </th>
 
-			<th class='sme-border'>
-				%=l 'ln_NUMBER_OF_HOSTS'
-			</th>
+        <th class='sme-border'>
+          %= l 'ln_NUMBER_OF_HOSTS'
+        </th>
 
-			<th class='sme-border'>
-				%=l 'ROUTER'
-			</th>
+        <th class='sme-border'>
+          %= l 'ROUTER'
+        </th>
 
-			<th class='sme-border'>
-				%=l 'ACTION'
-			</th>
-		</tr>
-			</thead><tbody>
-		%    foreach my $localnetwork (@$localnetworks )
-		%    {
-		%     	my ($num_hosts) = esmith::util::computeHostRange( $localnetwork->key, $localnetwork->prop('Mask') );
-		%     	my $removable = $localnetwork->prop('Removable') || "yes";
-		%    		my $system       = $localnetwork->prop('SystemLocalNetwork') || "no";
-		%   		if ( $system eq "yes" ) { $removable = "no"; }
-					<tr>
-					%= t td => (class => 'sme-border') => $localnetwork->key
-					%= t td => (class => 'sme-border') => $localnetwork->prop('Mask')
-					%= t td => (class => 'sme-border') => $num_hosts
-					%= t td => (class => 'sme-border') => $localnetwork->prop('Router')
-					%my $actionRemove = '&nbsp;';
-					%if ($removable eq "yes") {
-						%my $remove_text = l('REMOVE');  # Localized text
-						%my $local_network_entry = $localnetwork->key;
-						%my $csrf_token = "TOKEN";  # CSRF token for security
-						%$actionRemove = qq{
-                                                %       <a href="localnetworksd?CsrfDef=$csrf_token&trt=DEL&localnetwork=$local_network_entry">
-						%	<button type='button' class='sme-remove-button' title='$remove_text' >
-						%		$remove_text
-						%	</button>
-                                                %       </a>
-						%};
-					% }
-					<td class='sme-border'><%= $c->render_to_string(inline => $actionRemove) %></td>
-					</tr>
-		%  } 
-		</tbody>
-		</table>
-			%= hidden_field 'trt' => $ln_datas->{trt}
-	%}
+        <th class='sme-border'>
+          %= l 'ACTION'
+        </th>
+      </tr>
+    </thead><tbody>
+      % foreach my $localnetwork (@$localnetworks)
+      % {
+        % my ($num_hosts) = esmith::util::computeHostRange( $localnetwork->key, $localnetwork->prop('Mask') );
+        % my $removable = $localnetwork->prop('Removable') || "yes";
+        % my $system = $localnetwork->prop('SystemLocalNetwork') || "no";
+        % if ( $system eq "yes" ) { $removable = "no"; }
+        <tr>
+          %= t td => ( class => 'sme-border' ) => $localnetwork->key
+          %= t td => ( class => 'sme-border' ) => $localnetwork->prop('Mask')
+          %= t td => ( class => 'sme-border' ) => $num_hosts
+          %= t td => ( class => 'sme-border' ) => $localnetwork->prop('Router')
+          % my $actionRemove = '&nbsp;';
+          % if ($removable eq "yes") {
+            % my $remove_text = l('REMOVE'); # Localized text
+            % my $local_network_entry = $localnetwork->key;
+            % my $csrf_token = "TOKEN"; # CSRF token for security
+            % $actionRemove = qq{
+              % <a href="localnetworksd?CsrfDef=$csrf_token&trt=DEL&localnetwork=$local_network_entry">
+                % <button type='button' class='sme-remove-button' title='$remove_text' >
+                  % $remove_text
+                  % </button>
+                % </a>
+            % };
+        % }
+        <td class='sme-border'><%= $c->render_to_string( inline => $actionRemove ) %></td>
+      </tr>
+      % }
+    </tbody>
+  </table>
+  %= hidden_field 'trt' => $ln_datas->{trt}
+  % }
 </div>

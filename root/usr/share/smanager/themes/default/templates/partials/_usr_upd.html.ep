@@ -1,185 +1,185 @@
 <div id='usr_upd'>
 
 
-	% my $btn = l('ADD');
+  % my $btn = l('ADD');
 
-    %= form_for '/useraccountsd' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'usr_P2_TITLE'
-	</h2>
-	<br>
-	%= $c->render_to_string(inline => l ('usr_CREATE_MODIFY_DESC'))
-	</p>
+  %= form_for '/useraccountsd' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'usr_P2_TITLE'
+      </h2>
+      <br>
+      %= $c->render_to_string( inline => l('usr_CREATE_MODIFY_DESC') )
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_ACCOUNT_NAME'
-	</span><span class=data>
-	% if ( $usr_datas->{trt} eq 'ADD' ) {
-	    % param 'user' => $usr_datas->{user} unless param 'user';
-	    %= text_field 'user', class => 'input'
-	% } else {
-	    % $btn = l('SAVE');
-	    %= $usr_datas->{user}, class => 'data'
-	% }
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'usr_ACCOUNT_NAME'
+      </span><span class=data>
+        % if ( $usr_datas->{trt} eq 'ADD' ) {
+          % param 'user' => $usr_datas->{user} unless param 'user';
+          %= text_field 'user', class => 'input'
+        % } else {
+        % $btn = l('SAVE');
+        %= $usr_datas->{user}, class => 'data'
+      % }
+    </span>
+  </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_FIRSTNAME'
-	</span><span class=data>
-	% param 'FirstName' => $usr_datas->{firstname} unless param 'FirstName';
-	%= text_field 'FirstName', class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_LASTNAME'
-	</span><span class=data>
-	% param 'LastName' => $usr_datas->{lastname} unless param 'LastName';
-	%= text_field 'LastName', class => 'input'
-	</span>
-	</p>
+  <p>
+    <span class=label>
+      %= l 'usr_FIRSTNAME'
+    </span><span class=data>
+      % param 'FirstName' => $usr_datas->{firstname} unless param 'FirstName';
+      %= text_field 'FirstName', class => 'input'
+    </span>
+  </p>
+  <p>
+    <span class=label>
+      %= l 'usr_LASTNAME'
+    </span><span class=data>
+      % param 'LastName' => $usr_datas->{lastname} unless param 'LastName';
+      %= text_field 'LastName', class => 'input'
+    </span>
+  </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_DEPARTMENT'
-	</span><span class=data>
-	% param 'Dept' => $usr_datas->{dept} unless param 'Dept';
-	%= text_field 'Dept', class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_COMPANY'
-	</span><span class=data>
-	% param 'Company' => $usr_datas->{company} unless param 'Company';
-	%= text_field 'Company', class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_STREET_ADDRESS'
-	</span><span class=data>
-	% param 'Street' => $usr_datas->{street} unless param 'Street';
-	%= text_field 'Street', class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_CITY'
-	</span><span class=data>
-	% param 'City' => $usr_datas->{city} unless param 'City';
-	%= text_field 'City', class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_PHONE_NUMBER'
-	</span><span class=data>
-	% param 'Phone' => $usr_datas->{phone} unless param 'Phone';
-	%= text_field 'Phone', class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_EMAIL_DELIVERY'
-	</span><span class=data>
-	% param 'EmailForward' => $usr_datas->{emailforward} unless param 'EmailForward';
-	%= select_field 'EmailForward' => $c->emailForward_list(), class => 'input'
-	</span>
-	</p>
-	<p>
-	<span class=label>
-	%=l 'usr_FORWARDING_ADDRESS'
-	</span><span class=data>
-	% param 'ForwardAddress' => $usr_datas->{forwardaddress} unless param 'ForwardAddress';
-	%= text_field 'ForwardAddress', class => 'input'
-	</span>
-	</p>
+  <p>
+    <span class=label>
+      %= l 'usr_DEPARTMENT'
+    </span><span class=data>
+      % param 'Dept' => $usr_datas->{dept} unless param 'Dept';
+      %= text_field 'Dept', class => 'input'
+    </span>
+  </p>
+  <p>
+    <span class=label>
+      %= l 'usr_COMPANY'
+    </span><span class=data>
+      % param 'Company' => $usr_datas->{company} unless param 'Company';
+      %= text_field 'Company', class => 'input'
+    </span>
+  </p>
+  <p>
+    <span class=label>
+      %= l 'usr_STREET_ADDRESS'
+    </span><span class=data>
+      % param 'Street' => $usr_datas->{street} unless param 'Street';
+      %= text_field 'Street', class => 'input'
+    </span>
+  </p>
+  <p>
+    <span class=label>
+      %= l 'usr_CITY'
+    </span><span class=data>
+      % param 'City' => $usr_datas->{city} unless param 'City';
+      %= text_field 'City', class => 'input'
+    </span>
+  </p>
+  <p>
+    <span class=label>
+      %= l 'usr_PHONE_NUMBER'
+    </span><span class=data>
+      % param 'Phone' => $usr_datas->{phone} unless param 'Phone';
+      %= text_field 'Phone', class => 'input'
+    </span>
+  </p>
+  <p>
+    <span class=label>
+      %= l 'usr_EMAIL_DELIVERY'
+    </span><span class=data>
+      % param 'EmailForward' => $usr_datas->{emailforward} unless param 'EmailForward';
+      %= select_field 'EmailForward' => $c->emailForward_list(), class => 'input'
+    </span>
+  </p>
+  <p>
+    <span class=label>
+      %= l 'usr_FORWARDING_ADDRESS'
+    </span><span class=data>
+      % param 'ForwardAddress' => $usr_datas->{forwardaddress} unless param 'ForwardAddress';
+      %= text_field 'ForwardAddress', class => 'input'
+    </span>
+  </p>
 
-	<p>
-	<span class=label>
-	%=l 'usr_VPN_CLIENT_ACCESS'
-	</span><span class=data>
-	% param 'VPNClientAccess' => $usr_datas->{vpnclientaccess} unless param 'VPNClientAccess';
-	%= select_field 'VPNClientAccess' => [[ (l 'NO') => 'no'], [ (l 'YES') => 'yes']], class => 'input'
-	</span>
-	</p>
+  <p>
+    <span class=label>
+      %= l 'usr_VPN_CLIENT_ACCESS'
+    </span><span class=data>
+      % param 'VPNClientAccess' => $usr_datas->{vpnclientaccess} unless param 'VPNClientAccess';
+      %= select_field 'VPNClientAccess' => [ [ ( l 'NO' ) => 'no' ], [ ( l 'YES' ) => 'yes' ] ], class => 'input';
+    </span>
+  </p>
 
-    %	if (  $usr_datas->{trt} eq 'UPD' and $c->ipsec_for_acct eq 'OK' ) {
-    %	my $btn2 = $c->l('DOWNLOAD');
-	%= form_for '/useraccountso' => (method => 'POST') => begin
-	<p>
-	<span class=label>
-	%=l 'usr_LABEL_IPSECRW_DOWNLOAD'
-	</span><span class=data>
-	%= submit_button $btn2, class => 'action'
-	</span>
-	</p>
-	%= hidden_field 'trt' => 'CRT'
-        %= hidden_field 'user' => $usr_datas->{user}
-	%end
-    %	}
-
-    %	my @groups = @{$c->get_groups()};
-    %	if ( @groups ) {
-	<p>
-	<span class=label>
-	%=l 'usr_GROUP_MEMBERSHIPS'
-	</span>
-	<span class=data>
-	<table class="sme-border "><thead>
-	<tr><th class='sme-border'>
-    	    %=l 'usr_MEMBER'
-    	    </th><th class='sme-border'>
-    	    %=l 'GROUP'
-    	    </th><th class='sme-border'>
-    	    %=l 'DESCRIPTION'
-    	</th></tr>
-    	</thead><tbody>
-    	
-    %    foreach my $g ( @groups) {
-    %	     my $user = $usr_datas->{user};
-    %        my $groupname 	= $g->key();
-    %        my $description	= $g->prop('Description');
-    %        my $checked = '';
-    %        if ( $user and $c->is_user_in_group($user, $groupname) ) {
-    %            $checked = 'checked';
-    %        }
-        <tr>
-
-	    <td>
-	    % if ( $checked eq 'checked' ) {
-		<!-- % = check_box 'groupMemberships', value => $groupname, checked => $checked -->
-		<input type='checkbox' name='groupMemberships' checked value='<%= $groupname %>'>
-	    %} else {
-		%= check_box 'groupMemberships' => $groupname
-	    %}
-	    </td>
-            <!-- t td => (class => 'sme-border') => (check_box ' groupMemberships' => $groupname  $checked) -->
-            %= t td => (class => 'sme-border') => $groupname
-            %= t td => (class => 'sme-border') => "$description"
-    	</tr>
-    %    }
-    	</tbody>
-    	</table>
-    	</span>
-	</p>
-    %	}
-
-	<p>
-	<br><br>
-	%= submit_button $btn, class => 'action'
-	</p>
-
-	%= hidden_field 'trt' => $usr_datas->{trt}
-	% if ( $usr_datas->{trt} eq 'UPD' ) {
-    	    %= hidden_field 'user' => $usr_datas->{user}
-	% }
-	
+  % if ( $usr_datas->{trt} eq 'UPD' and $c->ipsec_for_acct eq 'OK' ) {
+    % my $btn2 = $c->l('DOWNLOAD');
+    %= form_for '/useraccountso' => ( method => 'POST' ) => begin
+      <p>
+        <span class=label>
+          %= l 'usr_LABEL_IPSECRW_DOWNLOAD'
+        </span><span class=data>
+          %= submit_button $btn2, class => 'action'
+        </span>
+      </p>
+      %= hidden_field 'trt' => 'CRT'
+      %= hidden_field 'user' => $usr_datas->{user}
     % end
+  % }
+
+  % my @groups = @{ $c->get_groups() };
+  % if ( @groups ) {
+    <p>
+      <span class=label>
+        %= l 'usr_GROUP_MEMBERSHIPS'
+      </span>
+      <span class=data>
+        <table class="sme-border "><thead>
+            <tr><th class='sme-border'>
+                %= l 'usr_MEMBER'
+              </th><th class='sme-border'>
+                %= l 'GROUP'
+              </th><th class='sme-border'>
+                %= l 'DESCRIPTION'
+            </th></tr>
+          </thead><tbody>
+
+            % foreach my $g ( @groups) {
+              % my $user = $usr_datas->{user};
+              % my $groupname = $g->key();
+              % my $description = $g->prop('Description');
+              % my $checked = '';
+              % if ( $user and $c->is_user_in_group($user, $groupname) ) {
+                % $checked = 'checked';
+              % }
+            <tr>
+
+              <td>
+                % if ( $checked eq 'checked' ) {
+                  <!-- % = check_box 'groupMemberships', value => $groupname, checked => $checked -->
+                  <input type='checkbox' name='groupMemberships' checked value='<%= $groupname %>'>
+                % } else {
+                %= check_box 'groupMemberships' => $groupname
+              % }
+            </td>
+            <!-- t td => (class => 'sme-border') => (check_box ' groupMemberships' => $groupname  $checked) -->
+            %= t td => ( class => 'sme-border' ) => $groupname
+            %= t td => ( class => 'sme-border' ) => "$description"
+          </tr>
+          % }
+        </tbody>
+      </table>
+    </span>
+  </p>
+  % }
+
+  <p>
+    <br><br>
+    %= submit_button $btn, class => 'action'
+  </p>
+
+  %= hidden_field 'trt' => $usr_datas->{trt}
+  % if ( $usr_datas->{trt} eq 'UPD' ) {
+    %= hidden_field 'user' => $usr_datas->{user}
+  % }
+
+  % end
 
 </div>

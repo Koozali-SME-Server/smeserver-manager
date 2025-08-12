@@ -1,25 +1,25 @@
 <div id='pse_del'>
 
-    %	my $btn = l('REMOVE');
-    %= form_for '/pseudonyms2' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'pse_REMOVE_PSEUDONYM'
-	</h2>
+  % my $btn = l('REMOVE');
+  %= form_for '/pseudonyms2' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'pse_REMOVE_PSEUDONYM'
+      </h2>
 
-	<p>
-	%= $c->render_to_string(inline => l('pse_ABOUT_TO_REMOVE', $pse_datas->{pseudonym}));
+      <p>
+        %= $c->render_to_string( inline => l( 'pse_ABOUT_TO_REMOVE', $pse_datas->{pseudonym} ) );
 
-	</p>
+      </p>
 
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+      <p>
+        <br>
+        %= submit_button "$btn", class => 'action'
+      </p>
 
-        %= hidden_field 'trt' => $pse_datas->{trt}
-        %= hidden_field 'Pseudonym' => $pse_datas->{pseudonym}
+      %= hidden_field 'trt' => $pse_datas->{trt}
+      %= hidden_field 'Pseudonym' => $pse_datas->{pseudonym}
 
-    % end    
+    % end
 
-</div>
+  </div>

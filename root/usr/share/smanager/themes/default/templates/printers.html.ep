@@ -1,32 +1,32 @@
 % layout 'default', title => "Sme server 2 - printers";
 
 % content_for 'module' => begin
-<div id='module' class='module printers-panel'>
+  <div id='module' class='module printers-panel'>
 
-    %if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $prt_datas
-	</p>
-    %}
+    % if (config->{debug} == 1) {
+      <p>
+        %= dumper $c->current_route
+        %= dumper $prt_datas
+      </p>
+    % }
 
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-			%= $c->render_to_string(inline => stash 'error') 
-		</div>
-    %}
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
 
-    <h1><%= $title%></h1>
+  <h1><%= $title %></h1>
 
-    % if ($prt_datas->{trt} eq 'ADD') {
-	%= include 'partials/_prt_add'
-    %} elsif ($prt_datas->{trt} eq 'DEL') {
-	    %= include 'partials/_prt_del'
-	%} elsif ($prt_datas->{trt} eq 'NET') {
-		%= include 'partials/_prt_net'
-	    %} else {
-		%= include 'partials/_prt_list'
-	    %}
+  % if ($prt_datas->{trt} eq 'ADD') {
+    %= include 'partials/_prt_add'
+  % } elsif ($prt_datas->{trt} eq 'DEL') {
+  %= include 'partials/_prt_del'
+  % } elsif ($prt_datas->{trt} eq 'NET') {
+  %= include 'partials/_prt_net'
+  % } else {
+  %= include 'partials/_prt_list'
+  % }
 
 </div>
-%end
+% end

@@ -2,16 +2,16 @@
 
 % content_for 'module' => begin
 
-<div id="central" class="sme-error module">
-    <p><br>dev<br> Oups !!! 
-        The page you were requesting
-        "<%= $self->req->url->path || '/' %>"
-        caused en exception !!
-    <br>dev<br>
+  <div id="central" class="sme-error module">
+    <p><br>dev<br> Oups !!!
+      The page you were requesting
+      "<%= $self->req->url->path || '/' %>"
+      caused en exception !!
+      <br>dev<br>
     </p>
     <p>
-    	%= link_to Back => '/'
+      %= link_to Back => '/'
     </p>
-</div>
+  </div>
 
 % end

@@ -1,81 +1,81 @@
 <div id='prt_list'>
 
 
-    % my $btn = l('prt_INITIAL_BTN');
+  % my $btn = l('prt_INITIAL_BTN');
 
-    %= form_for '/printers' => (method => 'POST') => begin
+  %= form_for '/printers' => ( method => 'POST' ) => begin
 
-        %= hidden_field 'trt' => 'ADD'
+    %= hidden_field 'trt' => 'ADD'
 
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
-   % end    
+    <p>
+      <br>
+      %= submit_button "$btn", class => 'action'
+    </p>
+  % end
 
-	<p>
-	<h2>
-	%=l 'prt_CURRENT_LIST'
-	</h2>
-	<br><br>
-    % 	my $numPrinters = @$printerDrivers;
-    %	if ($numPrinters == 0){
-        %=l 'prt_NO_PRINTERS'
-    %	} else {
-	<table class="sme-border TableSort"><thead>
-	<tr>
-    	    <th class='sme-border'>
-    	    %=l 'NAME'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'DESCRIPTION'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'LOCATION'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'prt_REMOTE_ADDRESS'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'prt_REMOTE_NAME'
-    	    </th>
-    	    <th class='sme-border'>
-    	    %=l 'ACTION'
-    	    </th>
-    	</tr>
-    	</thead><tbody>
-    %    foreach my $printer (@$printerDrivers)
-    %    {
-    %        my $address = ($printer->prop('Location') eq 'remote')
-    %        ? $printer->prop('Address') : 'N/A';
-    %        my $remoteName = ($printer->prop('Location') eq 'remote')
-    %        ? $printer->prop('RemoteName') : 'N/A';
-    %        $remoteName = 'raw' unless ($remoteName);
+  <p>
+    <h2>
+      %= l 'prt_CURRENT_LIST'
+    </h2>
+    <br><br>
+    % my $numPrinters = @$printerDrivers;
+    % if ($numPrinters == 0){
+      %= l 'prt_NO_PRINTERS'
+    % } else {
+    <table class="sme-border TableSort"><thead>
         <tr>
-            %= t td => (class => 'sme-border') => $printer->key
-            %= t td => (class => 'sme-border') => $printer->prop('Description')
-            %= t td => (class => 'sme-border') => $printer->prop('Location')
-            %= t td => (class => 'sme-border') => $address
-            %= t td => (class => 'sme-border') => $remoteName
-			<td class='sme-border'>
-				%my $remove_text = l('REMOVE');  # Localized text
-				%my $csrf_token = "TOKEN";  # CSRF token for security
-				%my $printer_name = $printer->key;
-				%my $actionRemove = qq{
-                                %       <a href="printers2?CsrfDef=$csrf_token&trt=DEL&&printer=$printer_name">
-				%	<button type='button' class='sme-remove-button' title='$remove_text' >
-				%		$remove_text
-				%	</button>
-                                %       </a>
-				%};
-			<%= $c->render_to_string(inline => $actionRemove) %>
-			</td>
-    	</tr>
-    %    }
-    	</tbody>
-    	</table>
-	<%} %>
-	</p>
+          <th class='sme-border'>
+            %= l 'NAME'
+          </th>
+          <th class='sme-border'>
+            %= l 'DESCRIPTION'
+          </th>
+          <th class='sme-border'>
+            %= l 'LOCATION'
+          </th>
+          <th class='sme-border'>
+            %= l 'prt_REMOTE_ADDRESS'
+          </th>
+          <th class='sme-border'>
+            %= l 'prt_REMOTE_NAME'
+          </th>
+          <th class='sme-border'>
+            %= l 'ACTION'
+          </th>
+        </tr>
+      </thead><tbody>
+        % foreach my $printer (@$printerDrivers)
+        % {
+          % my $address = ( $printer->prop('Location') eq 'remote' )
+          % ? $printer->prop('Address') : 'N/A';
+          % my $remoteName = ( $printer->prop('Location') eq 'remote' )
+          % ? $printer->prop('RemoteName') : 'N/A';
+          % $remoteName = 'raw' unless ($remoteName);
+          <tr>
+            %= t td => ( class => 'sme-border' ) => $printer->key
+            %= t td => ( class => 'sme-border' ) => $printer->prop('Description')
+            %= t td => ( class => 'sme-border' ) => $printer->prop('Location')
+            %= t td => ( class => 'sme-border' ) => $address
+            %= t td => ( class => 'sme-border' ) => $remoteName
+            <td class='sme-border'>
+              % my $remove_text = l('REMOVE'); # Localized text
+              % my $csrf_token = "TOKEN"; # CSRF token for security
+              % my $printer_name = $printer->key;
+              % my $actionRemove = qq{
+                % <a href="printers2?CsrfDef=$csrf_token&trt=DEL&&printer=$printer_name">
+                  % <button type='button' class='sme-remove-button' title='$remove_text' >
+                    % $remove_text
+                    % </button>
+                  % </a>
+              % };
+            <%= $c->render_to_string( inline => $actionRemove ) %>
+          </td>
+        </tr>
+        % }
+      </tbody>
+    </table>
+    <% } %>
+  </p>
 
 
 </div>

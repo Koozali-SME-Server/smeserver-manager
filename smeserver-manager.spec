@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 112
+%define release 113
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Aug 11 2025 Brian Read <brianr@koozali.org> 11.0.0-113.sme
+- Re-factor all template files to make them nicely formatted  [SME: 13103]
+
 * Thu Aug 07 2025 Brian Read <brianr@koozali.org> 11.0.0-112.sme
 - Fix sprintf fail in viewlogfiles when % in log line [SME: 13099]
 - Fix reboot/shutdown failure - reported by Massimo  - fixed by JC [SME: 13097]

@@ -1,12 +1,12 @@
 
 <div id="header2" class="hd2 module gradient-panel">
-	<img src="images/KoozaliServerManager.png" alt="Koozali Logo" class="logo" >
-	% if ( not defined $c->session->{username} ) {
-		<button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="login">Login</a></button>
-	% } else {
-		<button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="logout">Logout <%= $c->session->{username} %></a></button>
-	% }
-	<div id="flag-container" class = "flag-style">
-		<!--			 The flag icon will be inserted here -->
-	</div>
+  <img src="images/KoozaliServerManager.png" alt="Koozali Logo" class="logo" >
+  % if ( not defined $c->session->{username} ) {
+    <button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="login">Login</a></button>
+  % } else {
+  <button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="logout">Logout <%= $c->session->{username} %></a></button>
+  % }
+  <div id="flag-container" class = "flag-style">
+    <!--			 The flag icon will be inserted here -->
+  </div>
 </div>

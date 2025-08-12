@@ -1,67 +1,71 @@
 <%
-
-    my $backups = esmith::BackupHistoryDB->open; # no UTF8
-    my $now = time();
-    my $backup_rec = $backups->new_record($now, {
-	type => 'backup_record', BackupType => 'desktop',
-	StartEpochTime => $now,
-	});
-
-    # Dump the current mysql tables so that they are part of the image.
-    # The events handle cases where mysqld is not enabled, and/or is not running.
-    my $status = system("/sbin/e-smith/signal-event", "pre-backup", "desktop");
-    if ($status) {
-		$c->desktopBackupRecordStatus($backup_rec, 'pre-backup', $status);
-		return ($c->l('bac_OPERATION_STATUS_REPORT').$c->l('bac_ERR_PRE_BACKUP'));
+  my $backups    = esmith::BackupHistoryDB->open;    # no UTF8
+  my $now        = time();
+  my $backup_rec = $backups->new_record(
+    $now,
+    {
+      type           => 'backup_record',
+      BackupType     => 'desktop',
+      StartEpochTime => $now,
     }
+  );
 
-    my $clvl = $c->stash('compressionlevel');
-    my $cmd = "/bin/tar --create --file=- --directory / @{$c->stash('exclude')}  "
-        . "@{$c->stash('directories')} | /usr/bin/gzip $clvl ";
+  # Dump the current mysql tables so that they are part of the image.
+  # The events handle cases where mysqld is not enabled, and/or is not running.
+  my $status = system( "/sbin/e-smith/signal-event", "pre-backup", "desktop" );
+  if ($status) {
+    $c->desktopBackupRecordStatus( $backup_rec, 'pre-backup', $status );
+    return ( $c->l('bac_OPERATION_STATUS_REPORT') . $c->l('bac_ERR_PRE_BACKUP') );
+  }
 
-    my $success = open my $fh, '-|', $cmd;
-    #unless ($success) { return "Error download command."; };
-    if ($success) {
-		# Try with download plugin - seems to fail to complete download and also 
-		# name of file deposited is not as required.
-		#my $output = do { local $/; <$fh> };
-		#close $fh;
-		#$c->render_file(
-			#data => $output,
-			#filename => 'output.txt',
-			#content_type => 'text/plain'
-		#);
-		# So organise it ourselves.
-		$c->res->headers->content_type('application/x-tar');
-		$c->res->headers->content_disposition(qq/attachment; filename="smeserver.tgz"/);
-		my $cb;
-		$cb = sub {
-		my $c = shift;
-		my $size = 500 * 1024;
-		my $length = sysread($fh, my $buffer, $size);
-		unless ($length) {
-		  close $fh;
-		  undef $cb;
-		  $c->finish;
-		  return;
-		}
-		$c->write_chunk($buffer, $cb);
-		};
-		$c->$cb;
-	} else {
-		$c->render(text => "Failed to execute command: $!", status => 500);
-	}
+  my $clvl = $c->stash('compressionlevel');
+  my $cmd  = "/bin/tar --create --file=- --directory / @{$c->stash('exclude')}  "
+    . "@{$c->stash('directories')} | /usr/bin/gzip $clvl ";
 
-    # Remove the dumped tables.
-    $status = system("/sbin/e-smith/signal-event", "post-backup", "desktop");
-    if ($status) {
-		$c->desktopBackupRecordStatus($backup_rec, 'post-backup', $status);
-		die ($c->l('bac_ERR_POST_BACKUP'),"\n");
-    }
+  my $success = open my $fh, '-|', $cmd;
+  #unless ($success) { return "Error download command."; };
+  if ($success) {
+    # Try with download plugin - seems to fail to complete download and also
+    # name of file deposited is not as required.
+    #my $output = do { local $/; <$fh> };
+    #close $fh;
+    #$c->render_file(
+    #data => $output,
+    #filename => 'output.txt',
+    #content_type => 'text/plain'
+    #);
+    # So organise it ourselves.
+    $c->res->headers->content_type('application/x-tar');
+    $c->res->headers->content_disposition(qq/attachment; filename="smeserver.tgz"/);
+    my $cb;
+    $cb = sub {
+      my $c      = shift;
+      my $size   = 500 * 1024;
+      my $length = sysread( $fh, my $buffer, $size );
+      unless ($length) {
+        close $fh;
+        undef $cb;
+        $c->finish;
+        return;
+      }
+      $c->write_chunk( $buffer, $cb );
+    };
+    $c->$cb;
+  }
+  else {
+    $c->render( text => "Failed to execute command: $!", status => 500 );
+  }
 
-    $now = time();
-    $backup_rec->set_prop('EndEpochTime', "$now");
-    $backup_rec->set_prop('Result', "0");
+  # Remove the dumped tables.
+  $status = system( "/sbin/e-smith/signal-event", "post-backup", "desktop" );
+  if ($status) {
+    $c->desktopBackupRecordStatus( $backup_rec, 'post-backup', $status );
+    die( $c->l('bac_ERR_POST_BACKUP'), "\n" );
+  }
 
+  $now = time();
+  $backup_rec->set_prop( 'EndEpochTime', "$now" );
+  $backup_rec->set_prop( 'Result',       "0" );
+  
 %>
 1;

@@ -1,40 +1,40 @@
-% layout 'default', title => "Sme server 2 -  roundcube";
+% layout 'default', title => "Sme server 2 - roundcube";
 
 % content_for 'module' => begin
 
 
-<div id='roundcube' class='roundcube roundcube-panel module'>
+  <div id='roundcube' class='roundcube roundcube-panel module'>
     % if (config->{debug} == 1) {
-		<p>
-			%= dumper $c->current_route
-		</p>
+      <p>
+        %= dumper $c->current_route
+      </p>
     % }
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-			%= $c->render_to_string(inline => stash 'error') 
-		</div>
-    %}
-    <h1><%=$title %></h1><br>
-    <p>If the Webmail panel does not appear after logging in, then please check your password.</p><br />
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
+  <h1><%= $title %></h1><br>
+  <p>If the Webmail panel does not appear after logging in, then please check your password.</p><br />
 
-    % my $thisdomain = $c->req->url->to_abs->host;
-    % my $url = $c->stash('modul');
-    % if (!$url) {
-	%	$url = $thisdomain."/roundcube";
-	%}
-    % my $username = 'admin';
-    % if ($url =~ /[?&]_user=([^&]+)/) {
-	%	$username = $1;
-	%}
-	% if (!($url =~ /https:/)) {
+  % my $thisdomain = $c->req->url->to_abs->host;
+  % my $url = $c->stash('modul');
+  % if (!$url) {
+    % $url = $thisdomain . "/roundcube";
+  % }
+  % my $username = 'admin';
+  % if ($url =~ /[?&]_user=([^&]+)/) {
+    % $username = $1;
+  % }
+  % if (!($url =~ /https:/)) {
     % $url = 'https://' . $url;
-	%}
+  % }
 
-    <div class='roundcube'>
-		<a href="<%= "https://".$thisdomain."/" %>roundcube?_user=<%= $username %>"><button class="sme-fullwindow1-button" width=20em title="<%= l('Full Window') %>"><%= l('Full Window') %></button></a>
-		<object id="roundcube" data="<%=$url %>" title="<%= $c->stash('title') %>"  type="text/html" ><%= $c->stash('title') %> not found</object>
-	</div>
+  <div class='roundcube'>
+    <a href="<%= "https://" . $thisdomain . "/" %>roundcube?_user=<%= $username %>"><button class="sme-fullwindow1-button" width=20em title="<%= l('Full Window') %>"><%= l('Full Window') %></button></a>
+    <object id="roundcube" data="<%= $url %>" title="<%= $c->stash('title') %>"  type="text/html" ><%= $c->stash('title') %> not found</object>
+  </div>
 </div>
 
 
-%end
+% end

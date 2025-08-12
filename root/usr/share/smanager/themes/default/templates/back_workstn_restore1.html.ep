@@ -1,36 +1,59 @@
 % layout 'default', title => "Sme server 2 - restore";
-
+%= stylesheet '/css/backup.css'
 % content_for 'module' => begin
-
-<div id='module' class='module back_workstn_restore1-panel'>
+  <div id='module' class='module back_workstn_restore1-panel'>
+    %= javascript '/js/backup_workstation_restore.js'
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $bac_datas
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $bac_datas
+      </p>
     % }
 
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
-    %}
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
 
-    <h1><%= $title%></h1>
+  <h1><%= $title %></h1>
 
-    %= form_for '/backupd' => (method => 'POST') => begin
+  %= form_for '/backupd' => ( method => 'POST' ) => begin
 
-	<h2>
-	%=l 'bac_WORKSTN_RESTORE'
-	</h2>
-	<p>
-	%= $c->render_to_string(inline => $bac_datas->{restore_log})
-	</p><p>
-	%=l 'bac_YOU_MUST_REBOOT'
-	</p>
-	%= hidden_field 'Function' => $bac_datas->{'function'}
-	%= submit_button $c->l('bac_REBOOT'), class => 'action'
-    % end
+    <h2>
+      %= l 'bac_WORKSTN_RESTORE'
+    </h2>
+
+    <fieldset>
+      <div id="status-container">
+        <div><strong>Stage:</strong> <span id="stage">-</span></div>
+        <div id="progress-bar" aria-label="progress bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div id="progress-bar-inner">0%</div>
+        </div>
+
+        <div id="message-log-container">
+          <h3>Console Output:</h3>
+          <div id="message-log"></div>
+        </div>
+
+        <div id="completion-status"></div>
+      </div>
+    </fieldset>
+
+    <!--
+    <p>
+      <fieldset>
+        %= $c->render_to_string( inline => $bac_datas->{restore_log} )
+      </fieldset>
+    </p>
+    -->
+
+    <p>
+      %= l 'bac_YOU_MUST_REBOOT'
+    </p>
+    %= hidden_field 'Function' => $bac_datas->{'function'}
+    %= submit_button $c->l('bac_REBOOT'), class => 'action'
+  % end
 </div>
 
 % end

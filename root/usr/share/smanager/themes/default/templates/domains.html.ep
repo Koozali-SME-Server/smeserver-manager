@@ -1,32 +1,32 @@
 % layout 'default', title => "Sme server 2 - domains";
 
 % content_for 'module' => begin
-<div id='module' class='module domains-panel'>
+  <div id='module' class='module domains-panel'>
 
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $dom_datas
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $dom_datas
+      </p>
     % }
-    
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
-    %}
 
-    <h1><%= $title%></h1>
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
 
-    % if ($dom_datas->{trt} eq 'ADD' or $dom_datas->{trt} eq 'UPD') {
-	%= include 'partials/_dom_upd'
-    %} elsif ($dom_datas->{trt} eq 'DEL') {
-	    %= include 'partials/_dom_del'
-    %} elsif ($dom_datas->{trt} eq 'UP2') {
-	    %= include 'partials/_dom_up2'
-    %} else {
-        %= include 'partials/_dom_list'
-    %}
+  <h1><%= $title %></h1>
+
+  % if ($dom_datas->{trt} eq 'ADD' or $dom_datas->{trt} eq 'UPD') {
+    %= include 'partials/_dom_upd'
+  % } elsif ($dom_datas->{trt} eq 'DEL') {
+  %= include 'partials/_dom_del'
+  % } elsif ($dom_datas->{trt} eq 'UP2') {
+  %= include 'partials/_dom_up2'
+  % } else {
+  %= include 'partials/_dom_list'
+  % }
 
 </div>
-%end
+% end

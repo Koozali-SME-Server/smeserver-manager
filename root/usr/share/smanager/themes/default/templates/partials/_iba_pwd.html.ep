@@ -1,42 +1,42 @@
 <div id='iba_net'>
 
-    % 	my $btn = l('SAVE');
+  % my $btn = l('SAVE');
 
-    %= form_for '/ibaysd' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'PASSWORD_RESET'
-	</h2>
-	
-	<br><br>
-	%=l 'iba_PASSWORD_DESC'
-	%= $iba_datas->{ibay}
-	</p>
-	
-	<p>
-	<span class=label>
-	%=l 'PASSWORD_NEW', class => 'label'
-	</span><span class=data>
-	%= password_field 'newPass', class => 'input' , class=>'sme-password'
-	</span>
-	</p>
+  %= form_for '/ibaysd' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'PASSWORD_RESET'
+      </h2>
 
-	<p>
-	<span class=label>
-	%=l 'PASSWORD_VERIFY_NEW', class => 'label'
-	</span><span class=data>
-	%= password_field 'newPassVerify', class => 'input', class=>'sme-password'
-	</span>
-	</p>
+      <br><br>
+      %= l 'iba_PASSWORD_DESC'
+      %= $iba_datas->{ibay}
+    </p>
 
-	<p>
-	<br><br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    <p>
+      <span class=label>
+        %= l 'PASSWORD_NEW', class => 'label'
+      </span><span class=data>
+        %= password_field 'newPass', class => 'input', class => 'sme-password'
+      </span>
+    </p>
 
-	%= hidden_field 'trt' => $iba_datas->{trt}
-	%= hidden_field 'ibay' => $iba_datas->{ibay}
-	
-    % end    
+    <p>
+      <span class=label>
+        %= l 'PASSWORD_VERIFY_NEW', class => 'label'
+      </span><span class=data>
+        %= password_field 'newPassVerify', class => 'input', class => 'sme-password'
+      </span>
+    </p>
+
+    <p>
+      <br><br>
+      %= submit_button "$btn", class => 'action'
+    </p>
+
+    %= hidden_field 'trt' => $iba_datas->{trt}
+    %= hidden_field 'ibay' => $iba_datas->{ibay}
+
+  % end
 
 </div>

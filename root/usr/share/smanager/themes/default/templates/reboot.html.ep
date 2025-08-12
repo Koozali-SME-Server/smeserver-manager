@@ -2,39 +2,39 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module reboot-panel'>
+  <div id='module' class='module reboot-panel'>
 
-    %if (config->{debug} == 1) {
-	<p>
-	(DBG)route: <%= $c->current_route %><br>
-	</p>
-    %}
+    % if (config->{debug} == 1) {
+      <p>
+        (DBG)route: <%= $c->current_route %><br>
+      </p>
+    % }
 
-    <h1><%= $title %></h1>
-    <br>
+  <h1><%= $title %></h1>
+  <br>
 
-    %= $modul
+  %= $modul
 
-    <% 	my $btn = l('PERFORM'); %>
-    %= form_for 'reboot' => (method => 'POST') => begin
+  <% my $btn = l('PERFORM'); %>
+  %= form_for 'reboot' => ( method => 'POST' ) => begin
 
-	<p>
-    %= $c->render_to_string(inline => $c->l('rbo_DESCRIPTION'))
-    <br><br>
+    <p>
+      %= $c->render_to_string( inline => $c->l('rbo_DESCRIPTION') )
+      <br><br>
 
-	<span class=label>
-	%=l 'rbo_LABEL_REBOOT'
-	</span>
-	<span class=data>
-	%= select_field 'function' => $c->rebootFunction_list()
-	</span>
-	</p><br>
+      <span class=label>
+        %= l 'rbo_LABEL_REBOOT'
+      </span>
+      <span class=data>
+        %= select_field 'function' => $c->rebootFunction_list()
+      </span>
+    </p><br>
 
-	%= submit_button "$btn", class => 'action'
+    %= submit_button "$btn", class => 'action'
 
-    % end
+  % end
 
-    %= hidden_field 'debug' => '0'
+  %= hidden_field 'debug' => '1'
 
 </div>
-%end
+% end

@@ -2,33 +2,33 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module bugreport2-panel'>
+  <div id='module' class='module bugreport2-panel'>
 
     % if (config->{debug} == 1) {
-	<p>
-	(DBG)route: <%= $c->current_route %><br>
-	(DBG)trt: <%= $bugr_datas->{trt} %><br>
-	</p>
+      <p>
+        (DBG)route: <%= $c->current_route %><br>
+        (DBG)trt: <%= $bugr_datas->{trt} %><br>
+      </p>
     % }
 
-    <h1><%= $title %></h1>
+  <h1><%= $title %></h1>
 
-    <br><%= $modul %><br>
+  <br><%= $modul %><br>
 
-    <% my $btn = l('bugr_Download this report'); %>
+  <% my $btn = l('bugr_Download this report'); %>
 
-    %= form_for 'bugreportD' => (method => 'POST') => begin
-		%= submit_button "$btn", class => 'action'
-		%= hidden_field 'trt' => $bugr_datas->{trt}
-    % end   
-    
-    % my $out = "================== <br />";
-    % $out .= "Boot anaysis image (right click and save image to download)<br />";
-    % $out .= "================== <br />";
-    % $out .= "<img src='images/boot.svg' alt='boot timing image' width=95% >";
-    
-   <br><%= $c->render_to_string(inline=>$out) %><br>
+  %= form_for 'bugreportD' => ( method => 'POST' ) => begin
+    %= submit_button "$btn", class => 'action'
+    %= hidden_field 'trt' => $bugr_datas->{trt}
+  % end
+
+  % my $out = "================== <br />";
+  % $out .= "Boot anaysis image (right click and save image to download)<br />";
+  % $out .= "================== <br />";
+  % $out .= "<img src='images/boot.svg' alt='boot timing image' width=95% >";
+
+  <br><%= $c->render_to_string( inline => $out ) %><br>
 
 </div>
 
-%end
+% end

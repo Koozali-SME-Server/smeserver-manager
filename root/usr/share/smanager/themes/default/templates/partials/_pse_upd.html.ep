@@ -1,53 +1,53 @@
 <div id='pse_upd'>
 
-    % 	my $btn = l('SAVE');
+  % my $btn = l('SAVE');
 
-    %= form_for '/pseudonyms2' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'pse_MODIFY_PSEUDONYM'
-	</h2>
-	<br>
-	%=l 'pse_DESC_PSEUDONYM_NAME'
-	</p>
+  %= form_for '/pseudonyms2' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'pse_MODIFY_PSEUDONYM'
+      </h2>
+      <br>
+      %= l 'pse_DESC_PSEUDONYM_NAME'
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'pse_PSEUDONYM_NAME', class => 'label'
-	</span><span class=data>
-	%= $pse_datas->{pseudonym}, class => 'data'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'pse_PSEUDONYM_NAME', class => 'label'
+      </span><span class=data>
+        %= $pse_datas->{pseudonym}, class => 'data'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'pse_SELECT_ACCOUNT', class => 'label'
-	</span><span class=data>
-	% param 'Account' => $pse_datas->{account} unless param 'Account';
-	%= select_field 'Account' => $c->existing_accounts_list(), class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'pse_SELECT_ACCOUNT', class => 'label'
+      </span><span class=data>
+        % param 'Account' => $pse_datas->{account} unless param 'Account';
+        %= select_field 'Account' => $c->existing_accounts_list(), class => 'input'
+      </span>
+    </p>
 
-    %if ( $c->is_pseudonym_not_removable( $pse_datas->{pseudonym} ) ) {
+    % if ( $c->is_pseudonym_not_removable( $pse_datas->{pseudonym} ) ) {
 
-	<p>
-	<span class=label>
-	%=l 'pse_SELECT_INTERNAL', class => 'label'
-	</span><span class=data>
-	% param 'Internal' => $pse_datas->{internal} unless param 'Internal';
-	%= select_field 'Internal' => [ [(l 'YES') => 'YES'], [(l 'NO') => 'NO'] ], class => 'input'
-	</span>
-	</p>
+      <p>
+        <span class=label>
+          %= l 'pse_SELECT_INTERNAL', class => 'label'
+        </span><span class=data>
+          % param 'Internal' => $pse_datas->{internal} unless param 'Internal';
+          %= select_field 'Internal' => [ [ ( l 'YES' ) => 'YES' ], [ ( l 'NO' ) => 'NO' ] ], class => 'input';
+        </span>
+      </p>
 
-    %}
-    
-	<p>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    % }
 
-	%= hidden_field 'trt' => $pse_datas->{trt}
-        %= hidden_field 'Pseudonym' => $pse_datas->{pseudonym}
-	
-    %end
+  <p>
+    %= submit_button "$btn", class => 'action'
+  </p>
+
+  %= hidden_field 'trt' => $pse_datas->{trt}
+  %= hidden_field 'Pseudonym' => $pse_datas->{pseudonym}
+
+  % end
 
 </div>

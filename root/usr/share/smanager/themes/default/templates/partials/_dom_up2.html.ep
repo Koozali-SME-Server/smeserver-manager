@@ -1,37 +1,37 @@
 <div id='dom_up2'>
 
-    % 	my $btn = l('SAVE');
+  % my $btn = l('SAVE');
 
-    %= form_for '/domains2' => (method => 'POST') => begin
+  %= form_for '/domains2' => ( method => 'POST' ) => begin
 
-	<p><br>
-	%=l 'dom_DESC_CORPORATE_DNS'
-	</p>
+    <p><br>
+      %= l 'dom_DESC_CORPORATE_DNS'
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'dom_LABEL_CORPORATE_DNS_PRIMARY'
-	</span><span class=data>
-	% param 'Forwarder' => $dom_datas->{forwarder} unless param 'Forwarder';
-	%= text_field 'Forwarder', class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'dom_LABEL_CORPORATE_DNS_PRIMARY'
+      </span><span class=data>
+        % param 'Forwarder' => $dom_datas->{forwarder} unless param 'Forwarder';
+        %= text_field 'Forwarder', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'dom_LABEL_CORPORATE_DNS_SECONDARY', class => 'label'
-	</span><span class=data>
-	% param 'Forwarder2' => $dom_datas->{forwarder2} unless param 'Forwarder2';
-	%= text_field 'Forwarder2',  class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'dom_LABEL_CORPORATE_DNS_SECONDARY', class => 'label'
+      </span><span class=data>
+        % param 'Forwarder2' => $dom_datas->{forwarder2} unless param 'Forwarder2';
+        %= text_field 'Forwarder2', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    <p>
+      %= submit_button "$btn", class => 'action'
+    </p>
 
-	%= hidden_field 'trt' => $dom_datas->{trt}
-	
-    %end
+    %= hidden_field 'trt' => $dom_datas->{trt}
+
+  % end
 
 </div>

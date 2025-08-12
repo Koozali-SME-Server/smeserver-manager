@@ -1,25 +1,25 @@
-<%     use POSIX qw(strftime); %>
+<% use POSIX qw(strftime); %>
 <div id="info">
-    <% if (! $c->session->{PwdSet} ) { %>
-	<div class="sme-error module"><h5>
+  <% if (! $c->session->{PwdSet} ) { %>
+    <div class="sme-error module"><h5>
         Warning: you have not yet changed the default system password.</h5></div>
-    <% } %>
-    <% if ( $c->is_unsafe ) { %>
-	<div class="sme-error module"><h5>
+  <% } %>
+  <% if ( $c->is_unsafe ) { %>
+    <div class="sme-error module"><h5>
         Warning: a reconfigure and reboot is required before proceeding! Failure to do so now
         may leave your system in an unknown state!</h5></div>
-    <% } %>
-    <% if ( $c->session->{Access} eq 'public' && ((config->{debug} ne '0') || (config->{mode} ne 'production')) ) { %>
-	<div class="sme-error module"><h5>
+  <% } %>
+  <% if ( $c->session->{Access} eq 'public' && ((config->{debug} ne '0') || (config->{mode} ne 'production')) ) { %>
+    <div class="sme-error module"><h5>
         Warning: Development or debug mode enabled AND public access is offered !
-        </h5></div>
-    <% } %>
-    <% my $curdate = strftime '%Y%m%d', localtime; %>
-    <% if ( "$curdate"  >= "20290531" ) { %>
-	<div class="sme-error"><h5>
-      URGENT NOTICE: As per May 31st 2029, SME Server 11 is obsolete, and potentially INSECURE. NO support will be offered for any issue found with this installed version.
-      Please migrate IMMEDIATELY to Koozali SME Server 12 or higher version. Failure to upgrade may lead to the compromise of this server.
+    </h5></div>
+  <% } %>
+  <% my $curdate = strftime '%Y%m%d', localtime; %>
+  <% if ( "$curdate" >= "20290531" ) { %>
+    <div class="sme-error"><h5>
+        URGENT NOTICE: As per May 31st 2029, SME Server 11 is obsolete, and potentially INSECURE. NO support will be offered for any issue found with this installed version.
+        Please migrate IMMEDIATELY to Koozali SME Server 12 or higher version. Failure to upgrade may lead to the compromise of this server.
       </br>Please, consult <a href="https://wiki.koozali.org/SME_Server:Download" target="_blank">https://wiki.koozali.org/SME_Server:Download</a> to get the latest version
-     </h5></div>
-    <% } %>
+  </h5></div>
+<% } %>
 </div>

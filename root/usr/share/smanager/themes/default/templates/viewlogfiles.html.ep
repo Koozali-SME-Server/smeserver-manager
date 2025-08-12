@@ -1,68 +1,68 @@
 % layout 'default', title => "Sme server 2 - viewlogfiles";
 
 % content_for 'module' => begin
-<div id='module' class='module viewlogfiles-panel'>
-    %if (config->{debug} == 1) {
-	<p>
-	(DBG)route: <%= $c->current_route %><br>
-	</p>
-    %}
-    <h1><%= $title %></h1>
-    <br>
-    <%= $notif %>
-    <% 	my $btn = l('NEXT'); %>
+  <div id='module' class='module viewlogfiles-panel'>
+    % if (config->{debug} == 1) {
+      <p>
+        (DBG)route: <%= $c->current_route %><br>
+      </p>
+    % }
+  <h1><%= $title %></h1>
+  <br>
+  <%= $notif %>
+  <% my $btn = l('NEXT'); %>
 
-    %= form_for 'viewlogfiles' => (method => 'POST') => begin
-	<p>
-	%=l 'log_FIRSTPAGE_DESC'
-	<br>
-	<span class=label>
-	%=l 'log_LOG_FILE_SELECT_DESC'
-	</span><span class=data>
-	% param 'Filename' => 'messages';
-	<!-- select_field 'Filename' => [['toto'], ['tata']], class => 'input' -->
-	%= select_field 'Filename' => $c->findlogFiles(), class => 'input'
-	</span>
-	</p>
+  %= form_for 'viewlogfiles' => ( method => 'POST' ) => begin
+    <p>
+      %= l 'log_FIRSTPAGE_DESC'
+      <br>
+      <span class=label>
+        %= l 'log_LOG_FILE_SELECT_DESC'
+      </span><span class=data>
+        % param 'Filename' => 'messages';
+        <!-- select_field 'Filename' => [['toto'], ['tata']], class => 'input' -->
+        %= select_field 'Filename' => $c->findlogFiles(), class => 'input'
+      </span>
+    </p>
 
-	<p>
-	%=l 'log_FILTER_PATTERN_DESC'
-	<br>
-	<span class=label>
-	%=l 'log_FILTER_PATTERN_LABEL'
-	</span><span class=data>
-	%= text_field 'Matchpattern', class => 'input'
-	</span>
-	</p>
+    <p>
+      %= l 'log_FILTER_PATTERN_DESC'
+      <br>
+      <span class=label>
+        %= l 'log_FILTER_PATTERN_LABEL'
+      </span><span class=data>
+        %= text_field 'Matchpattern', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	%=l 'log_MATCH_PATTERN_DESC'
-	<br>
-	<span class=label>
-	%=l 'log_MATCH_PATTERN_LABEL'
-	</span><span class=data>
-	%= text_field 'Highlightpattern', class => 'input'
-	</span>
-	</p>
+    <p>
+      %= l 'log_MATCH_PATTERN_DESC'
+      <br>
+      <span class=label>
+        %= l 'log_MATCH_PATTERN_LABEL'
+      </span><span class=data>
+        %= text_field 'Highlightpattern', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	%=l 'log_OP_DESC'
-	<br>
-	<span class=label>
-	%=l 'log_OP_LABEL'
-	</span><span class=data>
-	%if ($log_datas->{'default_op'} eq 'download') {
-	    % param 'Operation' => 'download';
-	%}
-	%= select_field 'Operation' => [[(l 'log_VIEW') => 'view'],[(l 'DOWNLOAD') => 'download']], class => 'input'
-	</span>
-	</p>
+    <p>
+      %= l 'log_OP_DESC'
+      <br>
+      <span class=label>
+        %= l 'log_OP_LABEL'
+      </span><span class=data>
+        % if ($log_datas->{'default_op'} eq 'download') {
+          % param 'Operation' => 'download';
+        % }
+      %= select_field 'Operation' => [ [ ( l 'log_VIEW' ) => 'view' ], [ ( l 'DOWNLOAD' ) => 'download' ] ], class => 'input';
+    </span>
+  </p>
 
-	<p>
-	%=l 'log_END_DESC'
-	</p>
+  <p>
+    %= l 'log_END_DESC'
+  </p>
 
-	%= submit_button "$btn", class => 'action'
-    % end
+  %= submit_button "$btn", class => 'action'
+  % end
 </div>
-%end
+% end

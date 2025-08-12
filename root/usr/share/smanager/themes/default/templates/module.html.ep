@@ -1,27 +1,27 @@
 % layout 'default', title => "Sme server 2 - module";
 
 % content_for 'module' => begin
-%= stylesheet '/css/module.css'
-<div id='module' class='module module-panel'>
+  %= stylesheet '/css/module.css'
+  <div id='module' class='module module-panel'>
     % if (config->{debug} == 1) {
-        <p>
-            <strong>Debug Info:</strong>
-            <pre><%= dumper $c->current_route %></pre>
-        </p>
+      <p>
+        <strong>Debug Info:</strong>
+        <pre><%= dumper $c->current_route %></pre>
+      </p>
     % }
-    
-    % if (stash 'error') {
-        <div class="sme-error">
-            <strong>Error:</strong><br>
-            <%= $c->render_to_string(inline => stash 'error') %>
-        </div>
-    % }
-    
-    <h1><%= $title %></h1>
-    
-    <div class="module-content">
-        <%= $c->render_to_string(inline => stash 'modul') %>
+
+  % if (stash 'error') {
+    <div class="sme-error">
+      <strong>Error:</strong><br>
+      <%= $c->render_to_string( inline => stash 'error' ) %>
     </div>
+  % }
+
+  <h1><%= $title %></h1>
+
+  <div class="module-content">
+    <%= $c->render_to_string( inline => stash 'modul' ) %>
+  </div>
 </div>
 
 % end

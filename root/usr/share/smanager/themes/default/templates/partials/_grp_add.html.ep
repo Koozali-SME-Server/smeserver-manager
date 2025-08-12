@@ -1,59 +1,59 @@
 <div id='grp_add'>
 
-    % 	my $btn = l('ADD');
+  % my $btn = l('ADD');
 
-    %= form_for '/groups2' => (method => 'POST') => begin
-	<p><h2>
-	%=l 'CREATE_GROUP'
-	</h2><br><br>
-	%=l 'grp_GROUP_NAMING'
-	</p>
+  %= form_for '/groups2' => ( method => 'POST' ) => begin
+    <p><h2>
+        %= l 'CREATE_GROUP'
+      </h2><br><br>
+      %= l 'grp_GROUP_NAMING'
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'GROUP_NAME', class => 'label'
-	</span><span class=data>
-	%= text_field 'groupName', class => 'input'
-	</span>
-	</p>
+    <p>
+      <span class=label>
+        %= l 'GROUP_NAME', class => 'label'
+      </span><span class=data>
+        %= text_field 'groupName', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	%=l 'grp_GROUP_DESC_EXPL'
-	<br><br>
-	<span class=label>
-	%=l 'grp_GROUP_DESC', class => 'label'
-	</span><span class=data>
-	%= text_field 'groupDesc', class => 'input'
-	</span>
-	</p>
+    <p>
+      %= l 'grp_GROUP_DESC_EXPL'
+      <br><br>
+      <span class=label>
+        %= l 'grp_GROUP_DESC', class => 'label'
+      </span><span class=data>
+        %= text_field 'groupDesc', class => 'input'
+      </span>
+    </p>
 
-	<p>
-	<span class=label>
-	%=l 'GROUP_MEMBERS', class => 'label'
-	</span>
-	<br>
-	<span class=data>
-	%= check_box 'groupMembers' => 'admin'
-	Administrator (admin)
-	<br>
-    %	 my $users = $c->gen_users_list();
-    %    foreach my $key ( sort keys %$users )
-    %    {
-	    %= check_box 'groupMembers' => $key
-	    %=$users->{$key}
-            %= "(" . $key . ")"
-            <br>
-    %    }
+    <p>
+      <span class=label>
+        %= l 'GROUP_MEMBERS', class => 'label'
+      </span>
+      <br>
+      <span class=data>
+        %= check_box 'groupMembers' => 'admin'
+        Administrator (admin)
+        <br>
+        % my $users = $c->gen_users_list();
+        % foreach my $key ( sort keys %$users )
+        % {
+          %= check_box 'groupMembers' => $key
+          %= $users->{$key}
+          %= "(" . $key . ")"
+          <br>
+        % }
     </span>
-	</p>
+  </p>
 
-	<p>
-	<br><br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+  <p>
+    <br><br>
+    %= submit_button "$btn", class => 'action'
+  </p>
 
-	%= hidden_field 'trt' => $grp_datas->{trt}
-	
-    % end    
+  %= hidden_field 'trt' => $grp_datas->{trt}
+
+  % end
 
 </div>

@@ -1,40 +1,40 @@
 % layout 'default', title => "Sme server 2 - yum_logfile";
 
 % content_for 'refresh' => begin
-    <meta http-equiv="refresh" content="10">
-%end
+  <meta http-equiv="refresh" content="10">
+% end
 
 % content_for 'module' => begin
 
-<div id='module' class='module yumlogfile-panel'>
+  <div id='module' class='module yumlogfile-panel'>
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $yum_datas
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $yum_datas
+      </p>
     % }
-    
-    <h1><%= $title%></h1>
 
-    % if ( $notif ) {
-	<br><div class=sme-error>
-	%= $notif
-	</div>
-    %}
+  <h1><%= $title %></h1>
 
-    %= form_for 'yum' => (method => 'POST') => begin
+  % if ( $notif ) {
+    <br><div class=sme-error>
+      %= $notif
+    </div>
+  % }
 
-	<BR><center><H2>Please Wait - Yum Running (<%= $c->get_yum_status_page() %>)</H2></center>
+  %= form_for 'yum' => ( method => 'POST' ) => begin
 
-	<%= $c->render_to_string(inline => $c->format_yum_log()) %>
+    <BR><center><H2>Please Wait - Yum Running (<%= $c->get_yum_status_page() %>)</H2></center>
 
-    	%=  hidden_field 'trt' => 'LOGF'
-	<br>
+    <%= $c->render_to_string( inline => $c->format_yum_log() ) %>
+
+    %= hidden_field 'trt' => 'LOGF'
+    <br>
     <!-- div class='center'>
-	prc= submit_button $c->l('NEXT'), class => 'action'
-    </div -->
+    prc= submit_button $c->l('NEXT'), class => 'action'
+  </div -->
 
-    % end
+% end
 
 </div>
 

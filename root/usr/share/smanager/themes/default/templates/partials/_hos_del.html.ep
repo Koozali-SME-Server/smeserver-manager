@@ -1,29 +1,29 @@
 <div id='hos_del'>
 
-    %	my $btn = l('REMOVE');
-    %= form_for '/hostentriesd' => (method => 'POST') => begin
-	<p>
-	<h2>
-	%=l 'hos_REMOVE_TITLE'
-	</h2>
-	</p>
+  % my $btn = l('REMOVE');
+  %= form_for '/hostentriesd' => ( method => 'POST' ) => begin
+    <p>
+      <h2>
+        %= l 'hos_REMOVE_TITLE'
+      </h2>
+    </p>
 
-	<p>
-	%= $c->l('hos_REMOVE_PAGE_DESCRIPTION', $hos_datas->{hostname});
-	</p>
-	
-	<p><b>
-	%=l 'hos_ABOUT_TO_REMOVE'
-	</b></p>
+    <p>
+      %= $c->l( 'hos_REMOVE_PAGE_DESCRIPTION', $hos_datas->{hostname} );
+    </p>
 
-	<p>
-	<br>
-	%= submit_button "$btn", class => 'action'
-	</p>
+    <p><b>
+        %= l 'hos_ABOUT_TO_REMOVE'
+    </b></p>
 
-        %= hidden_field 'trt' => $hos_datas->{trt}
-        %= hidden_field 'Hostname' => $hos_datas->{hostname}
+    <p>
+      <br>
+      %= submit_button "$btn", class => 'action'
+    </p>
 
-    % end    
+    %= hidden_field 'trt' => $hos_datas->{trt}
+    %= hidden_field 'Hostname' => $hos_datas->{hostname}
+
+  % end
 
 </div>

@@ -2,31 +2,31 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module back_workstn_sel_restore2-panel'>
+  <div id='module' class='module back_workstn_sel_restore2-panel'>
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $bac_datas
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $bac_datas
+      </p>
     % }
 
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
-    %}
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
 
-    <h1><%= $title%></h1>
-    <h2><%=l 'bac_WORKSTN_SELECTIVE_RESTORE' %></h2>
-    <br>
-    %= $c->render_to_string(inline => $bac_datas->{restore_log}) 
-    <br>
+  <h1><%= $title %></h1>
+  <h2><%= l 'bac_WORKSTN_SELECTIVE_RESTORE' %></h2>
+  <br>
+  %= $c->render_to_string( inline => $bac_datas->{restore_log} )
+  <br>
 
-    %= form_for '/backupd' => (method => 'POST') => begin
-	%= hidden_field 'Function' => $bac_datas->{'function'}
-	%= submit_button $c->l('NEXT'), class => 'action'
+  %= form_for '/backupd' => ( method => 'POST' ) => begin
+    %= hidden_field 'Function' => $bac_datas->{'function'}
+    %= submit_button $c->l('NEXT'), class => 'action'
 
-    % end
+  % end
 
 </div>
 % end

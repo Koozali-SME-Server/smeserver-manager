@@ -2,12 +2,12 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module default-panel'>
+  <div id='module' class='module default-panel'>
     <p><%= $title %></p>
     <%= $modul %>
     <p>
-    	%= link_to Initial => '/'
+      %= link_to Initial => '/'
     </p>
-</div>
+  </div>
 
-%end
+% end

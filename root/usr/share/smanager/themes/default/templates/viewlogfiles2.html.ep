@@ -2,31 +2,31 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module viewlogfiles2-panel'>
+  <div id='module' class='module viewlogfiles2-panel'>
 
     % if (config->{debug} == 1) {
-	<p>
-	(DBG)route: <%= $c->current_route %><br>
-	(DBG)trt: <%= $log_datas->{trt} %><br>
-	</p>
+      <p>
+        (DBG)route: <%= $c->current_route %><br>
+        (DBG)trt: <%= $log_datas->{trt} %><br>
+      </p>
     % }
 
-    <h1><%= $title %></h1>
+  <h1><%= $title %></h1>
 
-    <br><%= $modul %><br>
+  <br><%= $modul %><br>
 
-    <p>
+  <p>
     <% my $btn = l('log_REFRESH'); %>
 
-    %= form_for 'viewlogfilesr' => (method => 'POST') => begin
-	%= submit_button "$btn", class => 'action'
-	%= hidden_field 'trt' => $log_datas->{trt}
-	%= hidden_field 'Filename' => $log_datas->{filename}
-	%= hidden_field 'Matchpattern' => $log_datas->{matchpattern}
-	%= hidden_field 'Highlightpattern' => $log_datas->{highlightpattern}
-	%= hidden_field 'Operation' => $log_datas->{operation}
+    %= form_for 'viewlogfilesr' => ( method => 'POST' ) => begin
+      %= submit_button "$btn", class => 'action'
+      %= hidden_field 'trt' => $log_datas->{trt}
+      %= hidden_field 'Filename' => $log_datas->{filename}
+      %= hidden_field 'Matchpattern' => $log_datas->{matchpattern}
+      %= hidden_field 'Highlightpattern' => $log_datas->{highlightpattern}
+      %= hidden_field 'Operation' => $log_datas->{operation}
     % end
 
-</div>
+  </div>
 
-%end
+  % end

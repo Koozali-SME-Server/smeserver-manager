@@ -1,40 +1,40 @@
 % layout 'default', title => "Sme server 2 - useraccounts";
 
 % content_for 'module' => begin
-<div id='module' class='module useraccounts-panel'>
+  <div id='module' class='module useraccounts-panel'>
 
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $usr_datas
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $usr_datas
+      </p>
     % }
-    
-    <h1><%= $title%></h1>
 
-    % if ( $notif ) {
-	<br>
-	<span class=sme-error>
-	<%= $c->render_to_string(inline => $notif) %>
-	</span>
-    %}
+  <h1><%= $title %></h1>
 
-    % if ($usr_datas->{trt} eq 'ADD' or $usr_datas->{trt} eq 'UPD') {
-	%= include 'partials/_usr_upd'
-    %} elsif ($usr_datas->{trt} eq 'DEL') {
-	%= include 'partials/_usr_del'
-    %} elsif ($usr_datas->{trt} eq 'LCK') {
-	%= include 'partials/_usr_lock'
-    %} elsif ($usr_datas->{trt} eq 'PWD') {
-        %= include 'partials/_usr_pwd'
-    %} elsif ($usr_datas->{trt} eq 'PWS') {
-        %= include 'partials/_usr_pwds'
-    %} elsif ($usr_datas->{trt} eq 'UPS') {
-        %= include 'partials/_usr_upds'
-    %} else {
-        %= include 'partials/_usr_list'
-    %}
+  % if ( $notif ) {
+    <br>
+    <span class=sme-error>
+      <%= $c->render_to_string( inline => $notif ) %>
+    </span>
+  % }
+
+  % if ($usr_datas->{trt} eq 'ADD' or $usr_datas->{trt} eq 'UPD') {
+    %= include 'partials/_usr_upd'
+  % } elsif ($usr_datas->{trt} eq 'DEL') {
+  %= include 'partials/_usr_del'
+  % } elsif ($usr_datas->{trt} eq 'LCK') {
+  %= include 'partials/_usr_lock'
+  % } elsif ($usr_datas->{trt} eq 'PWD') {
+  %= include 'partials/_usr_pwd'
+  % } elsif ($usr_datas->{trt} eq 'PWS') {
+  %= include 'partials/_usr_pwds'
+  % } elsif ($usr_datas->{trt} eq 'UPS') {
+  %= include 'partials/_usr_upds'
+  % } else {
+  %= include 'partials/_usr_list'
+  % }
 
 </div>
-%end
+% end
 

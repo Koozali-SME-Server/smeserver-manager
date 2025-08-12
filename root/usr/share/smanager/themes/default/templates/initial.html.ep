@@ -2,27 +2,27 @@
 
 % content_for 'module' => begin
 
-    % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	</p>
-    % }
+  % if (config->{debug} == 1) {
+    <p>
+      %= dumper $c->current_route
+    </p>
+  % }
 
 <div id='central' class='central initial-panel module'>
 
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
-    %}
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
 
-    <h3>
+  <h3>
     %= $title
-    </h3> 
-    <br>
-    <p>
+  </h3>
+  <br>
+  <p>
     %= $modul
-    </p>
+  </p>
 </div>
 
 % end

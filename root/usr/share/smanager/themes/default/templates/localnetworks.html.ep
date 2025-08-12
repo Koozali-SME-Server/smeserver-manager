@@ -1,32 +1,32 @@
 % layout 'default', title => "Sme server 2 - localnetworks";
 
 % content_for 'module' => begin
-<div id='module' class='module localnetworks-panel'>
+  <div id='module' class='module localnetworks-panel'>
 
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $c->stash("ret")
-    %= dumper $c->param("localnetwork");
-    %= dumper $c->stash("ln_datas");
-    %= dumper $c->param("deletehost");
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $c->stash("ret")
+        %= dumper $c->param("localnetwork");
+        %= dumper $c->stash("ln_datas");
+        %= dumper $c->param("deletehost");
+      </p>
     % }
-    
-    <h1><%= $title%></h1>
-     %= $modul
 
-    % if ($ln_datas->{trt} eq 'ADD') {
-		%= include 'partials/_ln_add'
-    %} elsif ($ln_datas->{trt} eq 'ADD1') {
-	    %= include 'partials/_ln_add'
-    %} elsif ($ln_datas->{trt} eq 'DEL') {
-	    %= include 'partials/_ln_del'
-	%} elsif ($ln_datas->{trt} eq 'DEL1'){
-		%= include 'partials/_ln_list'
-	%} else {
-		%= include 'partials/_ln_list'
-	%}
+  <h1><%= $title %></h1>
+  %= $modul
+
+  % if ($ln_datas->{trt} eq 'ADD') {
+    %= include 'partials/_ln_add'
+  % } elsif ($ln_datas->{trt} eq 'ADD1') {
+  %= include 'partials/_ln_add'
+  % } elsif ($ln_datas->{trt} eq 'DEL') {
+  %= include 'partials/_ln_del'
+  % } elsif ($ln_datas->{trt} eq 'DEL1'){
+  %= include 'partials/_ln_list'
+  % } else {
+  %= include 'partials/_ln_list'
+  % }
 
 </div>
-%end
+% end

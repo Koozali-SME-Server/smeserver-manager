@@ -1,71 +1,71 @@
 % layout 'default', title => 'Sme server 2 - IndexT';
 
 % content_for 'module' => begin
-<div id='central' class='central welcome-panel module'>
+  <div id='central' class='central welcome-panel module'>
     <p>Index on line - Welcome page<br>
     </p>
     <p>
-Cogo diam enim ibidem paulatim pertineo velit. Comis patria pertineo secundum. Aliquip laoreet quibus zelus. Gravis incassum interdico iustum lucidus neo os paratus. Autem causa haero pneum similis sudo vindico. Iusto molior neque oppeto. Ideo minim nibh refoveo veniam vereor virtus. Appellatio pala scisco.
+      Cogo diam enim ibidem paulatim pertineo velit. Comis patria pertineo secundum. Aliquip laoreet quibus zelus. Gravis incassum interdico iustum lucidus neo os paratus. Autem causa haero pneum similis sudo vindico. Iusto molior neque oppeto. Ideo minim nibh refoveo veniam vereor virtus. Appellatio pala scisco.
 
-Caecus esse exputo ideo laoreet valde. Appellatio feugiat haero jus lucidus tum valetudo vulputate. Amet illum imputo volutpat. Acsi adipiscing brevitas facilisi illum laoreet lobortis lucidus sagaciter uxor. Defui dolor hos luptatum quadrum saluto verto vicis wisi.
+      Caecus esse exputo ideo laoreet valde. Appellatio feugiat haero jus lucidus tum valetudo vulputate. Amet illum imputo volutpat. Acsi adipiscing brevitas facilisi illum laoreet lobortis lucidus sagaciter uxor. Defui dolor hos luptatum quadrum saluto verto vicis wisi.
 
-Acsi ideo pagus ymo. Ea jugis lobortis nimis utrum veniam vereor. Aliquip amet autem gilvus hos iaceo loquor natu pagus refoveo. Adipiscing laoreet probo tation tum vero. Enim minim ymo. Dolore imputo iusto iustum lobortis meus molior vulputate. Dolor immitto iustum jumentum olim pagus saluto uxor zelus. Capto commodo eu euismod. Duis ille nunc premo quidem tamen ulciscor wisi.
+      Acsi ideo pagus ymo. Ea jugis lobortis nimis utrum veniam vereor. Aliquip amet autem gilvus hos iaceo loquor natu pagus refoveo. Adipiscing laoreet probo tation tum vero. Enim minim ymo. Dolore imputo iusto iustum lobortis meus molior vulputate. Dolor immitto iustum jumentum olim pagus saluto uxor zelus. Capto commodo eu euismod. Duis ille nunc premo quidem tamen ulciscor wisi.
 
-Abdo abico damnum dolor et facilisi incassum melior populus saepius. Commodo conventio ex exputo pagus quae valetudo. Eligo jumentum lobortis suscipit tamen torqueo validus venio voco. Letalis molior tego tincidunt tum. Bene iriure melior natu obruo os te voco. Ea oppeto refoveo tum. Consectetuer dolus ut.
+      Abdo abico damnum dolor et facilisi incassum melior populus saepius. Commodo conventio ex exputo pagus quae valetudo. Eligo jumentum lobortis suscipit tamen torqueo validus venio voco. Letalis molior tego tincidunt tum. Bene iriure melior natu obruo os te voco. Ea oppeto refoveo tum. Consectetuer dolus ut.
 
-Abdo abigo aptent commoveo inhibeo molior nibh plaga pneum zelus. Conventio genitus neo nulla patria pneum saluto velit voco. Abigo defui dolore humo nulla nunc. Autem commodo erat gemino nisl olim pecus ratis tego. Fere luctus nunc sit. Bene humo imputo paulatim suscipit. Aliquam diam dolor feugiat gravis imputo lucidus modo nulla obruo. Ea macto melior neo qui ratis velit.
+      Abdo abigo aptent commoveo inhibeo molior nibh plaga pneum zelus. Conventio genitus neo nulla patria pneum saluto velit voco. Abigo defui dolore humo nulla nunc. Autem commodo erat gemino nisl olim pecus ratis tego. Fere luctus nunc sit. Bene humo imputo paulatim suscipit. Aliquam diam dolor feugiat gravis imputo lucidus modo nulla obruo. Ea macto melior neo qui ratis velit.
     </p>
-    %= l ('MESS_TEST','toto')
+    %= l( 'MESS_TEST', 'toto' )
     <p>
-	%= link_to Initial => '/'
-    </p>
-    <p>
-	%= link_to Manual => '/manual'
+      %= link_to Initial => '/'
     </p>
     <p>
-	%= link_to Welcome => '/welcome'
-	<a href="<%= url_for 'index' %>">Accueil</a -->.
+      %= link_to Manual => '/manual'
     </p>
-    
-%	use SrvMngr::Navigation2;
-%	my %nav = %{SrvMngr::navigation2->getNavigation( $c->languages() )};
-	<!-- % = dumper %nav -->
+    <p>
+      %= link_to Welcome => '/welcome'
+      <a href="<%= url_for 'index' %>">Accueil</a -->.
+    </p>
 
-	<div id='navig'>
-%    foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'}) 
-%		<=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
-	<div class='section'>
-	%= $h
-	</div>
+    % use SrvMngr::Navigation2;
+    % my %nav = %{ SrvMngr::navigation2->getNavigation( $c->languages() ) };
+    <!-- % = dumper %nav -->
 
-%	foreach (sort { $a->{'WEIGHT'} <=> $b->{'WEIGHT'} }  @{$nav{$h}{'DESCRIPTIONS'}}) {
-%	    my ($target, $classNew) = ( $_->{'FILENAME'} =~ m/^2\// ) ?
-%		('_self',' accent') :
-%		('main','') ;
+    <div id='navig'>
+      % foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'})
+        % <=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
+        <div class='section'>
+          %= $h
+        </div>
 
-%	    my $href = '/server-manager' . $_->{'FILENAME'};
-	    <div class='menu-cell'><a class='item
-	    %= $classNew
-	    ' target='
-	    %= $target
-	    ' onclick=\"swapClasses('sme
-	    %= $c
-	    ')\" id='sme
-	    %=$c
-	    ' href='
-	    %= $href
-	    '>
-	    %= $_->{'DESCRIPTION'}
-	    </a></div>
+        % foreach (sort { $a->{'WEIGHT'} <=> $b->{'WEIGHT'} } @{$nav{$h}{'DESCRIPTIONS'}}) {
+          % my ($target, $classNew) = ( $_->{'FILENAME'} =~ m/^2\// ) ?
+          % ('_self',' accent') :
+          % ( 'main', '' );
 
-%           $c++;
-%	}
+          % my $href = '/server-manager' . $_->{'FILENAME'};
+          <div class='menu-cell'><a class='item
+            %= $classNew
+            ' target='
+            %= $target
+            ' onclick=\"swapClasses('sme
+            %= $c
+            ')\" id='sme
+            %= $c
+            ' href='
+            %= $href
+            '>
+            %= $_->{'DESCRIPTION'}
+        </a></div>
 
-%    }
+        % $c++;
+      % }
 
-    </div>
+  % }
 
-    
+</div>
+
+
 </div>
 
 % end

@@ -2,68 +2,68 @@
 
 % content_for 'module' => begin
 
-<div id='module' class='module login-panel'>
+  <div id='module' class='module login-panel'>
 
-    %if ( config 'debug' ) {
-	<p>
-	%= dumper $c->current_route
-	%if ( stash 'trt' ) {
-	    %= dumper stash 'trt'
-	%}
-	</p>
-    %}
+    % if ( config 'debug' ) {
+      <p>
+        %= dumper $c->current_route
+        % if ( stash 'trt' ) {
+          %= dumper stash 'trt'
+        % }
+    </p>
+  % }
 
-% if ( stash 'error' ) {
-    	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
-%}
-
-% my $btn = l('use_SIGNIN');
-% if ( $trt eq 'RESET' ) {
-    	<br><div class=sme-error><h2>
-    	%= $c->render_to_string(inline => l 'use_DESC_RESET') 
-	</h2></div>
-	% $btn = l('use_RESET');
-%}
-
-    <h1>
-    %=l 'use_TITLE'
-    </h1>
-
-    %= form_for '/login' => (method => 'POST') => begin
-
-    <p><span class=label>
-    %=l 'USER_NAME'
-    </span><span class=input>
-    %= text_field 'Username'
-    </span></p>
-
-% if ( $trt ne 'RESET' ) {
-    <p><span class=label>
-    %=l 'PASSWORD'
-    </span><span class=input>
-    %= password_field 'Password', id => 'id_password', autocomplete => 'current-password', class=>'sme-password'
-    % if (config 'hasJquery') {
-	%#<a href='#' id='togglePassword' class='toggle-password tg-icon'> <img src="images/visible.png" height="16" alt="Visible"></a>
-    % }
-    </span></p>
-%}
-
-    %= hidden_field 'From' => $c->tx->req->url
-    %= hidden_field 'Trt' => $trt
-
-    <br>
-    <div class='center'>
-    %= submit_button "$btn", class => 'action'
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
     </div>
-    %if ( config 'pwdreset' ) {
-	<div class='center'><a href='login2'>
-        %=l 'use_FORGOT'
-        </a></div>
-    %}
+  % }
+
+  % my $btn = l('use_SIGNIN');
+  % if ( $trt eq 'RESET' ) {
+    <br><div class=sme-error><h2>
+        %= $c->render_to_string( inline => l 'use_DESC_RESET' )
+    </h2></div>
+    % $btn = l('use_RESET');
+  % }
+
+  <h1>
+    %= l 'use_TITLE'
+  </h1>
+
+  %= form_for '/login' => ( method => 'POST' ) => begin
+
+    <p><span class=label>
+        %= l 'USER_NAME'
+      </span><span class=input>
+        %= text_field 'Username'
+    </span></p>
+
+    % if ( $trt ne 'RESET' ) {
+      <p><span class=label>
+          %= l 'PASSWORD'
+        </span><span class=input>
+          %= password_field 'Password', id => 'id_password', autocomplete => 'current-password', class => 'sme-password';
+          % if (config 'hasJquery') {
+            %# <a href='#' id='togglePassword' class='toggle-password tg-icon'> <img src="images/visible.png" height="16" alt="Visible"></a>
+          % }
+    </span></p>
+  % }
+
+  %= hidden_field 'From' => $c->tx->req->url
+  %= hidden_field 'Trt' => $trt
+
+  <br>
+  <div class='center'>
+    %= submit_button "$btn", class => 'action'
+  </div>
+  % if ( config 'pwdreset' ) {
+    <div class='center'><a href='login2'>
+        %= l 'use_FORGOT'
+    </a></div>
+  % }
 
   % end
 
 </div>
-%end
+% end

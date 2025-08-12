@@ -1,42 +1,42 @@
 % layout 'default', title => 'Sme server 2 - Support';
 
 % content_for 'head' => begin
-    %= include 'partials/_head'
+  %= include 'partials/_head'
 % end
 
 % content_for 'header' => begin
-    %= include 'partials/_header'
+  %= include 'partials/_header'
 % end
 
 % content_for 'info' => begin
-    %= include 'partials/_info'
+  %= include 'partials/_info'
 % end
 
 % content_for 'navigation' => begin
-    < %= $navigation % >
-    %= include 'partials/_navig'
+  < %= $navigation % >
+  %= include 'partials/_navig'
 % end
 
 % content_for 'footer' => begin
-    %= include 'partials/_footer'
+  %= include 'partials/_footer'
 % end
 
 % content_for 'end' => begin
-    <div id="end" class="sme-copyrightbar">
-	content_end
-    </div>
+  <div id="end" class="sme-copyrightbar">
+    content_end
+  </div>
 % end
 
 <div id="module">
-    <p> < %= $title % ></p><br>
-    <%= $modul %><br>
-Et eu humo modo paratus quadrum turpis validus. Abico appellatio augue qui refero valetudo vereor. Augue diam eu genitus ille letalis nobis typicus veniam.
+  <p> < %= $title % ></p><br>
+  <%= $modul %><br>
+  Et eu humo modo paratus quadrum turpis validus. Abico appellatio augue qui refero valetudo vereor. Augue diam eu genitus ille letalis nobis typicus veniam.
 
-Dignissim dolus loquor lucidus probo proprius tation torqueo. Abluo luptatum quidem. Acsi aliquip eu ex iaceo natu populus quae scisco si.
+  Dignissim dolus loquor lucidus probo proprius tation torqueo. Abluo luptatum quidem. Acsi aliquip eu ex iaceo natu populus quae scisco si.
 
-Aliquam autem blandit decet in jus loquor quidne saluto te. Eu meus voco wisi. Abico defui euismod huic jumentum lobortis mos vulpes. Causa eros feugiat hendrerit illum luctus nimis quidem valetudo. Elit ex obruo tation usitas vero. Abigo dolus hendrerit huic iriure jumentum letalis lobortis melior nulla. Blandit causa immitto iriure metuo nutus pagus ut voco.
-    <br>
-    <p>
-    	%= link_to Welcome => '/'
-    </p>
+  Aliquam autem blandit decet in jus loquor quidne saluto te. Eu meus voco wisi. Abico defui euismod huic jumentum lobortis mos vulpes. Causa eros feugiat hendrerit illum luctus nimis quidem valetudo. Elit ex obruo tation usitas vero. Abigo dolus hendrerit huic iriure jumentum letalis lobortis melior nulla. Blandit causa immitto iriure metuo nutus pagus ut voco.
+  <br>
+  <p>
+    %= link_to Welcome => '/'
+  </p>
 </div>

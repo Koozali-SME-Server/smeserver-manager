@@ -1,43 +1,43 @@
 % layout 'default', title => "Sme server 2 - proxy";
 
 % content_for 'module' => begin
-<div id='module' class='module proxy-panel'>
-    %if (config->{debug} == 1) {
-	<p>(DBG)route: <%= $c->current_route %><br>
-	(DBG)ht stat: <%= $prx_datas->{http_proxy_status}%> <br>
-	(DBG)sm stat: <%=$prx_datas->{smtp_proxy_status} %>
-	</p>
-    %}
-    <h1><%= $title %></h1>
-    <br>
-    <%= $modul %>
-    <% 	my $btn = l('SAVE'); %>
+  <div id='module' class='module proxy-panel'>
+    % if (config->{debug} == 1) {
+      <p>(DBG)route: <%= $c->current_route %><br>
+        (DBG)ht stat: <%= $prx_datas->{http_proxy_status} %> <br>
+        (DBG)sm stat: <%= $prx_datas->{smtp_proxy_status} %>
+      </p>
+    % }
+  <h1><%= $title %></h1>
+  <br>
+  <%= $modul %>
+  <% my $btn = l('SAVE'); %>
 
-    %= form_for 'proxy' => (method => 'POST') => begin
-	<p>
-	%=l 'prx_HTTP_PROXY_STATUS_DESCRIPTION'
-	<br><br>
-	<span class=label>
-	%=l 'prx_HTTP_PROXY_STATUS_LABEL'
-	</span><span class=data>
-	% param 'http_proxy_status' => $prx_datas->{http_proxy_status} unless param 'http_proxy_status';
-	%= select_field 'http_proxy_status' =>  [[ (l 'ENABLED') => 'enabled'], [ (l 'DISABLED') => 'disabled']], class => 'input', id => 'htproxstat'
-	</span>
-	</p>
-	%if ( $prx_datas->{smtp_proxy_status} ) {
-	    <p>
-	    %=l 'prx_SMTP_PROXY_STATUS_DESCRIPTION'
-	    <br><br>
-	    <span class=label>
-	    %=l 'prx_SMTP_PROXY_STATUS_LABEL'
-	    </span><span class=data>
-	    % param 'smtp_proxy_status' => $prx_datas->{smtp_proxy_status} unless param 'smtp_proxy_status';
-	    %= select_field 'smtp_proxy_status' => [[ (l 'ENABLED') => 'transparent'], [ (l 'DISABLED') => 'disabled'], [ (l 'prx_BLOCKED') => 'blocked']], class => 'input', id => 'smproxstat', default => $prx_datas->{smtp_proxy_status}
-	    <br><br>
-	    </span>
-	    </p>
-	%}
-	%= submit_button "$btn", class => 'action'
-    % end
+  %= form_for 'proxy' => ( method => 'POST' ) => begin
+    <p>
+      %= l 'prx_HTTP_PROXY_STATUS_DESCRIPTION'
+      <br><br>
+      <span class=label>
+        %= l 'prx_HTTP_PROXY_STATUS_LABEL'
+      </span><span class=data>
+        % param 'http_proxy_status' => $prx_datas->{http_proxy_status} unless param 'http_proxy_status';
+        %= select_field 'http_proxy_status' => [ [ ( l 'ENABLED' ) => 'enabled' ], [ ( l 'DISABLED' ) => 'disabled' ] ], class => 'input', id => 'htproxstat';
+      </span>
+    </p>
+    % if ( $prx_datas->{smtp_proxy_status} ) {
+      <p>
+        %= l 'prx_SMTP_PROXY_STATUS_DESCRIPTION'
+        <br><br>
+        <span class=label>
+          %= l 'prx_SMTP_PROXY_STATUS_LABEL'
+        </span><span class=data>
+          % param 'smtp_proxy_status' => $prx_datas->{smtp_proxy_status} unless param 'smtp_proxy_status';
+          %= select_field 'smtp_proxy_status' => [ [ ( l 'ENABLED' ) => 'transparent' ], [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'prx_BLOCKED' ) => 'blocked' ] ], class => 'input', id => 'smproxstat', default => $prx_datas->{smtp_proxy_status};
+          <br><br>
+        </span>
+      </p>
+    % }
+  %= submit_button "$btn", class => 'action'
+  % end
 </div>
-%end
+% end

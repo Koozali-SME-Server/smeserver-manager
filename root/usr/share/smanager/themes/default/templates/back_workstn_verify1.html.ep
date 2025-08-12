@@ -1,35 +1,35 @@
 % layout 'default', title => "Sme server 2 - backup - verify";
 % content_for 'module' => begin
 
-<div id='module' class='module back_workstn_verify1-panel'>
+  <div id='module' class='module back_workstn_verify1-panel'>
     % if (config->{debug} == 1) {
-	<p>
-	%= dumper $c->current_route
-	%= dumper $bac_datas->{function}
-	<!--  dumper $bac_datas->{'files_list'} -->
-	</p>
+      <p>
+        %= dumper $c->current_route
+        %= dumper $bac_datas->{function}
+        <!--  dumper $bac_datas->{'files_list'} -->
+      </p>
     % }
 
-    % if ( stash 'error' ) {
-    	<br><div class=sme-error>
-    	%= $c->render_to_string(inline => stash 'error') 
-	</div>
-    %}
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
 
-    <h1><%= $title%></h1>
+  <h1><%= $title %></h1>
 
-    <h2><%= l 'bac_VERIFY_WORKSTN_BACKUP_FILE' %></h2>
+  <h2><%= l 'bac_VERIFY_WORKSTN_BACKUP_FILE' %></h2>
 
-    <br>
-    %= $c->render_to_string(inline => $c->workstnVerify())
-    <br>
+  <br>
+  %= $c->render_to_string( inline => $c->workstnVerify() )
+  <br>
 
-    %= form_for '/backupd' => (method => 'POST') => begin
+  %= form_for '/backupd' => ( method => 'POST' ) => begin
 
     %= hidden_field 'Function' => $bac_datas->{'function'}
 
     %= submit_button $c->l('NEXT'), class => 'action'
 
-    % end
+  % end
 </div>
 % end
