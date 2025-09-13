@@ -4,7 +4,7 @@
     <div class="sme-error module"><h5>
         Warning: you have not yet changed the default system password.</h5></div>
   <% } %>
-  <% if ( $c->is_unsafe ) { %>
+  <% if ( $c->is_unsafe && $c->is_logged_in && $c->is_admin) { %>
     <div class="sme-error module"><h5>
         Warning: a reconfigure and reboot is required before proceeding! Failure to do so now
         may leave your system in an unknown state!</h5></div>

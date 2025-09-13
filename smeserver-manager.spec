@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 113
+%define release 114
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -146,6 +146,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Sep 13 2025 Brian Read <brianr@koozali.org> 11.0.0-114.sme
+- edit intial screen to suppress reconfig message unless admin logged in  [SME: 13112]
+
 * Mon Aug 11 2025 Brian Read <brianr@koozali.org> 11.0.0-113.sme
 - Re-factor all template files to make them nicely formatted  [SME: 13103]
 
