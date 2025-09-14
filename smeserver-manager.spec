@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 114
+%define release 115
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -35,6 +35,7 @@ Requires: perl(Mojolicious::Plugin::CSRFDefender) >= 0.0.8
 Requires: perl(Net::Netmask) >= 1.9
 Requires: perl(DBM::Deep) >= 2.0011-1
 Requires: perl(Mojo::JWT) >= 0.08-1
+#Requires: perl(IPS:Run) >= 0.99-1 - needed for enahnced qmailanalog run of pflogsumm
 #Requires: perl(Time::TAI64) >= 2.11
 Requires: perl(Data::Validate::IP)
 Requires: mutt >= 1.5.21
@@ -146,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Sep 13 2025 Brian Read <brianr@koozali.org> 11.0.0-115.sme
+- Fix login and logout and user table buttons so that they are valid html and work for elinks [SME: 13113]
+
 * Sat Sep 13 2025 Brian Read <brianr@koozali.org> 11.0.0-114.sme
 - edit intial screen to suppress reconfig message unless admin logged in  [SME: 13112]
 
