@@ -43,30 +43,34 @@
               % my $csrf_token = "TOKEN"; # CSRF token for security
               % my $group_name = $group->key; # group name extracted from the data structure
               % my $actionModify = qq{
-                % <a href="groups2?CsrfDef=$csrf_token&trt=UPD&group=$group_name">
-                  % <button type='button' class='sme-modify-button' title='$modify_text' >
-                    % $modify_text
-                    % </button>
-                  % </a>
-              % };
-            % my $remove_text = l('REMOVE'); # Localized text
-            % my $csrf_token = "TOKEN"; # CSRF token for security
-            % my $group_name = $group->key; # group name extracted from the data structure
-            % my $actionRemove = qq{
-              % <a href="groups2?CsrfDef=$csrf_token&trt=DEL&group=$group_name">
-                % <button type='button' class='sme-remove-button' title='$remove_text' >
-                  % $remove_text
-                  % </button>
+                % <a href="groups2?CsrfDef=$csrf_token&trt=UPD&group=$group_name"
+                % class="sme-modify-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
+                % title="$modify_text" aria-label="$modify_text"
+                % style="background:white;">
+                % <span class="ui-icon ui-icon-pencil"></span>
+                % <span class="ui-button-text">$modify_text</span>
                 % </a>
             % };
-            <%= $c->render_to_string( inline => $actionModify ) %> <%= $c->render_to_string( inline => $actionRemove ) %>
-          </td>
-        </tr>
-        % }
-      </tbody>
-    </table>
-    <% } %>
-  </p>
+          % my $remove_text = l('REMOVE'); # Localized text
+          % my $csrf_token = "TOKEN"; # CSRF token for security
+          % my $group_name = $group->key; # group name extracted from the data structure
+          % my $actionRemove = qq{
+            % <a href="groups2?CsrfDef=$csrf_token&trt=DEL&group=$group_name"
+            % class="sme-remove-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
+            % title="$remove_text" aria-label="$remove_text"
+            % style="background:white;">
+            % <span class="ui-icon ui-icon-delete"></span>
+            % <span class="ui-button-text">$remove_text</span>
+            % </a>
+        % };
+        <%= $c->render_to_string( inline => $actionModify ) %> <%= $c->render_to_string( inline => $actionRemove ) %>
+      </td>
+    </tr>
+    % }
+  </tbody>
+</table>
+<% } %>
+</p>
 
 
 </div>

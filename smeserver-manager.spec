@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 115
+%define release 116
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Sep 15 2025 Brian Read <brianr@koozali.org> 11.0.0-116.sme
+- Fix other buttons in lists for elinks [SME: 13113]
+
 * Sat Sep 13 2025 Brian Read <brianr@koozali.org> 11.0.0-115.sme
 - Fix login and logout and user table buttons so that they are valid html and work for elinks [SME: 13113]
 

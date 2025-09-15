@@ -65,103 +65,103 @@
           % my $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure
           % my $password_text = l("PASSWORD_RESET");
           % if ($useraccounts_user_name eq 'admin') {
-% $actionModify = qq{
-%   <a href="useraccountsd?CsrfDef=$csrf_token&trt=UPS&user=$useraccounts_user_name"
-%      class="sme-modify-button ui-button ui-corner-all ui-widget ui-button-icon-only"
-%      title="$modify_text" aria-label="$modify_text">
-%     <span class="ui-icon ui-icon-pencil"></span>
-%     <span class="ui-button-text">$modify_text</span>
-%   </a>
-% };
-% $actionResetPw = qq{
-%   <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWS&user=$useraccounts_user_name"
-%      class="sme-password-button ui-button ui-corner-all ui-widget ui-button-icon-only"
-%      title="$password_text" aria-label="$password_text">
-%     <span class="ui-icon ui-icon-refresh"></span>
-%     <span class="ui-button-text">$password_text</span>
-%   </a>
-% };
-        % } else {
-% $actionModify = qq{
-%   <a href="useraccountsd?CsrfDef=$csrf_token&trt=UPD&user=$useraccounts_user_name"
-%      class="sme-modify-button ui-button ui-corner-all ui-widget ui-button-icon-only"
-%      title="$modify_text" aria-label="$modify_text">
-%     <span class="ui-icon ui-icon-pencil"></span>
-%     <span class="ui-button-text">$modify_text</span>
-%   </a>
-% };
-        % }
-        % if ($password_set ne 'yes') {
-          % $actionLock = l('ACCOUNT_LOCKED');
-% $actionResetPw = qq{
-%   <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name"
-%      class="sme-password-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
-%      title="$password_text - currently unset" aria-label="$password_text - currently unset"
-%      style="background:pink;">
-%     <span class="ui-icon ui-icon-refresh"></span>
-%     <span class="ui-button-text">$password_text</span>
-%   </a>
-% };
-        % } elsif ($useraccounts_user_name ne 'admin') {
-        % my $lock_text = l('LOCK_ACCOUNT'); # Localized text
-        % my $csrf_token = "TOKEN"; # CSRF token for security
-        % my $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure
+            % $actionModify = qq{
+              % <a href="useraccountsd?CsrfDef=$csrf_token&trt=UPS&user=$useraccounts_user_name"
+              % class="sme-modify-button ui-button ui-corner-all ui-widget ui-button-icon-only"
+              % title="$modify_text" aria-label="$modify_text">
+              % <span class="ui-icon ui-icon-pencil"></span>
+              % <span class="ui-button-text">$modify_text</span>
+              % </a>
+          % };
+        % $actionResetPw = qq{
+          % <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWS&user=$useraccounts_user_name"
+          % class="sme-password-button ui-button ui-corner-all ui-widget ui-button-icon-only"
+          % title="$password_text" aria-label="$password_text">
+          % <span class="ui-icon ui-icon-refresh"></span>
+          % <span class="ui-button-text">$password_text</span>
+          % </a>
+      % };
+    % } else {
+    % $actionModify = qq{
+      % <a href="useraccountsd?CsrfDef=$csrf_token&trt=UPD&user=$useraccounts_user_name"
+      % class="sme-modify-button ui-button ui-corner-all ui-widget ui-button-icon-only"
+      % title="$modify_text" aria-label="$modify_text">
+      % <span class="ui-icon ui-icon-pencil"></span>
+      % <span class="ui-button-text">$modify_text</span>
+      % </a>
+  % };
+  % }
+  % if ($password_set ne 'yes') {
+    % $actionLock = l('ACCOUNT_LOCKED');
+    % $actionResetPw = qq{
+      % <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name"
+      % class="sme-password-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
+      % title="$password_text" aria-label="$password_text"
+      % style="background:pink;">
+      % <span class="ui-icon ui-icon-refresh"></span>
+      % <span class="ui-button-text">$password_text</span>
+      % </a>
+  % };
+% } elsif ($useraccounts_user_name ne 'admin') {
+% my $lock_text = l('LOCK_ACCOUNT'); # Localized text
+% my $csrf_token = "TOKEN"; # CSRF token for security
+% my $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure
 % $actionLock = qq{
-%   <a href="useraccountsd?CsrfDef=$csrf_token&trt=LCK&user=$useraccounts_user_name"
-%      class="sme-lock-button ui-button ui-corner-all ui-widget ui-button-icon-only"
-%      title="$lock_text" aria-label="$lock_text">
-%     <span class="ui-icon ui-icon-locked"></span>
-%     <span class="ui-button-text">$lock_text</span>
-%   </a>
+  % <a href="useraccountsd?CsrfDef=$csrf_token&trt=LCK&user=$useraccounts_user_name"
+  % class="sme-lock-button ui-button ui-corner-all ui-widget ui-button-icon-only"
+  % title="$lock_text" aria-label="$lock_text">
+  % <span class="ui-icon ui-icon-locked"></span>
+  % <span class="ui-button-text">$lock_text</span>
+  % </a>
 % };
 % $actionResetPw = qq{
-%   <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name"
-%      class="sme-password-button ui-button ui-corner-all ui-widget ui-button-icon-only"
-%      title="$password_text" aria-label="$password_text">
-%     <span class="ui-icon ui-icon-refresh"></span>
-%     <span class="ui-button-text">$password_text</span>
-%   </a>
+  % <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name"
+  % class="sme-password-button ui-button ui-corner-all ui-widget ui-button-icon-only"
+  % title="$password_text" aria-label="$password_text">
+  % <span class="ui-icon ui-icon-refresh"></span>
+  % <span class="ui-button-text">$password_text</span>
+  % </a>
 % };
-        % }
-        % if ( $removable eq 'yes' ) {
-          % my $remove_text = l('REMOVE'); # Localized text
-          % my $csrf_token = "TOKEN"; # CSRF token for security
-% $actionRemove = qq{
-%   <a href="useraccountsd?CsrfDef=$csrf_token&trt=DEL&user=$useraccounts_user_name"
-%      class="sme-remove-button ui-button ui-corner-all ui-widget ui-button-icon-only"
-%      title="$remove_text" aria-label="$remove_text">
-%     <span class="ui-icon ui-icon-trash"></span>
-%     <span class="ui-button-text">$remove_text</span>
-%   </a>
-% };
-        % }
+% }
+% if ( $removable eq 'yes' ) {
+  % my $remove_text = l('REMOVE'); # Localized text
+  % my $csrf_token = "TOKEN"; # CSRF token for security
+  % $actionRemove = qq{
+    % <a href="useraccountsd?CsrfDef=$csrf_token&trt=DEL&user=$useraccounts_user_name"
+    % class="sme-remove-button ui-button ui-corner-all ui-widget ui-button-icon-only"
+    % title="$remove_text" aria-label="$remove_text">
+    % <span class="ui-icon ui-icon-trash"></span>
+    % <span class="ui-button-text">$remove_text</span>
+    % </a>
+  % };
+% }
 
-        % my $thisdomain = $c->req->url->to_abs->host;
-        % my $roundcube_text = l('Webmail'); # Localized text
-        % $csrf_token = "TOKEN"; # CSRF token for security
-        % $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure
+% my $thisdomain = $c->req->url->to_abs->host;
+% my $roundcube_text = l('Webmail'); # Localized text
+% $csrf_token = "TOKEN"; # CSRF token for security
+% $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure
 % $actionroundcube = qq{
-%   <a href="roundcubepanel?CsrfDef=$csrf_token&url=https://$thisdomain/roundcube?_user=$useraccounts_user_name&height=600px"
-%      class="sme-email-button ui-button ui-corner-all ui-widget ui-button-icon-only"
-%      title="$roundcube_text" aria-label="$roundcube_text">
-%     <span class="ui-icon ui-icon-mail-closed"></span>
-%     <span class="ui-button-text">$roundcube_text</span>
-%   </a>
+  % <a href="roundcubepanel?CsrfDef=$csrf_token&url=https://$thisdomain/roundcube?_user=$useraccounts_user_name&height=600px"
+  % class="sme-email-button ui-button ui-corner-all ui-widget ui-button-icon-only"
+  % title="$roundcube_text" aria-label="$roundcube_text">
+  % <span class="ui-icon ui-icon-mail-closed"></span>
+  % <span class="ui-button-text">$roundcube_text</span>
+  % </a>
 % };
-        <td class='sme-border' style="min-width:35em">
-          <%= $c->render_to_string( inline => $actionModify ) %>
-          <%= $c->render_to_string( inline => $actionResetPw ) %>
-          <%= $c->render_to_string( inline => $actionLock ) %>
-          <%= $c->render_to_string( inline => $actionRemove ) %>
-          <%= $c->render_to_string( inline => $actionroundcube ) %>
-        </td>
-      </tr>
-      % }
-    </tbody>
-  </table>
+<td class='sme-border' style="min-width:35em">
+  <%= $c->render_to_string( inline => $actionModify ) %>
+  <%= $c->render_to_string( inline => $actionResetPw ) %>
+  <%= $c->render_to_string( inline => $actionLock ) %>
+  <%= $c->render_to_string( inline => $actionRemove ) %>
+  <%= $c->render_to_string( inline => $actionroundcube ) %>
+</td>
+</tr>
+% }
+</tbody>
+</table>
 
-  <% } %>
+<% } %>
 
-  %= hidden_field 'trt' => $usr_datas->{trt}
+%= hidden_field 'trt' => $usr_datas->{trt}
 
 </div>

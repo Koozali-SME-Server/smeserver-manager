@@ -51,72 +51,76 @@
           % my $csrf_token = "TOKEN"; # CSRF token for security
           % my $domain_name = $domain->{Domain}; # Domain name extracted from the data structure
           % my $actionModify = qq{
-            % <a href="domains2?CsrfDef=$csrf_token&trt=UPD&Domain=$domain_name">
-              % <button type='button' class='sme-modify-button' title='$modify_text' >
-                % $modify_text
-                % </button>
-              % </a>
-          % };
-        % my $removable = ( $domain->{Removable} || 'yes' );
-        % my $actionRemove = '&nbsp;';
-        % if ($removable eq 'yes') {
-          % my $remove_text = l('REMOVE'); # Localized text
-          % my $csrf_token = "TOKEN"; # CSRF token for security
-          % my $domain_name = $domain->{Domain}; # Domain name extracted from the data structure
-          % $actionRemove = qq{
-            % <a href="domains2?CsrfDef=$csrf_token&trt=DEL&Domain=$domain_name">
-              % <button type='button' class='sme-remove-button' title='$remove_text' >
-                % $remove_text
-                % </button>
-              % </a>
-          % };
-        %# $actionRemove = "<a href='domains2?CsrfDef=TOKEN&trt=DEL&Domain=" . $domain->{Domain} . "'>" . "<button class='sme-remove-button' title=".l('REMOVE').">".l('REMOVE')."</button>" . "</a>";
+            % <a href="domains2?CsrfDef=$csrf_token&trt=UPD&Domain=$domain_name"
+            % class="sme-modify-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
+            % title="$modify_text" aria-label="$modify_text"
+            % style="background:white;">
+            % <span class="ui-icon ui-icon-pencil"></span>
+            % <span class="ui-button-text">$modify_text</span>
+            % </a>
         % };
-        <td class='sme-border' style="min-width:15em">
-          <%= $c->render_to_string( inline => $actionModify ) %> <%= $c->render_to_string( inline => $actionRemove ) %>
-        </td>
-      </tr>
-      % }
+      % my $removable = ( $domain->{Removable} || 'yes' );
+      % my $actionRemove = '&nbsp;';
+      % if ($removable eq 'yes') {
+        % my $remove_text = l('REMOVE'); # Localized text
+        % my $csrf_token = "TOKEN"; # CSRF token for security
+        % my $domain_name = $domain->{Domain}; # Domain name extracted from the data structure
+        % $actionRemove = qq{
+          % <a href="domains2?CsrfDef=$csrf_token&trt=DEL&Domain=$domain_name"
+          % class="sme-remove-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
+          % title="$remove_text" aria-label="$remove_text"
+          % style="background:white;">
+          % <span class="ui-icon ui-icon-delete"></span>
+          % <span class="ui-button-text">$remove_text</span>
+          % </a>
+      % };
+    %# $actionRemove = "<a href='domains2?CsrfDef=TOKEN&trt=DEL&Domain=" . $domain->{Domain} . "'>" . "<button class='sme-remove-button' title=".l('REMOVE').">".l('REMOVE')."</button>" . "</a>";
+    % };
+    <td class='sme-border' style="min-width:15em">
+      <%= $c->render_to_string( inline => $actionModify ) %> <%= $c->render_to_string( inline => $actionRemove ) %>
+    </td>
+  </tr>
+  % }
 
-    </tbody>
-  </table>
+</tbody>
+</table>
 
-  %= hidden_field 'trt' => 'ADD'
+%= hidden_field 'trt' => 'ADD'
 
-  %= form_for '/domains' => ( method => 'POST' ) => begin
+%= form_for '/domains' => ( method => 'POST' ) => begin
 
-    <!-- <HR class="sectionbar">-->
-    <br>
+  <!-- <HR class="sectionbar">-->
+  <br>
 
-    % my $btn2 = l('dom_DOMAINS_PAGE_CORPORATE_DNS');
+  % my $btn2 = l('dom_DOMAINS_PAGE_CORPORATE_DNS');
 
-    <h3>
-      %= l 'dom_DESC_CORPORATE_DNS_CURRENT'
-    </h3>
-
-    <p>
-      <span class=label>
-        %= l 'dom_LABEL_CORPORATE_DNS_PRIMARY'
-      </span><span class=data>
-        %= $dom_datas->{forwarder}
-      </span>
-    </p>
-
-    % if ($dom_datas->{forwarder2}) {
-      <p>
-        <span class=label>
-          %= l 'dom_LABEL_CORPORATE_DNS_SECONDARY'
-        </span><span class=data>
-          %= $dom_datas->{forwarder2}
-        </span>
-      </p>
-    % }
+  <h3>
+    %= l 'dom_DESC_CORPORATE_DNS_CURRENT'
+  </h3>
 
   <p>
-    %= submit_button "$btn2", class => 'action'
+    <span class=label>
+      %= l 'dom_LABEL_CORPORATE_DNS_PRIMARY'
+    </span><span class=data>
+      %= $dom_datas->{forwarder}
+    </span>
   </p>
-  %= hidden_field 'trt' => 'UP2'
-  % end
+
+  % if ($dom_datas->{forwarder2}) {
+    <p>
+      <span class=label>
+        %= l 'dom_LABEL_CORPORATE_DNS_SECONDARY'
+      </span><span class=data>
+        %= $dom_datas->{forwarder2}
+      </span>
+    </p>
+  % }
+
+<p>
+  %= submit_button "$btn2", class => 'action'
+</p>
+%= hidden_field 'trt' => 'UP2'
+% end
 
 
 

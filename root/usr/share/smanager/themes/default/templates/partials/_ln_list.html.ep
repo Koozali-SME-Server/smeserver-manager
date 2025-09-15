@@ -80,18 +80,20 @@
             % my $local_network_entry = $localnetwork->key;
             % my $csrf_token = "TOKEN"; # CSRF token for security
             % $actionRemove = qq{
-              % <a href="localnetworksd?CsrfDef=$csrf_token&trt=DEL&localnetwork=$local_network_entry">
-                % <button type='button' class='sme-remove-button' title='$remove_text' >
-                  % $remove_text
-                  % </button>
-                % </a>
-            % };
-        % }
-        <td class='sme-border'><%= $c->render_to_string( inline => $actionRemove ) %></td>
-      </tr>
+              % <a href="localnetworksd?CsrfDef=$csrf_token&trt=DEL&localnetwork=$local_network_entry"
+              % class="sme-remove-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
+              % title="$remove_text" aria-label="$remove_text"
+              % style="background:white;">
+              % <span class="ui-icon ui-icon-delete"></span>
+              % <span class="ui-button-text">$remove_text</span>
+              % </a>
+          % };
       % }
-    </tbody>
-  </table>
-  %= hidden_field 'trt' => $ln_datas->{trt}
-  % }
+      <td class='sme-border'><%= $c->render_to_string( inline => $actionRemove ) %></td>
+    </tr>
+    % }
+  </tbody>
+</table>
+%= hidden_field 'trt' => $ln_datas->{trt}
+% }
 </div>
