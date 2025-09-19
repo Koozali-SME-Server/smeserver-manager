@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 116
+%define release 117
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
