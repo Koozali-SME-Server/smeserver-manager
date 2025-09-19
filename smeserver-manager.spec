@@ -76,6 +76,7 @@ AutoReqProv: no
 
 %description
 This RPM provides the Server manager 2, the recent (2024/2025) rewrite using the perl Mojolicious package.
+Initially coded by @michel, then later on by @brianr
 
 %prep
 %setup
