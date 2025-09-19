@@ -3,13 +3,6 @@
 SMEServer Koozali developed git repo for smeserver-manager smeserver
 
 ## Wiki
-<br />https://wiki.koozali.org/Crontab_Manager
-<br />https://wiki.koozali.org/Disk_Manager
-<br />https://wiki.koozali.org/Crontab_Manager/fr
-<br />https://wiki.koozali.org/Qmhandle_mail_queue_manager
-<br />https://wiki.koozali.org/Customize_Server-Manager_Appearance
-<br />https://wiki.koozali.org/Modules_and_Server_Manager_Panels
-<br />https://wiki.koozali.org/Create_server-manager_panels_by_perl_cgi_(deprecated)
 <br />https://wiki.koozali.org/Server_Manager_2_Howto_incorporate_a_legacy_contrib
 
 ## Bugzilla
