@@ -9,6 +9,7 @@ SMEServer Koozali developed git repo for smeserver-manager smeserver
 <br />https://wiki.koozali.org/Language_translation_for_Server_Manager_2_in_SME11
 <br />https://wiki.koozali.org/SM2Gen_Generating_a_new_Server_manager_panel
 
+
 ## Bugzilla
 Show list of outstanding bugs:
 [All](https://bugs.koozali.org/buglist.cgi?action=wrap&bug_status=UNCONFIRMED&bug_status=CONFIRMED&bug_status=NEEDINFO&bug_status=IN_PROGRESS&bug_status=RESOLVED&bug_status=VERIFIED&cf_package=smeserver-manager&classification=SME+Server&list_id=105756&order=changeddate+DESC%2Ccomponent%2Cpriority%2Cbug_severity&query_format=advanced)  
@@ -24,6 +25,8 @@ Show list of outstanding bugs:
 The *smeserver-manager* is a web-based management interface for the SME Server (formerly known as e-smith server and gateway). SME Server is a Linux-based distribution designed for small to medium-sized enterprises, providing a wide range of network services and simplified server management.
 
 It is based on the perl Mojolicious package. Mojolicious is a real-time web framework for Perl, which provides a range of functionalities that make it a powerful and flexible tool for web development.
+
+It is supported by the Koozali Foundation.
 
 ### Features
 
