@@ -75,7 +75,7 @@ AutoReqProv: no
 %define dir_mngr /usr/share/smanager
 
 %description
-This RPM contributes the navigation bars for the smeserver-manager. New Mojolicious version.
+This RPM provides the Server manager 2, the recent (2024/2025) rewrite using the perl Mojolicious package.
 
 %prep
 %setup
