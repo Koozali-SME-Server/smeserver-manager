@@ -4,6 +4,10 @@ SMEServer Koozali developed git repo for smeserver-manager smeserver
 
 ## Wiki
 <br />https://wiki.koozali.org/Server_Manager_2_Howto_incorporate_a_legacy_contrib
+<br/ >https://wiki.koozali.org//Server_Manager2
+<br/ >https://wiki.koozali.org/Server_Manager2_create_panel_for_contrib
+<br/ >https://wiki.koozali.org/Language_translation_for_Server_Manager_2_in_SME11
+<br/ >https://wiki.koozali.org/SM2Gen_Generating_a_new_Server_manager_panel
 
 ## Bugzilla
 Show list of outstanding bugs:
