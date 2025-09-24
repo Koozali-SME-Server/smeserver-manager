@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 116
+%define release 117
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Sep 24 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-117.sme
+- set correctly X-Forwarded-Proto for TKT auth [SME: 13175]
+  updated CSP for smanager
+
 * Mon Sep 15 2025 Brian Read <brianr@koozali.org> 11.0.0-116.sme
 - Fix other buttons in lists for elinks [SME: 13113]
 
