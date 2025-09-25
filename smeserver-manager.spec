@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 118
+%define release 119
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Sep 25 2025 Brian Read <brianr@koozali.org> 11.0.0-119.sme
+- Change submit button disable/message as method as current method does not send name back as parameter [SME: 13184]
+
 * Thu Sep 25 2025 Brian Read <brianr@koozali.org> 11.0.0-118.sme
 - Remove inline style for legacy panel [SME: 13177]
 
