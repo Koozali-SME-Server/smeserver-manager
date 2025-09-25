@@ -14,10 +14,18 @@
     </div>
   % }
   <h1> Embedded - <%= $title %></h1><br>
-  <p>If the legacy panel does not appear, then you may not be logged into the original Server manager.<br />You can log in by clicking <a href="/server-manager" target='_blank'>here</a>. Or by clicking on the "Legacy SM" button at the top of the window.</p>
-  % my $height = $c->stash('height') | '600px';
+  <p>If the legacy panel does not appear, then you may not be logged into the original Server manager.<br />You can log in by clicking <a href="/server-manager" target='_blank'>here</a>.</p>
+  % my $height = $c->stash('height') || '600px';
   % if ( $height !~ /px$/ ) { $height = $height . 'px'; }
-  <object id="legacy-embedded" class="legacy-embedded" data="<%= $c->stash('modul') %>" style="width:99%;height:<%= $height %>;" title="<%= $c->stash('title') %>"  type="text/html" ><%= $c->stash('title') %> not found</object>
+  % # Add the height as a data attribute
+  <object id="legacy-embedded" 
+          class="legacy-embedded" 
+          data="<%= $c->stash('modul') %>" 
+          data-legacy-height="<%= $height %>"
+          title="<%= $c->stash('title') %>"  
+          type="text/html">
+    <%= $c->stash('title') %> not found
+  </object>
 </div>
 
 % end

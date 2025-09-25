@@ -1,0 +1,4 @@
+.legacy-embedded {
+  width: 99%;
+  height: 600px; /* fallback default, matches your $height default */
+}
