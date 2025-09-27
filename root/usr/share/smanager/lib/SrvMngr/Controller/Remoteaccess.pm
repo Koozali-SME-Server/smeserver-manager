@@ -163,7 +163,7 @@ sub get_ftp_access {
     my $status = get_prop('', 'ftp', 'status') || 'disabled';
     return 'off' unless $status eq 'enabled';
     my $access = get_prop('', 'ftp', 'access') || 'private';
-    return ($access eq 'public') ? 'normal' : 'private';
+    return ($access eq 'public') ? 'public' : 'private';
 } ## end sub get_ftp_access
 
 #sub get_pptp_sessions {
@@ -320,7 +320,7 @@ sub change_settings {
             $rec->set_prop('status',      'disabled');
             $rec->set_prop('access',      'private');
             $rec->set_prop('LoginAccess', 'private');
-        } elsif ($rma_datas{ftpAccess} eq "normal") {
+        } elsif ($rma_datas{ftpAccess} eq "public") {
             $rec->set_prop('status',      'enabled');
             $rec->set_prop('access',      'public');
             $rec->set_prop('LoginAccess', $rma_datas{ftpPasswordAccess});

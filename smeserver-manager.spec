@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 120
+%define release 121
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Sep 27 2025 Brian Read <brianr@koozali.org> 11.0.0-121.sme
+- Sort out ftp public setting [SME: 13194]
+
 * Thu Sep 25 2025 Brian Read <brianr@koozali.org> 11.0.0-120.sme
 - Add CSS for multiple result buttons on panel  - used by wireguard[SME: 13185]
 
