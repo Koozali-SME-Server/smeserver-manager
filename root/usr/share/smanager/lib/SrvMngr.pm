@@ -33,11 +33,13 @@ use esmith::I18N;
 use esmith::ConfigDB::UTF8;
 use esmith::NavigationDB; # no UTF8 raw is ok for ASCII only flat file
 
+use Data::Dumper;
+
 # Import the function(s) you need
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '94.el8.sme'; 
+our $VERSION = '121.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -607,18 +609,20 @@ sub getNavigation {
     # Added: Check if user is non-admin and get their allowed panels
     if ($username ne '') {
         # Get the AccountsDB to check user permissions
+        $is_admin = 0;  # User is non-admin with specific panel access
         my $accountsdb = esmith::AccountsDB::UTF8->open_ro() or
             die "Couldn't open AccountsDB\n";
             
         # Check if user has AdminPanels property
         my $user_rec = $accountsdb->get($username);
         if (defined $user_rec && $user_rec->prop('AdminPanels')) {
-            $is_admin = 0;  # User is non-admin with specific panel access
             # Get comma-separated list of allowed admin panels
             my $admin_panels = $user_rec->prop('AdminPanels');
-            @allowed_admin_panels = split(/,/, $admin_panels);
+			@allowed_admin_panels = $admin_panels eq '' ? () : split(/,/, $admin_panels);
+            #@allowed_admin_panels = split(/,/, $admin_panels);
         }
     }
+    
 
     #-----------------------------------------------------
     # Determine the directory where the functions are kept
@@ -720,20 +724,20 @@ sub getNavigation {
 		
 		# Added: Check if this is an admin menu item and if user has access
 		if ($menucat eq 'A' && !$is_admin) {
-			# Skip this admin panel if user doesn't have access to it
+			# By default, deny access if no allowed_admin_panels are specified
 			my $has_access = 0;
-			my $file_no_ext = $file;
-			$file_no_ext =~ s/\.pm$//;  # Remove .pm extension if present
-			foreach my $allowed_panel (@allowed_admin_panels) {
-				if ($file_no_ext eq lc($allowed_panel)) {
-					#die("Here!!$file $file_no_ext $allowed_panel ");
-					$has_access = 1;
-					last;
+			if (@allowed_admin_panels) {
+				my $file_no_ext = $file;
+				$file_no_ext =~ s/\.pm$//;  # Remove .pm extension if present
+				foreach my $allowed_panel (@allowed_admin_panels) {
+					if ($file_no_ext eq lc($allowed_panel)) {
+						$has_access = 1;
+						last;
+					}
 				}
 			}
 			next if !$has_access;
 		}
-
 		next if $menu ne $menucat;
 
 		#-------------------------------------------------- 
@@ -772,7 +776,7 @@ sub getNavigation {
 			  MENUCAT => $menucat
 			};
     }
-
+    #die(Dumper(\%nav));
 	return \%nav;
 
 }
