@@ -9,7 +9,7 @@
     % my $cc = 300;
     % foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'})
       % <=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
-      <!-- div class='section'><%= $h %></div -->
+      <!-- div class='section'><%= $h %></div> nnnn-->
     % my ( $classNew, $target, $href ) = '';
     % foreach (sort { $a->{'WEIGHT'} <=> $b->{'WEIGHT'} } @{$nav{$h}{'DESCRIPTIONS'}}) {
       % next if ( $_->{'MENUCAT'} ne 'A' && $_->{'MENUCAT'} ne 'U' ); # menu User

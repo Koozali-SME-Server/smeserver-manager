@@ -2,7 +2,7 @@
 % my %nav = %{ SrvMngr->getNavigation( $c->languages(), 'A' ) };
 
 <div id='navigat2'>
-  <!-- ><div><a href='#' id='togadm' class='menu-title'>ADMINISTRATION</a></div> -->
+  <!-- <div><a href='#' id='togadm' class='menu-title'>ADMINISTRATION</a></div> dddd-->
   <div id='menuadm'>
 
     % my $cc = 100;

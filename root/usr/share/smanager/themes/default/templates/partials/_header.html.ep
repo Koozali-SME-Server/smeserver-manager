@@ -4,7 +4,7 @@
   % if ( not defined $c->session->{username} ) {
 		<a class="login-button no-visited-state" target="_parent" href="/smanager/login">Login</a>
   % } else {
-  <!--><button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="/smanager/logout">Logout <%= $c->session->{username} %></a></button>-->
+  <!--<button type='button' class="login-button"><a class = "no-visited-state" target="_parent" href="/smanager/logout">Logout <%= $c->session->{username} %></a></button>xxx-->
 		<a class="login-button no-visited-state" target="_parent" href="/smanager/logout">Logout <%= $c->session->{username} %></a>
   % }
   <div id="flag-container" class = "flag-style">

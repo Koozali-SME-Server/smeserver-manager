@@ -2,14 +2,14 @@
 % my %nav = %{ SrvMngr->getNavigation( $c->languages(), 'N' ) };
 
 <div id='navmenu'>
-  <!-- <a href='#' id='tognav' class='menu-title'>NAVIGATION</a> -->
+  <!-- <a href='#' id='tognav' class='menu-title'>NAVIGATION</a> ffff-->
   <div id='menunav'>
 
     % my $cc = 200;
     % foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'})
       % <=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
       %
-      <!-- div class='section section-title'><%= $h %></div -->
+      <!-- div class='section section-title'><%= $h %></div gggg-->
     <div><a href='#' class='section section-title'><%= $h %></a></div>
     <div class='togms'>
       % my ( $classNew, $target, $href ) = '';
