@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 122
+%define release 123
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -39,7 +39,7 @@ Requires: perl(Mojo::JWT) >= 0.08-1
 #Requires: perl(Time::TAI64) >= 2.11
 Requires: perl(Data::Validate::IP)
 Requires: mutt >= 1.5.21
-Requires: smeserver-manager-jsquery >= 1.0
+Requires: smeserver-manager-jsquery >= 11.0.0-11
 Requires: smeserver-certificates >= 11.0
 #Requires: js-jquery > 2.2.4-3 (optional)
 
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Oct 24 2025 Brian Read <brianr@koozali.org> 11.0.0-123.sme
+- Take out references to js/jquery files now incorporated in the datatables.min.js [SME:13253]
+
 * Tue Oct 21 2025 Brian Read <brianr@koozali.org> 11.0.0-122.sme
 - Correct code to only show user panels when AdminPanels property is empty or non existent [SME: 13082]
 
