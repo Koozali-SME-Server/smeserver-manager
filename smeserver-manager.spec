@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 123
+%define release 124
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Oct 24 2025 Brian Read <brianr@koozali.org> 11.0.0-124.sme
+- Adjust CSS for logout button to remove overlap of border and rounding [SME: 13247]
+
 * Fri Oct 24 2025 Brian Read <brianr@koozali.org> 11.0.0-123.sme
 - Take out references to js/jquery files now incorporated in the datatables.min.js [SME:13253]
 
