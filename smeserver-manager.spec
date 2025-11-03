@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 124
+%define release 125
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Nov 03 2025 Brian Read <brianr@koozali.org> 11.0.0-125.sme
+- Arrange that Macaddress, InternalIP and comment cleared out when host entry switched to self [SME: 13207]
+
 * Fri Oct 24 2025 Brian Read <brianr@koozali.org> 11.0.0-124.sme
 - Adjust CSS for logout button to remove overlap of border and rounding [SME: 13247]
 

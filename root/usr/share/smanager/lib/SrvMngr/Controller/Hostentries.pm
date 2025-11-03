@@ -116,15 +116,38 @@ sub do_update {
     $ndb = esmith::NetworksDB::UTF8->open || die "Couldn't open networks db";
     my $notif     = '';
     my $result    = '';
-    $hos_datas{'name'}       = lc $c->param('Name');
-    $hos_datas{'domain'}     = lc $c->param('Domain');
-    $hos_datas{'hostname'}   = $c->param('Hostname');
-    $hos_datas{'comment'}    = $c->param('Comment');
-    $hos_datas{'hosttype'}   = $c->param('Hosttype');
-    $hos_datas{'internalip'} = $c->param('Internalip');
-    $hos_datas{'macaddress'} = $c->param('Macaddress');
-    $hos_datas{'externalip'} = $c->param('Externalip');
-    my $hostname = "$hos_datas{'name'}.$hos_datas{'domain'}";
+	# Fetch parameters with forced scalar context and default empty string if undefined
+	$hos_datas{'name'}       = lc(scalar $c->param('Name') // '');
+	$hos_datas{'domain'}     = lc(scalar $c->param('Domain') // '');
+	$hos_datas{'hostname'}   = scalar $c->param('Hostname') // '';
+	$hos_datas{'comment'}    = scalar $c->param('Comment') // '';
+	$hos_datas{'hosttype'}   = scalar $c->param('Hosttype') // '';
+	$hos_datas{'internalip'} = scalar $c->param('Internalip') // '';
+	$hos_datas{'externalip'} = scalar $c->param('Externalip') // '';
+
+	my $hostname = "$hos_datas{'name'}.$hos_datas{'domain'}";
+	
+
+	if (my $hostrec = $hdb->get($hostname)) {
+		my $hosttype = $hostrec->prop('HostType') // '';
+		#$c->app->log->info("$hosttype $hos_datas{'hosttype'} $hos_datas{'comment'} $hostrec->prop('Comment')");
+		# Clear comment if hosttype changes to 'self' and comment was not intentionally changed
+		if ($hosttype ne 'Self' 
+			&& $hos_datas{'hosttype'} eq 'Self' 
+			&& $hos_datas{'comment'} eq $hostrec->prop('Comment')) {
+			$hos_datas{'comment'} = '';
+		}
+	}
+
+	# Clear MAC address if hosttype is 'self', otherwise get from param
+	if ($hos_datas{'hosttype'} eq 'Self') {
+		$hos_datas{'macaddress'} = '';
+		$hos_datas{'internalip'} = '';
+		#$c->app->log->info("yes $hos_datas{'hosttype'} $hos_datas{'macaddress'}");
+	} else {
+		$hos_datas{'macaddress'} = scalar $c->param('Macaddress') // '';
+		#$c->app->log->info("no $hos_datas{'hosttype'} $hos_datas{'macaddress'}");
+	}
 
     if ($trt eq 'ADD') {
         $hos_datas{'hostname'} = $hostname;
