@@ -263,8 +263,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function displayLocaleAndFlag() {
     // Get the browser locale
-    const userLocale = navigator.language || navigator.userLanguage;
+    const userLocale = navigator.languages && navigator.languages.length
+    ? navigator.languages[0]
+    : navigator.language;
+        
     //alert(`User Locale: ${userLocale}`); // Alert the detected locale
+	console.log(navigator.languages); // Log language to console
 
     const { flag, isUnknown, countryCode } = getFlagEmoji(userLocale);
     
