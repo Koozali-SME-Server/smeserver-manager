@@ -122,6 +122,7 @@
     max-width: 100%;
     position: relative;
     margin: auto;
+    margin-top:-20px;
 }
 
 #header2 {
@@ -290,4 +291,8 @@ background-color: #e8f3e1;
 }
 .busy {
 	cursor: wait; /* Change the cursor to a 'wait' cursor */
+}
+
+#swt_theme {
+	margin-left:10px;
 }

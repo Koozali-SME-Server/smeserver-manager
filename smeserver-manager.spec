@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 129
+%define release 130
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Nov 04 2025 Brian Read <brianr@koozali.org> 11.0.0-130.sme
+- Adjust heading so that no white line under theme selector and move theme button in [SME: 13057]
+
 * Tue Nov 04 2025 Brian Read <brianr@koozali.org> 11.0.0-129.sme
 - Useraccounts: Clean up forward email sub and make sure blank is errored  [SME: 13056]
 
