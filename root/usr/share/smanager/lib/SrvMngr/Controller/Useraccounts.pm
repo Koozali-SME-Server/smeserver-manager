@@ -179,7 +179,7 @@ sub do_update {
         $res = $c->pseudonym_clash($first);
         $result .= $res unless $res eq 'OK';
 
-        if ($mail) {
+        if (defined $mail) {
             $res = $c->emailforward($mail);
             $result .= $res unless $res eq 'OK';
         }
@@ -217,7 +217,7 @@ sub do_update {
         $res = $c->pseudonym_clash($first);
         $result .= $res unless $res eq 'OK';
 
-        if ($mail) {
+        if (defined $mail) {
             $res = $c->emailforward($mail);
             $result .= $res unless $res eq 'OK';
         }
@@ -554,27 +554,31 @@ sub pseudonym_clash {
 
 sub emailforward {
     my ($c, $data) = @_;
-    my $response = $c->email_simple($data);
+    #$c->app->log->info("emailformward called with $data!");
 
-    if ($response eq "OK") {
-        return "OK";
-    } elsif ($data eq "") {
+    # Trim whitespace from $data
+    $data =~ s/^\s+|\s+$//g if defined $data;
 
-        # Blank is ok, only if we're not forwarding, which means that the
-        # EmailForward param must be set to 'local'.
+    # Check simple email validation first
+    return "OK" if $c->email_simple($data) eq "OK";
+
+    # If trimmed data is empty
+    if ($data eq "") {
         my $email_forward = $c->param('EmailForward') || '';
         $email_forward =~ s/^\s+|\s+$//g;
         return 'OK' if $email_forward eq 'local';
         return $c->l('usr_CANNOT_CONTAIN_WHITESPACE');
-    } else {
-        return $c->l('usr_CANNOT_CONTAIN_WHITESPACE')
-            if ($data =~ /\s+/);
+    }
 
-        # Permit a local address.
-        return "OK" if $data =~ /^[a-zA-Z][a-zA-Z0-9\._\-]*$/;
-        return $c->l('usr_UNACCEPTABLE_CHARS');
-    } ## end else [ if ($response eq "OK")]
-} ## end sub emailforward
+    # Reject if $data contains any whitespace inside
+    return $c->l('usr_CANNOT_CONTAIN_WHITESPACE') if $data =~ /\s/;
+
+    # Allow local address pattern
+    return "OK" if $data =~ /^[a-zA-Z][a-zA-Z0-9._-]*$/;
+
+    # Otherwise reject for unacceptable chars
+    return $c->l('usr_UNACCEPTABLE_CHARS');
+}
 
 sub get_groups {
     my ($c) = shift;
