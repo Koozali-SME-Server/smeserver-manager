@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 125
+%define release 126
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Nov 04 2025 Brian Read <brianr@koozali.org> 11.0.0-126.sme
+- Remove debugging dump in portforwarding which crashes if no data  [SME: 13243]
+
 * Mon Nov 03 2025 Brian Read <brianr@koozali.org> 11.0.0-125.sme
 - Arrange that Macaddress, InternalIP and comment cleared out when host entry switched to self [SME: 13207]
 
