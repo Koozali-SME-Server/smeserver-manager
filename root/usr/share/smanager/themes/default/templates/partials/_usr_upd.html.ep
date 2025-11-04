@@ -131,7 +131,7 @@
         %= l 'usr_GROUP_MEMBERSHIPS'
       </span>
       <span class=data>
-        <table class="sme-border "><thead>
+        <table class="sme-border incolumn"><thead>
             <tr><th class='sme-border'>
                 %= l 'usr_MEMBER'
               </th><th class='sme-border'>

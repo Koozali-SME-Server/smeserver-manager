@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 127
+%define release 128
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Nov 04 2025 Brian Read <brianr@koozali.org> 11.0.0-128.sme
+- Move group table to under others in User accounts setup panel [SME: 13068]
+
 * Tue Nov 04 2025 Brian Read <brianr@koozali.org> 11.0.0-127.sme
 - Move same var declations to outside innner scope [SME: 13073]
 

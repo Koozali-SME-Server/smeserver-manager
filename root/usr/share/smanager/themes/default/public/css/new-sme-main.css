@@ -519,3 +519,8 @@ div.roundcube #roundcube{
   margin-left: auto!important;
   margin-right: auto;
 }
+
+table.incolumn {
+	margin:auto;
+	color:red;
+}
