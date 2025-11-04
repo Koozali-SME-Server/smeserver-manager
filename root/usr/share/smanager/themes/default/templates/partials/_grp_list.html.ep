@@ -35,13 +35,13 @@
 
         % foreach my $group (@$groups)
         % {
+		  % my $csrf_token = "TOKEN"; # CSRF token for security
+		  % my $group_name = $group->key; # group name extracted from the data structure
           <tr>
             %= t td => ( class => 'sme-border' ) => $group->key
             %= t td => ( class => 'sme-border' ) => $group->prop('Description')
             <td class='sme-border' style="min-width:15em">
               % my $modify_text = l('MODIFY'); # Localized text
-              % my $csrf_token = "TOKEN"; # CSRF token for security
-              % my $group_name = $group->key; # group name extracted from the data structure
               % my $actionModify = qq{
                 % <a href="groups2?CsrfDef=$csrf_token&trt=UPD&group=$group_name"
                 % class="sme-modify-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
@@ -52,8 +52,6 @@
                 % </a>
             % };
           % my $remove_text = l('REMOVE'); # Localized text
-          % my $csrf_token = "TOKEN"; # CSRF token for security
-          % my $group_name = $group->key; # group name extracted from the data structure
           % my $actionRemove = qq{
             % <a href="groups2?CsrfDef=$csrf_token&trt=DEL&group=$group_name"
             % class="sme-remove-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
