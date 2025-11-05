@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 131
+%define release 132
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Nov 05 2025 Brian Read <brianr@koozali.org> 11.0.0-132.sme
+- Supress webmail option on menu and in user accounts if webmail not enabled [SME: 12997]
+
 * Tue Nov 04 2025 Brian Read <brianr@koozali.org> 11.0.0-131.sme
 - Add fix for IE browser local/language detect [SME: 13039]
 

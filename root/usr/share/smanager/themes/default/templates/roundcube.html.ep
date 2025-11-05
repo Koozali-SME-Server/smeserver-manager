@@ -1,8 +1,7 @@
 % layout 'default', title => "Sme server 2 - roundcube";
-
+% use constant FALSE => 0;
+% use constant TRUE  => 1;
 % content_for 'module' => begin
-
-
   <div id='roundcube' class='roundcube roundcube-panel module'>
     % if (config->{debug} == 1) {
       <p>
@@ -15,26 +14,26 @@
     </div>
   % }
   <h1><%= $title %></h1><br>
-  <p>If the Webmail panel does not appear after logging in, then please check your password.</p><br />
-
-  % my $thisdomain = $c->req->url->to_abs->host;
-  % my $url = $c->stash('modul');
-  % if (!$url) {
-    % $url = $thisdomain . "/roundcube";
+  % if ($c->SrvMngr::Controller::Emailsettings::get_current_webmail_status(FALSE) eq 'disabled'){
+		<%= $c->render_to_string( inline => l('rc_WEBMAIL_DISABLED') ) %>
+  % } else {
+	<p>If the Webmail panel does not appear after logging in, then please check your password.</p><br />
+	% my $thisdomain = $c->req->url->to_abs->host;
+	% my $url = $c->stash('modul');
+	% if (!$url) {
+		% $url = $thisdomain . "/roundcube";
+	% }
+	% my $username = 'admin';
+	% if ($url =~ /[?&]_user=([^&]+)/) {
+		% $username = $1;
+	% }
+	% if (!($url =~ /https:/)) {
+		% $url = 'https://' . $url;
+	% }
+	<div class='roundcube'>
+		<a href="<%= "https://" . $thisdomain . "/" %>roundcube?_user=<%= $username %>"><button class="sme-fullwindow1-button" width=20em title="<%= l('Full Window') %>"><%= l('Full Window') %></button></a>
+		<object id="roundcube" data="<%= $url %>" title="<%= $c->stash('title') %>"  type="text/html" ><%= $c->stash('title') %> not found</object>
+	</div>
   % }
-  % my $username = 'admin';
-  % if ($url =~ /[?&]_user=([^&]+)/) {
-    % $username = $1;
-  % }
-  % if (!($url =~ /https:/)) {
-    % $url = 'https://' . $url;
-  % }
-
-  <div class='roundcube'>
-    <a href="<%= "https://" . $thisdomain . "/" %>roundcube?_user=<%= $username %>"><button class="sme-fullwindow1-button" width=20em title="<%= l('Full Window') %>"><%= l('Full Window') %></button></a>
-    <object id="roundcube" data="<%= $url %>" title="<%= $c->stash('title') %>"  type="text/html" ><%= $c->stash('title') %> not found</object>
-  </div>
 </div>
-
-
 % end

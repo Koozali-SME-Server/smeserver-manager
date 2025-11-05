@@ -1,5 +1,7 @@
 <div id='usr_list'>
 
+% use constant FALSE => 0;
+% use constant TRUE  => 1;
 
   % my $btn = l('usr_ADD_USER');
 
@@ -153,7 +155,9 @@
   <%= $c->render_to_string( inline => $actionResetPw ) %>
   <%= $c->render_to_string( inline => $actionLock ) %>
   <%= $c->render_to_string( inline => $actionRemove ) %>
-  <%= $c->render_to_string( inline => $actionroundcube ) %>
+  % if ($c->SrvMngr::Controller::Emailsettings::get_current_webmail_status(FALSE) ne  'disabled'){
+	<%= $c->render_to_string( inline => $actionroundcube ) %>
+  % }
 </td>
 </tr>
 % }

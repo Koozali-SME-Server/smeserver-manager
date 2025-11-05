@@ -17,6 +17,8 @@ use Data::Validate::IP qw(is_ipv4 is_ipv6);
 use constant FALSE => 0;
 use constant TRUE  => 1;
 
+our @EXPORT_OK = qw(get_current_webmail_status);
+
 
 #The most common ones - open DB when required.
 our $cdb; 

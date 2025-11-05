@@ -1,1 +1,1 @@
-
+'rc_WEBMAIL_DISABLED' => 'Webmail is disabled in Email Settings panel',
