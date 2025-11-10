@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 132
+%define release 133
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -147,6 +147,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Nov 10 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-133.sme
+- rewrite few untaint strings [SME: 13280]
+
 * Wed Nov 05 2025 Brian Read <brianr@koozali.org> 11.0.0-132.sme
 - Supress webmail option on menu and in user accounts if webmail not enabled [SME: 12997]
 

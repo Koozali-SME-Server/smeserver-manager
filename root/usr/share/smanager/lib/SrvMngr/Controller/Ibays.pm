@@ -253,7 +253,7 @@ sub create_ibay {
         )
     {
         # Untaint $name before use in system()
-        $name =~ /(.+)/;
+        $name =~ /([\w\p{L}.-]+)/;
         $name = $1;
 
         if (system("/sbin/e-smith/signal-event", "ibay-create", $name) == 0) {
@@ -283,7 +283,7 @@ sub modify_ibay {
             );
 
             # Untaint $name before use in system()
-            $name =~ /(.+)/;
+            $name =~ /([\w\p{L}.-]+)/;
             $name = $1;
 
             if (system("/sbin/e-smith/signal-event", "ibay-modify", $name) == 0) {
@@ -334,7 +334,7 @@ sub remove_ibay {
             }
 
             # Untaint $name before use in system()
-            $name =~ /(.+)/;
+            $name =~ /([\w\p{L}.-]+)/;
             $name = $1;
 
             if (system("/sbin/e-smith/signal-event", "ibay-delete", $name) == 0) {
@@ -361,7 +361,7 @@ sub reset_password {
         $acct->set_prop('PasswordSet', 'yes');
 
         # Untaint $name before use in system()
-        $name =~ /(.+)/;
+        $name =~ /([\w\p{L}.-]+)/;
         $name = $1;
 
         if (system("/sbin/e-smith/signal-event", "password-modify", $name) == 0) {

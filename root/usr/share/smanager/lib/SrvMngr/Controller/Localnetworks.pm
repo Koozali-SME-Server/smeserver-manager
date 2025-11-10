@@ -168,7 +168,7 @@ sub remove_network {
         $record->set_prop(type => 'network-deleted');
 
         # Untaint $network before use in system()
-        $network =~ /(.+)/;
+        $network =~ /([0-9.]+)/;
         $network = $1;
 
         if (system("/sbin/e-smith/signal-event", "network-delete", $network) == 0) {
@@ -273,7 +273,7 @@ sub add_network {
 	} else {
 		#Only call underlying batch if new record created
 		# Untaint $network before use in system()
-		$network =~ /(.+)/;
+		$network =~ /([0-9.]+)/;
 		$network = $1;
 		system("/sbin/e-smith/signal-event", "network-create", $network) == 0
 			or (return (ret => 'ln_ERROR_CREATING_NETWORK', vars => "$network,$networkMask,$networkRouter"));

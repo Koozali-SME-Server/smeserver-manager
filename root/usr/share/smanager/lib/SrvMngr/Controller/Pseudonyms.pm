@@ -118,7 +118,7 @@ sub do_update {
             ) or $result .= "Error occurred while creating pseudonym in database.";
 
             # Untaint $pseudonym before use in system()
-            ($pseudonym) = ($pseudonym =~ /(.+)/);
+            ($pseudonym) = ($pseudonym =~ /([\w\p{L}.-]+)/);
             system("/sbin/e-smith/signal-event", "pseudonym-create", "$pseudonym",) == 0
                 or $result .= 'pse_CREATE_ERROR.';
         } ## end if (!$result)
@@ -152,7 +152,7 @@ sub do_update {
                 or $result .= "Error occurred while modifying pseudonym in database.";
 
             # Untaint $pseudonym before use in system()
-            ($pseudonym) = ($pseudonym =~ /(.+)/);
+            ($pseudonym) = ($pseudonym =~ /([\w\p{L}.-]+)/);
             system("/sbin/e-smith/signal-event", "pseudonym-modify", "$pseudonym",) == 0
                 or $result .= "Error occurred while modifying pseudonym.";
         } ## end if (!$result)
@@ -216,7 +216,7 @@ sub delete_pseudonym {
         or $msg .= "Error occurred while changing pseudonym type.";
 
     # Untaint $pseudonym before use in system()
-    ($pseudonym) = ($pseudonym =~ /(.+)/);
+    ($pseudonym) = ($pseudonym =~ /([\w\p{L}.-]+)/);
     system("/sbin/e-smith/signal-event", "pseudonym-delete", "$pseudonym") == 0
         or $msg .= "Error occurred while removing pseudonym.";
 
