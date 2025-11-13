@@ -199,10 +199,11 @@ my $ddb;
 			# fields from Inputs in DEL $fields['DEL']
 			'emailunknownuser'      => $cdb->get_value('EmailUnknownUser') || '"returntosender',
 			'delegatemailserver'    => $cdb->get_value('DelegateMailServer'),
-			'smtpsmarthost'         => $cdb->get_value('SMTPSmartHost'),
-			'smtpauthproxystatus'   => $cdb->get_prop('smtp-auth-proxy', 'status') || 'disabled',
-			'smtpauthproxyuserid'   => $cdb->get_prop('smtp-auth-proxy', 'Userid') || '',
-			'smtpauthproxypassword' => $cdb->get_prop('smtp-auth-proxy', 'Passwd') || '',
+			'smtpsmarthost'         => $cdb->get_prop('postfix','SMTPSmartHost'),
+			'smtpauthproxystatus'   => $cdb->get_prop('postfix', 'SMTPSmartHostStatus') || 'disabled',
+			'smtpauthproxyuserid'   => $cdb->get_prop('postfix', 'SMTPSmartHostUserid') || '',
+			'smtpauthproxypassword' => $cdb->get_prop('postfix', 'SMTPSmartHostPasswd') || '',
+      'smtpauthproxypeerport' => $cdb->get_prop('postfix', 'SMTPSmartHostPeerPort') || '',
 		);
 		return %ret;
 	}
@@ -819,14 +820,14 @@ sub change_settings_delivery {
     my ($c) = shift;
     $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
     my $EmailUnknownUser = ($c->param('EmailUnknownUser') || 'returntosender');
-    $cdb->set_value('SMTPSmartHost',      $c->param('SMTPSmartHost'));
+    $cdb->set_prop('postfix','SMTPSmartHost',      $c->param('SMTPSmartHost'));
     $cdb->set_value('DelegateMailServer', $c->param('DelegateMailServer'));
     $cdb->set_value('EmailUnknownUser',   $EmailUnknownUser);
-    my $proxy = $cdb->get('smtp-auth-proxy');
+    my $proxy = $cdb->get('postfix');
     my %props = $proxy->props;
 
-    for (qw(Userid Passwd status)) {
-        $props{$_} = $c->param("SMTPAUTHPROXY_$_");
+    for (qw(Userid Passwd Status PeerPort)) {
+        $props{"SMTPSmartHost$_"} = $c->param("SMTPAUTHPROXY_$_");
     }
     $proxy->merge_props(%props);
 
@@ -864,7 +865,8 @@ sub change_settings_access {
     if ($imapAccess eq 'disabled') {
         $cdb->set_prop('imap',  "status", "enabled");
         $cdb->set_prop('imap',  "access", "localhost");
-        $cdb->set_prop('imaps', "status", "disabled");
+        $cdb->set_prop('imaps', "status", "enabled");
+        $cdb->set_prop('imaps', "access", "localhost");
     } elsif ($imapAccess eq 'public') {
         $cdb->set_prop('imap',  "status", "enabled");
         $cdb->set_prop('imap',  "access", "public");
@@ -946,7 +948,7 @@ sub change_settings_filtering {
 #}
 sub nonblank_if_smtpauth {
     my ($c, $value) = @_;
-    return 'ok' unless ($c->param("SMTPAUTHPROXY_status") eq 'enabled');
+    return 'ok' unless ($c->param("SMTPAUTHPROXY_Status") eq 'enabled');
     return ($value =~ /\S+/) ? 'ok' : $c->l('mai_VALIDATION_SMTPAUTH_NONBLANK');
 }
 
@@ -978,196 +980,6 @@ sub validate_ip_or_blank {
 
   return "mai_INVALID_DELEGATE";
 }
-
-# From earlier version - delete this once conversion is done.
-#sub main {
-    #my $c = shift;
-    #$c->app->log->info($c->log_req);
-    #$pattern_db = esmith::ConfigDB::UTF8->open("mailpatterns");
-    #$cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
-    #my %mai_datas = ();
-    #my $title     = $c->l('mai_FORM_TITLE');
-    #$mai_datas{'trt'} = 'LIST';
-    #$mai_datas{fetchmailmethod} = $c->l($cdb->get_prop('fetchmail', 'Method'));
-    #$c->stash(title => $title, notif => '', mai_datas => \%mai_datas);
-    #$c->render(template => 'emailsettings');
-#} ## end sub main
-
-#sub do_display {
-    #my $c         = shift;
-    #my $rt        = $c->current_route;
-    #my $trt       = ($c->param('trt') || 'LIST');
-    #my %mai_datas = ();
-    #my $title     = $c->l('mai_FORM_TITLE');
-    #my ($notif, $dest) = '';
-    #$mai_datas{'trt'} = $trt;
-    #$cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
-
-    #if ($trt eq 'ACC') {
-        #$dest = 'emailaccess';
-        #$mai_datas{fetchmailmethod} = $cdb->get_prop('fetchmail', 'Method');
-    #}
-
-    #if ($trt eq 'FIL') {
-        #$dest = 'emailfilter';
-        #$mai_datas{'virusstatus'} = $c->get_virus_status();
-        #$mai_datas{'spamstatus'}      = $cdb->get_prop('spamassassin', 'status');
-        #$mai_datas{'spamsensitivity'} = $cdb->get_prop('spamassassin', 'Sensitivity', 'medium');
-        #$mai_datas{'spamtaglevel'}    = $cdb->get_prop('spamassassin', 'TagLevel') || '0';
-        #$mai_datas{'spamrejectlevel'} = $cdb->get_prop('spamassassin', 'RejectLevel') || '0';
-        #$mai_datas{spamsortspam}      = $cdb->get_prop('spamassassin', 'SortSpam');
-        #$mai_datas{spamsubjecttag}    = $cdb->get_prop('spamassassin', 'SubjectTag');
-        #$mai_datas{spamsubject}       = $cdb->get_prop('spamassassin', 'Subject');
-    #} ## end if ($trt eq 'FIL')
-
-    #if ($trt eq 'REC') {
-        #$dest = 'emailreceive';
-        #$mai_datas{fetchmailmethod}       = $cdb->get_prop('fetchmail', 'Method');
-        #$mai_datas{freqoffice}            = $cdb->get_prop('fetchmail', 'FreqOffice');
-        #$mai_datas{freqoutside}           = $cdb->get_prop('fetchmail', 'FreqOutside');
-        #$mai_datas{freqweekend}           = $cdb->get_prop('fetchmail', 'FreqWeekend');
-        #$mai_datas{secondarymailserver}   = $cdb->get_prop('fetchmail', 'SecondaryMailServer');
-        #$mai_datas{secondarymailaccount}  = $cdb->get_prop('fetchmail', 'SecondaryMailAccount');
-        #$mai_datas{secondarymailpassword} = $cdb->get_prop('fetchmail', 'SecondaryMailPassword');
-        #$mai_datas{specifyheader}         = get_secondary_mail_use_envelope();
-        #$mai_datas{secondarymailenvelope} = $cdb->get_prop('fetchmail', 'SecondaryMailEnvelope');
-    #} ## end if ($trt eq 'REC')
-
-    #if ($trt eq 'DEL') {
-        #$dest = 'emaildeliver';
-        #$mai_datas{emailunknownuser}      = $cdb->get_value('EmailUnknownUser') || '"returntosender';
-        #$mai_datas{delegatemailserver}    = $cdb->get_value('DelegateMailServer');
-        #$mai_datas{smtpsmarthost}         = $cdb->get_value('SMTPSmartHost');
-        #$mai_datas{smtpauthproxystatus}   = $cdb->get_prop('smtp-auth-proxy', 'status') || 'disabled';
-        #$mai_datas{smtpauthproxyuserid}   = $cdb->get_prop('smtp-auth-proxy', 'Userid') || '';
-        #$mai_datas{smtpauthproxypassword} = $cdb->get_prop('smtp-auth-proxy', 'Passwd') || '';
-    #} ## end if ($trt eq 'DEL')
-    #$c->stash(title => $title, notif => $notif, mai_datas => \%mai_datas);
-    #return $c->render(template => $dest);
-#} ## end sub do_display
-
-#sub do_update {
-    #my $c = shift;
-    #$c->app->log->info($c->log_req);
-    #my $rt        = $c->current_route;
-    #my $trt       = $c->param('trt');
-    #my %mai_datas = ();
-    #$mai_datas{trt} = $trt;
-    #$cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
-    #my $title = $c->l('mai_FORM_TITLE');
-    #my ($dest, $res, $result) = '';
-    #$dest = "/emailsettings&trt=$trt";
-
-    #if ($trt eq 'ACC') {
-        ##$dest = 'emailaccess';
-
-        ##	$mai_datas{xxx}	= $c->param('XXX');
-        ## controls
-        ##	$res = xxxxxxx( $c );
-        ##	$result .= $res unless $res eq 'OK';
-        #if (!$result) {
-            #$res = $c->change_settings_access();
-            #$result .= $res unless $res eq 'OK';
-
-            #if (!$result) {
-                #$result = $c->l('mai_SUCCESS');
-            #}
-        #} ## end if (!$result)
-    #} ## end if ($trt eq 'ACC')
-
-    #if ($trt eq 'FIL') {
-        ##$dest = 'emailfilter';
-
-        ##	$mai_datas{xxx}	= $c->param('XXX');
-        ## controls
-        ##	$res = zzzzzz( $c );
-        ##	$result .= $res unless $res eq 'OK';
-        #if (!$result) {
-            #$res = $c->change_settings_filtering();
-            #$result .= $res unless $res eq 'OK';
-
-            #if (!$result) {
-                #$result = $c->l('mai_SUCCESS');
-            #}
-        #} ## end if (!$result)
-    #} ## end if ($trt eq 'FIL')
-
-    #if ($trt eq 'REC') {
-        ##$dest = 'emailreceive';
-
-        ##	$mai_datas{xxx}	= $c->param('XXX');
-        ## controls
-        ##	$res = yyyyyyyyy( $c );
-        ##	$result .= $res unless $res eq 'OK';
-        #if (!$result) {
-            #$res = $c->change_settings_reception();
-            #$result .= $res unless $res eq 'OK';
-
-            #if (!$result) {
-                #$result = $c->l('mai_SUCCESS');
-            #}
-        #} ## end if (!$result)
-    #} ## end if ($trt eq 'REC')
-
-    #if ($trt eq 'DEL') {
-        ##$dest = 'emaildeliver';
-
-		#my ($result,$res) = '';
-
-		#CHECKS: {
-			#$res = $c->validate_ip_or_blank($c->param('DelegateMailServer'));
-			#if ($res ne 'OK') {
-				#$result = $c->l($res);
-				#last CHECKS;
-			#}
-
-			#$res = $c->validate_smarthost($c->param('SMTPSmartHost'));
-			#if ($res ne 'OK') {
-				#$result = $c->l($res);
-				#last CHECKS;
-			#}
-
-			#$res = $c->nonblank_if_smtpauth($c->param('SMTPSmartHost'));
-			#if ($res ne 'OK') {
-				#$result = $c->l($res);
-				#last CHECKS;
-			#}
-
-			#$res = $c->nonblank_if_smtpauth($c->param('SMTPAUTHPROXY_Userid'));
-			#if ($res ne 'OK') {
-				#$result = $c->l($res);
-				#last CHECKS;
-			#}
-
-			#$res = $c->nonblank_if_smtpauth($c->param('SMTPAUTHPROXY_Passwd'));
-			#if ($res ne 'OK') {
-				#$result = $c->l($res);
-				#last CHECKS;
-			#}
-
-			#$res = $c->change_settings_delivery();
-			#if ($res ne 'OK') {
-				#$result = $res;
-				#last CHECKS;
-			#}
-
-			#$result = $c->l('mai_SUCCESS');
-		#}
-		## $result now contains the first error or the success message
-    #} ## end if ($trt eq 'DEL')
-
-    ## common part
-    #if ($res ne 'OK') {
-        #$c->stash(error => $result);
-        #$c->stash(title => $title, mai_datas => \%mai_datas);
-        #return $c->redirect_to($dest);
-    #} else {
-		#my $message = "emailsettings updates $trt DONE";
-		#$c->app->log->info($message);
-		#$c->flash(success => $result);
-	#}
-    #$c->redirect_to("/emailsettings");
-#} ## end sub do_update
 
 
 1;

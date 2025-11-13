@@ -138,7 +138,7 @@
       <p><span class=label>
           %= l 'mai_LABEL_SMARTHOST'
         </span><span class=data2>
-          %= $c->get_value('SMTPSmartHost')
+          %= $c->get_db_prop('postfix','SMTPSmartHost')
       </span></p>
 
       <br>

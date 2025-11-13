@@ -44,7 +44,7 @@
         %= l 'mai_LABEL_DELEGATE'
       </span><span class=input>
         % param 'DelegateMailServer' => $mai_data->{delegatemailserver} unless param 'DelegateMailServer';
-        %= text_field 'DelegateMailServer', class => 'input'
+        %= text_field 'DelegateMailServer', class => 'input', autocomplete => 'off'
     </span></p>
 
     <!--<hr class='sectionbar' />-->
@@ -62,10 +62,18 @@
     </span></p>
 
     <p><span class=label>
+        %= l 'mai_LABEL_SMARTHOST_SMTPAUTH_PEERPORT'
+      </span><span class=input>
+        % param 'SMTPAUTHPROXY_PeerPort' => $mai_data->{smtpauthproxypeerport} unless param 'SMTPAUTHPROXY_PeerPort';
+        %= text_field 'SMTPAUTHPROXY_PeerPort', class => 'input'
+        %= l 'mai_DESC_PEERPORT'
+    </span></p>
+
+    <p><span class=label>
         %= l 'mai_LABEL_SMARTHOST_SMTPAUTH_STATUS'
       </span><span class=input>
-        % param 'SMTPAUTHPROXY_status' => $mai_data->{smtpauthproxystatus} unless param 'SMTPAUTHPROXY_status';
-        %= select_field 'SMTPAUTHPROXY_status' => [ [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'ENABLED' ) => 'enabled' ] ], class => 'input';
+        % param 'SMTPAUTHPROXY_Status' => $mai_data->{smtpauthproxystatus} unless param 'SMTPAUTHPROXY_Status';
+        %= select_field 'SMTPAUTHPROXY_Status' => [ [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'ENABLED' ) => 'enabled' ] ], class => 'input';
     </span></p>
 
     <p><span class=label>
@@ -79,7 +87,7 @@
         %= l 'mai_LABEL_SMARTHOST_SMTPAUTH_PASSWD'
       </span><span class=input>
         % param 'SMTPAUTHPROXY_Passwd' => $mai_data->{smtpauthproxypassword} unless param 'SMTPAUTHPROXY_Passwd';
-        %= password_field 'SMTPAUTHPROXY_Passwd', class => 'input'
+        %= password_field 'SMTPAUTHPROXY_Passwd', class => 'input', autocomplete => 'new-password'
     </span></p>
 
 
