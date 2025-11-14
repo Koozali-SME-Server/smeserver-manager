@@ -73,7 +73,8 @@ complete the reconfiguraton process.',
  which can save bandwith. The drawback is that update 
  operations consume considerably more CPU cycles',
 'yum_LABEL_YUM_DOWNLOADONLY' => 'Predownload updates',
-'yum_DESC_YUM_DOWNLOADONLY' => 'The rpm updates can be downloaded during the night, 
- this will ease and give faster the yum update process 
+'yum_LABEL_YUM_DOWNLOADONLY_DESCRIPTION' => 'The rpm updates can be downloaded during the night, 
+ this will ease and give faster the dnf update process 
  (only enabled repositories will be used).',
 'yum_UPDATE_SUCCESS' => 'The requested changes have been successfully implemented.',
+'yum_Please_Wait_-_dnf_Running' => 'Please Wait-dnf Running',

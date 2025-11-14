@@ -24,7 +24,7 @@
 
   %= form_for 'yum' => ( method => 'POST' ) => begin
 
-    <BR><center><H2>Please Wait - Yum Running (<%= $c->get_yum_status_page() %>)</H2></center>
+    <BR><center><H2><%= l("yum_Please_Wait_-_dnf_Running") %></H2></center>  
 
     <%= $c->render_to_string( inline => $c->format_yum_log() ) %>
 

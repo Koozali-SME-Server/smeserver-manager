@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 135
+%define release 136
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -35,6 +35,7 @@ Requires: perl(Mojolicious::Plugin::CSRFDefender) >= 0.0.8
 Requires: perl(Net::Netmask) >= 1.9
 Requires: perl(DBM::Deep) >= 2.0011-1
 Requires: perl(Mojo::JWT) >= 0.08-1
+Requires: perl(Linux::Inotify2) >= 2.1-6
 #Requires: perl(IPS:Run) >= 0.99-1 - needed for enahnced qmailanalog run of pflogsumm
 #Requires: perl(Time::TAI64) >= 2.11
 Requires: perl(Data::Validate::IP)
@@ -147,6 +148,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Nov 14 2025 Brian Read <brianr@koozali.org> 11.0.0-136.sme
+- Use iNotify to monitor dnf-updates in Software-Install panel [SME: 13110]
+- Acocunt for DB Caching [SME: 13110]
+
 * Thu Nov 13 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-135.sme
 - cleanup smtp-auth-proxy [SME: 13288]
 - add field for SMTPSMARTHOST PeerPort

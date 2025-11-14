@@ -8,7 +8,7 @@ package SrvMngr::Controller::Yum;
     #$if_admin->get('/yum')->to('yum#main')->name('yum');
     #$if_admin->post('/yum')->to('yum#do_display')->name('yumd1');
     #$if_admin->get('/yumd')->to('yum#do_display')->name('yumd');
-    #$if_admin->post('/yumd')->to('yum#do_update')->name('yumu');
+    #$if_admin->post('/yumd')->to('yum#do_update')->name('yumu'); 
 
 #
 # routes : end
@@ -25,10 +25,55 @@ use esmith::util;
 use File::Basename;
 our $cdb;
 my $dnf_status_file = '/var/cache/dnf/dnf.status';
-
-#use File::stat;
 our %dbs;
+my $dnf_update_db = '/home/e-smith/db/dnf_updates';
+use Linux::Inotify2;
+use POSIX qw(strftime);
 
+my $inotify;
+my $watch = undef;
+
+sub setup_notify {
+	my $c = shift;
+    my ($file_to_watch) = @_;
+    $inotify = Linux::Inotify2->new or die "Unable to create inotify object: $!";
+    $watch = $inotify->watch($file_to_watch, IN_MODIFY|IN_MOVE|IN_CLOSE_WRITE)
+        or die "Unable to watch $file_to_watch: $!";
+    $c->app->log->info("Setup notify for $file_to_watch");
+}
+
+sub cancel_notify {
+	my $c = shift;
+    $watch->cancel if $watch;
+    $watch = undef;
+}
+
+
+sub wait_for_event_with_timeout {
+    my $c = shift;
+    my $timeout = shift || 30; # seconds
+    my $start = time;
+    my $event_occurred = 0;
+    if (! defined $watch) {return "undef";}
+    $c->app->log->info("Waiting for: $dnf_update_db");
+    my $res = 'Timeout';
+    while (time - $start < $timeout) {
+        my @events = $inotify->read;
+        if (@events) {
+            for my $event (@events) {
+                #my $time_str = strftime "%Y-%m-%d %H:%M:%S", localtime;
+                #print "$time_str - Change detected: ", $event->fullname, "\n";
+                $c->app->log->info("Found change for: $dnf_update_db");
+                $res = "Change";
+            }
+            $event_occurred = 1;
+            last;
+        }
+        sleep 1;
+    }
+    $c->cancel_notify(); # Cancel the watch when done (event or timeout)
+    return $res; #$event_occurred;
+}
 
 sub main {
     my $c = shift;
@@ -49,15 +94,17 @@ sub main {
     my $notif     = '';
     $yum_datas{'trt'} = 'STAT';
 
-    if ($c->is_dnf_running()) {
+    $cdb->reload;
+	if ($c->is_dnf_running()) {
         $yum_datas{'trt'} = 'LOGF';
         $dest = 'yumlogfile';
     } elsif ($cdb->get_prop('dnf', 'LogFile')) {
         $yum_datas{'trt'}    = 'PSTU';
+        my $res = $c->wait_for_event_with_timeout();
+        $c->app->log->info("Back from wait (1) event $res");
         $yum_datas{'reconf'} = $cdb->get_value('UnsavedChanges', 'yes');
         $dest                = 'yumpostupg';
     } else {
-
         # normal other trt
     }
     $c->stash(title => $title, notif => $notif, yum_datas => \%yum_datas);
@@ -83,6 +130,7 @@ sub do_display {
     my ($notif, $dest) = '';
     $yum_datas{'trt'} = $trt;
 
+    $cdb->reload;
     # force $trt if current logfile
     if ($c->is_dnf_running()) {
         $trt = 'LOGF';
@@ -113,7 +161,10 @@ sub do_display {
     } ## end if ($trt eq 'LOGF')
 
     if ($trt eq 'PSTU') {
+		$cdb->reload();
         if ($cdb->get_prop('dnf', 'LogFile')) {
+	        my $res = $c->wait_for_event_with_timeout();
+            $c->app->log->info("Back from wait (2) event $res");
             $dest = 'yumpostupg';
             $yum_datas{'reconf'} = $cdb->get_value('UnsavedChanges', 'yes');
         }
@@ -203,6 +254,9 @@ sub do_update {
     } ## end if ($trt eq 'CONF')
 
     if ($trt eq 'PSTU') {
+		
+	    my $res = $c->wait_for_event_with_timeout();
+        $c->app->log->info("Back from wait (3) event $res");
         my $reconf = $c->param('reconf') || 'yes';
         $dest = 'yumpostupg';
 
@@ -280,6 +334,7 @@ sub is_empty {
 } ## end sub is_empty
 
 sub non_empty {
+	# Called from template
     my ($c, $yumdb, $type) = @_;
     $type ||= 'both';
     return 0 unless (exists $dbs{$yumdb});
@@ -299,6 +354,7 @@ sub package_functions_enabled {
 }
 
 sub get_status {
+	# called from template
     my ($c, $prop, $localise) = @_;
     my $status = $cdb->get_prop("dnf", $prop) || 'disabled';
     return $status unless $localise;
@@ -306,6 +362,7 @@ sub get_status {
 } ## end sub get_status
 
 sub get_options {
+	# called from template
     my ($c, $yumdb, $type) = @_;
     my %options;
 
@@ -355,6 +412,7 @@ sub get_repository_options2 {
 } ## end sub get_repository_options2
 
 sub get_repository_current_options {
+	# called from template
     my $c = shift;
     my @selected;
 
@@ -410,6 +468,8 @@ sub change_settings {
     if ($AutoInstallUpdates ne 'disabled') { $status = 'enabled'; }
     $cdb->set_prop("dnf", 'AutoInstallUpdates', $AutoInstallUpdates);
     $cdb->set_prop("dnf", 'status',             $status);
+    $cdb->reload();
+
     my %selected = map { $_ => 1 } @{ $c->every_param('SelectedRepositories') };
 
     foreach my $repos ($dbs{repositories}->get_all_by_prop(type => "repository")) {
@@ -429,6 +489,11 @@ sub do_yum {
     for (qw(SelectedGroups SelectedPackages)) {
         $cdb->set_prop("dnf", $_, join(',', (@{ $c->every_param($_) })));
     }
+    $cdb->reload();
+    if ($function eq 'update'){
+		#setup notify so that we know when update db has been updated
+		$c->setup_notify($dnf_update_db);
+	}
     esmith::util::backgroundCommand(0, "/sbin/e-smith/signal-event", "dnf-$function");
 
     for (qw(available installed updates)) {
@@ -448,7 +513,7 @@ sub get_yum_status_page {
 
 sub format_yum_log {
     my $c = shift;
-    $cdb->reload;
+    $cdb->reload; 
     my $filepage = $cdb->get_prop('dnf', 'LogFile');
     return '' unless $filepage and (-e "$filepage");
     my $out = sprintf "<PRE>";
@@ -465,6 +530,7 @@ sub format_yum_log {
 
 sub post_upgrade_reboot {
     my $c = shift;
+    $cdb->reload;
     $cdb->get_prop_and_delete('dnf', 'LogFile');
     $cdb->reload;
 
@@ -478,6 +544,7 @@ sub post_upgrade_reboot {
 sub show_yum_log {
     my $c       = shift;
     my $out     = $c->format_yum_log();
+    $cdb->reload;
     my $yum_log = $cdb->get_prop_and_delete('dnf', 'LogFile');
     return $out;
 } ## end sub show_yum_log
