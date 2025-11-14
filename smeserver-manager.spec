@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 134
+%define release 135
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -42,7 +42,7 @@ Requires: mutt >= 1.5.21
 Requires: smeserver-manager-jsquery >= 11.0.0-11
 Requires: smeserver-certificates >= 11.0
 #Requires: js-jquery > 2.2.4-3 (optional)
-Requires: smeserver-posfix >= 1.0-14
+Requires: smeserver-postfix >= 1.0-14
 Requires: smeserver-manager-locale-bg
 Requires: smeserver-manager-locale-da
 Requires: smeserver-manager-locale-de
@@ -147,7 +147,7 @@ true
 %defattr(-,root,root)
 
 %changelog
-* Thu Nov 13 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-134.sme
+* Thu Nov 13 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-135.sme
 - cleanup smtp-auth-proxy [SME: 13288]
 - add field for SMTPSMARTHOST PeerPort
 
