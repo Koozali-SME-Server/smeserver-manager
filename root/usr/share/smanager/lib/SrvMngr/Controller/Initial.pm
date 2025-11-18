@@ -23,4 +23,12 @@ sub main {
     $c->stash(title => $title, modul => $modul);
     $c->render(template => 'initial');
 } ## end sub main
+
+sub get_locale {
+  my $c = shift;
+  $c->app->log->info($c->log_req);
+  # Locale already saved in stash 'locale'
+  $c->render(template => 'get-locale', format => 'js');
+};
+
 1;

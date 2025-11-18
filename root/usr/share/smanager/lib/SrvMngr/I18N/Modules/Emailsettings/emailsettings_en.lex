@@ -160,4 +160,6 @@ enabled.',
 'mai_SMTP_Submission' => 'Smtp submission port (587) will require starttls, then authenticate to send.',
 'mai_SMTPS_port_(465)' => 'Smtps port (465) will require implicit ssl/tls then authenticate to send.',
 'mai_SMTPS_SSL/TLS' => 'Smtps ssl/tls auth: port %u status:',
-'mai_Submission_port' => 'Submission port %u status:'
+'mai_Submission_port' => 'Submission port %u status:',
+'mai_LABEL_SMARTHOST_SMTPAUTH_PEERPORT' => 'Peer Port of Internet provider\'s mail server',
+'mai_DESC_PEERPORT' => 'Usually 25, 587 or 467. If empty will assume 25.',

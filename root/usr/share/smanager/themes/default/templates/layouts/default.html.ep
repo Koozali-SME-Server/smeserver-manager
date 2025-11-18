@@ -17,16 +17,21 @@
     % }
 
     %= content_for 'refresh' 
-    %= stylesheet '/js/datatables.min.css'
+    %= stylesheet '/js/datatables.min.css' 
 	%= javascript '/js/datatables.min.js'
 	%= stylesheet '/js/jquery-ui.min.css'
 	%= javascript '/js/jquery-ui.min.js'
+	
 	%#= javascript '/js/dataTables.buttons.min.js'
 	%#= javascript '/js/jszip.min.js'
 	%#= javascript '/js/pdfmake.min.js'
+	
 	%= javascript '/js/vfs_fonts.js'
+	
 	%#= javascript '/js/buttons.html5.min.js'
 	%#= javascript '/js/buttons.print.min.js'
+	
+	%= javascript '/get-locale'
 	%= javascript '/js/flag-by-locale.js'
 	%= javascript '/js/sme-password.js'
 
@@ -88,6 +93,7 @@
 			%= $c->render_to_string(inline => flash 'error') 
 			</div>
 			%}
+		   	<pre><%= dumper stash("locale") %></pre> <!== Testing =>
 			%= content 'module'
 			%= include 'partials/_footer'
 		</div>

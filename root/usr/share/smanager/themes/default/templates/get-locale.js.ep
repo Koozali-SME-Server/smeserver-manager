@@ -1,0 +1,2 @@
+var locale = "<%= stash('locale') %>";
+	console.log(`locale:${locale}`);

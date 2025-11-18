@@ -39,7 +39,7 @@ use Data::Dumper;
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '121.el8.sme'; 
+our $VERSION = '134.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -286,6 +286,10 @@ sub setup_routing {
 
     $r->get('/')->to('initial#main')->name('initial');
     $r->get('/initial')->to('initial#main')->name('initial');
+
+	#extra route to pass the locale to a JS template
+	$r->get('/get-locale')->to('initial#get_locale')->name('get-locale'); 
+
     $r->get('/login')->to('login#main')->name('login');
     $r->post('/login')->to('login#login')->name('signin');
     $r->get('/manual')->to('manual#main')->name('manual');
@@ -482,10 +486,19 @@ sub setup_routing {
 
     $if_admin->get('/config/:key' => {key => qr/[a-z0-9]{2,32}/})->to('request#getconfig')->name('getconfig');
     $if_admin->get('/account/:key' => {key => qr/[a-z0-9]{2,32}/})->to('request#getaccount')->name('getaccount');
+
     $if_admin->get('/:module' => {module => qr/[a-z0-9]{2,32}/})->to('modules#modsearch')->name('module_search');
     $if_admin->any('/*whatever' => {whatever => ''})->to('modules#whatever')->name('whatever');
 
 }
+
+
+sub get_locale {
+  my $c = shift;
+  $c->app->log->info($c->log_req);
+  # Locale already saved in stash 'locale'
+  $c->render(template => 'get-locale', format => 'js');
+};
 
 
 sub setup_hooks {
@@ -816,7 +829,10 @@ sub _lang_space {
     }
 
     my $lang = ( $c->tx->req->headers->accept_language || ['en_US'] );
+       
     $lang = (split(/,/, $lang))[0];
+    $c->stash(locale=>$lang);  #Stash it for template use
+
 #    my $lang = (split(/,/, $c->tx->req->headers->accept_language))[0];
 ## convert xx_XX lang format to xx-xx + delete .UTFxx + lowercase
 #    $lang =~ s/_(.*)\..*$/-${1}/;		# just keep 'en-us'

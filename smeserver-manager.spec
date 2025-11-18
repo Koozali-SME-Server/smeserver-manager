@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 136
+%define release 137
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -148,6 +148,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Nov 18 2025 Brian Read <brianr@koozali.org> 11.0.0-137.sme
+- Stabilise flag according to browser locals settings in locale changing extension [SME: 13304]
+- Add in new lex entries for email settings [SME: 13307]
+
 * Fri Nov 14 2025 Brian Read <brianr@koozali.org> 11.0.0-136.sme
 - Use iNotify to monitor dnf-updates in Software-Install panel [SME: 13110]
 - Acocunt for DB Caching [SME: 13110]

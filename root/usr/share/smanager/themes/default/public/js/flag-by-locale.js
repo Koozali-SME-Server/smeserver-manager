@@ -1,302 +1,180 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => { 
 	const flagContainer = document.getElementById('flag-container');
-	// Mapping of language codes to country codes and their names
 	const languageToCountryMap = {
-		"af": { code: "NA", name: "Namibia" },
-		"agq": { code: "CM", name: "Cameroon" },
-		"ak": { code: "GH", name: "Ghana" },
-		"am": { code: "ET", name: "Ethiopia" },
-		"ar": { code: "SA", name: "Saudi Arabia" },
-		"as": { code: "IN", name: "India" },
-		"asa": { code: "TZ", name: "Tanzania" },
-		"ast": { code: "ES", name: "Spain" },
-		"az": { code: "AZ", name: "Azerbaijan" },
-		"bas": { code: "CM", name: "Cameroon" },
-		"be": { code: "BY", name: "Belarus" },
-		"bem": { code: "ZM", name: "Zambia" },
-		"bez": { code: "TZ", name: "Tanzania" },
-		"bg": { code: "BG", name: "Bulgaria" },
-		"bm": { code: "ML", name: "Mali" },
-		"bn": { code: "BD", name: "Bangladesh" },
-		"bo": { code: "CN", name: "China" },
-		"br": { code: "FR", name: "France" },
-		"brx": { code: "IN", name: "India" },
-		"bs": { code: "BA", name: "Bosnia and Herzegovina" },
-		"ca": { code: "AD", name: "Andorra" },
-		"ccp": { code: "BD", name: "Bangladesh" },
-		"ce": { code: "RU", name: "Russia" },
-		"cgg": { code: "UG", name: "Uganda" },
-		"chr": { code: "US", name: "United States" },
-		"ckb": { code: "IQ", name: "Iraq" },
-		"cs": { code: "CZ", name: "Czech Republic" },
-		"cy": { code: "GB", name: "United Kingdom" },
-		"da": { code: "DK", name: "Denmark" },
-		"dav": { code: "KE", name: "Kenya" },
-		"de": { code: "DE", name: "Germany" },
-		"dje": { code: "NE", name: "Niger" },
-		"dsb": { code: "DE", name: "Germany" },
-		"dua": { code: "CM", name: "Cameroon" },
-		"dyo": { code: "SN", name: "Senegal" },
-		"dz": { code: "BT", name: "Bhutan" },
-		"ebu": { code: "KE", name: "Kenya" },
-		"ee": { code: "GH", name: "Ghana" },
-		"el": { code: "CY", name: "Cyprus" },
-		"en": { code: "US", name: "United States" }, // Assume US for English if unspecified
-		"es": { code: "ES", name: "Spain" },
-		"et": { code: "EE", name: "Estonia" },
-		"eu": { code: "ES", name: "Spain" },
-		"ewo": { code: "CM", name: "Cameroon" },
-		"fa": { code: "AF", name: "Afghanistan" },
-		"ff": { code: "CM", name: "Cameroon" },
-		"fi": { code: "FI", name: "Finland" },
-		"fil": { code: "PH", name: "Philippines" },
-		"fo": { code: "FO", name: "Faroe Islands" },
-		"fr": { code: "FR", name: "France" },
-		"fur": { code: "IT", name: "Italy" },
-		"fy": { code: "NL", name: "Netherlands" },
-		"ga": { code: "IE", name: "Ireland" },
-		"gd": { code: "GB", name: "United Kingdom" },
-		"gl": { code: "ES", name: "Spain" },
-		"gsw": { code: "CH", name: "Switzerland" },
-		"gu": { code: "IN", name: "India" },
-		"guz": { code: "KE", name: "Kenya" },
-		"gv": { code: "IM", name: "Isle of Man" },
-		"ha": { code: "GH", name: "Ghana" },
-		"haw": { code: "US", name: "United States" },
-		"he": { code: "IL", name: "Israel" },
-		"hi": { code: "IN", name: "India" },
-		"hr": { code: "HR", name: "Croatia" },
-		"hsb": { code: "DE", name: "Germany" },
-		"hu": { code: "HU", name: "Hungary" },
-		"hy": { code: "AM", name: "Armenia" },
-		"id": { code: "ID", name: "Indonesia" },
-		"ig": { code: "NG", name: "Nigeria" },
-		"ii": { code: "CN", name: "China" },
-		"is": { code: "IS", name: "Iceland" },
-		"it": { code: "IT", name: "Italy" },
-		"ja": { code: "JP", name: "Japan" },
-		"jgo": { code: "CM", name: "Cameroon" },
-		"jmc": { code: "TZ", name: "Tanzania" },
-		"ka": { code: "GE", name: "Georgia" },
-		"kab": { code: "DZ", name: "Algeria" },
-		"kam": { code: "KE", name: "Kenya" },
-		"kde": { code: "TZ", name: "Tanzania" },
-		"kea": { code: "CV", name: "Cabo Verde" },
-		"khq": { code: "ML", name: "Mali" },
-		"ki": { code: "KE", name: "Kenya" },
-		"kk": { code: "KZ", name: "Kazakhstan" },
-		"kkj": { code: "CM", name: "Cameroon" },
-		"kl": { code: "GL", name: "Greenland" },
-		"kln": { code: "KE", name: "Kenya" },
-		"km": { code: "KH", name: "Cambodia" },
-		"kn": { code: "IN", name: "India" },
-		"ko": { code: "KP", name: "North Korea" },
-		"kok": { code: "IN", name: "India" },
-		"ks": { code: "IN", name: "India" },
-		"ksb": { code: "TZ", name: "Tanzania" },
-		"ksf": { code: "CM", name: "Cameroon" },
-		"ksh": { code: "DE", name: "Germany" },
-		"kw": { code: "GB", name: "United Kingdom" },
-		"ky": { code: "KG", name: "Kyrgyzstan" },
-		"lag": { code: "TZ", name: "Tanzania" },
-		"lb": { code: "LU", name: "Luxembourg" },
-		"lg": { code: "UG", name: "Uganda" },
-		"lkt": { code: "US", name: "United States" },
-		"ln": { code: "AO", name: "Angola" },
-		"lo": { code: "LA", name: "Laos" },
-		"lrc": { code: "IQ", name: "Iraq" },
-		"lt": { code: "LT", name: "Lithuania" },
-		"lu": { code: "CD", name: "Democratic Republic of the Congo" },
-		"luo": { code: "KE", name: "Kenya" },
-		"Luo": { code: "KE", name: "Kenya" },
-		"luy": { code: "KE", name: "Kenya" },
-		"lv": { code: "LV", name: "Latvia" },
-		"mas": { code: "KE", name: "Kenya" },
-		"mer": { code: "KE", name: "Kenya" },
-		"mfe": { code: "MU", name: "Mauritius" },
-		"mg": { code: "MG", name: "Madagascar" },
-		"mgh": { code: "MZ", name: "Mozambique" },
-		"mgo": { code: "CM", name: "Cameroon" },
-		"mk": { code: "MK", name: "North Macedonia" },
-		"ml": { code: "IN", name: "India" },
-		"mn": { code: "MN", name: "Mongolia" },
-		"mr": { code: "IN", name: "India" },
-		"ms": { code: "BN", name: "Brunei" },
-		"mt": { code: "MT", name: "Malta" },
-		"mua": { code: "CM", name: "Cameroon" },
-		"my": { code: "MM", name: "Myanmar" },
-		"mzn": { code: "IR", name: "Iran" },
-		"naq": { code: "NA", name: "Namibia" },
-		"nb": { code: "NO", name: "Norway" },
-		"nd": { code: "ZW", name: "Zimbabwe" },
-		"nds": { code: "DE", name: "Germany" },
-		"ne": { code: "IN", name: "India" },
-		"nl": { code: "NL", name: "Netherlands" },
-		"nmg": { code: "CM", name: "Cameroon" },
-		"nn": { code: "NO", name: "Norway" },
-		"nnh": { code: "CM", name: "Cameroon" },
-		"nus": { code: "SS", name: "South Sudan" },
-		"nyn": { code: "UG", name: "Uganda" },
-		"om": { code: "ET", name: "Ethiopia" },
-		"or": { code: "IN", name: "India" },
-		"os": { code: "GE", name: "Georgia" },
-		"pa": { code: "PK", name: "Pakistan" },
-		"pl": { code: "PL", name: "Poland" },
-		"ps": { code: "AF", name: "Afghanistan" },
-		"pt": { code: "PT", name: "Portugal" },
-		"qu": { code: "BO", name: "Bolivia" },
-		"rm": { code: "CH", name: "Switzerland" },
-		"rn": { code: "BI", name: "Burundi" },
-		"ro": { code: "RO", name: "Romania" },
-		"rof": { code: "TZ", name: "Tanzania" },
-		"ru": { code: "RU", name: "Russia" },
-		"rw": { code: "RW", name: "Rwanda" },
-		"rwk": { code: "TZ", name: "Tanzania" },
-		"sah": { code: "RU", name: "Russia" },
-		"saq": { code: "KE", name: "Kenya" },
-		"sbp": { code: "TZ", name: "Tanzania" },
-		"se": { code: "SE", name: "Sweden" },
-		"seh": { code: "MZ", name: "Mozambique" },
-		"ses": { code: "ML", name: "Mali" },
-		"sg": { code: "CF", name: "Central African Republic" },
-		"shi": { code: "TN", name: "Tunisia" },
-		"si": { code: "LK", name: "Sri Lanka" },
-		"sk": { code: "SK", name: "Slovakia" },
-		"sl": { code: "SI", name: "Slovenia" },
-		"smn": { code: "FI", name: "Finland" },
-		"sn": { code: "ZW", name: "Zimbabwe" },
-		"so": { code: "SO", name: "Somalia" },
-		"sq": { code: "AL", name: "Albania" },
-		"sr": { code: "RS", name: "Serbia" },
-		"sv": { code: "SE", name: "Sweden" },
-		"sw": { code: "CD", name: "Democratic Republic of the Congo" },
-		"ta": { code: "IN", name: "India" },
-		"te": { code: "IN", name: "India" },
-		"teo": { code: "KE", name: "Kenya" },
-		"tg": { code: "TJ", name: "Tajikistan" },
-		"th": { code: "TH", name: "Thailand" },
-		"ti": { code: "ER", name: "Eritrea" },
-		"to": { code: "TO", name: "Tonga" },
-		"tr": { code: "TR", name: "Turkey" },
-		"tt": { code: "RU", name: "Russia" },
-		"twq": { code: "NE", name: "Niger" },
-		"tzm": { code: "MA", name: "Morocco" },
-		"ug": { code: "CN", name: "China" },
-		"uk": { code: "UA", name: "Ukraine" },
-		"ur": { code: "IN", name: "India" },
-		"uz": { code: "UZ", name: "Uzbekistan" },
-		"vai": { code: "TN", name: "Tunisia" },
-		"Vai": { code: "TN", name: "Tunisia" },
-		"vi": { code: "VN", name: "Vietnam" },
-		"vun": { code: "TZ", name: "Tanzania" },
-		"wae": { code: "CH", name: "Switzerland" },
-		"wo": { code: "SN", name: "Senegal" },
-		"xog": { code: "UG", name: "Uganda" },
-		"yav": { code: "CM", name: "Cameroon" },
-		"yi": { code: "01", name: "Unknown" }, // Placeholder for unspecified region
-		"yo": { code: "BJ", name: "Benin" },
-		"yue": { code: "CN", name: "China" },
-		"zgh": { code: "MA", name: "Morocco" },
-		"zh": { code: "CN", name: "China" },
-		"zu": { code: "ZA", name: "South Africa" },
+	  af: { countryCode: "NA", countryName: "Namibia", nativeName: "Afrikaans" },
+	  agq: { countryCode: "CM", countryName: "Cameroon", nativeName: "Aghem" },
+	  ak: { countryCode: "GH", countryName: "Ghana", nativeName: "Akan" },
+	  am: { countryCode: "ET", countryName: "Ethiopia", nativeName: "አማርኛ" },
+	  ar: { countryCode: "SA", countryName: "Saudi Arabia", nativeName: "العربية" },
+	  as: { countryCode: "IN", countryName: "India", nativeName: "অসমীয়া" },
+	  asa: { countryCode: "TZ", countryName: "Tanzania", nativeName: "Asu" },
+	  ast: { countryCode: "ES", countryName: "Spain", nativeName: "Asturianu" },
+	  az: { countryCode: "AZ", countryName: "Azerbaijan", nativeName: "Azərbaycan dili" },
+	  bas: { countryCode: "CM", countryName: "Cameroon", nativeName: "Basa" },
+	  be: { countryCode: "BY", countryName: "Belarus", nativeName: "Беларуская" },
+	  bem: { countryCode: "ZM", countryName: "Zambia", nativeName: "Bemba" },
+	  bez: { countryCode: "TZ", countryName: "Tanzania", nativeName: "Bena" },
+	  bg: { countryCode: "BG", countryName: "Bulgaria", nativeName: "български език" },
+	  bm: { countryCode: "ML", countryName: "Mali", nativeName: "Bamanankan" },
+	  bn: { countryCode: "BD", countryName: "Bangladesh", nativeName: "বাংলা" },
+	  bo: { countryCode: "CN", countryName: "China", nativeName: "བོད་སྐད་" },
+	  br: { countryCode: "FR", countryName: "France", nativeName: "brezhoneg" },
+	  bs: { countryCode: "BA", countryName: "Bosnia and Herzegovina", nativeName: "Bosanski" },
+	  ca: { countryCode: "AD", countryName: "Andorra", nativeName: "català" },
+	  cs: { countryCode: "CZ", countryName: "Czech Republic", nativeName: "čeština" },
+	  cy: { countryCode: "GB", countryName: "United Kingdom", nativeName: "Cymraeg" },
+	  da: { countryCode: "DK", countryName: "Denmark", nativeName: "dansk" },
+	  de: { countryCode: "DE", countryName: "Germany", nativeName: "Deutsch" },
+	  dz: { countryCode: "BT", countryName: "Bhutan", nativeName: "རྫོང་ཁ" },
+	  ee: { countryCode: "GH", countryName: "Ghana", nativeName: "Eʋegbe" },
+	  el: { countryCode: "CY", countryName: "Cyprus", nativeName: "Ελληνικά" },
+	  en: { countryCode: "US", countryName: "United States", nativeName: "English" },
+	  es: { countryCode: "ES", countryName: "Spain", nativeName: "Español" },
+	  et: { countryCode: "EE", countryName: "Estonia", nativeName: "eesti" },
+	  eu: { countryCode: "ES", countryName: "Spain", nativeName: "euskara" },
+	  fa: { countryCode: "AF", countryName: "Afghanistan", nativeName: "فارسی" },
+	  fi: { countryCode: "FI", countryName: "Finland", nativeName: "suomi" },
+	  fr: { countryCode: "FR", countryName: "France", nativeName: "français" },
+	  ga: { countryCode: "IE", countryName: "Ireland", nativeName: "Gaeilge" },
+	  gl: { countryCode: "ES", countryName: "Spain", nativeName: "galego" },
+	  gu: { countryCode: "IN", countryName: "India", nativeName: "ગુજરાતી" },
+	  he: { countryCode: "IL", countryName: "Israel", nativeName: "עברית" },
+	  hi: { countryCode: "IN", countryName: "India", nativeName: "हिंदी" },
+	  hr: { countryCode: "HR", countryName: "Croatia", nativeName: "hrvatski" },
+	  hu: { countryCode: "HU", countryName: "Hungary", nativeName: "magyar" },
+	  id: { countryCode: "ID", countryName: "Indonesia", nativeName: "bahasa Indonesia" },
+	  is: { countryCode: "IS", countryName: "Iceland", nativeName: "íslenska" },
+	  it: { countryCode: "IT", countryName: "Italy", nativeName: "italiano" },
+	  ja: { countryCode: "JP", countryName: "Japan", nativeName: "日本語" },
+	  ka: { countryCode: "GE", countryName: "Georgia", nativeName: "ქართული" },
+	  kk: { countryCode: "KZ", countryName: "Kazakhstan", nativeName: "қазақ тілі" },
+	  km: { countryCode: "KH", countryName: "Cambodia", nativeName: "ខ្មែរ" },
+	  kn: { countryCode: "IN", countryName: "India", nativeName: "ಕನ್ನಡ" },
+	  ko: { countryCode: "KP", countryName: "North Korea", nativeName: "한국어" },
+	  lt: { countryCode: "LT", countryName: "Lithuania", nativeName: "lietuvių" },
+	  lv: { countryCode: "LV", countryName: "Latvia", nativeName: "latviešu" },
+	  mk: { countryCode: "MK", countryName: "North Macedonia", nativeName: "македонски" },
+	  ml: { countryCode: "IN", countryName: "India", nativeName: "മലയാളം" },
+	  mn: { countryCode: "MN", countryName: "Mongolia", nativeName: "Монгол хэл" },
+	  mr: { countryCode: "IN", countryName: "India", nativeName: "मराठी" },
+	  ms: { countryCode: "BN", countryName: "Brunei", nativeName: "Bahasa Melayu" },
+	  mt: { countryCode: "MT", countryName: "Malta", nativeName: "Malti" },
+	  ne: { countryCode: "IN", countryName: "India", nativeName: "नेपाली" },
+	  nl: { countryCode: "NL", countryName: "Netherlands", nativeName: "Nederlands" },
+	  no: { countryCode: "NO", countryName: "Norway", nativeName: "Norsk" },
+	  or: { countryCode: "IN", countryName: "India", nativeName: "ଓଡ଼ିଆ" },
+	  pa: { countryCode: "PK", countryName: "Pakistan", nativeName: "ਪੰਜਾਬੀ" },
+	  pl: { countryCode: "PL", countryName: "Poland", nativeName: "polski" },
+	  ps: { countryCode: "AF", countryName: "Afghanistan", nativeName: "پښتو" },
+	  pt: { countryCode: "PT", countryName: "Portugal", nativeName: "português" },
+	  ro: { countryCode: "RO", countryName: "Romania", nativeName: "română" },
+	  ru: { countryCode: "RU", countryName: "Russia", nativeName: "русский" },
+	  rw: { countryCode: "RW", countryName: "Rwanda", nativeName: "Kinyarwanda" },
+	  se: { countryCode: "SE", countryName: "Sweden", nativeName: "Davvisámegiella" },
+	  si: { countryCode: "LK", countryName: "Sri Lanka", nativeName: "සිංහල" },
+	  sk: { countryCode: "SK", countryName: "Slovakia", nativeName: "slovenčina" },
+	  sl: { countryCode: "SI", countryName: "Slovenia", nativeName: "slovenščina" },
+	  so: { countryCode: "SO", countryName: "Somalia", nativeName: "Soomaali" },
+	  sq: { countryCode: "AL", countryName: "Albania", nativeName: "shqip" },
+	  sr: { countryCode: "RS", countryName: "Serbia", nativeName: "српски" },
+	  sv: { countryCode: "SE", countryName: "Sweden", nativeName: "svenska" },
+	  sw: { countryCode: "CD", countryName: "Democratic Republic of the Congo", nativeName: "Kiswahili" },
+	  ta: { countryCode: "IN", countryName: "India", nativeName: "தமிழ்" },
+	  te: { countryCode: "IN", countryName: "India", nativeName: "తెలుగు" },
+	  th: { countryCode: "TH", countryName: "Thailand", nativeName: "ไทย" },
+	  tl: { countryCode: "PH", countryName: "Philippines", nativeName: "Tagalog" },
+	  tr: { countryCode: "TR", countryName: "Turkey", nativeName: "Türkçe" },
+	  uk: { countryCode: "UA", countryName: "Ukraine", nativeName: "українська" },
+	  ur: { countryCode: "IN", countryName: "India", nativeName: "اردو" },
+	  uz: { countryCode: "UZ", countryName: "Uzbekistan", nativeName: "oʻzbek" },
+	  vi: { countryCode: "VN", countryName: "Vietnam", nativeName: "Tiếng Việt" },
+	  yo: { countryCode: "BJ", countryName: "Benin", nativeName: "Yorùbá" },
+	  zh: { countryCode: "CN", countryName: "China", nativeName: "中文" },
+	  zu: { countryCode: "ZA", countryName: "South Africa", nativeName: "isiZulu" }
 	};
 
+	function canRenderFlagEmoji(flagEmoji) {
+	  const canvas = document.createElement("canvas");
+	  canvas.width = 16;
+	  canvas.height = 16;
+	  const ctx = canvas.getContext("2d");
 
-		//async function getCountryName(countryCode) {
-			//try {
-				//const response = await fetch(`https://restcountries.com/v3.1/alpha/${countryCode}`);
-				//if (!response.ok) throw new Error('Country not found');
-				//const data = await response.json();
-				//// Return the name in the native language
-				//return data[0].name.common; 
-			//} catch (error) {
-				//console.error(error);
-				//return 'Unknown Country';
-			//}
-		//}
-
-		function getCountryNameFromLanguage(language) {
-			return languageToCountryMap[language] ? languageToCountryMap[language].name : null;
+	  ctx.fillStyle = "white";
+	  ctx.fillRect(0, 0, canvas.width, canvas.height);
+	  ctx.textBaseline = "top";
+	  ctx.font = "16px Arial, sans-serif, Apple Color Emoji,Segoe UI Emoji,NotoColorEmoji";
+	  ctx.fillStyle = "black";
+	  ctx.fillText(flagEmoji, 0, 0);
+	  //return false; //testing!!
+	  const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+	  for (let i = 0; i < pixels.length; i += 4) {
+		const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
+		if (r !== g || g !== b) {
+		  return true;
 		}
+	  }
+	  return false;
+	}
 
-		function getCountryCodeFromLanguage(language) {
-			return languageToCountryMap[language] ? languageToCountryMap[language].code : null;
+	function extractLocaleParts(locale) {
+		const parts = locale.split('-');
+		const language = parts[0].toLowerCase();
+		const countryCode = (parts.length === 2)
+			? parts[1].toUpperCase()
+			: (languageToCountryMap[language]
+				? languageToCountryMap[language].countryCode
+				: null);
+		return { language, countryCode };
+	}
+
+	function getNativeNameFromLanguage(language) {
+		return languageToCountryMap[language]
+			? languageToCountryMap[language].nativeName
+			: language;
+	}
+
+	function getFlagEmoji(countryCode) {
+		if (!countryCode) return null;
+		return String.fromCodePoint(
+			...[...countryCode].map(char => 0x1F1E6 + char.charCodeAt(0) - 'A'.charCodeAt(0))
+		);
+	}
+	
+	// Function to simple validate a locale string like "en-CA" or "FR"
+	function isValidLocale(loc) {
+	  return /^[a-z]{2}(-[A-Za-z]{2})?$/.test(loc);
+	}
+
+	function displayLocaleAndFlag(canDecode) {
+	console.log(`locale:${locale}`);
+	const userLocale = (locale && isValidLocale(locale))
+	  ? locale
+	  : (navigator.languages && navigator.languages.length)
+		? navigator.languages[0]
+		: navigator.language;
+
+		const { language, countryCode } = extractLocaleParts(userLocale);
+
+		console.log(`Language: ${language}, Country Code: ${countryCode}, Locale: ${userLocale}`);
+
+		const flag = countryCode ? getFlagEmoji(countryCode) : null;
+
+		if (!countryCode || !canDecode) {
+			const fallbackDiv = document.createElement('div');
+			fallbackDiv.className = 'fallback-box';
+			fallbackDiv.textContent = countryCode || userLocale.toUpperCase(); // fallback is country code upper case
+			fallbackDiv.title = getNativeNameFromLanguage(language); // tooltip is native language name or language code
+			flagContainer.appendChild(fallbackDiv);
+		} else {
+			const nativeName = getNativeNameFromLanguage(language);
+			const flagSpan = document.createElement('span');
+			flagSpan.textContent = flag;
+			flagSpan.title = nativeName;
+			flagContainer.appendChild(flagSpan);
 		}
-		
-		function getCountryNameFromCountryCode(countryCode) {
-			//alert(`Country code: ${countryCode}`);
-			for (const language in languageToCountryMap) {
-				if (languageToCountryMap.hasOwnProperty(language)) {
-					if (languageToCountryMap[language].code === countryCode) {
-						return languageToCountryMap[language].name;
-					}
-				}
-			}
-			return null; // Return null if country code not found
-		}
+	}
 
-		function getFlagEmoji(locale) {
-			// Split the locale to get the language and country code
-			const parts = locale.split('-');
-			let countryCode;
-
-			// Handle single subtag (language only) or double subtag (language-country)
-			if (parts.length === 1) {
-				countryCode = getCountryCodeFromLanguage(parts[0]);
-			} else if (parts.length === 2) {
-				countryCode = parts[1].toLowerCase(); // Use the country code
-			}
-
-			// If country code is not found, set a fallback output
-			if (!countryCode) {
-				const fallback = `? ${locale.toUpperCase()}`; // Just a question mark and the full locale
-				return { flag: fallback, isUnknown: true, countryName: 'Unknown Country' };
-			}
-
-			// Convert the country code to a flag emoji
-			return {
-				flag: String.fromCodePoint(...[...countryCode.toUpperCase()].map(char => 0x1F1E6 + char.charCodeAt(0) - 'A'.charCodeAt(0))),
-				isUnknown: false,
-				countryCode: countryCode
-			};
-		}
-
-function displayLocaleAndFlag() {
-    // Get the browser locale
-    const userLocale = navigator.languages && navigator.languages.length
-    ? navigator.languages[0]
-    : navigator.language;
-        
-    //alert(`User Locale: ${userLocale}`); // Alert the detected locale
-	console.log(navigator.languages); // Log language to console
-
-    const { flag, isUnknown, countryCode } = getFlagEmoji(userLocale);
-    
-    //alert(`Country Code: ${countryCode}, Is Unknown: ${isUnknown}`); // Debug country code and unknown flag status
-
-    // Display the locale and the corresponding flag (or fallback)
-    //document.getElementById('locale').textContent = `Your Locale: ${userLocale}`;
-
-    if (isUnknown) {
-        const fallbackDiv = document.createElement('div');
-        fallbackDiv.className = 'fallback-box';
-        fallbackDiv.textContent = `? ${userLocale.toUpperCase()}`; // Show ? and locale code inside the box
-        document.getElementById('flag-container').appendChild(fallbackDiv);
-        
-        // Tooltip for fallback
-        fallbackDiv.title = "Unknown Country"; // Tooltip for fallback
-        //alert('Fallback triggered: Unknown Country'); // Debug fallback
-    } else {
-        const countryName = getCountryNameFromCountryCode(countryCode.toUpperCase());
-        //alert(`Country Name from Country Code: ${countryName}`); // Alert the country name
-
-        const flagSpan = document.createElement('span');
-        flagSpan.textContent = flag; // Use flag emoji
-        flagSpan.title = countryName; // Tooltip for the flag in country language
-        document.getElementById('flag-container').appendChild(flagSpan);
-        
-        //alert(`Flag Emoji: ${flag}`); // Debug flag emoji display
-    }
-}
-		displayLocaleAndFlag();
-	});
+	const result = canRenderFlagEmoji("🇺🇸");
+	console.log(result ? "flag decode yes" : "flag decode no");
+	displayLocaleAndFlag(result);
+});
