@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 137
+%define release 138
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -148,6 +148,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Nov 18 2025 Brian Read <brianr@koozali.org> 11.0.0-138.sme
+- Remove imline style for list table in various panels - not allowedc by CSP [SME: 13298]
+
 * Tue Nov 18 2025 Brian Read <brianr@koozali.org> 11.0.0-137.sme
 - Stabilise flag according to browser locals settings in locale changing extension [SME: 13304]
 - Add in new lex entries for email settings [SME: 13307]

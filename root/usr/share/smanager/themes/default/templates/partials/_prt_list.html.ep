@@ -65,7 +65,7 @@
                 % <a href="printers2?CsrfDef=$csrf_token&trt=DEL&&printer=$printer_name"
                 % class="sme-remove-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
                 % title="$remove_text" aria-label="$remove_text"
-                % style="background:white;">
+                %# style="background:white;">
                 % <span class="ui-icon ui-icon-delete"></span>
                 % <span class="ui-button-text">$remove_text</span>
                 % </a>

@@ -46,7 +46,7 @@
                 % <a href="groups2?CsrfDef=$csrf_token&trt=UPD&group=$group_name"
                 % class="sme-modify-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
                 % title="$modify_text" aria-label="$modify_text"
-                % style="background:white;">
+                %# style="background:white;">
                 % <span class="ui-icon ui-icon-pencil"></span>
                 % <span class="ui-button-text">$modify_text</span>
                 % </a>
@@ -56,7 +56,7 @@
             % <a href="groups2?CsrfDef=$csrf_token&trt=DEL&group=$group_name"
             % class="sme-remove-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
             % title="$remove_text" aria-label="$remove_text"
-            % style="background:white;">
+            %# style="background:white;">
             % <span class="ui-icon ui-icon-delete"></span>
             % <span class="ui-button-text">$remove_text</span>
             % </a>
