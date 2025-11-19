@@ -93,7 +93,9 @@
 			%= $c->render_to_string(inline => flash 'error') 
 			</div>
 			%}
-		   	<pre><%= dumper stash("locale") %></pre> <!== Testing =>
+                       % if (config 'debug'){
+		   	  <pre><%= dumper stash("locale") %></pre> <!== Testing =>
+                       %}
 			%= content 'module'
 			%= include 'partials/_footer'
 		</div>
