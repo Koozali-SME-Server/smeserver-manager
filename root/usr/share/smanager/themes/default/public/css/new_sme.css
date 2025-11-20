@@ -192,13 +192,14 @@
 }
 
 .fallback-box {
-  display: inline-block; /* Make it inline-block to fit around the content */
-  border: 2px solid gray; /* Change the border color as desired */
-  padding: 10px; /* Add some padding */
-  border-radius: 10px; /* Round the corners of the box */
-  font-size: 60px; /* Adjust size if needed */
-  margin-top: 10px; /* Add some margin */
-  text-align: center; /* Center text inside the box */
+    display: inline-block;
+    border: 2px solid gray;
+    padding: 7px;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-top: -2px;
+    margin-left: -32px;
+    text-align: center;
 }
 
  table.sme-border {

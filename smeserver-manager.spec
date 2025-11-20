@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 138
+%define release 139
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -148,6 +148,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Nov 20 2025 Brian Read <brianr@koozali.org> 11.0.0-139.sme
+- set CSS so that flag alternative (country code) is flag emoji size [SME: 13304]
+
 * Tue Nov 18 2025 Brian Read <brianr@koozali.org> 11.0.0-138.sme
 - Remove imline style for list table in various panels - not allowedc by CSP [SME: 13298]
 
