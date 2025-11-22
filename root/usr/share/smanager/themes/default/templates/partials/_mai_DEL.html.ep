@@ -87,7 +87,8 @@
         %= l 'mai_LABEL_SMARTHOST_SMTPAUTH_PASSWD'
       </span><span class=input>
         % param 'SMTPAUTHPROXY_Passwd' => $mai_data->{smtpauthproxypassword} unless param 'SMTPAUTHPROXY_Passwd';
-        %= password_field 'SMTPAUTHPROXY_Passwd', class => 'input', autocomplete => 'new-password'
+		%#= password_field 'SMTPAUTHPROXY_Passwd' , class => 'input sme-password', autocomplete => 'current-password'
+		<input autocomplete="current-password" class="input sme-password" name="SMTPAUTHPROXY_Passwd" type="password" value=<%=$mai_data->{smtpauthproxypassword} %> >
     </span></p>
 
 

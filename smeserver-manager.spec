@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 139
+%define release 140
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -148,6 +148,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Nov 22 2025 Brian Read <brianr@koozali.org> 11.0.0-140.sme
+- Make delegate password field in email settings show existing password [SME: 13330]
+
 * Thu Nov 20 2025 Brian Read <brianr@koozali.org> 11.0.0-139.sme
 - set CSS so that flag alternative (country code) is flag emoji size [SME: 13304]
 
