@@ -40,7 +40,7 @@ sub do_update {
     $c->change_settings();
 
     # Update the system
-    system("/sbin/e-smith/signal-event clamav-update") == 0
+    system("/sbin/e-smith/signal-event clamscan-update") == 0
         or $result = $c->l('clm_ERROR_UPDATING_CONFIGURATION');
 
     if (!$result) {

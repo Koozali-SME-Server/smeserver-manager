@@ -1,7 +1,7 @@
 'pwd_TAINTED_USER' => 'The account name "[_1]" contains invalid characters.',
 'pwd_TAINTED_PASSWORD' => 'The new password starts with invalid characters.',
 'pwd_FIELDS_REQUIRED' => 'All fields are required',
-'pwd_ERROR_PASSWORD_CHANGE' => 'An error occurred while attempting to change your password. Please make sure that the old password entered is correct.',
+'pwd_ERROR_PASSWORD_CHANGE' => 'An error occurred while attempting to change your password. Please make sure that the old password entered is correct. Old and new passwords should be different.',
 'pwd_PASSWORD_CHANGE' => 'Change Password',
 'pwd_RESET_PASSWORD_TITLE' => 'Reset user password',
 'pwd_ACCOUNT_PASSWORD_CHANGE' => 'Change account password',

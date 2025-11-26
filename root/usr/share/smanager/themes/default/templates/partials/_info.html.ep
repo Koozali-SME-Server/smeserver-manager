@@ -15,8 +15,8 @@
     </h5></div>
   <% } %>
   <% my $curdate = strftime '%Y%m%d', localtime; %>
-  <% if ( "$curdate" >= "20290531" ) { %>
-    <div class="sme-error"><h5>
+  <% if ( "$curdate" >= "20290531" && $c->is_logged_in && $c->is_admin ) { %>
+    <div class="sme-error module"><h5>
         URGENT NOTICE: As per May 31st 2029, SME Server 11 is obsolete, and potentially INSECURE. NO support will be offered for any issue found with this installed version.
         Please migrate IMMEDIATELY to Koozali SME Server 12 or higher version. Failure to upgrade may lead to the compromise of this server.
       </br>Please, consult <a href="https://wiki.koozali.org/SME_Server:Download" target="_blank">https://wiki.koozali.org/SME_Server:Download</a> to get the latest version

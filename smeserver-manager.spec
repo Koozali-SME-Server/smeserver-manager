@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 141
+%define release 142
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -42,6 +42,7 @@ Requires: perl(Data::Validate::IP)
 Requires: mutt >= 1.5.21
 Requires: smeserver-manager-jsquery >= 11.0.0-11
 Requires: smeserver-certificates >= 11.0
+Requires: smeserver-clamav >= 11.0.0-7
 #Requires: js-jquery > 2.2.4-3 (optional)
 Requires: smeserver-postfix >= 1.0-14
 Requires: smeserver-manager-locale-bg
@@ -148,6 +149,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Nov 26 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-142.sme
+- fix clamav panel very long to update [SME: 12974]
+- improve password panel translation  [SME: 9844]
+- display eol message only to admin [SME: 13289]
+
 * Wed Nov 26 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-141.sme
 - add change passwd code for samba AD [SME: 13237]
 
