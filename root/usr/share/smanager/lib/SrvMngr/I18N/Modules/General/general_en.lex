@@ -153,3 +153,9 @@ LARGE => 'Large',
 FIELD_INVALID_CHARS => 'A field you entered contains invalid characters.',
 'REPORT_GENERATED' => "Report generated",
 'END_OF_REPORT' => 'End of Report',
+'info_reconfigure_required' => 'Warning: a reconfigure and reboot is required before proceeding! Failure to do so now may leave your system in an unknown state!',
+'info_not_changed_password' => 'Warning: you have not yet changed the default system password.',
+'info_dev_mode_and_public' => 'Warning: Development or debug mode enabled AND public access is offered !',
+'info_past_EOL' => 'URGENT NOTICE: As per May 31st 2029, SME Server 11 is obsolete, and potentially INSECURE. NO support will be offered for any issue found with this installed version.
+        Please migrate IMMEDIATELY to Koozali SME Server 12 or higher version. Failure to upgrade may lead to the compromise of this server.
+        </br>Please, consult <a href="https://wiki.koozali.org/SME_Server:Download" target="_blank">https://wiki.koozali.org/SME_Server:Download</a> to get the latest version'

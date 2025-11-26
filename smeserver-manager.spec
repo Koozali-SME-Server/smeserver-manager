@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 142
+%define release 143
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Nov 26 2025 Brian Read <brianr@koozali.org> 11.0.0-143.sme
+- Arrange that messages in _info partial (Reconfig etc) are translateable [SME: 12725]
+- Fix typo - missing "my" in userpassword.pm [SME: 12799]
+
 * Wed Nov 26 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-142.sme
 - fix clamav panel very long to update [SME: 12974]
 - improve password panel translation  [SME: 9844]

@@ -187,7 +187,7 @@ sub reset_password {
         return $c->l("pwd_ERR_OCCURRED_MODIFYING_PASSWORD");
     }
     $adb = esmith::AccountsDB::UTF8->open();
-    $cdb = esmith::ConfigDB::UTF8->open_ro;
+    my $cdb = esmith::ConfigDB::UTF8->open_ro;
     my $serv = $cdb->get('samba');
     if ((defined $serv) && ($user ne 'administrator') && (-e "/usr/bin/samba-tool")) {
        my $samba = $cdb->get('samba')->prop('status') || 'disabled';
