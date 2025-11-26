@@ -412,7 +412,7 @@ sub reset_password {
         return $c->l('usr_TAINTED_USER');
     }
     $user = $1;
-	my $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
+    my $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     my $acct = $adb->get($user);
 
     if ($acct->prop('type') eq "user") {
@@ -425,6 +425,21 @@ sub reset_password {
             return $c->l("usr_ERR_OCCURRED_MODIFYING_PASSWORD");
         }
         $adb = esmith::AccountsDB::UTF8->open();
+        $cdb = esmith::ConfigDB::UTF8->open();
+        my $serv = $cdb->get('samba');
+        if ((defined $serv) && ($user ne 'administrator') && (-e "/usr/bin/samba-tool")) {
+           my $samba = $cdb->get('samba')->prop('status') || 'disabled';
+           my $sambaip = $cdb->get('samba')->prop('SambaIP') || '';
+           my $sambapwd = $cdb->get('samba')->prop('Password') || '';
+           $samba = 'disabled' if ($sambaip eq '' || $sambapwd eq '');
+           if ($samba eq 'enabled') {
+              # Untaint the password before use in system()
+              return $c->l('usr_TAINTED_PASSWORD') unless (($passw1) = ($passw1 =~ /^([ -~]+)$/ ));
+              $passw1 = $1;
+              system("/usr/bin/samba-tool", "user", "setpassword", "$user", "--newpassword=$passw1", "-H", "ldap://$sambaip", "--username=administrator", "--password=$sambapwd")  == 0
+                    or warn ("Error occured while modifying (addc) password for $user.\n" );
+           }
+        }
         return 'OK';
     } else {
         return $c->l('usr_NO_SUCH_USER', $user);

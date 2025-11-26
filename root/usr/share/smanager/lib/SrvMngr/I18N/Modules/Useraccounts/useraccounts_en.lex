@@ -10,6 +10,7 @@
 'usr_CANNOT_MODIFY_USER' => 'Error: an internal error occurred while attempting to modify the user "[_1]".',
 'usr_CANNOT_MODIFY_USER_GROUPS' =>'Error: an internal error occurred while attempting to modify the group "[_1]" for user "[_2]".',
 'usr_TAINTED_USER' => 'The account name "[_1]" contains invalid characters.',
+'usr_TAINTED_PASSWORD' => 'The new password starts with invalid characters.',
 'usr_ACCOUNT_NAME' => 'Account name',
 'usr_FIRSTNAME' => 'First name',
 'usr_LASTNAME' => 'Last name',

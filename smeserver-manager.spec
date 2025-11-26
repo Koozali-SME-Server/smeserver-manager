@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 140
+%define release 141
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -148,6 +148,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Nov 26 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-141.sme
+- add change passwd code for samba AD [SME: 13237]
+
 * Sat Nov 22 2025 Brian Read <brianr@koozali.org> 11.0.0-140.sme
 - Make delegate password field in email settings show existing password [SME: 13330]
 

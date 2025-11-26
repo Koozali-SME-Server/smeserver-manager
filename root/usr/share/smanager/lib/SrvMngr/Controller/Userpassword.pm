@@ -68,7 +68,7 @@ sub main {
 
 sub change_password {
     my $c = shift;
-    my $result;
+    my $result='';
     my $res;
     my %pwd_datas  = ();
     my $trt        = $c->param('Trt');
@@ -187,6 +187,20 @@ sub reset_password {
         return $c->l("pwd_ERR_OCCURRED_MODIFYING_PASSWORD");
     }
     $adb = esmith::AccountsDB::UTF8->open();
+    $cdb = esmith::ConfigDB::UTF8->open_ro;
+    my $serv = $cdb->get('samba');
+    if ((defined $serv) && ($user ne 'administrator') && (-e "/usr/bin/samba-tool")) {
+       my $samba = $cdb->get('samba')->prop('status') || 'disabled';
+       my $sambaip = $cdb->get('samba')->prop('SambaIP') || '';
+       my $sambapwd = $cdb->get('samba')->prop('Password') || '';
+       $samba = 'disabled' if ($sambaip eq '' || $sambapwd eq '');
+       if ($samba eq 'enabled') {
+          return $c->l('pwd_TAINTED_PASSWORD') unless (($password) = ($password =~ /^([ -~]+)$/ ));
+          $password = $1;
+          system("/usr/bin/samba-tool", "user", "setpassword", "$user", "--newpassword=$password", "-H", "ldap://$sambaip", "--username=administrator", "--password=$sambapwd") == 0
+              or warn ("Error occured while modifying (addc) password for $user.\n" );
+       }
+    }
     return 'OK';
 } ## end sub reset_password
 
