@@ -180,7 +180,7 @@ true
 
 * Thu Nov 13 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-135.sme
 - cleanup smtp-auth-proxy [SME: 13288]
-- add field for SMTPSMARTHOST PeerPort
+- add field for SMTPSMARTHOST PeerPort [SME: 8477]
 
 * Mon Nov 10 2025 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-133.sme
 - rewrite few untaint strings [SME: 13280]
