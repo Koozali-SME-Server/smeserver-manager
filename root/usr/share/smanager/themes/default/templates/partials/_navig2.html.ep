@@ -4,11 +4,10 @@
 <div id='navigat2'>
   <!-- <div><a href='#' id='togadm' class='menu-title'>ADMINISTRATION</a></div> dddd-->
   <div id='menuadm'>
-
     % my $cc = 100;
     % foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'})
       % <=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
-      <div><a href='#' class='section section-title'><%= $h %></a></div>
+      <div><a class='section section-title'><%= $c->l($h) %></a></div>
       <div class='togms'>
         % my ( $classNew, $target, $href ) = '';
         % foreach (sort { $a->{'WEIGHT'} <=> $b->{'WEIGHT'} } @{$nav{$h}{'DESCRIPTIONS'}}) {

@@ -4,6 +4,13 @@ package SrvMngr::Controller::Portforwarding;
 # heading     : Network
 # description : Port forwarding
 # navigation  : 6000 600
+
+#$if_admin->get('/portforwarding')->to('portforwarding#main')->name('portforwarding');
+#$if_admin->post('/portforwarding')->to('portforwarding#do_display')->name('portforwarding');
+#$if_admin->post('/portforwardinga')->to('portforwarding#do_display')->name('portforwardingadd');
+#$if_admin->post('/portforwardingb')->to('portforwarding#do_display')->name('portforwardingadd1');
+#$if_admin->get('/portforwardingd')->to('portforwarding#do_display')->name('portforwardingdel');
+#$if_admin->post('/portforwardinge')->to('portforwarding#do_display')->name('portforwardingdel1');
 #
 # routes : end
 #----------------------------------------------------------------------
@@ -256,7 +263,7 @@ sub validate_source_port {
     } ## end foreach my $port (@ports)
 
     # Now, lets screen any duplicates.
-    my $protocol = $q->param('protocol');
+    my $protocol = $q->param('proto') || 'tcp';
     my @forwards = ();
 
     # Grab the existing rules for this protocol.

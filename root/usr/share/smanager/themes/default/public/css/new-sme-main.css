@@ -524,3 +524,23 @@ table.incolumn {
 	margin:auto;
 	color:red;
 }
+
+.section-title {
+    color: #006633 !important;
+}
+
+.section-title:hover {
+    color: #006633 !important;
+}
+
+.section-title:visited {
+    color: #006633 !important;
+}
+
+.section-title:focus {
+    color: #006633 !important;
+}
+
+.section-title:active {
+    color: #006633 !important;
+}

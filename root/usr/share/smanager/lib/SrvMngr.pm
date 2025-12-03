@@ -39,7 +39,7 @@ use Data::Dumper;
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '134.el8.sme'; 
+our $VERSION = '144.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -858,7 +858,7 @@ sub _lang_space {
         warn "NS already loaded: $moduleLong \n" if ( $c->i18ns() eq $moduleLong );		# i18ns changed
 	$c->i18ns( $moduleLong, $lang );
     } else {
-        warn "Locale lexicon missing for $module \n";
+        #warn "Locale lexicon missing for $module \n"; #Take out as too many of them!
     }
 };
 

@@ -377,8 +377,12 @@ sub get_options2 {
     my @options;
 
     for ($dbs{$yumdb}->get_all_by_prop(type => $type)) {
-        push @options, [ $_->key . " " . $_->prop("Version") . " - " . $_->prop("Repo") => $_->key ];
+        my $key = $_->key // '';
+        my $version = $_->prop("Version") // '';
+        my $repo = $_->prop("Repo") // '';
+        push @options, [ "$key $version - $repo" => $key ];
     }
+
     return \@options;
 } ## end sub get_options2
 

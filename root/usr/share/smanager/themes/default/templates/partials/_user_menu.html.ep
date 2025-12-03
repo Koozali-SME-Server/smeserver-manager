@@ -4,7 +4,7 @@
 % my %nav = $c->session->{is_admin} ? %nav1 : %{ SrvMngr->simpleNavMerge( \%nav1, \%nav2 ) };
 
 <div id='usermenu'>
-  <a href='#' id='toguser' class='section section-title'>Current User (<%= session 'username' %>)</a>
+  <a id='toguser' class='section section-title'><%= $c->l('Current User') %> (<%= session 'username' %>)</a>
   <div id='menuuser'>
     % my $cc = 300;
     % foreach my $h (sort { ($nav{$a}{'WEIGHT'}/$nav{$a}{'COUNT'})

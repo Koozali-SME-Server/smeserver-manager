@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 143
+%define release 144
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,13 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Dec 03 2025 Brian Read <brianr@koozali.org> 11.0.0-144.sme
+- Fix uninit var in portforwarding.pm  [SME: 12970]
+- Take out link href for section headings and add css for them to supress hover etc [SME: 13238] 
+- Arrange that Legacy section heading is translated [SME: 13366]
+- Fix concat failure in yum.pm when available software called [SME: 13373]
+- Take out Locale lexicon missing warning [SME: 13374]
+
 * Wed Nov 26 2025 Brian Read <brianr@koozali.org> 11.0.0-143.sme
 - Arrange that messages in _info partial (Reconfig etc) are translateable [SME: 12725]
 - Fix typo - missing "my" in userpassword.pm [SME: 12799]
