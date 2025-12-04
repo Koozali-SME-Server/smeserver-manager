@@ -385,7 +385,7 @@ sub validate_destination_host {
         return (ret => 'pf_IN_SERVERONLY');
     }
 
-    if (ip_number($dhost) eq 'ok') {
+    if (lc($c->ip_number($dhost)) eq 'ok') {
         return (ret => 'pf_SUCCESS');
     } else {
         return (ret => 'pf_ERR_BADIP');
