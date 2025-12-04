@@ -150,10 +150,10 @@ true
 
 %changelog
 * Thu Dec 04 2025 Brian Read <brianr@koozali.org> 11.0.0-146.sme
-- fix [SME: ]
+- Portforwarding: Get it right this time - call to ip_number [SME: 12970]
 
 * Thu Dec 04 2025 Brian Read <brianr@koozali.org> 11.0.0-145.sme
-- Fix missing ValidIP rutine in portformwarding [SME: 12970]
+- Fix missing ValidIP rutine in portforwarding panel [SME: 12970]
 
 * Wed Dec 03 2025 Brian Read <brianr@koozali.org> 11.0.0-144.sme
 - Fix uninit var in portforwarding.pm  [SME: 12970]
