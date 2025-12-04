@@ -23,6 +23,8 @@ use SrvMngr qw(theme_list init_session);
 #use Regexp::Common qw /net/;
 use esmith::util;
 use esmith::ConfigDB::UTF8; 
+use SrvMngr qw(theme_list init_session subnet_mask get_reg_mask ip_number);
+
 
 my ($cdb,$tcp_db,$udp_db);
 
@@ -383,7 +385,7 @@ sub validate_destination_host {
         return (ret => 'pf_IN_SERVERONLY');
     }
 
-    if (isValidIP($dhost)) {
+    if (ip_number($dhost) eq 'ok') {
         return (ret => 'pf_SUCCESS');
     } else {
         return (ret => 'pf_ERR_BADIP');

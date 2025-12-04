@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 144
+%define release 145
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Dec 04 2025 Brian Read <brianr@koozali.org> 11.0.0-145.sme
+- Fix missing ValidIP rutine in portformwarding [SME: 12970]
+
 * Wed Dec 03 2025 Brian Read <brianr@koozali.org> 11.0.0-144.sme
 - Fix uninit var in portforwarding.pm  [SME: 12970]
 - Take out link href for section headings and add css for them to supress hover etc [SME: 13238] 
