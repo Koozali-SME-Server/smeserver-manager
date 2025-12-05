@@ -58,7 +58,7 @@
     </span></p>
 
     <br>
-    %= l 'yum_DESC_YUM_DOWNLOADONLY'
+    %= l 'yum_LABEL_YUM_DOWNLOADONLY_DESCRIPTION'
 
     <p><span class=label>
         %= l 'yum_LABEL_YUM_DOWNLOADONLY'
