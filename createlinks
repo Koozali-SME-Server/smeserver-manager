@@ -25,7 +25,7 @@ templates2events("/etc/httpd/conf/httpd.conf",
 # services to launch on event
 for my $event ( qw( smeserver-manager-update smanager-modify ) )
 {
-    safe_symlink("restart",
+    safe_symlink("reload-or-restart",
         "root/etc/e-smith/events/$event/services2adjust/smanager");
     safe_symlink("reload",
         "root/etc/e-smith/events/$event/services2adjust/httpd-e-smith");

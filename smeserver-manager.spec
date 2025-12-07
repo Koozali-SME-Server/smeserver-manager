@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 146
+%define release 147
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Dec 07 2025 Brian Read <brianr@koozali.org> 11.0.0-147.sme
+- Alter smanager restart in -update event to reload-or-restart [SME: 12970]
+
 * Thu Dec 04 2025 Brian Read <brianr@koozali.org> 11.0.0-146.sme
 - Portforwarding: Get it right this time - call to ip_number [SME: 12970]
 
