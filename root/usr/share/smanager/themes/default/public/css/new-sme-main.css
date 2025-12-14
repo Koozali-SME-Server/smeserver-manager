@@ -334,6 +334,8 @@ span.label {
     background-color: #e8f3e1;
     width: 30%;
     text-align: right;
+    vertical-align:top;
+    
 }
 
 span.label2 {
@@ -543,4 +545,35 @@ table.incolumn {
 
 .section-title:active {
     color: #006633 !important;
+}
+
+.partial p{
+  display: flex;
+  align-items: stretch;   /* label matches data height */
+  margin: 0 0 .4rem;
+}
+
+.partial p > span.label{
+  width: 30%;
+  font-weight: bold;
+  background-color: #e8f3e1;
+  text-align: right;
+  vertical-align: top;
+  padding: 6px .5rem 1px 0;
+  box-sizing: border-box;
+}
+
+.partial p > span.data{
+  flex: 1;
+  box-sizing: border-box;
+  padding-left: 6px;
+}
+
+/* optional: make inputs/textarea fill the remaining width */
+.partial p > span.data > input,
+.partial p > span.data > textarea,
+.partial p > span.data > select{
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
