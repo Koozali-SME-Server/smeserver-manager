@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 148
+%define release 149
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Dec 22 2025 Brian Read <brianr@koozali.org> 11.0.0-149.sme
+- Add week days and month names to general lex file [SME: 13392]
+
 * Sun Dec 14 2025 Brian Read <brianr@koozali.org> 11.0.0-148.sme
 - Adjust CSs for parameters lisr inc textarea and arrange textarea label to be top aligned [SME: 13388]
 
