@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 149
+%define release 150
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Dec 24 2025 Brian Read <brianr@koozali.org> 11.0.0-150.sme
+- Remove unused FM_ entries from general_en lex file [SME: 12950]
+
 * Mon Dec 22 2025 Brian Read <brianr@koozali.org> 11.0.0-149.sme
 - Add week days and month names to general lex file [SME: 13392]
 
