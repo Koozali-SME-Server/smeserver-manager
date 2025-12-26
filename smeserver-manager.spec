@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 150
+%define release 151
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Dec 26 2025 Brian Read <brianr@koozali.org> 11.0.0-151.sme
+- Fix unit var in useraccounts.pm [SME: 12294]
+- sort out user_PASSWORD_Wiki lex string quotes  [SME: 13394]
+- sort out data dump in useraccounts layout template [SME: 13394]
+
 * Wed Dec 24 2025 Brian Read <brianr@koozali.org> 11.0.0-150.sme
 - Remove unused FM_ entries from general_en lex file [SME: 12950]
 

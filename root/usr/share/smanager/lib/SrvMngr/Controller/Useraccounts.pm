@@ -798,16 +798,16 @@ sub system_authenticate_password {
     my $c    = shift;
     my $pass = shift;
 
-    if (esmith::util::authenticateUnixPassword(
-            ($cdb->get_value("AdminIsNotRoot") eq 'enabled') ? 'admin' : 'root', $pass
-        )
-        )
-    {
+    my $cdb_value = $cdb->get_value("AdminIsNotRoot");
+    my $username = defined $cdb_value && $cdb_value eq 'enabled' ? 'admin' : 'root';
+
+    if (esmith::util::authenticateUnixPassword($username, $pass)) {
         return "OK";
     } else {
         return $c->l("usr_SYSTEM_PASSWORD_AUTH_ERROR");
     }
 } ## end sub system_authenticate_password
+
 
 sub system_change_password {
     my ($c) = @_;

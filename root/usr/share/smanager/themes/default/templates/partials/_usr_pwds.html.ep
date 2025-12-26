@@ -9,7 +9,7 @@
 
     <p>
       % my $strength = uc( $usr_datas->{passwdstrength} );
-      <%= $c->render_to_string( inline => l( 'usr_' . $strength . '_PASSWORD_DESCRIPTION', $usr_datas->{passwdlength} ) ); %>
+      <%== $c->render_to_string( inline => l( 'usr_' . $strength . '_PASSWORD_DESCRIPTION', $usr_datas->{passwdlength},$usr_datas->{passwdstrength} ) ); %>
       <br /><br />
       <%= $c->render_to_string( inline => l('usr_PASSWORD_WIKI') ) %>
     </p>
