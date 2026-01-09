@@ -68,9 +68,9 @@
           <tr><th class='sme-border'>
               %= l 'NETWORK'
             </th><th class='sme-border'>
-              %= l 'SUBNET_MASK'
+              %= l 'rma_SUBNET_MASK'
             </th><th class='sme-border'>
-              %= l 'NUM_OF_HOSTS'
+              %= l 'rma_NUM_OF_HOSTS'
             </th><th class='sme-border'>
               %= l 'REMOVE'
           </th></tr>

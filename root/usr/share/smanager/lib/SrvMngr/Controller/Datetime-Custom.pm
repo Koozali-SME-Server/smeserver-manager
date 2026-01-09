@@ -65,46 +65,48 @@ my $ddb;
 
 # Get singleton data for each panel
 
-	sub get_data_for_panel_PARAMS {
-		# Return a hash with the fields required which will be loaded into the shared data 
-		my $c = shift;
-		$cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-		# --- Setup options ---
-		# Get today's date and time
-		my ($today_sec, $today_min, $today_hour, $today_mday, $today_mon, $today_year) = localtime;
-		$today_year  += 1900;
-		$today_mon   += 1;
-		my $today_mon = sprintf('%02d', $today_mon);
-		my $today_mday   = sprintf('%02d', $today_mday);
-		my $now_hour    = sprintf('%02d', $today_hour);
-		my $now_min     = sprintf('%02d', $today_min);
-		my $now_sec     = sprintf('%02d', $today_sec);
-		my $current_year = $today_year;
-		my $ntpserverurl = $cdb->get_prop('ntpd','NTPServer');
-		my $now = DateTime->now( time_zone => 'local' );
-		my %ret = (
-			# fields from Inputs 
-			'time_mode'=>($ntpserverurl eq '' ? 'dat_manually_set' : 'dat_ntp_server'),
-			'ntpserver'=>"$ntpserverurl",
-			'year'=>"$today_year",
-			'month'=>"$today_mon",
-			'day'=>"$today_mday",,
-			'hour'=>"$now_hour",
-			'minute'=>"$now_min",
-			'second'=>"$now_sec",
-			'ntpstatus' => $cdb->get_prop('ntpd','status') || 'disabled',
-			# and the current time as a full format 
-			'currentdatetime' => $now->strftime('%Y-%m-%dT%H:%M:%S')
-			
-		);
-		return %ret;
-	}
+sub get_data_for_panel_PARAMS {
+    # Return a hash with the fields required which will be loaded into the shared data 
+    my $c = shift;
+    $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
+    
+    # Get today's date and time (your existing manual extraction)
+    my ($today_sec, $today_min, $today_hour, $today_mday, $today_mon, $today_year) = localtime;
+    $today_year  += 1900;
+    $today_mon   += 1;
+    my $today_mon = sprintf('%02d', $today_mon);
+    my $today_mday = sprintf('%02d', $today_mday);
+    my $now_hour  = sprintf('%02d', $today_hour);
+    my $now_min   = sprintf('%02d', $today_min);
+    my $now_sec   = sprintf('%02d', $today_sec);
+    my $current_year = $today_year;
 
-
+    my $ntpserverurl = $cdb->get_prop('ntpd','NTPServer');
+    
+    # Get locale from stash
+    my $locale = $c->stash('locale') // 'en';
+    
+    # Create now DateTime
+    my $now = DateTime->now( time_zone => 'local');
+     
+    my %ret = (
+        'time_mode'   => ($ntpserverurl eq '' ? 'dat_manually_set' : 'dat_ntp_server'),
+        'ntpserver'   => "$ntpserverurl",
+        'year'        => "$today_year",
+        'month'       => "$today_mon",
+        'day'         => "$today_mday",
+        'hour'        => "$now_hour",
+        'minute'      => "$now_min",
+        'second'      => "$now_sec",
+        'ntpstatus'   => $cdb->get_prop('ntpd','status') || 'disabled',
+        # ISO 8601 - JavaScript SAFE
+        'currentdatetime' => $now->strftime('%Y-%m-%d %H:%M:%S'),
+        'locale_used' => $locale,
+    );   
+    return %ret;
+}
 
 # Get control data for table(s)
-
-
 
 # Return hash with values from row in which link clicked on table
 

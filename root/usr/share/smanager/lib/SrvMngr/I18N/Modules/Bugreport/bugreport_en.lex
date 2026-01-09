@@ -21,4 +21,4 @@
 'bugr_CONSIDER_DONATING' => 'Please consider donating to the project by clicking on the image link below:',
 'bugr_THANK_YOU' => 'Thank you for your support!',
 'bugr_Download this report' => 'Download this report !',
-'Report a bug' => 'Report a bug',
+'bugr_Report a bug' => 'Report a bug',

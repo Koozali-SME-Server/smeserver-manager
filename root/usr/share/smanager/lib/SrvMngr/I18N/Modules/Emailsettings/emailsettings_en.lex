@@ -1,5 +1,5 @@
 'mai_FORM_TITLE' => 'E-mail settings',
-'mai_E-Mail' => 'E-mail',
+'mai_E-Mail' => 'Email',
 'mai_SUCCESS' => 'The new e-mail settings have been saved.',
 'mai_NEVER' => 'not at all',
 'mai_EVERY5MIN' => 'Every 5 minutes',

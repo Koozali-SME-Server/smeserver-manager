@@ -1,6 +1,6 @@
 
 'iba_FORM_TITLE' => 'Create, modify, or remove i-bays',
-'iba_ADD_IBAY' => 'Add ibay',
+'iba_ADD_IBAY' => 'Add i-bay',
 'iba_FIRSTPAGE_DESC' => 'You can remove any information bay or reset its password by
 clicking on the corresponding command
 next to the information bay. If the information bay shows up
@@ -25,10 +25,10 @@ i-bay.',
 'iba_ALLOW_DYNAMIC_CONTENT' => 'Execution of dynamic content (CGI, PHP, SSI)',
 'iba_HTTPS_Only' => 'Force secure connections',
 'iba_REMOVE_TITLE' => 'Remove information bay',
-'iba_REMOVE_DESC' => '<p>You are about to remove the information bay [_1] ([_2]).
-</p><p>All files belonging to this information bay will be deleted.
-</p><p>Are you sure you wish to remove this information bay?
-</p>',
+'iba_REMOVE_DESC' => 'You are about to remove the information bay [_1] ([_2]).
+All files belonging to this information bay will be deleted.
+Are you sure you wish to remove this information bay?
+',
 'iba_ERROR_WHILE_CREATING_IBAY' => 'An error occurred while creating the i-bay.',
 'iba_SUCCESSFULLY_CREATED_IBAY' => 'Successfully created i-bay.',
 'iba_NO_IBAYS' => 'There are no i-bays currently configured.',
@@ -46,10 +46,10 @@ site (you can change them to something else afterward).',
 'iba_IBAY_PASSWD_VERIFY_ERROR' => 'The passwords do not match.',
 'iba_SUCCESSFULLY_RESET_PASSWORD' => 'Successfully reset password.',
 'iba_ERROR_WHILE_RESETTING_PASSWORD' => 'Error while resetting password.',
-'iba_VHOST_MESSAGE' => '<P>The following virtual domains were using this information bay 
+'iba_VHOST_MESSAGE' => 'The following virtual domains were using this information bay 
 as their content and will be changed to the primary web site 
-(you can change them to something else afterward):</P>',
-'Information bays' => 'Information bays',
+(you can change them to something else afterward):',
+'iba_Information bays' => 'Information bays',
 'WGRG' => 'Write = group, Read = group',
 'WGRE' => 'Write = group, Read = everyone',
 'WARG' => 'Write = admin, Read = group',
@@ -67,5 +67,5 @@ only lower case letters, numbers, and hyphens.',
 [_2] characters.',
 'iba_ACCT_CLASHES_WITH_PSEUDONYM' => 'The account "[_1]" clashes with pseudonym
 details for [_2] account "[_3]".
-<p>[_1] is a pseudonym for [_2].</p>',
+[_1] is a pseudonym for [_2].',
 'iba_ACCOUNT_EXISTS' => 'The account "[_1]" is an existing [_2] account.',

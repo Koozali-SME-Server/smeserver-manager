@@ -69,7 +69,7 @@ fields blank.',
 'rma_ERR_NO_RECORD' => 'Unable to locate httpd-admin record in configuration db',
 'Remote access' => 'Remote access',
 'rma_LABEL_SERIAL_CONSOLE_ACCESS' => 'Serial console',
-'rma_DESC_SERIAL_CONSOLE_ACCESS' => ' <hr class="sectionbar" /><h2>Serial console</h2>
+'rma_DESC_SERIAL_CONSOLE_ACCESS' => ' <hr class="sectionbar" />Serial console
 You can allow access to the server console from a terminal
 connected to a server serial port.',
 'rma_PORT1_ENABLED' => 'Enabled on serial port 1',

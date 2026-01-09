@@ -19,17 +19,13 @@
   % }
 
   % if ( $c->is_empty('updates') ) {
-    <br><div class=success><h2>
-        %= l 'yum_TITLE_UPTODATE'
-      </h2>
+    <br><div class=success>
       %= l 'yum_DESC_UPTODATE'
     </div><br>
   % }
 
   % if ( $c->non_empty('updates') ) {
-    <br><div class=success><h2>
-        %= l 'yum_TITLE_UPDATES_AVAILABLE'
-      </h2>
+    <br><div class=success>
       %= l 'yum_DESC_UPDATES_AVAILABLE'
     </div><br>
 

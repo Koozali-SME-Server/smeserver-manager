@@ -1,7 +1,7 @@
 
 'prt_FORM_TITLE' => 'Add or remove printers',
 'prt_INITIAL_BTN' => 'Add printer',
-'prt_INITIAL_DESC' => '<P><A class="button-like" HREF="printers?page=0&Next=Add">Add printer</A></P>',
+'prt_INITIAL_DESC' => '<A class="button-like" HREF="printers?page=0&Next=Add">Add printer</A>',
 'prt_NO_PRINTERS' => 'There are no printers in the system.',
 'prt_CURRENT_LIST' => 'Current List of printers',
 'prt_REMOTE_ADDRESS' => 'Remote address',
@@ -24,7 +24,7 @@ Avoid names and descriptions that contain these terms,
 'prt_NET_PRINTER' => 'Network printer ...',
 'prt_FIRST_USB_PRINTER' => 'First USB attached printer',
 'prt_SECOND_USB_PRINTER' => 'Second USB attached printer',
-'prt_ERR_UNEXPECTED_NAME' => '<P>Error: unexpected characters in printer name.</P>
+'prt_ERR_UNEXPECTED_NAME' => 'Error: unexpected characters in printer name.
 <P>The printer name should contain only lower-case 
 letters and numbers, and should start with a lower-case 
 letter. For example "hplaser", "epsonlp", and 

@@ -1,4 +1,3 @@
-
 'prx_TITLE' => 'Proxy settings',
 'prx_FIRST_PAGE_DESCRIPTION' => 'This page allows configuration of the server\'s 
 proxy settings.
@@ -27,4 +26,4 @@ this is the default. The proxy only intercepts/blocks normal smtp
 'prx_SUCCESS' => 'The new proxy settings were applied successfully.',
 'prx_BLOCKED' => 'Blocked',
 'Proxy settings' => 'Proxy settings',
-
+'prx_Proxy' => 'Proxy',

@@ -17,7 +17,7 @@
   % if ($c->SrvMngr::Controller::Emailsettings::get_current_webmail_status(FALSE) eq 'disabled'){
 		<%= $c->render_to_string( inline => l('rc_WEBMAIL_DISABLED') ) %>
   % } else {
-	<p>If the Webmail panel does not appear after logging in, then please check your password.</p><br />
+	<p><%= $c->render_to_string( inline => l('rc_check_password') ) %></p><br />
 	% my $thisdomain = $c->req->url->to_abs->host;
 	% my $url = $c->stash('modul');
 	% if (!$url) {

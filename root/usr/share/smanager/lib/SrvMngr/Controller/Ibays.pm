@@ -2,9 +2,9 @@ package SrvMngr::Controller::Ibays;
 
 #----------------------------------------------------------------------
 # heading     : Network
-# description : Ibays
+# description : Information bays
 # navigation  : 6000 100
-#
+# 
 #
 # routes : end
 #----------------------------------------------------------------------
@@ -411,9 +411,9 @@ drop down list.
 sub userAccess_list_m {
     my $c = shift;
     return [
-        [ $c->l('WARG') => 'wr-admin-rd-group' ],
-        [ $c->l('WGRE') => 'wr-group-rd-everyone' ],
-        [ $c->l('WGRG') => 'wr-group-rd-group' ]
+        [ $c->l('iba_WARG') => 'wr-admin-rd-group' ],
+        [ $c->l('iba_WGRE') => 'wr-group-rd-everyone' ],
+        [ $c->l('iba_WGRG') => 'wr-group-rd-group' ]
     ];
 } ## end sub userAccess_list_m
 
@@ -427,12 +427,12 @@ access drop down list.
 sub publicAccess_list_m {
     my $c = shift;
     return [
-        [ $c->l('NONE')                            => 'none' ],
-        [ $c->l('LOCAL_NETWORK_NO_PASSWORD')       => 'local' ],
-        [ $c->l('LOCAL_NETWORK_PASSWORD')          => 'local-pw' ],
-        [ $c->l('ENTIRE_INTERNET_NO_PASSWORD')     => 'global' ],
-        [ $c->l('ENTIRE_INTERNET_PASSWORD')        => 'global-pw' ],
-        [ $c->l('ENTIRE_INTERNET_PASSWORD_REMOTE') => 'global-pw-remote' ]
+        [ $c->l('iba_NONE')                            => 'none' ],
+        [ $c->l('iba_LOCAL_NETWORK_NO_PASSWORD')       => 'local' ],
+        [ $c->l('iba_LOCAL_NETWORK_PASSWORD')          => 'local-pw' ],
+        [ $c->l('iba_ENTIRE_INTERNET_NO_PASSWORD')     => 'global' ],
+        [ $c->l('iba_ENTIRE_INTERNET_PASSWORD')        => 'global-pw' ],
+        [ $c->l('iba_ENTIRE_INTERNET_PASSWORD_REMOTE') => 'global-pw-remote' ]
     ];
 } ## end sub publicAccess_list_m
 

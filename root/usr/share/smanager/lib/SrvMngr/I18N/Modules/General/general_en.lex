@@ -69,6 +69,10 @@
 'Configuration' => 'Configuration',
 'Miscellaneous' => 'Miscellaneous',
 'Administration' => 'Administration',
+'Report a bug' => 'Report a bug',
+'E-Mail' => 'E-Mail',
+'Time' => 'Time',
+'Date' => 'Date',
 
 # All other rules
 'GROUP_ADD' => 'Add group',

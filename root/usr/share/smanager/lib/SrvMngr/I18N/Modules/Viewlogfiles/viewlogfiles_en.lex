@@ -23,7 +23,7 @@ reports.',
 'log_MATCH_HEADER' => 'Displaying lines matching: "[_1]".',
 'log_HIGHLIGHT_HEADER' => 'Highlighting lines matching: "[_1]".',
 'log_NO_MATCHING_LINES' => 'No matching lines displayed.',
-'log_FILENAME_ERROR' => '<p>Error while specifying log file name.</p>
+'log_FILENAME_ERROR' => 'Error while specifying log file name.
 <p>Invalid report type "[_1]".</p>',
 'log_REFRESH' => 'Refresh this logfile',
 'log_OP_DESC' => 'You must choose between viewing the logfile in your browser, or

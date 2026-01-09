@@ -1,10 +1,10 @@
 
 'pse_NO_PSEUDONYMS' => ' <b>There are no pseudonyms in the system.</b> ',
 'pse_REMOVE_PSEUDONYM' => 'Remove pseudonym',
-'pse_ABOUT_TO_REMOVE' => 'You are about to remove the pseudonym: [_1]<br>
+'pse_ABOUT_TO_REMOVE' => 'You are about to remove the pseudonym: [_1]
 <b>Are you sure you wish to continue?</b>',
 'pse_FORM_TITLE' => 'Create, modify, or remove pseudonyms',
-'pse_DESCRIPTION' => '<p>The server automatically creates
+'pse_DESCRIPTION' => 'The server automatically creates
 an e-mail alias for each group. If you want to define an e-mail
 alias for a list of users, simply create a group and the
 list will automatically be maintained by the server.</p>

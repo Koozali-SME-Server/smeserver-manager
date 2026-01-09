@@ -1,10 +1,10 @@
 use_TITLE => 'User login',
 use_SIGNIN => 'Sign in',
 use_FORGOT => 'Forgot password ?',
-use_RESET_REGISTERED => 'A password reset message has been sent to the e-mail address of this account.<br>
+use_RESET_REGISTERED => 'A password reset message has been sent to the e-mail address of this account.
 If you do not receive it, check your spam/junk folders or ask your local administrator for help.<br>
 If it is not there ask your local administrator.',
-use_TOO_MANY_LOGIN => 'Login access blocked !!<br>Too many failed login attempts.  Try again later',
+use_TOO_MANY_LOGIN => 'Login access blocked !!Too many failed login attempts.  Try again later',
 use_INVALID_DATA => 'Invalid input data, Try again',
 use_WELCOME => 'Welcome Back!',
 use_SORRY => 'Sorry try again',

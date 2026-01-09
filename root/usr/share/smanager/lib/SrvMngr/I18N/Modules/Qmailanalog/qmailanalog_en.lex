@@ -1,6 +1,6 @@
 
 'qma_FORM_TITLE' => 'Mail Log File Analysis',
-'qma_INITIAL_DESC' => '<P>Analysing the mail system log files can aid both in
+'qma_INITIAL_DESC' => 'Analysing the mail system log files can aid both in
 understanding how your system is performing and in
 diagnosing delivery problems. Several different
 reports are available.</P>

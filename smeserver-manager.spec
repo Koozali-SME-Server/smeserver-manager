@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 151
+%define release 152
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,15 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Dec 30 2025 Brian Read <brianr@koozali.org> 11.0.0-152.sme
+- General Lexical file audit [SME: 12950]
+- Add menu entry lex to bugreport.lex [SME: 12950]
+- Add missing entries in webmail lex file and in layout [SME: 12950]
+- Add missing entries and translations in yum lex files [SME: 12950]
+- Fix lex files for Ibays and add prefix to calls in controller file [SME: 12950]
+- Add prefix to column headings in Remoteaccess layout file [SME: 12950]
+- Fix various issues with ibays, email, datetime [SME: 12950]
+
 * Fri Dec 26 2025 Brian Read <brianr@koozali.org> 11.0.0-151.sme
 - Fix unit var in useraccounts.pm [SME: 12294]
 - sort out user_PASSWORD_Wiki lex string quotes  [SME: 13394]
