@@ -1,19 +1,64 @@
 /* css/sme-password.css */
-.input-container {
-    position: relative;
-    display: inline-block;
+/* Wrapper just for the input + icon overlay */
+.input-container{
+  position: relative;
+  display: inline-block;   /* or block; up to your form layout */
 }
-.sme-password {
-    padding-right: 5px; /* Ensure space for the toggle icon */
+
+/* Make room for the icon inside the input */
+.input-container input.sme-password{
+  padding-right: 36px;     /* space for the eye */
 }
-.toggle-password {
-    position: absolute;
-    right: 4px; /* Position it towards the right */
-    top: 50%; /* Center vertically */
-    transform: translateY(-50%); /* Adjust for exact centering */
-    cursor: pointer;
-    width: 20px; /* Set the width of the icon */
-    height: 20px; /* Set the height of the icon */
+
+/* Icon sits inside the input area at the far right */
+.input-container .toggle-password{
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+/* Strength bar can sit to the right of the CONTROL (outside input) */
+.sme-strength{
+  display: inline-block;
+  width: 90px;
+  height: 10px;
+  margin-left: 10px;
+  vertical-align: middle;
+  border-radius: 999px;
+  background: #e9eef5;
+  overflow: hidden;
+  border: 1px solid #d6dde7;
+}
+
+.sme-strength__fill{
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+/* Score classes */
+.sme-strength__fill.strength-s0 { transform: scaleX(0.00); background:#d64545; }
+.sme-strength__fill.strength-s1 { transform: scaleX(0.25); background:#e67e22; }
+.sme-strength__fill.strength-s2 { transform: scaleX(0.50); background:#f1c40f; }
+.sme-strength__fill.strength-s3 { transform: scaleX(0.75); background:#2ecc71; }
+.sme-strength__fill.strength-s4 { transform: scaleX(1.00); background:#1f8f4a; }
+
+/* Hint below */
+.sme-pwd-hint{
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 300;       /* thinner */
+  color: #526070;
+  line-height: 1.2;
+  align-self: flex-start; /* ensure it aligns with the control, not centered */
+  margin-left:31%;
 }
 
 .module {

@@ -27,7 +27,7 @@
       <span class=label>
         %= l 'usr_NEW_SYSTEM_PASSWORD', class => 'label'
       </span><span class=data>
-        %= password_field 'Pass', class => 'input', class => 'sme-password'
+        %= password_field 'Pass', class => 'input', class => 'sme-password wantstrength'
       </span>
     </p>
 

@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 152
+%define release 153
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Jan 10 2026 Brian Read <brianr@koozali.org> 11.0.0-153.sme
+- Add password strength indication to password fields [SME: 13210]
+
 * Tue Dec 30 2025 Brian Read <brianr@koozali.org> 11.0.0-152.sme
 - General Lexical file audit [SME: 12950]
 - Add menu entry lex to bugreport.lex [SME: 12950]
