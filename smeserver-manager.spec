@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 153
+%define release 154
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Jan 10 2026 Brian Read <brianr@koozali.org> 11.0.0-154.sme
+- Add password generator to password fields  [SME: 13210]
+
 * Sat Jan 10 2026 Brian Read <brianr@koozali.org> 11.0.0-153.sme
 - Add password strength indication to password fields [SME: 13210]
 

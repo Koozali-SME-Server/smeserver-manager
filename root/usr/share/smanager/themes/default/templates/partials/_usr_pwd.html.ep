@@ -26,7 +26,7 @@
       <span class=label>
         %= l 'PASSWORD_NEW', class => 'label'
       </span><span class=data>
-        %= password_field 'newPass', class => 'input', class => 'sme-password wantstrength'
+        %= password_field 'newPass', class => 'input', class => 'sme-password wantstrength','data-pwdlen'=>"$usr_datas->{passwdlength}"
       </span>
     </p>
 

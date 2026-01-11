@@ -7,7 +7,7 @@
 
 /* Make room for the icon inside the input */
 .input-container input.sme-password{
-  padding-right: 36px;     /* space for the eye */
+  padding-right: 3px;     /* space for the eye */
 }
 
 /* Icon sits inside the input area at the far right */
@@ -31,7 +31,7 @@
   border-radius: 999px;
   background: #e9eef5;
   overflow: hidden;
-  border: 1px solid #d6dde7;
+  border: 2px solid lightgrey;
 }
 
 .sme-strength__fill{
@@ -52,14 +52,23 @@
 
 /* Hint below */
 .sme-pwd-hint{
-  margin-top: 4px;
+  margin-top: 6px;
   font-size: 12px;
-  font-weight: 300;       /* thinner */
   color: #526070;
-  line-height: 1.2;
-  align-self: flex-start; /* ensure it aligns with the control, not centered */
   margin-left:31%;
 }
+
+.sme-dice {
+    width: 20px;
+    height: 16px;
+    cursor: pointer;
+    margin-left: 3px;
+    vertical-align: top;
+    margin-top: 2px;
+    border-width: 2px;
+    border-image: initial;
+}
+
 
 .module {
     padding: 20px;

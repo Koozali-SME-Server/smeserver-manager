@@ -33,6 +33,14 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
 // public/js/sme-password.js
 // Requires: jQuery + local zxcvbn.js loaded before this file
 
+// public/js/sme-password.js
+// Requires: jQuery + local zxcvbn.js loaded before this file
+//
+// Adds:
+// - Eye icon inside the password control (overlay at far right)
+// - Dice icon (random password generator) between the control and strength bar
+// - Strength bar + English hint text (bar updates via classes; CSP-friendly)
+
 $(document).ready(function () {
 
   // -----------------------------
@@ -117,7 +125,6 @@ $(document).ready(function () {
       .addClass('strength-s' + score);
   }
 
-  // Simple, predictable hints (not zxcvbn's built-in English feedback strings)
   function buildHint(result) {
     if (result.score >= 4) return "";
 
@@ -133,53 +140,152 @@ $(document).ready(function () {
     return "Use a mix of upper/lowercase, numbers, and symbols. Add more words (use a passphrase).";
   }
 
-  // Inject bar + hint for each .wantstrength input
+
+  // ----------------------------------------
+  // 4) Random password generator (dice icon)
+  //    - Dice icon goes between control and strength bar
+  // ----------------------------------------
+  function randomInt(max) {
+    // cryptographically strong RNG
+    var a = new Uint32Array(1);
+    window.crypto.getRandomValues(a);
+    return a[0] % max;
+  }
+
+  function generatePassword(length) {
+    // Exclude ambiguous characters
+    var lower = "abcdefghijkmnopqrstuvwxyz";
+    var upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+    var digits = "23456789";
+    var symbols = "!@#$%^&*()-_=+[]{};:,.?";
+
+    var all = lower + upper + digits + symbols;
+
+    // Ensure at least one of each category
+    var required = [
+      lower[randomInt(lower.length)],
+      upper[randomInt(upper.length)],
+      digits[randomInt(digits.length)],
+      symbols[randomInt(symbols.length)]
+    ];
+
+    length = Math.max(length || 16, required.length);
+
+    var chars = required.slice();
+    while (chars.length < length) {
+      chars.push(all[randomInt(all.length)]);
+    }
+
+    // Shuffle (Fisher-Yates)
+    for (var i = chars.length - 1; i > 0; i--) {
+      var j = randomInt(i + 1);
+      var tmp = chars[i];
+      chars[i] = chars[j];
+      chars[j] = tmp;
+    }
+
+    return chars.join("");
+  }
+
+  function setInputValueAndTrigger($input, value) {
+    $input.val(value);
+    // Trigger input so strength/hints update
+    $input.trigger('input');
+  }
+
+
+  // ----------------------------------------------------
+  // 5) Inject dice icon + strength bar + hint
+  //    For each .wantstrength input
+  // ----------------------------------------------------
   $('.wantstrength').each(function () {
     var $pw = $(this);
 
-    // Strength is anchored to the input's .input-container (created above)
+    // Anchor to the input's .input-container (created above)
     var $container = $pw.parent().hasClass('input-container') ? $pw.parent() : $pw;
 
-    // Add bar AFTER the control (so the eye icon stays inside the input)
-    // Avoid duplicates:
-    var $existingBar = $container.next('.sme-strength');
+    // Add dice icon after the control (between control and bar)
+    // Avoid duplicates
+    var $existingDice = $container.next('.sme-dice');
+    if (!$existingDice.length) {
+      var $dice = $(
+        '<img src="images/dice_3293.png" alt="Generate password" title="Generate password" class="sme-dice" />'
+      );
+      $container.after($dice);
+    }
+
+    // Add strength bar after dice
+    var $diceNow = $container.next('.sme-dice');
+    var $existingBar = $diceNow.length ? $diceNow.next('.sme-strength') : $container.next('.sme-strength');
+
     if (!$existingBar.length) {
       var $bar = $('<span class="sme-strength" aria-hidden="true"></span>');
       var $fill = $('<span class="sme-strength__fill strength-s0"></span>');
       $bar.append($fill);
-      $container.after($bar);
+
+      if ($diceNow.length) $diceNow.after($bar);
+      else $container.after($bar);
+
       $pw.data('strengthFill', $fill);
     } else {
-      // If bar exists, ensure we have a fill reference
       var $fillExisting = $existingBar.find('.sme-strength__fill').first();
       if ($fillExisting.length) $pw.data('strengthFill', $fillExisting);
     }
 
-    // Add hint line under bar (or under container if bar is hidden by CSS)
-    // Layout will be: [container] [bar] then hint below them.
-    // We'll place hint after the bar if present, else after container.
-    var $barNow = $container.next('.sme-strength');
-    var $after = $barNow.length ? $barNow : $container;
+    // Hint under bar (preferred), otherwise under container
+    var $barNow = ($diceNow.length ? $diceNow.next('.sme-strength') : $container.next('.sme-strength'));
+    var $after = $barNow.length ? $barNow : ($diceNow.length ? $diceNow : $container);
 
     if (!$after.next().hasClass('sme-pwd-hint')) {
       $('<div class="sme-pwd-hint"></div>').insertAfter($after);
     }
   });
 
-  // Update on input (delegated)
+	// Dice click handler (delegated) - respects current visibility state
+	$(document).on('click', '.sme-dice', function () {
+	  var $container = $(this).prevAll('.input-container').first();
+	  var $input = $container.find('.sme-password.wantstrength').first();
+	  if (!$input.length) return;
+
+	  // default 16; optionally override by adding data-pwdlen="20" to input
+	  var lenAttr = parseInt($input.attr('data-pwdlen'), 10);
+	  var length = isFinite(lenAttr) && lenAttr > 0 ? lenAttr : 16;
+
+	  // Preserve current visibility state
+	  var currentType = ($input.attr('type') === 'text') ? 'text' : 'password';
+
+	  var pwd = generatePassword(length);
+
+	  // Set value and keep current type (visible/non-visible)
+	  $input.val(pwd);
+	  $input.attr('type', currentType);
+
+	  // Trigger input so strength/hints update
+	  $input.trigger('input');
+
+	  // Select for easy copy
+	  $input.trigger('focus');
+	  try { $input[0].setSelectionRange(0, pwd.length); } catch (e) { /* ignore */ }
+	});
+
+
+  // Strength update on input (delegated)
   $(document).on('input', '.wantstrength', function () {
     var $pw = $(this);
     var val = $pw.val() || "";
 
     var $container = $pw.parent().hasClass('input-container') ? $pw.parent() : $pw;
-    var $bar = $container.next('.sme-strength');
-    var $hint = $bar.length ? $bar.next('.sme-pwd-hint') : $container.next('.sme-pwd-hint');
+    var $dice = $container.next('.sme-dice');
+    var $bar = $dice.length ? $dice.next('.sme-strength') : $container.next('.sme-strength');
+    var $hint = $bar.length ? $bar.next('.sme-pwd-hint')
+      : ($dice.length ? $dice.next('.sme-pwd-hint') : $container.next('.sme-pwd-hint'));
 
     var $fill = $pw.data('strengthFill');
     if ((!$fill || !$fill.length) && $bar.length) {
       $fill = $bar.find('.sme-strength__fill').first();
       if ($fill.length) $pw.data('strengthFill', $fill);
     }
+
     if (!$fill || !$fill.length) {
       console.log("Password strength: fill element not found for", this);
       return;
