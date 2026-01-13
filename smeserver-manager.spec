@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 155
+%define release 156
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Jan 13 2026 Brian Read <brianr@koozali.org> 11.0.0-156.sme
+- Fix a few bugs in Backup size computation inc ignoring admin data in ibays [SME: 13100]
+
 * Mon Jan 12 2026 Brian Read <brianr@koozali.org> 11.0.0-155.sme
 - Add lex prefix to ftp options in en lex file [SME: 13397]
 

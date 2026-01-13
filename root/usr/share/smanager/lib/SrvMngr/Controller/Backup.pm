@@ -1868,105 +1868,155 @@ sub CalculateSizes () {
     #------------------------------------------------------------
     my $tarsize = 0;
 
-    # It takes way too much time to do a du on /home/e-smith. So we'll
-    # estimate the current size.
-    # We do this by checking the quota used by each user on the system.
-    # Get a $dev value appropriate for use in Quota::query call.
+    # Estimate /home/e-smith using user quotas.
     my $dev = Quota::getqcarg("/home/e-smith/files");
 
     foreach my $user ($adb->users()) {
         my $name = $user->key;
         my $uid  = getpwnam($name);
 
-        unless ($uid) {
+        unless (defined $uid) {
             warn($c->l('bac_NO_UID_FOR_NAME') . $name . "\n");
-
-            # We shouldn't ever get here. If we do, we can't get
-            # the quota value for this user, so we just skip to
-            # the next one.
             next;
-        } ## end unless ($uid)
+        }
 
-        # Get current quota settings.
         my ($blocks) = Quota::query($dev, $uid, 0);
+		#$c->app->log->info("Users:$name($uid) $blocks");
         $tarsize += $blocks;
-    } ## end foreach my $user ($adb->users...)
-
-    # We add to this the size of root owned firectories, estimated using du.
-    # If this takes too long, then the admin only has his or
-    # herself to blame!
-    # Remove /home/e-smith from backup list, and make paths absolute
-    my @list = map {"/$_"} grep { !/home\/e-smith/ } @directories;
-    open(DU, "-|")
-        or exec '/usr/bin/du', '-s', @list;
-
-    while (<DU>) {
-        my ($du) = split(/\s+/);
-        $tarsize += $du;
     }
-    close DU;
+    #$c->app->log->info("tarsize:$tarsize");
+    
+    # Check Admin separately (backups)
+	my $admin_uid = getpwnam('admin');
+	if (defined $admin_uid) {
+		my ($admin_blocks) = Quota::query($dev, $admin_uid, 0);
+        $tarsize += $admin_blocks;
+		#$c->app->log->info("Admin($admin_uid) backups: $admin_blocks blocks");
+	} else {
+		$c->app->log->info("Admin UID not found");
+	}
+
+    # Add root-owned directories (excluding /home/e-smith) using du -s.
+    my @list = map { "/$_" } grep { !m{^home/e-smith(?:/|$)} } @directories;
+
+    if (@list) {
+        my $pid = open(my $DU, "-|");
+        if (!defined $pid) {
+            warn "Unable to fork for du: $!";
+        } elsif ($pid == 0) {
+            exec '/usr/bin/du', '-s', @list
+              or do {
+                  warn "exec du failed: $!";
+                  exit 1;
+              };
+        } else {
+            while (<$DU>) {
+                my ($du) = split(/\s+/, $_);
+                $tarsize += $du if defined $du;
+            }
+            close $DU;
+            waitpid($pid, 0);
+        }
+    }
+
+    #$c->app->log->info("tarsize:$tarsize");
     $tarsize = showSize($tarsize);
+    #$c->app->log->info("tarsize:$tarsize");
 
     #------------------------------------------------------------
     # figure out the size of the dump files
     #------------------------------------------------------------
     my $dumpsize = 0;
-    open(DF, "-|")
-        or exec '/bin/df', '-P', '-t', 'ext4', '-t', 'xfs';
 
-    while (<DF>) {
-        next unless (/^\//);
-        (undef, undef, my $s, undef) = split(/\s+/, $_);
-        $dumpsize += $s;
-    } ## end while (<DF>)
+    # Example: estimate DB dump size using mysqldump piped to wc -c.
+    # Adjust the database list or credentials to your environment.
+    my $dump_pid = open(my $DUMP, "-|");
+    if (!defined $dump_pid) {
+        warn "Unable to fork for mysqldump size check: $!";
+    } elsif ($dump_pid == 0) {
+        # Child: write combined dump to stdout, then exit.
+        exec '/usr/bin/mariadb-dump', '--all-databases', '--single-transaction',
+             '--quick', '--no-tablespaces'
+          or do {
+              warn "exec mysqldump failed: $!";
+              exit 1;
+          };
+    } else {
+        # Parent: measure bytes read from mysqldump.
+        my $bytes = 0;
+        my $buf;
+        while (read($DUMP, $buf, 65536)) {
+            $bytes += length($buf);
+        }
+        close $DUMP;
+        waitpid($dump_pid, 0);
 
-    # increase size by 10% to cope with dump overhead.
-    $dumpsize *= 1.1;
-    close DF;
+        # Convert bytes to 1K blocks to be in line with du/df units.
+        # 1024-byte blocks:
+        my $blocks = int(($bytes + 1023) / 1024);
+        $dumpsize = $blocks;
+    }
+
+    # Increase size by 10% to cope with dump overhead (indexes, metadata).
+    $dumpsize = int($dumpsize * 1.1);
     $dumpsize = showSize($dumpsize);
 
     #------------------------------------------------------------
     # how much free space is in /tmp
     #------------------------------------------------------------
-    my $tmpfree  = 0;
-    my $halffree = 0;
-    open(DF, "-|")
-        or exec '/bin/df', '-P', '-t', 'ext4', '-t', 'xfs', '/tmp';
+    my $tmp_total  = 0;
+    my $tmp_avail  = 0;
 
-    while (<DF>) {
-        next unless (/^\//);
-        (undef, undef, undef, my $s) = split(/\s+/, $_);
-        $tmpfree += $s;
-    } ## end while (<DF>)
-    close DF;
-    $halffree = $tmpfree / 2;
-    $tmpfree  = showSize($tmpfree);
-    $halffree = showSize($halffree);
+    my $df_pid = open(my $DF, "-|");
+    if (!defined $df_pid) {
+        warn "Unable to fork for df /tmp: $!";
+    } elsif ($df_pid == 0) {
+        exec '/bin/df', '-P', '-t', 'ext4', '-t', 'xfs', '/tmp'
+          or do {
+              warn "exec df failed: $!";
+              exit 1;
+          };
+    } else {
+        while (<$DF>) {
+            next if /^Filesystem\b/;
+            next unless /^\//;
+
+            my (undef, $blocks, undef, $avail) = split(/\s+/, $_);
+            $tmp_total += $blocks if defined $blocks;
+            $tmp_avail += $avail  if defined $avail;
+        }
+        close $DF;
+        waitpid($df_pid, 0);
+    }
+
+    # For sizing, many GUIs compare against available space;
+    # "half free" is based on available blocks.
+    my $tmpfree_blocks  = $tmp_avail;
+    my $halffree_blocks = int($tmp_avail / 2);
+
+    my $tmpfree  = showSize($tmpfree_blocks);
+    my $halffree = showSize($halffree_blocks);
+
     return ($tarsize, $dumpsize, $tmpfree, $halffree);
-} ## end sub CalculateSizes
+}
+
 
 sub showSize {
-
-    # convert size to Mb or Gb or Tb :) Remember, df reports in kb.
     my $size = shift;
-    my $Mb   = 1024;
-    my $Gb   = $Mb * $Mb;
-    my $Tb   = $Mb * $Mb * $Mb;
+    my $Mb = 1024;
+    my $Gb = $Mb * $Mb;
+    my $Tb = $Gb * $Mb;
 
     if ($size >= $Tb) {
-        $size /= $Tb;
-        $size = int($size) . "Tb";
+        return int($size / $Tb) . "Tb";
     } elsif ($size >= $Gb) {
-        $size /= $Gb;
-        $size = int($size) . "Gb";
+        return int($size / $Gb) . "Gb";
     } elsif ($size >= $Mb) {
-        $size /= $Mb;
-        $size = int($size) . "Mb";
+        return int($size / $Mb) . "Mb";
     } else {
-        $size .= "kb";
+        return int($size) . "kb";  # Fixed!
     }
-    return $size;
-} ## end sub showSize
+}
 
 sub desktopBackupRecordStatus {
     my ($c,$backup, $phase, $status) = @_;
