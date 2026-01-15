@@ -69,7 +69,7 @@
         </span></p>
 
         <br>
-        %= submit_button $c->l('PERFORM'), class => 'action'
+        %= submit_button $c->l('PERFORM'), class => 'action no-disable'
 
         % end
 

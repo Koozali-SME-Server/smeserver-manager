@@ -1928,34 +1928,43 @@ sub CalculateSizes () {
     #------------------------------------------------------------
     my $dumpsize = 0;
 
-    # Example: estimate DB dump size using mysqldump piped to wc -c.
-    # Adjust the database list or credentials to your environment.
-    my $dump_pid = open(my $DUMP, "-|");
-    if (!defined $dump_pid) {
-        warn "Unable to fork for mysqldump size check: $!";
-    } elsif ($dump_pid == 0) {
-        # Child: write combined dump to stdout, then exit.
-        exec '/usr/bin/mariadb-dump', '--all-databases', '--single-transaction',
-             '--quick', '--no-tablespaces'
-          or do {
-              warn "exec mysqldump failed: $!";
-              exit 1;
-          };
-    } else {
-        # Parent: measure bytes read from mysqldump.
-        my $bytes = 0;
-        my $buf;
-        while (read($DUMP, $buf, 65536)) {
-            $bytes += length($buf);
-        }
-        close $DUMP;
-        waitpid($dump_pid, 0);
+    ## Example: estimate DB dump size using mysqldump piped to wc -c.
+    ## Adjust the database list or credentials to your environment.
+    #my $dump_pid = open(my $DUMP, "-|");
+    #if (!defined $dump_pid) {
+        #warn "Unable to fork for mysqldump size check: $!";
+    #} elsif ($dump_pid == 0) {
+        ## Child: write combined dump to stdout, then exit.
+        #exec '/usr/bin/mariadb-dump', '--all-databases', '--single-transaction',
+             #'--quick', '--no-tablespaces'
+          #or do {
+              #warn "exec mysqldump failed: $!";
+              #exit 1;
+          #};
+    #} else {
+        ## Parent: measure bytes read from mysqldump.
+        #my $bytes = 0;
+        #my $buf;
+        #while (read($DUMP, $buf, 65536)) {
+            #$bytes += length($buf);
+        #}
+        #close $DUMP;
+        #waitpid($dump_pid, 0);
 
-        # Convert bytes to 1K blocks to be in line with du/df units.
-        # 1024-byte blocks:
-        my $blocks = int(($bytes + 1023) / 1024);
-        $dumpsize = $blocks;
-    }
+        ## Convert bytes to 1K blocks to be in line with du/df units.
+        ## 1024-byte blocks:
+        #my $blocks = int(($bytes + 1023) / 1024);
+        #$dumpsize = $blocks;
+    #}
+
+	open(DF, "-|")
+       or exec '/bin/df', '-P', '-t', 'ext4', '-t', 'xfs';
+    while (<DF>) {
+        next unless (/^\//);
+        (undef, undef, my $s, undef) = split(/\s+/, $_);
+        $dumpsize += $s;
+    } ## end while (<DF>)
+
 
     # Increase size by 10% to cope with dump overhead (indexes, metadata).
     $dumpsize = int($dumpsize * 1.1);
