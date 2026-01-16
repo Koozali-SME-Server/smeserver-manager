@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 157
+%define release 158
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Jan 16 2026 Brian Read <brianr@koozali.org> 11.0.0-158.sme
+- Correct PATh for server-manager to include the e-smith binaries [SME: 13401]
+
 * Thu Jan 15 2026 Brian Read <brianr@koozali.org> 11.0.0-157.sme
 - Correct Calculate sizes for tape dump in backup [SME: 13100]
 - Do not change Perform button status on backup functions [SME: 13101]
