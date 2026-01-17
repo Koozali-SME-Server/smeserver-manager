@@ -33,6 +33,7 @@
 	
 	%= javascript '/get-locale'
 	%= javascript '/js/flag-by-locale.js'
+	%= javascript '/js/zxcbvn.js'
 	%= javascript '/js/sme-password.js'
 
 	<link rel="stylesheet" href="/smanager/css/flag-icon.min.css">

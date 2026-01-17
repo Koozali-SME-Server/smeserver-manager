@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 158
+%define release 159
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Jan 17 2026 Brian Read <brianr@koozali.org> 11.0.0-159.sme
+- Typo in file name for js password checker code [SME: 13401]
+
 * Fri Jan 16 2026 Brian Read <brianr@koozali.org> 11.0.0-158.sme
 - Correct PATh for server-manager to include the e-smith binaries [SME: 13401]
 
