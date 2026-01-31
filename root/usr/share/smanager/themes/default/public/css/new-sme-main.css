@@ -577,3 +577,35 @@ table.incolumn {
   max-width: 100%;
   box-sizing: border-box;
 }
+
+ .inline-buttons {
+    display: flex; /* Use flexbox to arrange items horizontally */
+    gap: 10px;     /* Optional: Add space between buttons */
+  }
+
+  .inline-buttons .link {
+    /* Additional styling can be added here if needed */
+  }
+  
+  
+  .inline-buttons .link {
+    display: inline-block; /* Keep links as inline-block for button shape */
+    padding: 7px 14px;     /* Adjusted padding to approximate 70% of the original */
+    margin: 0;             /* Remove margin */
+    background-color: #efefef; /* Light gray background color */
+    color: black;          /* Text color */
+    text-decoration: none; /* Remove underline */
+    border: 2px solid #bbb; /* Thin, light gray border */
+    border-radius: 3px;    /* Slightly rounded corners */
+    font-size: 11.2px;     /* Adjusted font size to approximate 70% of the original */
+    text-align: center;    /* Center the text */
+    cursor: pointer;       /* Pointer cursor on hover */  }
+
+  /* Hover and active effects for better interaction */
+  .inline-buttons .link:hover {
+    background-color: #d9d9d9; /* Darker shade on hover */
+  }
+
+  .inline-buttons .link:active {
+    background-color: #c0c0c0; /* Even darker shade on click */
+  }
