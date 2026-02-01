@@ -37,3 +37,5 @@ as you click on the &quot;Next&quot; button below, and instruct
 your browser to accept the download via the pop-up window that
 will appear.',
 'log_DOWNLOAD_FILE' => 'Preparing to download the logfile [_1].',
+'log_ERR_NOEXIST_FILE' => 'Err noexist file',
+'log_ERR_NOOPEN_FILE' => 'Err noopen file',

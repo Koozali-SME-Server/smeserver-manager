@@ -22,3 +22,4 @@
 'bugr_THANK_YOU' => 'Thank you for your support!',
 'bugr_Download this report' => 'Download this report !',
 'bugr_Report a bug' => 'Report a bug',
+'bugr_DESCRIPTION' => 'Description',

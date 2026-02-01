@@ -69,3 +69,4 @@ only lower case letters, numbers, and hyphens.',
 details for [_2] account "[_3]".
 [_1] is a pseudonym for [_2].',
 'iba_ACCOUNT_EXISTS' => 'The account "[_1]" is an existing [_2] account.',
+'iba_ERR_INTERNAL_FAILURE' => 'Err internal failure',

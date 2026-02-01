@@ -93,3 +93,4 @@ can do so here.<br>Any old certificates will no longer
 authenticate against the server, so <b><i>all IPSEC clients will
 need to import a new certificate!</i></b>.',
 'rma_LABEL_IPSECRW_RESET' => 'Reset digital certificates',
+'rma_ERROR_UPDATING_CONFIGURATION' => 'Error updating configuration',

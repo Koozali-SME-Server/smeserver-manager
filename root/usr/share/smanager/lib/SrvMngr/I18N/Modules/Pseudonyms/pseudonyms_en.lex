@@ -65,3 +65,4 @@ domains that are valid on this server. For example
 'pse_REMOVE_SUCCEEDED' => 'Successfully removed pseudonym',
 'pse_EVERYONE' => 'Everyone',
 'Pseudonyms' => 'Pseudonyms',
+'pse_ACCOUNT_PSEUDONYM_NONE' => 'Account pseudonym none',

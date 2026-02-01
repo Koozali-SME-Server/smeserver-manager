@@ -29,4 +29,4 @@ something else afterward):',
 'grp_CONFIRM_DELETE_GROUP' => 'Are you sure you wish to remove this group?',
 'grp_CURRENT_LIST' => 'Current list of User Groups',
 'grp_DELETE_DESCRIPTION' => 'You are about to remove the user group "[_1]."',
-
+'grp_ERR_INTERNAL_FAILURE' => 'Err internal failure',

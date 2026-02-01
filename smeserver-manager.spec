@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 160
+%define release 161
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Feb 01 2026 Brian Read <brianr@koozali.org> 11.0.0-161.sme
+- Make sure all lex files referenced in controller and template files are in english lex file for each module [SME: 13396]
+
 * Sun Feb 01 2026 Brian Read <brianr@koozali.org> 11.0.0-160.sme
 - Pull the inline button css into the main css file (used it for dhcpmanager) [SME: 13413]
 

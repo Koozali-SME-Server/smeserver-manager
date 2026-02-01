@@ -26,3 +26,6 @@
 'pwd_INTERMEDIATE_PASSWORD_DESCRIPTION' => 'The password must be composed of at least [_1] characters with uppercase and lowercase letters and must pass a dictionary check.',
 'pwd_STRONG_PASSWORD_DESCRIPTION' => 'The password must be composed of at least [_1] characters with uppercase and lowercase letters, numbers and special characters and must pass a dictionary check.',
 'pwd_PASSWORD_WIKI' => 'If you want to know more about passwords, then please refer to the <a href=\'https://wiki.koozali.org/SME_Server:Documentation:Administration_Manual:Chapter9#Changing_User_Passwords\'>Wiki</a>',
+'pwd_ERR_OCCURRED_MODIFYING_PASSWORD' => 'Err occurred modifying password',
+'pwd_INVALID_REQUEST' => 'Invalid request',
+'pwd_OK_FOR_RESET' => 'Ok for reset',

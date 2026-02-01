@@ -31,3 +31,6 @@
 'dom_corporate' => 'Corporate DNS servers',
 'dom_REMOVE_DESC' => 'You are about to remove the domain ',
 'dom_REMOVE_DESC2' => ' Are you sure you wish to remove this Domain ? ',
+'dom_ERROR_CREATING_DOMAIN' => 'Error creating domain',
+'dom_ERROR_MODIFYING_DOMAIN' => 'Error modifying domain',
+'dom_ERROR_UPDATING' => 'Error updating',

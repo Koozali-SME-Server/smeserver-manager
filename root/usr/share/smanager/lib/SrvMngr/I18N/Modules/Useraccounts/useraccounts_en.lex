@@ -1,4 +1,3 @@
-
 'usr_FORM_TITLE' => 'Create, modify, or remove user accounts',
 'usr_FIRSTPAGE_DESC' => 'You can modify, lock or remove any account or reset the account\'s password by clicking on the corresponding command next to the account. If the account is marked as locked, that means that the user\'s password needs to be reset. Please note that newly created accounts are automatically locked until the password is changed. ',
 'usr_P2_TITLE' => 'Create or modify',
@@ -66,3 +65,6 @@
 'usr_INTERMEDIATE_PASSWORD_DESCRIPTION' => 'The password strength is set to <strong>[_2]</strong> which means it must be composed of at least [_1] characters with uppercase and lowercase letters and must pass a dictionary check.',
 'usr_STRONG_PASSWORD_DESCRIPTION' => 'The password strength is set to <strong>[_2]</strong> which means it must be composed of at least [_1] characters with uppercase and lowercase letters, numbers and special characters and must pass a dictionary check.',
 'usr_PASSWORD_WIKI' => 'If you want to know more about passwords, then please refer to the <a href=\'https://wiki.koozali.org/SME_Server:Documentation:Administration_Manual:Chapter9#Changing_User_Passwords\'>Wiki</a>',
+'usr_ERR_OCCURRED_LOCKING' => 'Err occurred locking',
+'usr_MAX_user_NAME_LENGTH_ERROR' => 'Max user name length error',
+'usr_SUCCESSFULLY_DELETED_USER' => 'Successfully deleted user',
