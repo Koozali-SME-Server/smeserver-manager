@@ -1,5 +1,5 @@
 
-'pse_NO_PSEUDONYMS' => ' <b>There are no pseudonyms in the system.</b> ',
+# 'pse_NO_PSEUDONYMS' => ' <b>There are no pseudonyms in the system.</b> ',
 'pse_REMOVE_PSEUDONYM' => 'Remove pseudonym',
 'pse_ABOUT_TO_REMOVE' => 'You are about to remove the pseudonym: [_1]
 <b>Are you sure you wish to continue?</b>',
@@ -58,7 +58,7 @@ domains that are valid on this server. For example
 'pse_NAME_IN_USE' => 'Error: That name is in use You cannot create a pseudonym with that name.',
 'pse_NOT_A_PSEUDONYM' => 'That account is not a pseudonym',
 'pse_PSEUDONYM_INVALID_DOMAIN' => 'That domain is not hosted on this server',
-'pse_PSEUDONYM_INVALID_NOACCT' => 'That account is not hosted on this server',
+# 'pse_PSEUDONYM_INVALID_NOACCT' => 'That account is not hosted on this server',
 'pse_PSEUDONYM_INVALID_SAMEACCT' => 'A pseudonym cannot point to the same account',
 'pse_CREATE_SUCCEEDED' => 'Successfully created pseudonym',
 'pse_MODIFY_SUCCEEDED' => 'Successfully modified pseudonym',

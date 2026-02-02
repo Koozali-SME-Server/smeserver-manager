@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 161
+%define release 162
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Feb 02 2026 Brian Read <brianr@koozali.org> 11.0.0-162.sme
+- Comment out unused lex strings from lex files [SME: 13396]
+
 * Sun Feb 01 2026 Brian Read <brianr@koozali.org> 11.0.0-161.sme
 - Make sure all lex files referenced in controller and template files are in english lex file for each module [SME: 13396]
 

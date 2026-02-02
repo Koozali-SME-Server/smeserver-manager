@@ -1,11 +1,11 @@
 
 'rma_FORM_TITLE' => 'Change remote access settings',
-'rma_DESCRIPTION' => 'For each of the options below, the private setting allows anyone
-from your local network to access your server. The
-public setting allows access from anywhere on the Internet. The no
-access setting disables access. To understand the security
-implications of changing these options from the default settings, you
-should read the user\'s guide section on remote access.',
+# 'rma_DESCRIPTION' => 'For each of the options below, the private setting allows anyone
+# from your local network to access your server. The
+# public setting allows access from anywhere on the Internet. The no
+# access setting disables access. To understand the security
+# implications of changing these options from the default settings, you
+# should read the user\'s guide section on remote access.',
 'rma_SUCCESS' => 'The new remote access settings have been saved.',
 'rma_NO_ACCESS' => 'No Access',
 'rma_PASSWORD_LOGIN_PRIVATE' => 'Accept passwords only from local networks',
@@ -50,7 +50,7 @@ provides no protection.</p>',
 'rma_DESC_PPTP' => 'You can allow PPTP access to your server. 
 You should leave this feature disabled by setting the value 
 to the number 0 unless you require PPTP access.',
-'rma_VALUE_ZERO_OR_POSITIVE' => 'Value must be zero or a positive integer',
+# 'rma_VALUE_ZERO_OR_POSITIVE' => 'Value must be zero or a positive integer',
 'rma_REMOTE_MANAGEMENT' => 'Remote Management',
 'rma_VALIDFROM_TITLE' => '[_1]',
 'rma_VALIDFROM_DESC' => 'It is possible to allow hosts on remote networks to access the
@@ -66,15 +66,15 @@ enter the details below.',
 'rma_INVALID_SUBNET_MASK' => 'Invalid subnet mask',
 'rma_ERR_INVALID_PARAMS' => 'Either provide both a network and subnet mask, or leave both
 fields blank.',
-'rma_ERR_NO_RECORD' => 'Unable to locate httpd-admin record in configuration db',
+# 'rma_ERR_NO_RECORD' => 'Unable to locate httpd-admin record in configuration db',
 'Remote access' => 'Remote access',
-'rma_LABEL_SERIAL_CONSOLE_ACCESS' => 'Serial console',
-'rma_DESC_SERIAL_CONSOLE_ACCESS' => ' <hr class="sectionbar" />Serial console
-You can allow access to the server console from a terminal
-connected to a server serial port.',
-'rma_PORT1_ENABLED' => 'Enabled on serial port 1',
-'rma_PORT2_ENABLED' => 'Enabled on serial port 2',
-'rma_LABEL_PPTP_ACCESS' => 'PPTP default user access',
+# 'rma_LABEL_SERIAL_CONSOLE_ACCESS' => 'Serial console',
+# 'rma_DESC_SERIAL_CONSOLE_ACCESS' => ' <hr class="sectionbar" />Serial console
+# You can allow access to the server console from a terminal
+# connected to a server serial port.',
+# 'rma_PORT1_ENABLED' => 'Enabled on serial port 1',
+# 'rma_PORT2_ENABLED' => 'Enabled on serial port 2',
+# 'rma_LABEL_PPTP_ACCESS' => 'PPTP default user access',
 'rma_TITLE_TELNET_ACCESS' => 'Telnet Settings',
 'rma_DESC_TELNET_ACCESS' => 'WARNING:Telnet is currently enabled, but this feature is
 no longer supported. Telnet is inherently insecure and should only

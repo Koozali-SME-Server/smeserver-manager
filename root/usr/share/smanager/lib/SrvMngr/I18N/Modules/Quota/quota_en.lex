@@ -1,6 +1,6 @@
 
 'quo_FORM_TITLE' => 'Create, modify, or remove user account quotas',
-'quo_UNABLE_TO_OPEN_ACCOUNTS' => 'Unable to open accounts db',
+# 'quo_UNABLE_TO_OPEN_ACCOUNTS' => 'Unable to open accounts db',
 'quo_QUOTA_DESC' => 'You can set filesystem quotas for users on your system by clicking
 the "Modify" button next to the user you wish to update.
 <p>If the user exceeds the "Limit with grace period", warnings will be
@@ -17,7 +17,7 @@ e-mail, and any files owned by the user in information bays.',
 'quo_ABS_LIMIT' => 'Absolute limit',
 'quo_ABS_LIMIT_MB' => 'Absolute limit (MB)',
 'quo_CURRENT_USAGE' => 'Current usage (MB)',
-'quo_COULD_NOT_GET_UID' => 'Could not determine the uid for user: ',
+# 'quo_COULD_NOT_GET_UID' => 'Could not determine the uid for user: ',
 'quo_ERR_NO_SUCH_ACCT' => 'Error: there is no account named: ',
 'quo_ERR_NOT_A_USER_ACCT' => 'Error: the account is not a user account: ',
 'quo_ACCOUNT_IS_TYPE' => 'It is an account of type: ',

@@ -25,17 +25,17 @@ reports.',
 'log_NO_MATCHING_LINES' => 'No matching lines displayed.',
 'log_FILENAME_ERROR' => 'Error while specifying log file name.
 <p>Invalid report type "[_1]".</p>',
-'log_REFRESH' => 'Refresh this logfile',
+# 'log_REFRESH' => 'Refresh this logfile',
 'log_OP_DESC' => 'You must choose between viewing the logfile in your browser, or
 downloading the logfile to your computer. If the logfile is
 particularly large, you may wish to download it instead of
 attempting to open it in your browser, as this is a problem for
 some web browsers.',
 'log_OP_LABEL' => 'Operation',
-'log_DOWNLOAD_PAGE_DESC' => 'Your logfile download is now prepared. It will proceed as soon
-as you click on the &quot;Next&quot; button below, and instruct
-your browser to accept the download via the pop-up window that
-will appear.',
-'log_DOWNLOAD_FILE' => 'Preparing to download the logfile [_1].',
+# 'log_DOWNLOAD_PAGE_DESC' => 'Your logfile download is now prepared. It will proceed as soon
+# as you click on the &quot;Next&quot; button below, and instruct
+# your browser to accept the download via the pop-up window that
+# will appear.',
+# 'log_DOWNLOAD_FILE' => 'Preparing to download the logfile [_1].',
 'log_ERR_NOEXIST_FILE' => 'Err noexist file',
 'log_ERR_NOOPEN_FILE' => 'Err noopen file',
