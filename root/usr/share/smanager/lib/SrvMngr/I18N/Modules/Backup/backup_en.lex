@@ -1,23 +1,5 @@
 # 'bac_No suitable local devices found' => 'No suitable local devices found',
 'bac_BACKUP_TITLE' => 'Backup or restore server data',
-# 'bac_BACKUP_DESC' => '<P>The server provides two ways to back up and restore
-# your server: using your local desktop or a tape drive.</P>
-# <P>The first method creates a copy of your server configuration and user
-# data files, and downloads it to your local desktop via your web browser.
-# Currently your configuration and data files total approximately
-# <b>[_1]</b>. The backup file will be somewhat less than this,
-depending on how compressible the data are. The \"Verify desktop backup
-file\" option can be used to check the integrity of a desktop backup
-file.</P>
-<P>The tape backup method uses a software package called <I>[_2]</I>
-to back up your entire hard disk to tape every night. This requires a
-supported tape drive and a tape that is not write-protected. The backup
-is performed automatically at the selected time every night (with a
-reminder automatically e-mailed to the administrator during the day).
-Currently your hard disk contains <b>[_3]</b> of data.</P>
-<P>Both restore methods allow you to restore your configuration and user
-data files. <b>Ideally, the restore should be performed on a freshly
-installed server</b>.</P>',
 'bac_BACKUP_DESC_DAR' => '<P>Three ways are provided to back up and restore your 
 server: using a tape drive, using a network share or a local 
 removable disk, or using your local desktop.</P>
@@ -218,12 +200,12 @@ restore.',
 # 'bac_WORKSTN_SEL_REST_DESC' => 'This process will restore only specified files and directories. You must first choose 
 # the backup from which the files will be restored. If you don\'t know in which backup 
 # are the required files, you can select \'All backups\' option. <br/><br/>
-# The next panel will display available files and directories, 
-so you can choose the ones to restore. To restrict the number of files and directories 
-displayed in this panel, you have the option to give now a filtering expression, 
-applied as a regular expression to the displayed names.<br/><br/>
-You have the responsibility not to restore files which could break the
-functioning of your server.<br/> <br/>Currently, files will be restored from :',
+# The next panel will display available files and directories\, 
+# so you can choose the ones to restore. To restrict the number of files and directories 
+# displayed in this panel, you have the option to give now a filtering expression, 
+# applied as a regular expression to the displayed names.<br/><br/>
+# You have the responsibility not to restore files which could break the
+# functioning of your server.<br/> <br/>Currently, files will be restored from :',
 # 'bac_BACKUP_CHOICE' => 'Selecting files to display',
 # 'bac_SELECT_DATE_BEFORE' => 'Restore most recent before',
 # 'bac_FILTER_EXPRESSION' => 'Names filtered by',

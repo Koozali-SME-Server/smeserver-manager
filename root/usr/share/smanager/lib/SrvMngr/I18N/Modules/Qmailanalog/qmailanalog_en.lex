@@ -12,11 +12,9 @@ these reports</P>',
 # 'qma_REPORT_GENERATED' => 'Report generated: ',
 # 'qma_END_OF_REPORT' => 'End of Report',
 'Mail log file analysis' => 'Mail log file analysis',
-
 'qma_Daily_Summary_Report_yesterday' => 'Summary report for yesterday',
 'qma_Daily_Summary_Report_today' => 'Summary report for today up to now',
 'qma_Daily_Summary_Report_all' => 'Summary report for all time up to now',
-
 # 'qma_LIST_OUTGOING' => 'List outgoing messages and recipients',
 # 'qma_SUMMARIZE_QUEUE' => 'Summarize status of mail queue',
 # 'qma_SUCCESSFUL_DELIVERY_DELAY' => 'Successful delivery delay distribution',

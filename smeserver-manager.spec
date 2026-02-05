@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 162
+%define release 163
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Feb 04 2026 Brian Read <brianr@koozali.org> 11.0.0-163.sme
+- Sort out lex files which result in en.pm syntax errors for multiline strings which are commented out  [SME: 13396]
+
 * Mon Feb 02 2026 Brian Read <brianr@koozali.org> 11.0.0-162.sme
 - Comment out unused lex strings from lex files [SME: 13396]
 
