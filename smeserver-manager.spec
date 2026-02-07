@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 163
+%define release 164
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Feb 07 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-164.sme
+- reverse fix to prevent autofill password [SME: 13330]
+
 * Wed Feb 04 2026 Brian Read <brianr@koozali.org> 11.0.0-163.sme
 - Sort out lex files which result in en.pm syntax errors for multiline strings which are commented out  [SME: 13396]
 
