@@ -17,11 +17,16 @@ package SrvMngr::Controller::Login;
 use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::Util 'url_unescape';
 use Locale::gettext;
 use esmith::AccountsDB::UTF8;
 use SrvMngr::I18N;
 use SrvMngr::Model::Main;
 use SrvMngr qw( theme_list init_session );
+use Apache::AuthTkt;
+# Loading AuthTkt config
+my $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
+
 my $MAX_LOGIN_ATTEMPTS   = 3;
 my $DURATION_BLOCKED     = 30 * 60;        # access blocked for 30 min
 my $TIMEOUT_FAILED_LOGIN = 1;
@@ -33,6 +38,44 @@ my %Login_Attempts;
 sub main {
     my $c = shift;
     $c->stash(trt => 'NORM');
+    my $name; 
+    my $from = $c->param('From');
+    $from = $c->home_page if ($from eq 'login');
+    my $debug    = $c->param('debug');
+    # ticket might have changed since smanager has started.
+    $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
+    $c->log->debug($c->req->headers->to_string) if $debug;
+    #  in Mojo request cookies are automatically parsed according to RFC 6265
+    # done because = created by base64 encoding, and Mojo may interpret them as part of the structure rather than the data.
+    #  it is standard practice to URL-encode special characters in cookie values, where = becomes %3D
+    # this means that we need to url_unescape before validating or we will  fail
+    my $ticket= url_unescape $c->cookie('auth_tkt');
+    if ($ticket) {
+        $c->log->debug("auth_tkt: $ticket") if $debug;
+        # Check if the user is already "logged in" in the Mojo session
+        unless ($c->session('username')) {
+            # validate the auth_tkt (e.g., decrypt or DB lookup)
+            my $valid_ticket = $at->validate_ticket($ticket, ip_addr =>'',ignore_ip => 1);
+            if ($valid_ticket) {
+                $name =  $valid_ticket->{uid};
+                $c->session(logged_in => 1);        # set the logged_in flag
+                $c->session(username  => $name);    # keep a copy of the username
+                #    if ( $name eq 'admin' || $adb->is_user_in_group($name, 'Admin') )  # for futur use
+                if ($name eq 'admin') {
+                   $c->session(is_admin => 1);
+                } else {
+                   $c->session(is_admin => 0);
+                }
+                $c->session(expiration => $c->config->{timeout} );     # expire this session in the time set  in config
+                $c->flash(success => $c->l('use_WELCOME'));
+                record_login_attempt($c, 'SUCCESS');
+                # TODO should we register cookie failed login ????
+            } else {use Data::Dumper;; $c->log->debug("Invalid ticket". Dumper($at->parse_ticket($ticket))) if $debug; }
+       }
+    } else {$c->log->debug("no auth_tkt found ???") if $debug; }
+    
+    # TODO here add a redirect to referer or initial if user logged in 
+
     $c->render('login');
 } ## end sub main
 
@@ -82,6 +125,24 @@ sub login {
         }
     } ## end if ($alias)
 
+    # check authtkt
+    # ticket might have changed since smanager has started.
+    $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
+    my $server_name = $c->req->headers->header('X-Forwarded-Host');
+    $server_name ||= $ENV{SERVER_NAME} if $ENV{SERVER_NAME};
+    my $AUTH_DOMAIN = $server_name;
+    my @auth_domain = $AUTH_DOMAIN && $AUTH_DOMAIN =~ /\./ ? ( domain => $AUTH_DOMAIN ) : ();
+    my $ticket = $c->cookie('auth_tkt');
+    my $probe = $c->cookie('auth_probe');
+    my $back = $c->cookie($at->back_cookie_name) if $at->back_cookie_name;
+    my $have_cookies = $ticket || $probe || $back || '';
+    my $mode = 'login';
+    # TODO add ip of the browser (not the proxy)
+    my $ip_addr = undef;
+    my $debug    = $c->param('debug');
+    $debug = 3 if $debug;
+    my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();
+   
     if (SrvMngr::Model::Main->check_credentials($name, $pass)) {
         $c->session(logged_in => 1);        # set the logged_in flag
         $c->session(username  => $name);    # keep a copy of the username
@@ -95,6 +156,17 @@ sub login {
         $c->session(expiration => $c->config->{timeout} );     # expire this session in the time set  in config
         $c->flash(success => $c->l('use_WELCOME'));
         record_login_attempt($c, 'SUCCESS');
+        # set authtkt
+        my $user_data = join(':', time(), $ip_addr || '');    # Optional
+        my $tkt = $at->ticket(uid => $name, data => $user_data, ip_addr => $ip_addr, debug => $debug);
+        $c->cookie(auth_tkt =>$tkt, {
+            name => $at->cookie_name,
+            path   => '/',
+            secure => $at->require_ssl,
+            @expires,
+            @auth_domain,
+        });
+        $c->log->debug($c->req->headers->to_string) if $debug;
     } else {
         record_login_attempt($c, 'FAILED');
         sleep $TIMEOUT_FAILED_LOGIN;
@@ -156,14 +228,7 @@ sub mail_rescue {
     return 'OK';
 } ## end sub mail_rescue
 
-sub logout {
-    my $c = shift;
-    $c->app->log->info($c->log_req);
-    $c->session(expires => 1);
-    $c->flash(success => $c->l('use_BYE'));
-    $c->flash(error   => 'Byegood');
-    $c->redirect_to($c->home_page);
-} ## end sub logout
+## logout moved to Logout.pm
 
 sub confpwd {
     my $c    = shift;

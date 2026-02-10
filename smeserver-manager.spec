@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 164
+%define release 165
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -149,6 +149,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Feb 09 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-165.sme
+- add support to authTKT login [SME: 13326]
+  able to login from existing authTKT
+  able to destroy authTKT on logout
+  able to create authTKT upon successfull login
+
 * Sat Feb 07 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-164.sme
 - reverse fix to prevent autofill password [SME: 13330]
 
