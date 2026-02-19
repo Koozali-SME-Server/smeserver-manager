@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 165
+%define release 166
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -72,7 +72,10 @@ Requires: smeserver-manager-locale-zh_CN
 Requires: smeserver-manager-locale-zh_TW
 
 Provides: server-manager
-AutoReqProv: no
+BuildRequires:  perl(ExtUtils::Manifest)
+BuildRequires:  perl(inc::Module::Install)
+BuildRequires:  perl(ExtUtils::MakeMaker)
+AutoReqProv: yes
 
 %define dir_mngr /usr/share/smanager
 
@@ -149,6 +152,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Feb 18 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-166.sme
+- fix emtpy string concat warning [SME: 13326]
+  add auto Provides
+
 * Mon Feb 09 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-165.sme
 - add support to authTKT login [SME: 13326]
   able to login from existing authTKT

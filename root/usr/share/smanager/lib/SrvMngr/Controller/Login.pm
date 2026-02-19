@@ -39,9 +39,9 @@ sub main {
     my $c = shift;
     $c->stash(trt => 'NORM');
     my $name; 
-    my $from = $c->param('From');
+    my $from = $c->param('From') || $c->home_page;
     $from = $c->home_page if ($from eq 'login');
-    my $debug    = $c->param('debug');
+    my $debug    = $c->config('debug');
     # ticket might have changed since smanager has started.
     $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
     $c->log->debug($c->req->headers->to_string) if $debug;
@@ -49,7 +49,7 @@ sub main {
     # done because = created by base64 encoding, and Mojo may interpret them as part of the structure rather than the data.
     #  it is standard practice to URL-encode special characters in cookie values, where = becomes %3D
     # this means that we need to url_unescape before validating or we will  fail
-    my $ticket= url_unescape $c->cookie('auth_tkt');
+    my $ticket= ( $c->cookie('auth_tkt') ) ? url_unescape $c->cookie('auth_tkt') : undef;
     if ($ticket) {
         $c->log->debug("auth_tkt: $ticket") if $debug;
         # Check if the user is already "logged in" in the Mojo session
@@ -69,13 +69,31 @@ sub main {
                 $c->session(expiration => $c->config->{timeout} );     # expire this session in the time set  in config
                 $c->flash(success => $c->l('use_WELCOME'));
                 record_login_attempt($c, 'SUCCESS');
+                $c->flash(success => "Welcome back! Redirecting you now.");
+                $c->log->debug("Valid ticket so we log in the user, redirect to  $from") if $debug;
+                return $c->redirect_to($from);
                 # TODO should we register cookie failed login ????
             } else {use Data::Dumper;; $c->log->debug("Invalid ticket". Dumper($at->parse_ticket($ticket))) if $debug; }
-       }
-    } else {$c->log->debug("no auth_tkt found ???") if $debug; }
-    
-    # TODO here add a redirect to referer or initial if user logged in 
+        }
+        else {
+                # already logged in redirect
+                $c->flash(success => "Welcome back! Redirecting you now.");
+                $c->log->debug("Valid ticket and user already logged in, redirect to  $from") if $debug;
+                return $c->redirect_to($from);
+        }
+    } else {
+        $c->log->debug("no auth_tkt found ???") if $debug;
+        if ($c->session('username')) {
+						$c->log->debug("no valid ticket but user already logged in, redirect to  $from") if $debug;
+            # we might want to logout the user here...
+            #return $c->redirect_to("/logout");
+            # or we might generate a new ticket ?
+            # for the moment we default to redirect to last page
+            return $c->redirect_to($from);
+        }
 
+    }
+    
     $c->render('login');
 } ## end sub main
 
@@ -139,7 +157,7 @@ sub login {
     my $mode = 'login';
     # TODO add ip of the browser (not the proxy)
     my $ip_addr = undef;
-    my $debug    = $c->param('debug');
+    my $debug    = $c->config('debug');
     $debug = 3 if $debug;
     my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();
    
@@ -254,7 +272,7 @@ sub confpwd {
 
 sub record_login_attempt {
     my ($c, $result) = @_;
-    my $user       = $c->param('Username');
+    my $user       = $c->param('Username')||$c->session('username');
     my $ip_address = $c->tx->remote_address;
 
     if ($result eq 'RESET') {
