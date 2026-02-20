@@ -23,7 +23,7 @@ sub main {
     $c->app->log->info($c->log_req);
     my $title         = $c->l('legacy panel');
     my $legacy_url    = $c->param('url');
-    my $legacy_height = $c->param('height') | 600;
+    my $legacy_height = $c->param('height') || 600;
     $c->stash(title => $title, modul => $legacy_url, height => $legacy_height);
     $c->render(template => 'embedded');
 } ## end sub main

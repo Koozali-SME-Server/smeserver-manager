@@ -1,5 +1,5 @@
     modules_dir => 'lib/SrvMngr/Controller',
     webapp => 'smanager',
-    mode => 'production',
-    debug => 0,
+    mode => '{ $smanager{'Mode'} || 'production' }',
+    debug =>'{ $smanager{'Debug'} || '0' }',
 \}

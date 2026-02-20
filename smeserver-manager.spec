@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 166
+%define release 167
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,9 +152,14 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Feb 19 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-167.sme
+- fix uninitialized value in bitwise [SME: 13438]
+- add properties to enable debug mode [SME: 13246]
+
 * Wed Feb 18 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-166.sme
 - fix emtpy string concat warning [SME: 13326]
   add auto Provides
+- auto redirect from login page if logged [SME: 13428]
 
 * Mon Feb 09 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-165.sme
 - add support to authTKT login [SME: 13326]
