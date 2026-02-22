@@ -9,8 +9,8 @@ this field blank, all available lines of the log file will be
 displayed. Note that this option is not used if you download the
 logfile.',
 'log_FILTER_PATTERN_LABEL' => 'Filter Pattern (optional)',
-'log_MATCH_PATTERN_DESC' => 'You may also optionally specify a highlight pattern to mark in bold
-any lines from the log file which match the highlight pattern. The
+'log_FILTER_PATTERN_HINT' => 'The pattern is case insensitive, but enclosing it in "/" will result in it being treated as a regex.',
+'log_MATCH_PATTERN_DESC' => 'You may also optionally specify a highlight pattern to be highlighted in the log file. The
 highlight pattern is applied to any lines which have already
 matched the filter pattern. Note that this option is not used if
 you download the logfile.',
@@ -25,7 +25,7 @@ reports.',
 'log_NO_MATCHING_LINES' => 'No matching lines displayed.',
 'log_FILENAME_ERROR' => 'Error while specifying log file name.
 <p>Invalid report type "[_1]".</p>',
-# 'log_REFRESH' => 'Refresh this logfile',
+'log_REFRESH' => 'Refresh this logfile',
 'log_OP_DESC' => 'You must choose between viewing the logfile in your browser, or
 downloading the logfile to your computer. If the logfile is
 particularly large, you may wish to download it instead of
@@ -39,3 +39,4 @@ some web browsers.',
 # 'log_DOWNLOAD_FILE' => 'Preparing to download the logfile [_1].',
 'log_ERR_NOEXIST_FILE' => 'Err noexist file',
 'log_ERR_NOOPEN_FILE' => 'Err noopen file',
+'LOG_LIVESTREAM' => 'Live stream',

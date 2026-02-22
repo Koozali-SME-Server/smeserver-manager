@@ -5,6 +5,13 @@ package SrvMngr::Controller::Viewlogfiles;
 # description : View log files
 # navigation  : 7000 100
 #
+# for info (from SrvMngs.pm)
+    #$if_admin->get('/viewlogfiles')->to('viewlogfiles#main')->name('viewlogfiles');
+    #$if_admin->post('/viewlogfilesd')->to('viewlogfiles#do_action')->name('viewlogfilesd');
+    #$if_admin->post('/viewlogfilesr')->to('viewlogfiles#do_action')->name('viewlogfilesr');
+    #$if_admin->get('/viewlogfilest')->to('viewlogfiles#stream_logs', format => 0)->name('viewlogfilest');
+    
+    #$if_admin->get('/viewlogfilesl')->to('viewlogfiles#live_page', format => 0)->name('viewlogfilesl');
 #
 # routes : end
 #----------------------------------------------------------------------
@@ -42,6 +49,7 @@ sub main {
 sub do_action {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    #my $fred = 1/0;
     my $title     = $c->l('log_FORM_TITLE');
     my $notif     = '';
     my $result    = "";
@@ -83,23 +91,25 @@ sub do_action {
     }
 
     if ($log_datas{trt} eq "SHOW") {
-        if (!$result) {
-            $result = $c->render_to_string(inline => showlogFile($c, %log_datas));
-        }
+		$c->app->log->info("Show");
+        #if (!$result) {
+        #    $result = $c->render_to_string(inline => showlogFile($c, %log_datas));
+        #}
 
-        if ($result) {
+        #if ($result) {
             $c->stash(title => $title, modul => $result, log_datas => \%log_datas);
-            return $c->render(template => 'viewlogfiles2');
-        }
+            return $c->live_page();
+        #}
     } ## end if ($log_datas{trt} eq...)
 
     if ($log_datas{trt} eq 'DOWN') {
+		$c->app->log->info("Down");
         my $modul = 'Log file download';
         $notif = download_logFile($c, %log_datas);
         return undef unless defined $notif;
     } ## end if ($log_datas{trt} eq...)
     $c->stash(title => $title, notif => $notif, log_datas => \%log_datas);
-    $c->render(template => 'viewlogfiles');
+    return $c->render(template => 'viewlogfiles');
 } ## end sub do_action
 
 sub timestamp2local {
@@ -119,52 +129,60 @@ sub findlogFiles {
     use File::Find;
 
     sub findlogfiles {
-        my $path = $File::Find::name;
+        my $full_path = $File::Find::name;  # full path on disk
+        my $path      = $full_path;         # display/value path (trimmed)
 
-        if (-f) {
+        # Only regular files ending in .log
+        return unless -f $full_path;
+        #return unless $full_path =~ /\.log\z/;   #maillog, messages etc not .log
 
-            # Remove leading /var/log/messages
-            $path =~ s:^/var/log/::;
+        # Skip empty (zero-length) files
+        my $bytes = (stat($full_path))[7];
+        return if !defined($bytes) || $bytes == 0;
 
-            # don't bother to collect files known to be non-text
-            # or not log files
-            foreach (
-                qw(
-                journal
-                lastlog
-                btmp$
-                wtmp
-                lock
-                (?<!qpsmtpd/)state
-                httpd/ssl_mutex.\d*
-                httpd/ssl_scache.pag
-                httpd/ssl_scache.dir
-                \/config$
-                )
-                )
-            {
-                return if $path =~ /$_/;
-            } ## end foreach (qw( lastlog btmp$ wtmp...))
-            my ($file_base, $file_path, $file_type) = fileparse($path);
+        # Remove leading /var/log/
+        $path =~ s:^/var/log/::;
 
-            if ($file_base =~ /@.*/) {
+        # don't bother to collect files known to be non-text
+        # or not log files
+        foreach (
+            qw(
+            journal
+            lastlog
+            btmp$
+            wtmp
+            lock
+            (?<!qpsmtpd/)state
+            httpd/ssl_mutex.\d*
+            httpd/ssl_scache.pag
+            httpd/ssl_scache.dir
+            \/config$
+            )
+          )
+        {
+            return if $path =~ /$_/;
+        }
 
-                #$logfiles{$path} = $file_path . timestamp2local($file_base);
-                push @logfiles, [ $file_path . timestamp2local($file_base), $path ];
-            } else {
+        # Size adjunct "(<size> mb)"
+        my $mb = $bytes / (1024 * 1024);
+        my $size_suffix = sprintf(' (%.2f mb)', $mb);
 
-                #$logfiles{$path} = $path;
-                push @logfiles, [ $path, $path ];
-            }
-        } ## end if (-f)
-    } ## end sub findlogfiles
+        my ($file_base, $file_path, $file_type) = fileparse($path);
+
+        if ($file_base =~ /@.*/) {
+            push @logfiles, [ $file_path . timestamp2local($file_base) . $size_suffix, $path ];
+        } else {
+            push @logfiles, [ $path . $size_suffix, $path ];
+        }
+    }
+
     @logfiles = ();
 
     # Now go and find all the files under /var/log
     find({ wanted => \&findlogfiles, no_chdir => 1 }, '/var/log');
     my @logf = sort { $a->[0] cmp $b->[0] } @logfiles;
     return \@logf;
-} ## end sub findlogFiles
+}
 
 sub showlogFile {
     my ($c, %log_datas) = @_;
@@ -297,4 +315,155 @@ sub download_logFile {
     );
     return undef;
 } ## end sub download_logFile
+
+sub stream_logs {
+    my $c = shift;
+    $c->app->log->info($c->log_req);
+    
+    my $filename = $c->param('Filename') // 'messages';
+	my $filter    = $c->param('Matchpattern') // '';
+	my $highlight = $c->param('highlight') // '';
+	
+   
+    $filename = "/var/log/$filename" unless $filename =~ m{^/var/log/};
+    $filename =~ s{[^\w./-]}{}g;
+    
+    unless (-r $filename) {
+        $c->reply->not_found;
+        return;
+    }
+    
+    open my $fh, '<', $filename or do {
+        $c->reply->not_found;
+        return;
+    };
+
+    $c->res->headers->header('X-Accel-Buffering' => 'no');
+    $c->res->headers->cache_control('no-cache');
+    $c->res->headers->content_type('text/html');
+    $c->render_later;
+
+    # Store filehandle in stash with unique ID to avoid conflicts
+    my $stream_id = $$ . time;
+    $c->stash(stream_id => $stream_id, fh => $fh, filter => $filter, highlight => $highlight);
+
+    # Header
+    $c->write_chunk(<<"HTML");
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live: $filename</title>
+    <link rel="stylesheet" href="css/viewlogfiles.css">
+</head>
+<body>
+    <div class="header viewlogfiles-panel">
+       <!-- <strong>Live: $filename</strong>-->
+HTML
+    
+    #$c->write_chunk("<span class=fl>Filter: $filter</span> ") if $filter;
+    #$c->write_chunk("<span class=hl>Highlight: $highlight</span>") if $highlight;
+    $c->write_chunk('</div><div class=viewlogfiles-panel><table><tbody id="log-body">');
+
+    # Start streaming
+    SrvMngr::Controller::Viewlogfiles::stream_next_chunk($c,$stream_id);
+}
+
+sub stream_next_chunk {
+    my ($c, $stream_id) = @_;
+    # Verify this is the right stream
+    return unless $c->stash('stream_id') eq $stream_id;
+    
+    my $fh = $c->stash('fh') or return $c->finish;
+    my $filter = $c->stash('filter') // '';
+    my $highlight = $c->stash('highlight') // '';
+    my $line_count = $c->stash('line_count') // 0;
+    $c->app->log->info("Filter:$filter Highlight:$highlight");
+    my $chunk_html = '';
+    my $lines_read = 0;
+    my $max_lines = 50;
+    
+    while ($lines_read < $max_lines && (my $line = <$fh>)) {
+	# Enhanced filter - supports both literal text and /regex/ patterns
+		next if $filter && do {
+			if ($filter =~ m{^/(.*)/$}) {
+				my $regex = $1;
+				$line !~ qr/$regex/;
+			} else {
+				my $quoted = quotemeta($filter);
+				$line !~ qr/$quoted/i;
+			}
+		};
+      
+        $line_count++;
+        $lines_read++;
+        
+        # enhanced highlight - supports both literal text and /regex/ patterns
+		my $escaped = Mojo::Util::xml_escape($line);
+		if ($highlight) {
+			if ($highlight =~ m{^/(.*)/$} ) {
+				# Regex mode - extract pattern between slashes
+				my $regex_pattern = $1;
+				if ($line =~ m/$regex_pattern/g) {
+					#$c->app->log->info("Regex:$regex_pattern");
+					$escaped =~ s/($regex_pattern)/<span class="hl">$1<\/span>/gi;
+				}
+			} else {
+				# Plain text mode
+				my $quoted = quotemeta($highlight);   # or: my $quoted = "\Q$highlight\E";
+				#$c->app->log->info("Not Regex:$quoted");
+				$escaped =~ s/($quoted)/<span class="hl">$1<\/span>/gi;
+			}
+		}
+
+		$chunk_html .= sprintf(
+			'<tr><td class="line-num">%d</td><td><pre>%s</pre></td></tr>',
+			$line_count, $escaped
+		);
+    }
+    
+    $c->stash(line_count => $line_count); 
+    
+    if ($chunk_html) {
+		# this blows CSP, not sure if we need it or not.
+        #$chunk_html .= '<script>window.scrollTo(0,document.body.scrollHeight);</script>';
+        $c->write_chunk($chunk_html);
+        
+        # Chain next chunk
+        Mojo::IOLoop->timer(0.2 => sub {
+            SrvMngr::Controller::Viewlogfiles::stream_next_chunk($c,$stream_id);
+        });
+    } else {
+        $c->write_chunk('</tbody></table></div></body></html>');
+        close $fh;
+        $c->stash(fh => undef);
+        $c->finish;
+    }
+}
+
+sub live_page {
+    my $c = shift;
+    #my $fred = 1/0;
+    my $file      = $c->param('Filename') // 'messages';
+    my $filter    = $c->param('Matchpattern') // '';
+    my $highlight = $c->param('Highlightpattern') // '';
+	$c->app->log->info("Stream_logs:$file $filter $highlight");
+    
+    # Build iframe src to the actual streaming endpoint
+    my $src = $c->url_for('viewlogfilest')->query(
+		Filename 		=> $c->param('Filename') // 'messages',
+        Matchpattern  	=> $c->param('Matchpattern') // '',
+        highlight 		=> $c->param('Highlightpattern') // '',
+    );
+    $c->app->log->info($src);
+   	$c->stash(
+        title     => $c->l('log_FORM_TITLE'),
+		Filename 		=> $c->param('Filename') // 'messages',
+        Matchpattern  	=> $c->param('Matchpattern') // '',
+        highlight 		=> $c->param('Highlightpattern') // '',
+        stream_src => $src,
+    );
+    return $c->render(template => 'viewlogfiles2');
+}
+
+
 1;

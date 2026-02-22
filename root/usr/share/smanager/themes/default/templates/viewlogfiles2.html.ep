@@ -1,32 +1,24 @@
-% layout 'default', title => 'Sme server 2 - View log files 2';
+% layout 'default', title => $title;
 
 % content_for 'module' => begin
-
-  <div id='module' class='module viewlogfiles2-panel'>
-
-    % if (config->{debug} == 1) {
-      <p>
-        (DBG)route: <%= $c->current_route %><br>
-        (DBG)trt: <%= $log_datas->{trt} %><br>
-      </p>
-    % }
-
+<div class="module viewlogfiles-panel">
   <h1><%= $title %></h1>
 
-  <br><%= $modul %><br>
-
-  <p>
-    <% my $btn = l('log_REFRESH'); %>
-
-    %= form_for 'viewlogfilesr' => ( method => 'POST' ) => begin
-      %= submit_button "$btn", class => 'action'
-      %= hidden_field 'trt' => $log_datas->{trt}
-      %= hidden_field 'Filename' => $log_datas->{filename}
-      %= hidden_field 'Matchpattern' => $log_datas->{matchpattern}
-      %= hidden_field 'Highlightpattern' => $log_datas->{highlightpattern}
-      %= hidden_field 'Operation' => $log_datas->{operation}
-    % end
-
-  </div>
-
-  % end
+  <div class="viewlogfiles-live-meta">
+    % my $fullpath = "/var/log/".stash('Filename');
+    % my $out      = '';
+    % $out .= sprintf("$fullpath: ");
+    % $out .= sprintf($c->l("log_VIEWING_TIME", $c->gen_locale_date_string()));
+    % if (stash 'Matchpattern') {
+    %     $out .= " ".sprintf($c->l("log_MATCH_HEADER", stash('Matchpattern')));
+    % }
+    % if (stash 'highlight') {
+    %    $out .= " ".sprintf($c->l("log_HIGHLIGHT_HEADER", stash 'highlight'));
+    % }
+    <%= $out %><br /><br>
+  <iframe class="viewlogfiles-live-frame" 
+          src="<%= stash 'stream_src' %>"
+          loading="lazy">
+  </iframe>
+</div>
+% end

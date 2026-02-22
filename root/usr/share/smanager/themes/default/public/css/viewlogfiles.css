@@ -1,0 +1,109 @@
+.viewlogfiles-panel iframe {
+    font-family: monospace;
+    background: #1a1a1a;
+    color: #ddd;
+    margin: 0;
+    height: 70vh;
+    overflow: hidden;
+}
+
+/* viewlogfiles.css - Rules scoped to #log-body only */
+
+body {
+  background-color: white;
+  color: #333333;
+  font-family: 'Consolas', 'Monaco', 'Lucida Console', 'Liberation Mono', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.header.viewlogfiles-panel {
+  background-color: white;
+  color: #333333;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+}
+
+.viewlogfiles-panel {
+  background-color: white;
+  padding: 10px;
+  overflow: auto;
+}
+
+/* All table rules now scoped specifically to #log-body */
+#log-body {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  display: table;
+}
+
+#log-body tr {
+  background-color: white;
+  display: table-row;
+}
+
+#log-body td.line-num {
+  background-color: #f8f8f8;
+  color: #666666;
+  text-align: right;
+  padding: 0 8px 0 4px;
+  width: 1%;
+  white-space: nowrap;
+  border-right: 1px solid #e0e0e0;
+  user-select: none;
+  display: table-cell;
+}
+
+#log-body td pre {
+  margin: 0;
+  padding: 4px 8px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #333333;
+  background-color: white;
+  display: block;
+}
+
+#log-body .hl {
+  background-color: #ffffcc;
+  color: #000000;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+body {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: white !important;
+    color: #333333 !important;
+  }
+  
+  .viewlogfiles-panel {
+    background-color: white !important;
+  }
+}
+
+
+/* Wrapper page (inside your Mojolicious layout) */
+.viewlogfiles-live-meta {
+  margin: 0 0 1rem 0;
+  color: grey;
+}
+
+/* The iframe that shows the streaming log page */
+.viewlogfiles-live-frame {
+  width: 100%;
+  height: 66vh;          /* adjust as desired */
+  border: 1px solid #333;
+  background: white;
+  color:black;
+  display: block;
+}
+
+
+

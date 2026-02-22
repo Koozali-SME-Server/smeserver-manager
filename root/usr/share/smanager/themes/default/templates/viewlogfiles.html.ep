@@ -12,57 +12,54 @@
   <%= $notif %>
   <% my $btn = l('NEXT'); %>
 
-  %= form_for 'viewlogfiles' => ( method => 'POST' ) => begin
-    <p>
+%= form_for 'viewlogfilesd' => ( method => 'POST', id => 'viewlogfiles_form' ) => begin
+
       %= l 'log_FIRSTPAGE_DESC'
-      <br>
-      <span class=label>
-        %= l 'log_LOG_FILE_SELECT_DESC'
-      </span><span class=data>
-        % param 'Filename' => 'messages';
-        <!-- select_field 'Filename' => [['toto'], ['tata']], class => 'input' -->
-        %= select_field 'Filename' => $c->findlogFiles(), class => 'input'
-      </span>
-    </p>
 
-    <p>
+
+  <p>
+    <span class=label><%= l 'log_LOG_FILE_SELECT_DESC' %></span>
+    <span class=data>
+      % param 'Filename' => 'messages';
+      %= select_field 'Filename' => $c->findlogFiles(), class => 'input'
+    </span>
+  </p>
       %= l 'log_FILTER_PATTERN_DESC'
-      <br>
-      <span class=label>
-        %= l 'log_FILTER_PATTERN_LABEL'
-      </span><span class=data>
-        %= text_field 'Matchpattern', class => 'input'
-      </span>
-    </p>
-
-    <p>
+      %= l 'log_FILTER_PATTERN_HINT'
+  <p>
+    <span class=label><%= l 'log_FILTER_PATTERN_LABEL' %></span>
+    <span class=data>
+      %= text_field 'Matchpattern', class => 'input'
+    </span>
+  </p>
       %= l 'log_MATCH_PATTERN_DESC'
-      <br>
-      <span class=label>
-        %= l 'log_MATCH_PATTERN_LABEL'
-      </span><span class=data>
-        %= text_field 'Highlightpattern', class => 'input'
-      </span>
-    </p>
-
-    <p>
-      %= l 'log_OP_DESC'
-      <br>
-      <span class=label>
-        %= l 'log_OP_LABEL'
-      </span><span class=data>
-        % if ($log_datas->{'default_op'} eq 'download') {
-          % param 'Operation' => 'download';
-        % }
-      %= select_field 'Operation' => [ [ ( l 'log_VIEW' ) => 'view' ], [ ( l 'DOWNLOAD' ) => 'download' ] ], class => 'input';
+      %= l 'log_FILTER_PATTERN_HINT'
+  <p>
+    <span class=label><%= l 'log_MATCH_PATTERN_LABEL' %></span>
+    <span class=data>
+      %= text_field 'Highlightpattern', class => 'input'
     </span>
   </p>
 
-  <p>
-    %= l 'log_END_DESC'
-  </p>
+      %= l 'log_OP_DESC'
 
-  %= submit_button "$btn", class => 'action'
-  % end
+<p>
+    <span class="label"><%= l 'log_OP_LABEL' %></span>
+    <span class="data">
+      <%= select_field 'Operation' => [
+        [ l('log_VIEW'), 'view' ],
+        [ l('DOWNLOAD'), 'download' ]
+      ], class => 'input' %>
+    </span>
+</p>
+  %#= l 'log_END_DESC'  #No longer need to warn about takingt a long time.
+  %= submit_button l('NEXT'), class => 'action'
+
+  <!-- Provide stream URL template for external JS (no inline script) -->
+<!--
+<input type="hidden" id="stream_base"
+       value="<%= url_for('viewlogfilesl') %>?file=__FILE__">
+-->
+% end
 </div>
 % end

@@ -39,7 +39,7 @@ use Data::Dumper;
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '144.el8.sme'; 
+our $VERSION = '166.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -414,8 +414,10 @@ sub setup_routing {
     $if_admin->post('/useraccountso')->to('useraccounts#do_display')->name('useraccountvpn');
 
     $if_admin->get('/viewlogfiles')->to('viewlogfiles#main')->name('viewlogfiles');
-    $if_admin->post('/viewlogfiles')->to('viewlogfiles#do_action')->name('viewlogfiles2');
+    $if_admin->post('/viewlogfilesd')->to('viewlogfiles#do_action')->name('viewlogfilesd');
     $if_admin->post('/viewlogfilesr')->to('viewlogfiles#do_action')->name('viewlogfilesr');
+    $if_admin->get('/viewlogfilest')->to('viewlogfiles#stream_logs', format => 0)->name('viewlogfilest');
+
 
     $if_admin->get('/yum')->to('yum#main')->name('yum');
     $if_admin->post('/yum')->to('yum#do_display')->name('yumd1');
