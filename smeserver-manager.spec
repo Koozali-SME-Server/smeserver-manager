@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 168
+%define release 169
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Feb 23 2026 Brian Read <brianr@koozali.org> 11.0.0-169.sme
+- Add .gz processing to viewlogfiles (this was regression) [SME: 13446]
+
 * Sun Feb 22 2026 Brian Read <brianr@koozali.org> 11.0.0-168.sme
 - re-write viiewlogfiles to deal with large files a bit more easily [SME: 13328]
 - Add regex option to filter and highlight fields [SME: 13328]

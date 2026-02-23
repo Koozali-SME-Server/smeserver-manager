@@ -162,6 +162,9 @@ sub findlogFiles {
         {
             return if $path =~ /$_/;
         }
+        
+        # consider if file is a .gz compressed file
+        #if (is_gzipped($full_path)){ return;} - gzipped now processed by zcat
 
         # Size adjunct "(<size> mb)"
         my $mb = $bytes / (1024 * 1024);
@@ -185,6 +188,9 @@ sub findlogFiles {
 }
 
 sub showlogFile {
+	#
+	# Not used - Feb 2026
+	#
     my ($c, %log_datas) = @_;
     my $fullpath = "/var/log/$log_datas{filename}";
     my $out      = '';
@@ -316,6 +322,19 @@ sub download_logFile {
     return undef;
 } ## end sub download_logFile
 
+sub is_gzipped {
+    my $filename = shift;
+    return 0 unless -f $filename;
+    
+    open my $fh, '<:raw', $filename or return 0;
+    my $bytes;
+    my $bytes_read = read($fh, $bytes, 2);
+    close $fh;
+    
+    return $bytes_read == 2 && $bytes eq "\x1f\x8b";
+}
+
+
 sub stream_logs {
     my $c = shift;
     $c->app->log->info($c->log_req);
@@ -333,10 +352,14 @@ sub stream_logs {
         return;
     }
     
-    open my $fh, '<', $filename or do {
-        $c->reply->not_found;
-        return;
-    };
+    my $fh; 
+    if (is_gzipped($filename)) {
+		open $fh, "-|", "zcat", $filename or die "Cannot zcat $filename: $!";
+		$c->app->log->debug("Using zcat for $filename");
+	} else {
+		open $fh, "<", $filename or die "Cannot open $filename: $!";
+		$c->app->log->debug( "Using direct read for $filename");
+	}
 
     $c->res->headers->header('X-Accel-Buffering' => 'no');
     $c->res->headers->cache_control('no-cache');
@@ -377,7 +400,7 @@ sub stream_next_chunk {
     my $filter = $c->stash('filter') // '';
     my $highlight = $c->stash('highlight') // '';
     my $line_count = $c->stash('line_count') // 0;
-    $c->app->log->info("Filter:$filter Highlight:$highlight");
+    #$c->app->log->info("Filter:$filter Highlight:$highlight");
     my $chunk_html = '';
     my $lines_read = 0;
     my $max_lines = 50;
