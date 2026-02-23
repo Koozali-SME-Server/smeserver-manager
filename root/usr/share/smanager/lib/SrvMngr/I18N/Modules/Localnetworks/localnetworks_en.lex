@@ -1,4 +1,4 @@
-# 'ln_LOCAL NETWORKS' => 'Local networks',
+'ln_LOCAL NETWORKS' => 'Local networks',
 'Local networks' => 'Local networks',
 'ln_FIRSTPAGE_DESC' => 'For security reasons, several services on your server are available only to your local network. However you can grant these  local access privileges to additional networks by listing them  below. Most installations should leave this list empty.',
 'ln_ADD_TITLE' => 'Add a local network ',
