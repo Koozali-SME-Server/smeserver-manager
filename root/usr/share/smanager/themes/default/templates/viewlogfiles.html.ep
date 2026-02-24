@@ -46,6 +46,9 @@
 <p>
     <span class="label"><%= l 'log_OP_LABEL' %></span>
     <span class="data">
+      % if ($log_datas->{'default_op'} eq 'download') {
+        % param 'Operation' => 'download';
+      % }
       <%= select_field 'Operation' => [
         [ l('log_VIEW'), 'view' ],
         [ l('DOWNLOAD'), 'download' ]

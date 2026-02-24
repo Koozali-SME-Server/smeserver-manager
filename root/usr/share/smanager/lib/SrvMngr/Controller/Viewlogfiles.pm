@@ -9,9 +9,7 @@ package SrvMngr::Controller::Viewlogfiles;
     #$if_admin->get('/viewlogfiles')->to('viewlogfiles#main')->name('viewlogfiles');
     #$if_admin->post('/viewlogfilesd')->to('viewlogfiles#do_action')->name('viewlogfilesd');
     #$if_admin->post('/viewlogfilesr')->to('viewlogfiles#do_action')->name('viewlogfilesr');
-    #$if_admin->get('/viewlogfilest')->to('viewlogfiles#stream_logs', format => 0)->name('viewlogfilest');
-    
-    #$if_admin->get('/viewlogfilesl')->to('viewlogfiles#live_page', format => 0)->name('viewlogfilesl');
+    #$if_admin->get('/viewlogfilest')->to('viewlogfiles#stream_logs', format => 0)->name('viewlogfilest');   
 #
 # routes : end
 #----------------------------------------------------------------------
@@ -379,13 +377,20 @@ sub stream_logs {
     <link rel="stylesheet" href="css/viewlogfiles.css">
 </head>
 <body>
-    <div class="header viewlogfiles-panel">
-       <!-- <strong>Live: $filename</strong>-->
 HTML
     
     #$c->write_chunk("<span class=fl>Filter: $filter</span> ") if $filter;
     #$c->write_chunk("<span class=hl>Highlight: $highlight</span>") if $highlight;
-    $c->write_chunk('</div><div class=viewlogfiles-panel><table><tbody id="log-body">');
+
+    # organise with line numbers and space or legacy look
+    $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
+    my $viewlog = $cdb->get('viewlogfiles');
+    my $is_legacy = lc($viewlog->prop('legacy') || '') eq 'yes';   
+    if ($is_legacy) {
+        $c->write_chunk('<div class="viewlogfiles-panel"><table><tbody id="log-body-legacy">');
+    } else {
+        $c->write_chunk('<div class="viewlogfiles-panel"><table><tbody id="log-body">');
+    }
 
     # Start streaming
     SrvMngr::Controller::Viewlogfiles::stream_next_chunk($c,$stream_id);

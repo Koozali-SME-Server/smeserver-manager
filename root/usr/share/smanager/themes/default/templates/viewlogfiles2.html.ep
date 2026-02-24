@@ -4,6 +4,11 @@
 <div class="module viewlogfiles-panel">
   <h1><%= $title %></h1>
 
+  %= form_for $c->url_for->query([]) => (method => 'POST') => begin
+    %= csrf_field
+    %= submit_button 'Refresh', class => 'btn btn-refresh'
+  % end
+
   <div class="viewlogfiles-live-meta">
     % my $fullpath = "/var/log/".stash('Filename');
     % my $out      = '';

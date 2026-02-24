@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 170
+%define release 171
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Feb 24 2026 Brian Read <brianr@koozali.org> 11.0.0-171.sme
+- Add (DB) legacy mode to viewlogfiles, take note of (DB) defaultoperation add refresh button [SME: 13328]
+
 * Mon Feb 23 2026 Brian Read <brianr@koozali.org> 11.0.0-170.sme
 - Recover the lex strings that got wrongly commented out by v162 [SME: 13103]
 
