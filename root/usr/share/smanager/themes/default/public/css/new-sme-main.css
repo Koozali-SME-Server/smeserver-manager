@@ -573,7 +573,7 @@ table.incolumn {
 .partial p > span.data > input,
 .partial p > span.data > textarea,
 .partial p > span.data > select{
-  width: 100%;
+  width: 50%;
   max-width: 100%;
   box-sizing: border-box;
 }
