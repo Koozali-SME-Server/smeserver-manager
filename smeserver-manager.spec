@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 171
+%define release 172
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Feb 25 2026 Brian Read <brianr@koozali.org> 11.0.0-172.sme
+- Fix missing password strength in update routine in useraccounts controller [SME: 13450]
+
 * Tue Feb 24 2026 Brian Read <brianr@koozali.org> 11.0.0-171.sme
 - Add (DB) legacy mode to viewlogfiles, take note of (DB) defaultoperation add refresh button [SME: 13328]
 

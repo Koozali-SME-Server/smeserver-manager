@@ -8,6 +8,13 @@ package SrvMngr::Controller::Useraccounts;
 #
 # routes : end
 #----------------------------------------------------------------------
+#    $if_admin->get('/useraccounts')->to('useraccounts#main')->name('useraccounts');
+#    $if_admin->post('/useraccounts')->to('useraccounts#do_display')->name('useraccountadd');
+#    $if_admin->get('/useraccountsd')->to('useraccounts#do_display')->name('useraccountdis');
+#    $if_admin->post('/useraccountsd')->to('useraccounts#do_update')->name('useraccountupd');
+#    $if_admin->post('/useraccountso')->to('useraccounts#do_display')->name('useraccountvpn');
+#
+
 use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
@@ -348,6 +355,19 @@ sub do_update {
     } ## end if ($trt eq 'DEL')
     $usr_datas{'user'} = $user;
     $usr_datas{'name'} = $name;
+    
+	my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
+    my $rec = $cdb->get('passwordstrength');
+  	if ($trt eq 'PWS'){
+		$usr_datas{passwdstrength} = ($rec ? ($rec->prop('Admin') || 'none') : 'none');
+	} else {
+		$usr_datas{passwdstrength} = ($rec ? ($rec->prop('Users') || 'none') : 'none');
+	}
+	
+	if ( !(defined $usr_datas{passwdstrength} && $usr_datas{passwdstrength} =~ /^(none|normal|intermediate|strong)$/)) {
+		$usr_datas{passwdstrength} = 'strong';
+	}
+
     $c->stash(title => $title, notif => $result, usr_datas => \%usr_datas);
 
     if ($usr_datas{trt} ne 'SUC') {

@@ -3,7 +3,7 @@
     background: #1a1a1a;
     color: #ddd;
     margin: 0;
-    height: 70vh;
+    height: 74vh;
     overflow: hidden;
 }
 
@@ -119,6 +119,7 @@ body {
   background: white;
   color:black;
   display: block;
+  padding:1px;
 }
 
 
