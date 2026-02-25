@@ -129,7 +129,7 @@ sub do_display {
     } ## end if ($trt eq 'LIST')
     
 	my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
-    my $rec = $cdb->get('passwordstrength');
+          my $rec = $cdb->get('passwordstrength');
 	$usr_datas{passwdlength} = ($rec ? ($rec->prop('length') || 12) : 12);
 	if ($trt eq 'PWS'){
 		$usr_datas{passwdstrength} = ($rec ? ($rec->prop('Admin') || 'none') : 'none');
@@ -356,18 +356,19 @@ sub do_update {
     $usr_datas{'user'} = $user;
     $usr_datas{'name'} = $name;
     
-	my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
+    my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
     my $rec = $cdb->get('passwordstrength');
-  	if ($trt eq 'PWS'){
-		$usr_datas{passwdstrength} = ($rec ? ($rec->prop('Admin') || 'none') : 'none');
-	} else {
-		$usr_datas{passwdstrength} = ($rec ? ($rec->prop('Users') || 'none') : 'none');
-	}
-	
-	if ( !(defined $usr_datas{passwdstrength} && $usr_datas{passwdstrength} =~ /^(none|normal|intermediate|strong)$/)) {
-		$usr_datas{passwdstrength} = 'strong';
-	}
-
+    $usr_datas{passwdlength} = ($rec ? ($rec->prop('length') || 12) : 12);
+    if ($trt eq 'PWS'){
+      $usr_datas{passwdstrength} = ($rec ? ($rec->prop('Admin') || 'none') : 'none');
+    } else {
+      $usr_datas{passwdstrength} = ($rec ? ($rec->prop('Users') || 'none') : 'none');
+    }
+    
+    if ( !(defined $usr_datas{passwdstrength} && $usr_datas{passwdstrength} =~ /^(none|normal|intermediate|strong)$/)) {
+      $usr_datas{passwdstrength} = 'strong';
+    }
+    
     $c->stash(title => $title, notif => $result, usr_datas => \%usr_datas);
 
     if ($usr_datas{trt} ne 'SUC') {

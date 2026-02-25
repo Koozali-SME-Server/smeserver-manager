@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 173
+%define release 174
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Feb 25 2026 Brian Read <brianr@koozali.org> 11.0.0-174.sme
+- Add in forgotten password length for lex string in error situation [SME: 13450]
+
 * Wed Feb 25 2026 Brian Read <brianr@koozali.org> 11.0.0-173.sme
 - Alter CSS to restore controls to 50% of the width (another regression!) [SME: 13449]
 
