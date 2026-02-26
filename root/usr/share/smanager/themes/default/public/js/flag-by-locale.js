@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function displayLocaleAndFlag(canDecode) {
-	console.log(`locale:${locale}`);
+	//console.log(`locale:${locale}`);
 	const userLocale = (locale && isValidLocale(locale))
 	  ? locale
 	  : (navigator.languages && navigator.languages.length)
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		const { language, countryCode } = extractLocaleParts(userLocale);
 
-		console.log(`Language: ${language}, Country Code: ${countryCode}, Locale: ${userLocale}`);
+		//console.log(`Language: ${language}, Country Code: ${countryCode}, Locale: ${userLocale}`);
 
 		const flag = countryCode ? getFlagEmoji(countryCode) : null;
 
@@ -175,6 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	const result = canRenderFlagEmoji("🇺🇸");
-	console.log(result ? "flag decode yes" : "flag decode no");
+	//console.log(result ? "flag decode yes" : "flag decode no");
 	displayLocaleAndFlag(result);
 });

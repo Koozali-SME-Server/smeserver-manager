@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 174
+%define release 175
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Feb 26 2026 Brian Read <brianr@koozali.org> 11.0.0-175.sme
+- Correct JS Function call for Please Wait mesg on submit  [SME: 13424]
+
 * Wed Feb 25 2026 Brian Read <brianr@koozali.org> 11.0.0-174.sme
 - Add in forgotten password length for lex string in error situation [SME: 13450]
 

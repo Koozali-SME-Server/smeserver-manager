@@ -51,7 +51,7 @@ $(document).ready(function () {
   // ---------------------------------------
   // 2) Form submit: visually disable submits
   // ---------------------------------------
-  $('form').on('submit', function () {
+  $('form').on('submit', function (e) {
 	const submitter = e.originalEvent && e.originalEvent.submitter;
 	if (submitter && submitter.classList.contains('no-disable')) {
 		return true; // don't change button, don't add busy
