@@ -329,13 +329,25 @@ span.data2 {
 }
 
 span.label {
-    display: inline-block;
-    font-weight: bold;
-    background-color: #e8f3e1;
-    width: 30%;
-    text-align: right;
-    vertical-align:top;
-    
+  display: inline-block;
+  font-weight: bold;
+  background-color: #e8f3e1;
+  width: 30%;
+  text-align: right;
+  vertical-align: top;
+}
+
+span.data {
+  padding: 2px;
+  font-weight: bold;
+  margin-left: 0;
+
+  /* add: make it a column next to label */
+  display: inline-block;
+  width: 70%;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding-left: 10px;   /* optional spacing from label */
 }
 
 span.label2 {

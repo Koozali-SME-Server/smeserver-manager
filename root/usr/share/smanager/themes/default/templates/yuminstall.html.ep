@@ -35,13 +35,29 @@
   <br>
   % if ($c->non_empty('available','packages')) {
     %= l 'yum_DESC_AVAILABLE_PACKAGES'
-    <p><span class=label>
+    <br />
+    %== l 'yum_MULTI_SELECT'
+    <p><span class="label">
         %= l 'yum_LABEL_AVAILABLE_PACKAGES'
-      </span><span class=data>
+    </span><span class="data pkg-picker"> 
+          <span class="pkg-search-wrap">
+            <input type="text" class="pkg-search" placeholder="Type to filter packages...">
+            <button type="button" class="pkg-clear" aria-label="Clear filter">×</button>
+          </span>
+
+          <span class="pkg-filter-msg" aria-live="polite"></span>
+
         % param 'SelectedPackages' => $c->get_names2( 'updates', 'package' ) unless param 'SelectedPackages';
-        %= select_field 'SelectedPackages' => $c->get_options2( 'available', 'package' ), class => 'input', multiple => "1";
+          <select multiple size="10" name="SelectedPackages" class="pkg-list">
+            % my $raw = $c->get_options2('available','package');   # [ [label,value], ... ]
+            % for my $pair (@$raw) {
+              % my ($label,$value) = @$pair;
+              <option value="<%= $value %>"><%= $label %></option>
+            % }
+          </select>
     </span></p>
   % }
+
 
   <!-- $c->print_skip_header() -->
 

@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 175
+%define release 176
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Feb 28 2026 Brian Read <brianr@koozali.org> 11.0.0-176.sme
+- Refactor some of yum.pm [SME: 12400]
+- move file monitoring for completion to dnf status [SME: 12400]
+- add enhanced package selection control [SME: 12400]
+
 * Thu Feb 26 2026 Brian Read <brianr@koozali.org> 11.0.0-175.sme
 - Correct JS Function call for Please Wait mesg on submit  [SME: 13424]
 

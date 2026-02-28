@@ -38,7 +38,7 @@ should be installed as soon as possible.',
  to install from the list below.',
 'yum_LABEL_AVAILABLE_GROUPS' => 'Available groups',
 'yum_DESC_AVAILABLE_PACKAGES' => 'You can also select individual packages 
- to install from the list below.',
+ to install from the list below. ',
 'yum_LABEL_AVAILABLE_PACKAGES' => 'Available packages',
 'yum_INSTALL_SOFTWARE' => 'Install',
 'yum_HEADER_INSTALLED_SOFTWARE' => 'The following software is installed 
@@ -54,15 +54,15 @@ should be installed as soon as possible.',
 'yum_BUTTON_CONFIGURATION' => 'Change software installer settings',
 'yum_BUTTON_INSTALL_AVAILABLE' => 'Install additional software',
 'yum_BUTTON_REMOVE' => 'Remove installed software',
-# 'yum_HEADER_POSTUPGRADE_REQUIRED' => ' The system needs to be reconfigured
-#  after adding or removing software,
-# or applying updates. 
-#<p>
-# Please click on the Reconfigure button at the bottom of
-# this page to start the reconfiguration process.
-# <b>An automatic reboot will be
-#  initiated as part of this reconfiguration process</b>
-# </p> ',
+'yum_HEADER_POSTUPGRADE_REQUIRED' => ' The system needs to be reconfigured
+  after adding or removing software,
+ or applying updates. 
+<p>
+ Please click on the Reconfigure button at the bottom of
+ this page to start the reconfiguration process.
+ <b>An automatic reboot will be
+  initiated as part of this reconfiguration process</b>
+ </p> ',
 # 'yum_SYSTEM_BEING_RECONFIGURED' => 'Your system is being automatically rebooted to 
 # complete the reconfiguraton process.',
 'yum_1DAILY' => 'Daily',
@@ -83,3 +83,5 @@ should be installed as soon as possible.',
 'yum_DownloadOnly' => 'Downloadonly',
 'yum_ERROR_UPDATING_CONFIGURATION' => 'Error updating configuration',
 'yum_check4updates' => 'Check4updates',
+'yum_MULTI_SELECT' => '<strong>Ctrl/Cmd-click</strong> toggles individual items and <strong>Shift-click</strong> selects ranges.
+<br /><strong>Case-insensitive</strong> search unless you enter a <strong>regex</strong> in <i>/pattern/flags</i> form (e.g. /maria.*client/i)..',
