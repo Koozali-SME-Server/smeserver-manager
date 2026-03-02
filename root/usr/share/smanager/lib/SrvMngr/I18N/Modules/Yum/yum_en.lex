@@ -63,8 +63,8 @@ should be installed as soon as possible.',
  <b>An automatic reboot will be
   initiated as part of this reconfiguration process</b>
  </p> ',
-# 'yum_SYSTEM_BEING_RECONFIGURED' => 'Your system is being automatically rebooted to 
-# complete the reconfiguraton process.',
+'yum_SYSTEM_BEING_RECONFIGURED' => 'Your system is being automatically rebooted to 
+ complete the reconfiguraton process.',
 'yum_1DAILY' => 'Daily',
 'yum_2WEEKLY' => 'Weekly',
 'yum_3MONTHLY' => 'Monthly',
