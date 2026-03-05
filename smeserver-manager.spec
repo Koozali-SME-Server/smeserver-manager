@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 176
+%define release 177
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 05 2026 Brian Read <brianr@koozali.org> 11.0.0-177.sme
+- Recast yum panel to dnf panel [SME: ]
+
 * Sat Feb 28 2026 Brian Read <brianr@koozali.org> 11.0.0-176.sme
 - Refactor some of yum.pm [SME: 12400]
 - move file monitoring for completion to dnf status [SME: 12400]

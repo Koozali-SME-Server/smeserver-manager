@@ -1,0 +1,66 @@
+<div id="dnf-controls">
+
+  % my $function  = stash('function') // 'update';
+  % my $pkg_count = stash('pkg_count') // 0;
+  % my $grp_count = stash('grp_count') // 0;
+  % my $has_any   = ($pkg_count + $grp_count) > 0;
+
+  <div class="dnf-update-controls"> 
+    <label for="dnf-action">Action</label>
+    <select id="dnf-action">
+      <option value="update"  <%= $function eq 'update'  ? 'selected' : '' %>>Update</option>
+      <option value="install" <%= $function eq 'install' ? 'selected' : '' %>>Install</option>
+      <option value="remove"  <%= $function eq 'remove'  ? 'selected' : '' %>>Remove</option>
+    </select>
+
+    <button id="dnf-start" class="btn" <%= ($function eq 'update' && !$has_any) ? 'disabled' : '' %>>Start</button>
+  </div>
+
+<div id="dnf-msg" class="dnf-msg" aria-live="polite"
+     data-mode="<%= $function %>"
+     data-pkg-total="<%= $pkg_count %>"
+     data-grp-total="<%= $grp_count %>">
+  % if ($function eq 'update') {
+    Updates available: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
+  % } elsif ($function eq 'install') {
+    Available: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
+  % } else {
+    Installed: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
+  % }
+  <span id="dnf-selected-note"></span>
+</div>
+
+  <div class="dnf-pickers"> 
+    <div class="pkg-picker <%= $pkg_count ? '' : 'is-hidden' %>" id="pkg-picker-packages">
+      <div class="pkg-picker-head">
+        <label>Packages</label>
+        <input class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
+        <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
+        <div class="pkg-filter-msg" aria-live="polite"></div>
+      </div>
+
+      <select class="pkg-list" id="SelectedPackages" name="SelectedPackages" multiple size="14">
+        % for my $opt (@{ stash('pkg_opts') || [] }) {
+          % my ($label, $value) = @$opt;
+          <option value="<%= $value %>" <%= stash('preselect_all') ? 'selected' : '' %>><%= $label %></option>
+        % }
+      </select>
+    </div>
+
+    <div class="pkg-picker <%= $grp_count ? '' : 'is-hidden' %>" id="pkg-picker-groups">
+      <div class="pkg-picker-head">
+        <label>Groups</label>
+        <input class="pkg-search" type="text" placeholder="Filter groups (text or /regex/flags)">
+        <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
+        <div class="pkg-filter-msg" aria-live="polite"></div>
+      </div>
+
+      <select class="pkg-list" id="SelectedGroups" name="SelectedGroups" multiple size="14">
+        % for my $opt (@{ stash('grp_opts') || [] }) {
+          % my ($label, $value) = @$opt;
+          <option value="<%= $value %>" <%= stash('preselect_all') ? 'selected' : '' %>><%= $label %></option>
+        % }
+      </select>
+    </div>
+  </div>
+</div>
