@@ -181,6 +181,7 @@ sub login {
             name => $at->cookie_name,
             path   => '/',
             secure => $at->require_ssl,
+            samesite  => 'Lax',
             @expires,
             @auth_domain,
         });

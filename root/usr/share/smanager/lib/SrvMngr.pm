@@ -35,10 +35,15 @@ use esmith::NavigationDB; # no UTF8 raw is ok for ASCII only flat file
 
 use Data::Dumper;
 
+use Apache::AuthTkt;
+# Loading AuthTkt config
+my $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
+use Mojo::Util 'url_unescape';
+
 # Import the function(s) you need
 use SrvMngr_Auth qw(check_admin_access);
 
-#this is overwrittrn with the "release" by the spec file - release can be "99.el8.sme"
+#this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
 our $VERSION = '166.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
@@ -53,7 +58,7 @@ our @EXPORT_OK = qw(
 	init_session get_mod_url theme_list
 	getNavigation ip_number validate_password is_normal_password email_simple
 	mac_address_or_blank mac_address ip_number_or_blank
-	lang_space get_routes_list subnet_mask get_reg_mask
+	handle_tkt lang_space get_routes_list subnet_mask get_reg_mask
 	gen_locale_date_string get_public_ip_address simpleNavMerge
 	);
 
@@ -127,6 +132,97 @@ sub setup_sessions {
 
 }
 
+sub _handle_tkt {
+  my $c  = shift;
+  # test tkt and if user logged in ?
+  my $from = $c->param('From') || $c->home_page;
+  $from = $c->home_page if ($from eq 'login');
+  $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
+  my $ticket= ( $c->cookie('auth_tkt') ) ? url_unescape $c->cookie('auth_tkt') : undef;
+  my $server_name = $c->req->headers->header('X-Forwarded-Host');
+  $server_name ||= $ENV{SERVER_NAME} if $ENV{SERVER_NAME};
+  my $AUTH_DOMAIN = $server_name;
+  my @auth_domain = $AUTH_DOMAIN && $AUTH_DOMAIN =~ /\./ ? ( domain => $AUTH_DOMAIN ) : ();
+  my $probe = $c->cookie('auth_probe');
+  my $back = $c->cookie($at->back_cookie_name) if $at->back_cookie_name;
+  my $have_cookies = $ticket || $probe || $back || '';
+  my $mode = 'login';
+  # TODO add ip of the browser (not the proxy)
+  my $ip_addr = undef;
+  my $debug    = $c->config('debug');
+  $debug = 3 if $debug;
+  my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();
+  if ($ticket) {
+    $c->log->debug("auth_tkt: $ticket");
+    # Check if the user is already "logged in" in the Mojo session
+    my $valid_ticket = $at->validate_ticket($ticket, ip_addr =>'',ignore_ip => 1);
+    if ( (defined $valid_ticket) && ($c->session('username')) ) {
+        $c->log->debug("TKT cookie age: ".(time()-$valid_ticket->{'ts'}). " and TKT cookie timeout: ".$at->timeout()) if $debug;
+        if ((time()-$valid_ticket->{'ts'}) > $at->timeout() ) {
+          $c->log->debug("TKT expired, removing") if $debug;
+          #TODO logout and destroy cookie
+          $c->app->log->info($c->log_req);
+          $c->session(expires => 1);
+          $c->flash(success => 'Goodbye');
+          $c->cookie(auth_tkt => '', {
+                  name => $at->cookie_name,
+                  value => "",
+                  path   => '/',
+                  secure => $at->require_ssl,
+                  expires => '-1h',
+                  @auth_domain,
+                  });
+          $c->redirect_to($c->home_page);
+        } elsif ((time()-$valid_ticket->{'ts'}) > $at->timeout()/2) {
+           #TODO use the TKT setting instead of arbitrary /2
+           $c->log->debug("TKT needs refresh") if $debug;
+           # set authtkt
+           my $user_data = join(':', time(), $ip_addr || '');    # Optional
+           my $tkt = $at->ticket(uid => $c->session('username'), data => $user_data, ip_addr => $ip_addr, debug => $debug);
+           $c->cookie(auth_tkt =>$tkt, {
+                  name => $at->cookie_name,
+                  path   => '/',
+                  secure => $at->require_ssl,
+                  samesite  => 'Lax',
+                  @expires,
+                  @auth_domain,
+                  });
+        } else {
+             $c->log->debug("TKT active") if $debug;
+        }
+    } elsif ( (defined $valid_ticket) && ( ! $c->session('username')) ) {
+        $c->log->debug("TKT but not logged in") if $debug;
+        if ((time()-$valid_ticket->{'ts'}) < $at->timeout() ) {
+            my $name =  $valid_ticket->{uid};
+            $c->session(logged_in => 1);        # set the logged_in flag
+            $c->session(username  => $name);    # keep a copy of the username
+            #    if ( $name eq 'admin' || $adb->is_user_in_group($name, 'Admin') )  # for futur use
+            if ($name eq 'admin') {
+               $c->session(is_admin => 1);
+            } else {
+               $c->session(is_admin => 0);
+            }
+            $c->session(expiration => $c->config->{timeout} );     # expire this session in the time set  in config
+            $c->flash(success => $c->l('use_WELCOME'));
+            SrvMngr::Controller::Login::record_login_attempt($c, 'SUCCESS');
+            $c->flash(success => "Welcome back! Redirecting you now.");
+            $c->log->debug("Valid ticket so we log in the user, redirect to  $from") if $debug;
+            return $c->redirect_to($from);
+        } else {
+            # delete TKT
+            $c->log->debug("TKT expired, removing") if $debug;
+            $c->cookie(auth_tkt => '', {
+                    name => $at->cookie_name,
+                    value => "",
+                    path   => '/',
+                    secure => $at->require_ssl,
+                    expires => '-1h',
+                    @auth_domain,
+                  });
+        }
+    }
+  }
+}
 
 sub setup_paths {
 
@@ -192,6 +288,7 @@ sub setup_helpers {
     });
 
     $self->helper(lang_space	=> \&_lang_space);
+    $self->helper(handle_tkt  => \&_handle_tkt);
 
     $self->plugin( Config => { file => $self->config_file()} );
 
@@ -512,6 +609,7 @@ sub setup_hooks {
     	    SrvMngr::init_session ( $c );
 	}
 	$c->lang_space();
+  $c->handle_tkt();
     });
 
     if ( my $path = $ENV{MOJO_REVERSE_PROXY} ) {

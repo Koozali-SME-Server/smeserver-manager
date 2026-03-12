@@ -29,9 +29,10 @@ sub logout {
     my @auth_domain = $AUTH_DOMAIN && $AUTH_DOMAIN =~ /\./ ? ( domain => $AUTH_DOMAIN ) : ();
     $c->cookie(auth_tkt => '', {
             name => $at->cookie_name,
+            value => "",
             path   => '/',
             secure => $at->require_ssl,
-            expires => '1',
+            expires => '-1h',
             @auth_domain,
      });
     $c->log->debug($c->req->headers->to_string);

@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 177
+%define release 178
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,8 +152,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Mar 11 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-178.sme
+- improve handling of tkt to autologin [SME: 13326]
+  now able to extend token or delete it
+
 * Thu Mar 05 2026 Brian Read <brianr@koozali.org> 11.0.0-177.sme
-- Recast yum panel to dnf panel [SME: ]
+- Recast yum panel to dnf panel [SME: 13458]
 
 * Sat Feb 28 2026 Brian Read <brianr@koozali.org> 11.0.0-176.sme
 - Refactor some of yum.pm [SME: 12400]
