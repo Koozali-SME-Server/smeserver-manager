@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '166.el8.sme'; 
+our $VERSION = '180.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -520,6 +520,13 @@ sub setup_routing {
     $if_admin->post('/yum')->to('yum#do_display')->name('yumd1');
     $if_admin->get('/yumd')->to('yum#do_display')->name('yumd');
     $if_admin->post('/yumd')->to('yum#do_update')->name('yumu');
+    
+    $if_admin->get ('/dnf')->to('dnf#do_show')->name('dnf');
+    $if_admin->post('/dnf/start/:function')->to('dnf#start_dnf')->name('dnf_start_dnf');
+    $if_admin->get ('/dnf/stream/:run_id')->to('dnf#dnf_stream')->name('dnf_stream');
+    $if_admin->get('/dnf/options/:function')->to('dnf#dnf_options')->name('dnf_options');
+    $if_admin->get('/dnf/partial')->to('dnf#dnf_partial')->name('dnf_partial');
+
 
     $if_admin->get('/welcome')->to('welcome#main')->name('welcome');
 

@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 180
+%define release 181
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 12 2026 Brian Read <brianr@koozali.org> 11.0.0-181.sme
+- Add routes for dnf to srvmngr.pm [SME: 13465]
+- Correct typo in Proxypass template expansion for httpd.conf [SME: 13177]
+- Sort out alignment of fields in port forwarding and others [SME: 13466]
+- Sort out alighment of mojo logo [SME: 13466]
+
 * Thu Mar 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-180.sme
 - remove csp style hashes no longer needed [SME: 13177]
 

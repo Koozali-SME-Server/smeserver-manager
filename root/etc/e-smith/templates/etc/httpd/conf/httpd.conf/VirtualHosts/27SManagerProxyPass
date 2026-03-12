@@ -15,7 +15,7 @@
             $OUT .= '    RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1$' . "\n";
             $OUT .= "    RewriteRule ^/$place(/.*|\$)    https://%{HTTP_HOST}/$place\$1 [L,R]\n";
             $OUT .= "\n";
-	}
+        }
         $OUT .= "    RewriteRule ^/$place\$   https://%{HTTP_HOST}/$place/ [L,R]\n\n";
 
         $OUT .= "    ProxyRequests Off\n";
@@ -41,25 +41,13 @@
             $OUT .= "#       private access by default\n";
             $OUT .= "        Require ip $localAccess $externalSSLAccess\n";
         }
-        # any smanager script or style added in line should be hashed and added here to run in a modern browser
-        $OUT .= "        Header set Content-Security-Policy  \"script-src 'self' 'unsafe-eval' 'unsafe-hashes' "
-        # list of hashes for script-src we accept and reference to find them
-        ." 'sha256-T5nv1LP9Xxdv7I1tsdTYprjvwoZyVEvfe8Y4TLx59pk='" # $(document).ready(function() \{    $('#tognav').click(function() 
-        ." 'sha256-TxVHbw3t1mXreukND/yBI+H+CscZDpyxPoNoBrRhmSE=' " # (function($) \{    $.fn.swapClass = function(class1, class2) 
-        ." 'sha256-30Xxu25YbRvjbQ2ngJ8EyneSz0No788PqjM9XbQh+qM=' " # ...const togglePassword...
-        ." 'sha256-5PrS/6zSCY/wROLKhAm4ymOuYsfvvScrC9Vp8FtOpxU=' " # nutups:316 window.onload = function() \{		SelectInput(); 
-        ." 'sha256-pxCVW6zyLaFSTIpOP2p4ULot8y+QsEmSEjKE54zDTWQ=' " # nutups:317 window.onload = function() \{   SelectInput();
-        ." 'sha256-P51OyslUh5bGkoWk9qY+o4Su4HuwNFoQcFCeNxF7Ms8=' " # userpanel window.onload = function() {
-	." ; "
-        ." style-src 'self'  'unsafe-hashes' "
-        # list of hashes for  style-src we accept and reference to find them  
-        ." ;"
-	." \"\n"; 
-	$OUT .= "    </Location>\n";
-        # prevent caching of manager files in browser
+        # CSP header - single clean concatenation
+        $OUT .= "        Header set Content-Security-Policy \"script-src 'self' 'unsafe-eval' 'unsafe-hashes' 'sha256-T5nv1LP9Xxdv7I1tsdTYprjvwoZyVEvfe8Y4TLx59pk=' 'sha256-TxVHbw3t1mXreukND/yBI+H+CscZDpyxPoNoBrRhmSE=' 'sha256-30Xxu25YbRvjbQ2ngJ8EyneSz0No788PqjM9XbQh+qM=' 'sha256-5PrS/6zSCY/wROLKhAm4ymOuYsfvvScrC9Vp8FtOpxU=' 'sha256-pxCV6zyLaFSTIpOP2p4ULot8y+QsEmSEjKE54zDTWQ=' 'sha256-P51OyslUh5bGkoWk9qY+o4Su4HuwNFoQcFCeNxF7Ms8='; style-src 'self' 'unsafe-hashes';\"\n";
+        
+        $OUT .= "    </Location>\n";
         $OUT .= "   <LocationMatch \"/$place/.+\.(html|cgi)\$\">\n";
         $OUT .= "                   Header set Cache-Control no-store\n";
         $OUT .= "   </LocationMatch>\n";
-
     }
+    return $OUT;
 }
