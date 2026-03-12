@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 179
+%define release 180
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,7 +152,7 @@ true
 %defattr(-,root,root)
 
 %changelog
-* Thu Mar 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-179.sme
+* Thu Mar 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-180.sme
 - remove csp style hashes no longer needed [SME: 13177]
 
 * Wed Mar 11 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-178.sme

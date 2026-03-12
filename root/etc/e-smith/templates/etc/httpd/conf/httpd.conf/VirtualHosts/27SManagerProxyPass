@@ -49,7 +49,8 @@
         ." 'sha256-30Xxu25YbRvjbQ2ngJ8EyneSz0No788PqjM9XbQh+qM=' " # ...const togglePassword...
         ." 'sha256-5PrS/6zSCY/wROLKhAm4ymOuYsfvvScrC9Vp8FtOpxU=' " # nutups:316 window.onload = function() \{		SelectInput(); 
         ." 'sha256-pxCVW6zyLaFSTIpOP2p4ULot8y+QsEmSEjKE54zDTWQ=' " # nutups:317 window.onload = function() \{   SelectInput();
-        ." ; "
+        ." 'sha256-P51OyslUh5bGkoWk9qY+o4Su4HuwNFoQcFCeNxF7Ms8=' " # userpanel window.onload = function() {
+	." ; "
         ." style-src 'self'  'unsafe-hashes' "
         # list of hashes for  style-src we accept and reference to find them  
         ." ;"
