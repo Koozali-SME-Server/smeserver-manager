@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 178
+%define release 179
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-179.sme
+- remove csp style hashes no longer needed [SME: 13177]
+
 * Wed Mar 11 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-178.sme
 - improve handling of tkt to autologin [SME: 13326]
   now able to extend token or delete it
