@@ -4,39 +4,116 @@
   % my $pkg_count = stash('pkg_count') // 0;
   % my $grp_count = stash('grp_count') // 0;
   % my $has_any   = ($pkg_count + $grp_count) > 0;
+  
+  <div class="dnf-update-controls">
+    <div class="dnf-tabs" role="tablist" aria-label="DNF actions">
+      <button type="button"
+              class="dnf-tab <%= $function eq 'update' ? 'is-active' : '' %>"
+              role="tab"
+              aria-selected="<%= $function eq 'update' ? 'true' : 'false' %>"
+              aria-controls="dnf-tabpanel-update"
+              data-mode="update"
+              id="dnf-tab-update">Update</button>
 
-  <div class="dnf-update-controls"> 
-    <label for="dnf-action">Action</label>
-    <select id="dnf-action">
-      <option value="update"  <%= $function eq 'update'  ? 'selected' : '' %>>Update</option>
-      <option value="install" <%= $function eq 'install' ? 'selected' : '' %>>Install</option>
-      <option value="remove"  <%= $function eq 'remove'  ? 'selected' : '' %>>Remove</option>
-    </select>
+      <button type="button"
+              class="dnf-tab <%= $function eq 'install' ? 'is-active' : '' %>"
+              role="tab"
+              aria-selected="<%= $function eq 'install' ? 'true' : 'false' %>"
+              aria-controls="dnf-tabpanel-install"
+              data-mode="install"
+              id="dnf-tab-install">Install</button>
 
-    <button id="dnf-start" class="btn" <%= ($function eq 'update' && !$has_any) ? 'disabled' : '' %>>Start</button>
+      <button type="button"
+              class="dnf-tab <%= $function eq 'remove' ? 'is-active' : '' %>"
+              role="tab"
+              aria-selected="<%= $function eq 'remove' ? 'true' : 'false' %>"
+              aria-controls="dnf-tabpanel-remove"
+              data-mode="remove"
+              id="dnf-tab-remove">Remove</button>
+
+      <button type="button"
+              class="dnf-tab <%= $function eq 'configure' ? 'is-active' : '' %>"
+              role="tab"
+              aria-selected="<%= $function eq 'configure' ? 'true' : 'false' %>"
+              aria-controls="dnf-tabpanel-configure"
+              data-mode="configure"
+              id="dnf-tab-configure">Configure</button>
+    </div>
   </div>
 
-<div id="dnf-msg" class="dnf-msg" aria-live="polite"
-     data-mode="<%= $function %>"
-     data-pkg-total="<%= $pkg_count %>"
-     data-grp-total="<%= $grp_count %>">
-  % if ($function eq 'update') {
-    Updates available: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
-  % } elsif ($function eq 'install') {
-    Available: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
-  % } else {
-    Installed: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
-  % }
-  <span id="dnf-selected-note"></span>
-</div>
+  <div class="dnf-tabpanels">
+    % if ($function ne 'configure' ){
+     <button id="dnf-start" class="btn action"
+       <%= ($function eq 'update' && !$has_any) ? 'disabled' : '' %>>
+       <%= l('Start') %>
+     </button>
+    % }
+  <div id="dnf-msg" class="dnf-msg" aria-live="polite"
+       data-mode="<%= $function %>"
+       data-pkg-total="<%= $pkg_count %>"
+       data-grp-total="<%= $grp_count %>">
+    % if ($function eq 'update') {
+      Updates available: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
+    % } elsif ($function eq 'install') {
+      Available: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
+    % } elsif ($function eq 'remove') {
+      Installed: <%= $pkg_count %> package(s)<%= $grp_count ? ", $grp_count group(s)" : "" %>.
+    % }
+    <span id="dnf-selected-note"></span>
+  </div>
 
-  <div class="dnf-pickers"> 
+    <section id="dnf-tabpanel-update"
+             class="dnf-tabpanel <%= $function eq 'update' ? '' : 'is-hidden' %>"
+             role="tabpanel"
+             aria-labelledby="dnf-tab-update">
+      <div id="dnf-updates">
+        % if ($pkg_count > 0) {
+          <%= l('yum_DESC_AVAILABLE_UPDATES') %>
+        % } else {
+          <%= l('yum_DESC_UPTODATE') %>
+        % }
+      </div>
+    </section>
+
+    <section id="dnf-tabpanel-install"
+             class="dnf-tabpanel <%= $function eq 'install' ? '' : 'is-hidden' %>"
+             role="tabpanel"
+             aria-labelledby="dnf-tab-install">
+      <div id="dnf-install">
+        <%= l('yum_HEADER_AVAILABLE_SOFTWARE') %>
+      </div>
+    </section>
+
+    <section id="dnf-tabpanel-remove"
+             class="dnf-tabpanel <%= $function eq 'remove' ? '' : 'is-hidden' %>"
+             role="tabpanel"
+             aria-labelledby="dnf-tab-remove">
+      <div id="dnf-remove">
+        <%= l('yum_HEADER_INSTALLED_SOFTWARE') %>
+      </div>
+    </section>
+
+    <section id="dnf-tabpanel-configure"
+             class="dnf-tabpanel <%= $function eq 'configure' ? '' : 'is-hidden' %>"
+             role="tabpanel"
+             aria-labelledby="dnf-tab-configure">
+      %= include 'partials/_dnf_config'
+    </section>
+
+  % if ($function ne 'configure' ){
+     <br />
+     <%== l('yum_MULTI_SELECT') %>
+  % }
+
+  <div class="dnf-pickers">
     <div class="pkg-picker <%= $pkg_count ? '' : 'is-hidden' %>" id="pkg-picker-packages">
       <div class="pkg-picker-head">
-        <label>Packages</label>
-        <input class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
-        <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
-        <div class="pkg-filter-msg" aria-live="polite"></div>
+        <span class="dnf-label label"><%= l('Packages') %></span>
+        <span class="data">
+          <input class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
+          <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
+          <div class="pkg-filter-msg" aria-live="polite"></div>
+        </span>
       </div>
 
       <select class="pkg-list" id="SelectedPackages" name="SelectedPackages" multiple size="14">
@@ -49,7 +126,7 @@
 
     <div class="pkg-picker <%= $grp_count ? '' : 'is-hidden' %>" id="pkg-picker-groups">
       <div class="pkg-picker-head">
-        <label>Groups</label>
+        <label><span class="label"><%= l('Groups') %></span></label>
         <input class="pkg-search" type="text" placeholder="Filter groups (text or /regex/flags)">
         <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
         <div class="pkg-filter-msg" aria-live="polite"></div>
@@ -63,4 +140,6 @@
       </select>
     </div>
   </div>
+  </div>
+
 </div>

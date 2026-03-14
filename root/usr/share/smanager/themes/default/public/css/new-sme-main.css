@@ -264,7 +264,7 @@ hr.sme-copyrightbar {
     border: 0;
 }
 
-input.action {
+input.action,button.action {
     margin-left: 0;
     background-color: #bee6a2;
     color: darkgreen;
@@ -275,6 +275,14 @@ input.action {
     align-items: center;
 }
 
+input.action,button.action:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
 input.action2 {
     margin-left: 0;
     color: black;
@@ -283,12 +291,12 @@ input.action2 {
     justify-content: center;
 }
 
-input.action:active {
+input.action,button.action:active {
     background-color: #3e8e41;
     transform: translate(-2px,2px);
 }
 
-input.action:hover {
+input.action,button.action:hover {
     background-color: #3e8e41;
     color: white;
 }

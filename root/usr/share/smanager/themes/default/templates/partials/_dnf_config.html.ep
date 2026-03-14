@@ -1,84 +1,71 @@
-% layout 'default', title => "Sme server 2 - yum_config";
+%# INCLUDE partial: Configure tab body (no layout/content_for)
 
-% content_for 'module' => begin
+<form id="dnf-config-form" class="dnf-config-form" method="post" action="<%= url_for('yumd') %>">
+  <fieldset class="dnf-config">
+    <legend><%#= l('Configure') %></legend>
 
-  <div id='module' class='module yumconfig-panel'>
-    % if (config->{debug} == 1) {
-      <p>
-        %= dumper $c->current_route
-        %= dumper $yum_datas
-      </p>
-    % } 
+    % param(yum_check4updates => $c->get_status('check4updates')) unless defined param('yum_check4updates');
+    <div class="dnf-field">
+      <label for="yum_check4updates"><%= l('yum_LABEL_YUM_STATUS') %></label>
+      <div class="dnf-field-control">
+        %= select_field yum_check4updates => $c->get_check_freq_opt()
+      </div>
+    </div>
 
-  <h1><%= $title %></h1>
+    <div class="dnf-help"><%= l('yum_DESC_YUM_PACKAGEFUNCTIONS') %></div>
 
-  %= form_for 'yumd' => ( method => 'POST' ) => begin
+    % param(yum_PackageFunctions => $c->get_status('PackageFunctions')) unless defined param('yum_PackageFunctions');
+    <div class="dnf-field">
+      <label for="yum_PackageFunctions"><%= l('yum_LABEL_YUM_PACKAGEFUNCTIONS') %></label>
+      <div class="dnf-field-control">
+        %= select_field yum_PackageFunctions => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]]
+      </div>
+    </div>
 
-    <p><span class=label>
-        %= l 'yum_LABEL_YUM_STATUS'
-      </span><span class=data>
-        % param 'yum_check4updates' => $c->get_status('check4updates') unless param 'yum_check4updates';
-        %= select_field 'yum_check4updates' => $c->get_check_freq_opt()
-    </span></p>
+    <div class="dnf-help"><%= l('yum_DESC_ENABLED_REPOSITORIES') %></div>
 
-    <br>
-    %= l 'yum_DESC_YUM_PACKAGEFUNCTIONS'
+    % param(SelectedRepositories => $c->get_repository_current_options()) unless defined param('SelectedRepositories');
+    <div class="dnf-field">
+      <label for="SelectedRepositories"><%= l('yum_LABEL_ENABLED_REPOSITORIES') %></label>
+      <div class="dnf-field-control">
+        %= select_field SelectedRepositories => $c->get_repository_options2(), class => 'input', multiple => '1', size => 10
+      </div>
+    </div>
 
-    <p><span class=label>
-        %= l 'yum_LABEL_YUM_PACKAGEFUNCTIONS'
-      </span><span class=data>
-        % param 'yum_PackageFunctions' => $c->get_status('PackageFunctions') unless param 'yum_PackageFunctions';
-        %= select_field 'yum_PackageFunctions' => [ [ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ] ];
-    </span></p>
+    <div class="dnf-help"><%= l('yum_DESC_YUM_DELTARPMPROCESS') %></div>
 
-    <br>
-    %= l 'yum_DESC_ENABLED_REPOSITORIES'
+    % param(yum_DeltaRpmProcess => $c->get_status('DeltaRpmProcess')) unless defined param('yum_DeltaRpmProcess');
+    <div class="dnf-field">
+      <label for="yum_DeltaRpmProcess"><%= l('yum_LABEL_YUM_DELTARPMPROCESS') %></label>
+      <div class="dnf-field-control">
+        %= select_field yum_DeltaRpmProcess => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]]
+      </div>
+    </div>
 
-    <p><span class=label>
-        %= l 'yum_LABEL_ENABLED_REPOSITORIES'
-      </span><span class=data>
-        % param 'SelectedRepositories' => $c->get_repository_current_options() unless param 'SelectedRepositories';
-        %= select_field 'SelectedRepositories' => $c->get_repository_options2(), class => 'input', multiple => '1';
-    </span></p>
+    <div class="dnf-help"><%= l('yum_LABEL_YUM_DOWNLOADONLY_DESCRIPTION') %></div>
 
-    <br>
-    %= l 'yum_DESC_YUM_DELTARPMPROCESS'
+    % param(yum_DownloadOnly => $c->get_status('DownloadOnly')) unless defined param('yum_DownloadOnly');
+    <div class="dnf-field">
+      <label for="yum_DownloadOnly"><%= l('yum_LABEL_YUM_DOWNLOADONLY') %></label>
+      <div class="dnf-field-control">
+        %= select_field yum_DownloadOnly => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]]
+      </div>
+    </div>
 
-    <p><span class=label>
-        %= l 'yum_LABEL_YUM_DELTARPMPROCESS'
-      </span><span class=data>
-        % param 'yum_DeltaRpmProcess' => $c->get_status('DeltaRpmProcess') unless param 'yum_DeltaRpmProcess';
-        %= select_field 'yum_DeltaRpmProcess' => [ [ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ] ];
-    </span></p>
+    <div class="dnf-help"><%= l('yum_DESC_YUM_AUTOINSTALLUPDATES') %></div>
 
-    <br>
-    %= l 'yum_LABEL_YUM_DOWNLOADONLY_DESCRIPTION'
+    % param(yum_AutoInstallUpdates => $c->get_status('AutoInstallUpdates')) unless defined param('yum_AutoInstallUpdates');
+    <div class="dnf-field">
+      <label for="yum_AutoInstallUpdates"><%= l('yum_LABEL_YUM_AUTOINSTALLUPDATES') %></label>
+      <div class="dnf-field-control">
+        %= select_field yum_AutoInstallUpdates => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]]
+      </div>
+    </div>
 
-    <p><span class=label>
-        %= l 'yum_LABEL_YUM_DOWNLOADONLY'
-      </span><span class=data>
-        % param 'yum_DownloadOnly' => $c->get_status('DownloadOnly') unless param 'yum_DownloadOnly';
-        %= select_field 'yum_DownloadOnly' => [ [ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ] ];
-    </span></p>
+    %= hidden_field trt => 'CONF'
 
-    <br>
-    %= l 'yum_DESC_YUM_AUTOINSTALLUPDATES'
-
-    <p><span class=label>
-        %= l 'yum_LABEL_YUM_AUTOINSTALLUPDATES'
-      </span><span class=data>
-        % param 'yum_AutoInstallUpdates' => $c->get_status('AutoInstallUpdates') unless param 'yum_AutoInstallUpdates';
-        %= select_field 'yum_AutoInstallUpdates' => [ [ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ] ];
-    </span></p>
-
-    %= hidden_field 'trt' => 'CONF'
-    <br>
-    <!--<div class='center'>-->
-      %= submit_button $c->l('SAVE'), class => 'action'
-      <!--</div>-->
-
-  % end
-
-</div>
-
-% end
+    <div class="dnf-actions">
+      %= submit_button $c->l('SAVE'), class => 'btn action', id => 'dnf-config-save'
+    </div>
+  </fieldset>
+</form>

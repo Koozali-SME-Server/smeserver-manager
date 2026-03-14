@@ -27,8 +27,10 @@ my $DNF_STATUS_FILE   = '/var/cache/dnf/dnf.status';
 my $DNF_LOG_DIR       = '/var/log/dnf';
 my $DNF_LOG_RE        = qr/^dnf\.log\.(\d+)$/;
 
+our %dbs;
+
 # END marker emitted by your event script
-my $DNF_END_MARKER_RE = qr/^---- dnf event finished at .*?\(exit=\d+\) ----/;
+#my $DNF_END_MARKER_RE = qr/^---- dnf event finished at .*?\(exit=\d+\) ----/;
 
 # Per-worker cache (hypnotoad workers each keep their own cache)
 my $CACHE = Mojo::Cache->new(max_keys => 40);
@@ -144,19 +146,82 @@ sub _newest_log_since ($c, $t0_int, $slack_seconds = 2) {
   return $best_path;
 }
 
+
+sub get_status {
+    # called from template
+    my ($c, $prop, $localise) = @_;
+    my $cfg = $c->_open_cfg;
+    my $status = $cfg->get_prop("dnf", $prop) || 'disabled';
+    return $status unless $localise;
+    return $c->l($status eq 'enabled' ? 'ENABLED' : 'DISABLED');
+} ## end sub get_status
+
+sub get_check_freq_opt {
+    my ($c) = @_;
+    return [
+        [ $c->l('DISABLED')     => 'disabled' ],
+        [ $c->l('yum_1DAILY')   => 'daily' ],
+        [ $c->l('yum_2WEEKLY')  => 'weekly' ],
+        [ $c->l('yum_3MONTHLY') => 'monthly' ]
+    ];
+} ## end sub get_check_freq_opt
+
+sub refresh_dbs {
+    for (qw(available installed updates)) {
+        $dbs{$_} = esmith::ConfigDB::UTF8->open_ro("dnf_$_")
+            or die "Couldn't open dnf_$_ DB\n";
+    }
+
+    for (qw(repositories)) {
+        $dbs{$_} = esmith::ConfigDB::UTF8->open("yum_$_")
+            or die "Couldn't open yum_$_ DB\n";
+    }
+}
+
+sub get_repository_current_options {
+    # called from template
+    my $c = shift;
+    $c->refresh_dbs();
+    my @selected;
+    foreach my $repos ($dbs{repositories}->get_all_by_prop(type => "repository")) {
+        next unless ($repos->prop('Visible') eq 'yes'
+            or $repos->prop('status') eq 'enabled');
+        push @selected, $repos->key if ($repos->prop('status') eq 'enabled');
+    }
+    return \@selected;
+} ## end sub get_repository_current_options
+
+sub get_repository_options2 {
+    my $c = shift;
+    $c->refresh_dbs();
+
+    my @options;
+
+    foreach my $repos ($dbs{repositories}->get_all_by_prop(type => "repository")) {
+        next unless ($repos->prop('Visible') eq 'yes'
+            or $repos->prop('status') eq 'enabled');
+        push @options, [ $repos->prop('Name') => $repos->key ];
+    }
+    my @opts = sort { $a->[0] cmp $b->[0] } @options;
+    return \@opts;
+} ## end sub get_repository_options2
+
+
 # ---- Actions ----
 
 sub dnf_partial ($c) {
-  # Same logic as do_show, but renders only _dnf_show
-  my $function = $c->param('function') // 'update';
-  $function = lc $function;
+  my $function = lc($c->param('function') // 'update');
   $function =~ s/^\s+|\s+$//g;
-  $function = 'update' unless $function =~ /^(update|install|remove)$/;
+  $function = 'update' unless $function =~ /^(update|install|remove|configure)$/;
 
-  my %map  = ( update => 'updates', install => 'available', remove => 'installed' );
-  my $view = $map{$function};
+  my %map = ( update => 'updates', install => 'available', remove => 'installed' );
 
-  my ($pkg_opts, $grp_opts) = $c->_cached_options($view);
+  my ($pkg_opts, $grp_opts) = ([], []);
+  my $view = $map{$function} // '';
+
+  if ($function ne 'configure') {
+    ($pkg_opts, $grp_opts) = $c->_cached_options($view);
+  }
 
   $c->stash(
     title         => 'DNF',
@@ -174,18 +239,19 @@ sub dnf_partial ($c) {
 
 # GET /dnf?function=update|install|remove
 sub do_show ($c) {
-  my $function = $c->param('function') // 'update';
+  my $function = lc($c->param('function') // 'update');
   $c->app->log->info("DNF do_show raw_function=[" . ($c->param('function') // '') . "] normalized=[$function]");
-  $function = lc $function;
-  $function =~ s/^\s+|\s+$//g;   # trim
-  $function = 'update' unless $function =~ /^(update|install|remove)$/;
+  $function =~ s/^\s+|\s+$//g;
+  $function = 'update' unless $function =~ /^(update|install|remove|configure)$/;
 
-  my %map  = ( update => 'updates', install => 'available', remove => 'installed' );
-  my $view = $map{$function};
+  my %map = ( update => 'updates', install => 'available', remove => 'installed' );
 
-  my ($pkg_opts, $grp_opts) = $c->_cached_options($view);
+  my ($pkg_opts, $grp_opts) = ([], []);
+  my $view = $map{$function} // '';
 
-  $c->app->log->info("DNF do_show function=$function view=$view pkg=" . scalar(@$pkg_opts) . " grp=" . scalar(@$grp_opts));
+  if ($function ne 'configure') {
+    ($pkg_opts, $grp_opts) = $c->_cached_options($view);
+  }
 
   $c->stash(
     title         => $c->l('yum_FORM_TITLE'),
@@ -205,12 +271,26 @@ sub do_show ($c) {
 sub dnf_options ($c) {
   my $function = $c->param('function') // '';
   return $c->render(json => { error => "Invalid function" }, status => 400)
-    unless $function =~ /^(update|install|remove)$/;
+    unless $function =~ /^(update|install|remove|configure)$/;
+
+  # ADD THIS BLOCK (special-case configure)
+  if ($function eq 'configure') {
+    return $c->render(json => {
+      function     => 'configure',
+      view         => '',
+      has_packages => 0,
+      has_groups   => 0,
+      packages     => [],
+      groups       => [],
+    });
+  }
 
   my %map  = ( update => 'updates', install => 'available', remove => 'installed' );
   my $view = $map{$function};
 
   my ($pkg_opts, $grp_opts) = $c->_cached_options($view);
+  
+  return $c->render(json => { function => 'configure', view => '', packages => [], groups => [] });
 
   return $c->render(json => {
     function     => $function,
@@ -220,6 +300,7 @@ sub dnf_options ($c) {
     packages     => $pkg_opts,
     groups       => $grp_opts,
   });
+  
 }
 
 # POST /dnf/start/:function  (route uses start_dnf)
@@ -229,7 +310,7 @@ sub start_dnf ($c) {
   $function = lc $function;
   $function =~ s/^\s+|\s+$//g;
   return $c->render(json => { error => "Invalid function" }, status => 400)
-    unless $function =~ /^(update|install|remove)$/;
+    unless $function =~ /^(update|install|remove|configure)$/;
   my $st = $c->_get_dnf_status;
   $c->app->log->info("DNF start_dnf requested; status=[$st]");
   if ($c->_is_dnf_running) {
@@ -256,16 +337,25 @@ sub start_dnf ($c) {
 }
 
 # GET /dnf/stream/:run_id?started_i=...&old_db=...
+# start at beginning + follow
+
+use Mojo::Util qw(xml_escape);
+
+my $DNF_END_MARKER_RE = qr/^---- dnf event finished at .*?\(exit=\d+\) ----/;
+
 sub dnf_stream ($c) {
   my $t0_i   = int($c->param('started_i') // time());
   my $old_db = $c->param('old_db') // '';
 
-  $c->res->headers->header('X-Accel-Buffering' => 'no');
+  $c->app->log->info($c->log_req);
+
   $c->res->headers->cache_control('no-cache');
   $c->res->headers->content_type('text/html; charset=utf-8');
+  $c->inactivity_timeout(0);   # disable for this connection
   $c->render_later;
 
-  $c->write_chunk(<<'HTML'); 
+  # Header
+  $c->write_chunk(<<'HTML');
 <!doctype html>
 <html>
 <head>
@@ -278,6 +368,7 @@ sub dnf_stream ($c) {
 <table class="dnf-stream-table"><tbody id="log-body">
 HTML
 
+  # Discover logfile (unchanged)
   my ($logfile, $logsrc) = ('', '');
   my $deadline = time() + 20;
 
@@ -311,58 +402,109 @@ HTML
     . '</div></td></tr>'
   );
 
-  open(my $fh, '<', $logfile) or do {
-    $c->write_chunk('<tr><td><pre>' . xml_escape("Failed to open $logfile: $!\n") . "</pre></td></tr>");
+  # Start tail from beginning, follow
+  open(my $fh, "-|", "/usr/bin/tail", "-n", "+1", "-F", "--", $logfile) or do {
+    $c->write_chunk('<tr><td><pre>' . xml_escape("Failed to start tail on $logfile: $!\n") . "</pre></td></tr>");
     $c->write_chunk('</tbody></table></div></body></html>');
     return $c->finish;
   };
 
-  my $stream_id = $$ . time . rand();
-  $c->stash(stream_id => $stream_id, fh => $fh, pos => 0, line_count => 0);
+  my $stream_id = $$ . time;
+  $c->stash(
+    stream_id   => $stream_id,
+    fh          => $fh,
+    logfile     => $logfile,
+    line_count  => 0,
+    tail_buf    => '',   # partial line buffer
+    tail_stream => undef # Mojo::IOLoop::Stream
+  );
 
-  _dnf_next_chunk($c, $stream_id);
+  # Stop tail if client disconnects
+  $c->on(finish => sub ($c, @) {
+    if (my $s = $c->stash('tail_stream')) {
+      $s->close_gracefully;
+      $c->stash(tail_stream => undef);
+    }
+    if (my $fh = $c->stash('fh')) {
+      close $fh;
+      $c->stash(fh => undef);
+    }
+  });
+  SrvMngr::Controller::Dnf::dnf_next_chunk($c, $stream_id);
 }
 
-sub _dnf_next_chunk ($c, $stream_id) {
+sub dnf_next_chunk ($c, $stream_id) {
+  # Guard: correct stream?
   return unless ($c->stash('stream_id') // '') eq $stream_id;
 
   my $fh = $c->stash('fh') or return $c->finish;
 
-  my $pos        = $c->stash('pos') // 0;
-  my $line_count = $c->stash('line_count') // 0;
+  # Attach stream reader exactly once
+  return if $c->stash('tail_stream');
 
-  seek($fh, $pos, 0);
+  my $stream = Mojo::IOLoop::Stream->new($fh);
+  $c->stash(tail_stream => $stream);
 
-  my $chunk = '';
-  my $lines = 0;
-  my $max_lines = 150;
-  my $saw_end = 0;
+  $stream->timeout(0); # tail can be quiet for a long time
 
-  while ($lines < $max_lines && (my $line = <$fh>)) {
-    $lines++;
-    $line_count++;
-    $saw_end = 1 if $line =~ $DNF_END_MARKER_RE;
+  $stream->on(read => sub ($s, $bytes) {
+    return unless ($c->stash('stream_id') // '') eq $stream_id;
 
-    $chunk .= sprintf(
-      '<tr><td class="line-num">%d</td><td class="line"><pre>%s</pre></td></tr>',
-      $line_count, xml_escape($line)
-    );
-  }
+    my $buf = ($c->stash('tail_buf') // '') . $bytes;
 
-  my $newpos = tell($fh);
-  $c->stash(pos => $newpos, line_count => $line_count);
+    # Process complete lines; keep partial in stash
+    my $chunk_html = '';
+    my $max_lines  = 150;
+    my $lines_out  = 0;
 
-  $c->write_chunk($chunk) if length $chunk;
+    while ($lines_out < $max_lines && $buf =~ s/^(.*?\n)//) {
+      my $line = $1;
 
-  if ($saw_end) {
-    $c->write_chunk('</tbody></table></div></body></html>');
-    close $fh;
-    $c->stash(fh => undef);
-    $c->_clear_panel_cache;
-    return $c->finish;
-  }
+      my $line_count = ($c->stash('line_count') // 0) + 1;
+      $c->stash(line_count => $line_count);
 
-  Mojo::IOLoop->timer(0.25 => sub { _dnf_next_chunk($c, $stream_id) });
+      my $saw_end = ($line =~ $DNF_END_MARKER_RE) ? 1 : 0;
+
+      $chunk_html .= sprintf(
+        '<tr><td class="line-num">%d</td><td class="line"><pre>%s</pre></td></tr>',
+        $line_count, xml_escape($line)
+      );
+
+      $lines_out++;
+
+      if ($saw_end) {
+        # flush what we have, then end
+        $c->stash(tail_buf => ''); # done
+        $c->write_chunk($chunk_html => sub {
+          $c->write_chunk('</tbody></table></div></body></html>' => sub {
+            $s->close_gracefully;
+            close $fh;
+            $c->stash(fh => undef, tail_stream => undef);
+            $c->_clear_panel_cache;
+            $c->finish;
+          });
+        });
+        return;
+      }
+    }
+
+    # Save remaining partial line
+    $c->stash(tail_buf => $buf);
+
+    # Write any completed lines we accumulated
+    $c->write_chunk($chunk_html) if length $chunk_html;
+  });
+
+  $stream->on(error => sub ($s, $err) {
+    $c->app->log->error("DNF(tail) stream error: $err");
+  });
+
+  $stream->on(close => sub ($s) {
+    $c->app->log->info("DNF(tail) stream closed");
+  });
+
+  Mojo::IOLoop->start unless Mojo::IOLoop->is_running; # usually already running under hypnotoad
+  $stream->start;
 }
 
 1;

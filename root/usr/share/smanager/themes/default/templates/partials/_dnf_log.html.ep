@@ -1,0 +1,4 @@
+% my $function = stash('function') // 'update';
+<div id="dnf-output" class="dnf-update-output <%= $function eq 'configure' ? 'is-hidden' : '' %>">
+  <iframe id="dnf-frame" src="about:blank" title="DNF output"></iframe>
+</div>

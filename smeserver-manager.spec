@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 181
+%define release 182
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 12 2026 Brian Read <brianr@koozali.org> 11.0.0-182.sme
+- Add in change for mojo image  - stops CSP failures on every page [SME: 13466]
+- Updated dnf.pm controller  - more robust log display [SME: 13465]
+- Change selection to tabbed format [SME: 13465]
+- Add in configuration tab - still WIP [SME: 13465]
+
 * Thu Mar 12 2026 Brian Read <brianr@koozali.org> 11.0.0-181.sme
 - Add routes for dnf to srvmngr.pm [SME: 13465]
 - Correct typo in Proxypass template expansion for httpd.conf [SME: 13177]

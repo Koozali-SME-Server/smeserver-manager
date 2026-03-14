@@ -132,8 +132,129 @@
 /* Iframe styling */
 #dnf-frame {
   width: 100%;
-  height: 70vh;              /* adjust as desired */
+  height: 42vh;              /* adjust as desired */
   border: 1px solid #bdbdbd; /* grey border */
   background: #fff;
   box-sizing: border-box;
+  resize: vertical;          /* allow vertical resizing */
+  overflow: auto;            /* required for resize to show */
+
 }
+
+/*
+.dnf-label {
+  background-color:red!important;
+}
+*/
+
+/* --- Tabs --- */
+.dnf-tabs {
+  display: flex;
+  gap: 0.25rem;
+  align-items: flex-end;
+  border-bottom: 1px solid #b9bcc2;
+  margin: 0 0 0.75rem 0;
+  padding: 0;
+}
+
+.dnf-tab {
+  appearance: none;
+  border: 1px solid #b9bcc2;
+  border-bottom: none;
+  background: #eef0f3;
+  color: #222;
+  padding: 0.45rem 0.85rem;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.1;
+}
+
+.dnf-config-form { margin: 0; }
+
+.dnf-config {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.dnf-config legend {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.dnf-help {
+  margin: 0.5rem 0 0.75rem 0;
+/*  color: #444;
+  font-size: 0.95rem;
+*/
+}
+
+.dnf-field-control select.input[multiple] {
+  width: 100%;
+  max-width: 36rem;
+}
+
+.dnf-tab:hover {
+  background: #e4e7ec;
+}
+
+.dnf-tab.is-active {
+  background: #fff;
+  font-weight: 600;
+  position: relative;
+  top: 1px;              /* visually connects active tab to panel */
+  border-color: #9aa0aa;
+}
+
+/* --- Tab panels --- */
+.dnf-tabpanels {
+  background: #fff;
+  border: 1px solid #b9bcc2;
+  border-top: none;        /* active tab replaces the top border visually */
+  padding: 0 0.85rem 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.dnf-tabpanel.is-hidden {
+  display: none;
+}
+
+/* Optional: configure form layout */
+.dnf-config .dnf-field {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0.5rem 0;
+  align-items: center;
+}
+
+.dnf-config input[type="text"],
+.dnf-config select {
+  max-width: 36rem;
+  width: 100%;
+}
+
+.dnf-actions {
+  margin-top: 0.85rem;
+}
+
+.dnf-update-controls { position: relative; }
+
+.dnf-tabs {
+  position: relative;
+  z-index: 10;            /* keep tabs above tabpanel content */
+}
+
+.dnf-tabpanels {
+  position: relative;
+  z-index: 1;
+}
+
+/* If your configure form has any weird positioning, force it normal */
+#dnf-tabpanel-configure,
+#dnf-tabpanel-configure form {
+  position: static;
+}
+
