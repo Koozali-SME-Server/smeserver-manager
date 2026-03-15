@@ -275,7 +275,7 @@ input.action,button.action {
     align-items: center;
 }
 
-input.action,button.action:disabled {
+input.action:disabled,button.action:disabled {
   background-color: #ccc;
   color: #666;
   cursor: not-allowed;
@@ -291,12 +291,12 @@ input.action2 {
     justify-content: center;
 }
 
-input.action,button.action:active {
+input.action:active,button.action:active {
     background-color: #3e8e41;
     transform: translate(-2px,2px);
 }
 
-input.action,button.action:hover {
+input.action:hover,button.action:hover {
     background-color: #3e8e41;
     color: white;
 }
@@ -336,7 +336,7 @@ span.data2 {
     padding: 2px;
 }
 
-span.label {
+span.label, .dnf-field {
   display: inline-block;
   font-weight: bold;
   background-color: #e8f3e1;

@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 182
+%define release 183
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Mar 15 2026 Brian Read <brianr@koozali.org> 11.0.0-183.sme
+- Fix misunderstanding of CSS for :hover on action buttons [SME: 13465]
+
 * Thu Mar 12 2026 Brian Read <brianr@koozali.org> 11.0.0-182.sme
 - Add in change for mojo image  - stops CSP failures on every page [SME: 13466]
 - Updated dnf.pm controller  - more robust log display [SME: 13465]
