@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 183
+%define release 184
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Mar 15 2026 Brian Read <brianr@koozali.org> 11.0.0-184.sme
+- Get dnf-config saving data [SME: 13465]
+- Add missing layout template to dnf panel [SME: 13465]
+
 * Sun Mar 15 2026 Brian Read <brianr@koozali.org> 11.0.0-183.sme
 - Fix misunderstanding of CSS for :hover on action buttons [SME: 13465]
 

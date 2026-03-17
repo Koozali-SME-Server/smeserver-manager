@@ -1,6 +1,6 @@
 %# INCLUDE partial: Configure tab body (no layout/content_for)
 
-<form id="dnf-config-form" class="dnf-config-form" method="post" action="<%= url_for('yumd') %>">
+<form id="dnf-config-form" class="dnf-config-form" method="post" action="<%= url_for('dnfd') %>">
   <fieldset class="dnf-config">
     <legend><%#= l('Configure') %></legend>
 

@@ -1,0 +1,41 @@
+% layout 'default', share_dir => './';
+
+% content_for 'module' => begin
+
+  % use constant FALSE => 0;
+  % use constant TRUE => 1;
+
+<div id="module" class="module dnf-panel">
+
+  <h1><%= $title %></h1>
+
+  % if ( stash('modul')) {
+    %= $c->render_to_string( inline => stash('modul') );
+  % }
+
+  % if ($c->stash('first')) {
+    <br><p>
+      %= $c->render_to_string( inline => $c->l( $c->stash('first') ) )
+    </p>
+
+  % } elsif ($c->stash('success')) {
+  <div class='success '>
+    %= $c->l( $c->stash('success') );
+  </div>
+  <br />
+
+  % } elsif ($c->stash('error')) {
+  <div class='sme-error'>
+    %= $c->l( $c->stash('error') );
+  </div>
+  % }
+  <br />
+
+  %#= include 'partials/_dnf_show'
+  <div id="dnf-controls-wrap">
+    %= include 'partials/_dnf_show'
+  </div>
+
+  %= include 'partials/_dnf_log'
+</div>
+% end 

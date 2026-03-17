@@ -9,6 +9,7 @@ package SrvMngr::Controller::Dnf;
 #    $if_admin->get ('/dnf/stream/:run_id')->to('dnf#dnf_stream')->name('dnf_stream');
 #    $if_admin->get('/dnf/options/:function')->to('dnf#dnf_options')->name('dnf_options');
 #    $if_admin->get('/dnf/partial')->to('dnf#dnf_partial')->name('dnf_partial');
+#    $if_admin->get('/dnfd')->to('dnf#do_update')->name('dnfd');
 #
 # routes : end
 #----------------------------------------------------------------------
@@ -146,6 +147,46 @@ sub _newest_log_since ($c, $t0_int, $slack_seconds = 2) {
   return $best_path;
 }
 
+sub change_settings {
+    my ($c) = @_;
+    my $cfg = $c->_open_cfg;
+
+    for my $param (
+        qw(
+        PackageFunctions
+        )
+        )
+    {
+        $cfg->set_prop("dnf", $param, $c->param("yum_$param"));
+    } ## end for my $param (qw( PackageFunctions...))
+    my $check4updates = $c->param("yum_check4updates");
+    my $status        = 'disabled';
+    if ($check4updates ne 'disabled') { $status = 'enabled'; }
+    $cfg->set_prop("dnf", 'check4updates', $check4updates);
+    my $deltarpm = $c->param("yum_DeltaRpmProcess");
+    $cfg->set_prop("dnf", 'DeltaRpmProcess', $deltarpm);
+    my $downloadonly = $c->param("yum_DownloadOnly");
+    if ($downloadonly ne 'disabled') { $status = 'enabled'; }
+    $cfg->set_prop("dnf", 'DownloadOnly', $downloadonly);
+    my $AutoInstallUpdates = $c->param("yum_AutoInstallUpdates");
+    if ($AutoInstallUpdates ne 'disabled') { $status = 'enabled'; }
+    $cfg->set_prop("dnf", 'AutoInstallUpdates', $AutoInstallUpdates);
+    $cfg->set_prop("dnf", 'status',             $status);
+    $cfg->reload();
+    my %selected = map { $_ => 1 } @{ $c->every_param('SelectedRepositories') };
+    
+    $c->refresh_dbs();
+    foreach my $repos ($dbs{repositories}->get_all_by_prop(type => "repository")) {
+        $repos->set_prop("status", exists $selected{ $repos->key } ? 'enabled' : 'disabled');
+    }
+    $dbs{repositories}->reload;
+
+    unless (system("/sbin/e-smith/signal-event", "dnf-modify") == 0) {
+        return $c->l('yum_ERROR_UPDATING_CONFIGURATION');
+    }
+    return 'OK';
+} ## end sub change_settings
+
 
 sub get_status {
     # called from template
@@ -180,6 +221,7 @@ sub refresh_dbs {
 
 sub get_repository_current_options {
     # called from template
+    # returns raw keys in a simple array
     my $c = shift;
     $c->refresh_dbs();
     my @selected;
@@ -192,11 +234,10 @@ sub get_repository_current_options {
 } ## end sub get_repository_current_options
 
 sub get_repository_options2 {
+    # builds name-key pairs, sorts them alphabetically by name, and returns a structured array of arrays
     my $c = shift;
     $c->refresh_dbs();
-
     my @options;
-
     foreach my $repos ($dbs{repositories}->get_all_by_prop(type => "repository")) {
         next unless ($repos->prop('Visible') eq 'yes'
             or $repos->prop('status') eq 'enabled');
@@ -209,6 +250,17 @@ sub get_repository_options2 {
 
 # ---- Actions ----
 
+sub do_update ($c) {
+   my $res=$c->change_settings();
+   if ($res eq 'OK'){
+       $c->stash('success',$c->l('yum_SUCCESS'));
+   } else {
+       $c->stash('error',$res); 
+   }
+   $c->_clear_panel_cache();
+   $c->do_show();
+}
+
 sub dnf_partial ($c) {
   my $function = lc($c->param('function') // 'update');
   $function =~ s/^\s+|\s+$//g;
@@ -218,6 +270,7 @@ sub dnf_partial ($c) {
 
   my ($pkg_opts, $grp_opts) = ([], []);
   my $view = $map{$function} // '';
+  $c->refresh_dbs();
 
   if ($function ne 'configure') {
     ($pkg_opts, $grp_opts) = $c->_cached_options($view);
