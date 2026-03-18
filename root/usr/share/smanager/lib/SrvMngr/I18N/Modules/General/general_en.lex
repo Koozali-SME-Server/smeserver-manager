@@ -73,6 +73,7 @@
 'E-Mail' => 'E-Mail',
 'Time' => 'Time',
 'Date' => 'Date',
+'THEME' => 'Theme',
 
 # All other rules
 'GROUP_ADD' => 'Add group',

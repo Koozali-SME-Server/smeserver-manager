@@ -1,2 +1,1 @@
-
 'swt_THEME' => 'Theme',

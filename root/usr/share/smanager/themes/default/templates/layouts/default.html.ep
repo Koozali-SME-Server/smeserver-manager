@@ -54,6 +54,7 @@
 	%   if ( not defined $c->session->{lang} ) {
 		% SrvMngr::init_session ( $c );
 	%    }
+<div id="container">
 
     <div id="header">
 	%= include 'partials/_header'
@@ -62,7 +63,6 @@
         % }
     </div>
 
-    <div id="container">
 		% if (config 'hasJquery') {
 			%= content 'js_toggleMenu'
 		% }

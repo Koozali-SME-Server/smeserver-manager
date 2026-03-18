@@ -1,14 +1,12 @@
+%= stylesheet '/css/swtheme.css'
 <div id='swt_theme'>
-  <font class="sme-copyright">
-    % my $btn = l('swt_THEME');
-    %= form_for $c->url_for('swttheme') => ( method => 'POST' ) => begin
-      % my $value = $c->session->{'CurrentTheme'};
-      % $value = session 'CurrentTheme';
-
+% my $btn = l('THEME');
+% my $value = $c->session->{'CurrentTheme'};
+% $value = session 'CurrentTheme';
+%= form_for $c->url_for('swttheme') => ( method => 'POST' ), class=>"theme-selector-form" => begin
       % param 'Theme' => $value unless param 'Theme';
-      %= select_field 'Theme' => $c->theme_list(), class => 'input'
+      %= select_field 'Theme' => $c->theme_list(), class=>"theme-selector"
       %= hidden_field 'From' => $c->tx->req->url
-      %= submit_button "$btn"
-    % end
-  </font>
+      %= submit_button "$btn", class=>'theme-selector-button'
+% end
 </div>

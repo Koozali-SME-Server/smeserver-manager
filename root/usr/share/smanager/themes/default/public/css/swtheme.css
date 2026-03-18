@@ -1,0 +1,79 @@
+/* Layout */
+#swt_theme .theme-selector-form{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-top:6px;
+}
+
+/* SELECT: cross-browser, full clickable area */
+#swt_theme select.theme-selector{
+  -webkit-appearance: menulist; /* Safari/Chrome */
+  -moz-appearance: menulist;    /* Firefox */
+  appearance: menulist;
+
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: middle;
+
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+
+  color: #000;
+  background-color: #fff;       /* or transparent */
+  border: 1px solid #999;
+  border-radius: 3px;
+
+  padding: 2px 22px 2px 6px;    /* room for arrow */
+  min-height: 24px;             /* minimal height */
+  height: auto;                 /* let browser render correctly */
+  line-height: normal;          /* IMPORTANT: avoids broken hit-area */
+
+  box-shadow: none;
+
+  cursor: pointer;
+  pointer-events: auto;
+
+  position: relative;           /* helps if something overlaps */
+  z-index: 1;
+  width:132px;
+}
+
+/* BUTTON: minimal, black on white */
+#swt_theme input.theme-selector-button,
+#swt_theme button.theme-selector-button{
+  -webkit-appearance: none;
+  appearance: none;
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size: 13px;
+
+  color: #000;
+  background-color: #fff;       /* or transparent */
+  border: 1px solid #999;
+  border-radius: 3px;
+
+  padding: 2px 10px;
+  min-height: 24px;
+
+  box-shadow: none;
+  cursor: pointer;
+}
+
+#swt_theme input.theme-selector-button:hover,
+#swt_theme button.theme-selector-button:hover{
+  background: #f3f3f3;
+}
+
+#swt_theme select.theme-selector:focus,
+#swt_theme input.theme-selector-button:focus,
+#swt_theme button.theme-selector-button:focus{
+  outline: 1px dotted #000;
+  outline-offset: 2px;
+}
