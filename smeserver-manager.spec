@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 187
+%define release 188
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-188.sme
+- Restore missing > on <a> tag places where the following line has been commented out [SME: 6278]
+
 * Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-187.sme
 - Fix 'label for' violations in datetime, dnf software install and mail log file panels [SME: 6278]
 

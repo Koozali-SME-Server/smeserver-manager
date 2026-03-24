@@ -98,8 +98,8 @@
     % $actionResetPw = qq{
       % <a href="useraccountsd?CsrfDef=$csrf_token&trt=PWD&user=$useraccounts_user_name"
       % class="sme-password-button unset ui-button ui-corner-all ui-widget ui-button-icon-only"
-      % title="$password_text" aria-label="$password_text"
-      % style="background:pink;">
+      % title="$password_text" aria-label="$password_text">
+      %# style="background:pink;">
       % <span class="ui-icon ui-icon-refresh"></span>
       % <span class="ui-button-text">$password_text</span>
       % </a>
