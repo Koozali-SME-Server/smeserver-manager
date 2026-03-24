@@ -46,7 +46,7 @@
         <tr>
           %= t td => ( class => 'sme-border' ) => $ibay->key
           %= t td => ( class => 'sme-border' ) => $ibay->prop('Name')
-          <td class='sme-border' style="min-width:15em">
+          <td class='sme-border'>
             % my ( $actionModify, $actionResetPw, $actionRemove ) = '&nbsp;';
             % if ($modifiable eq 'yes') {
               % my $modify_text = l('MODIFY'); # Localized text

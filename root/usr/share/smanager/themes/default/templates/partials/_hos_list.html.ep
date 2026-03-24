@@ -49,7 +49,7 @@
             %= t td => ( class => 'sme-border' ) => $_->{'IP'};
             %= t td => ( class => 'sme-border' ) => $_->{'MACAddress'};
             %= t td => ( class => 'sme-border' ) => $_->{'Comment'};
-            <td class='sme-border' style="min-width:15em">
+            <td class='sme-border'>
               % my ( $actionModify, $actionRemove ) = '&nbsp;';
               % my $static = $_->{'static'} || "no";
               % if ($static ne 'yes') {

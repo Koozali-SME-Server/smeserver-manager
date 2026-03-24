@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 185
+%define release 186
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-186.sme
+- delete inline style for cell contents in tables in user, group, host, ibay and domain panels [SME: 6278]
+
 * Wed Mar 18 2026 Brian Read <brianr@koozali.org> 11.0.0-185.sme
 - Missing use in dnf.pm [SME: 13472]
 - Adjust format around theme selector and fix overlap causing click to be ignored. [SME: 13472]

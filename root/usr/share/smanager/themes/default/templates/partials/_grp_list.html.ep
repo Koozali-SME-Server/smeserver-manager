@@ -40,7 +40,7 @@
           <tr>
             %= t td => ( class => 'sme-border' ) => $group->key
             %= t td => ( class => 'sme-border' ) => $group->prop('Description')
-            <td class='sme-border' style="min-width:15em">
+            <td class='sme-border'>
               % my $modify_text = l('MODIFY'); # Localized text
               % my $actionModify = qq{
                 % <a href="groups2?CsrfDef=$csrf_token&trt=UPD&group=$group_name"

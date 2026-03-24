@@ -150,7 +150,7 @@
   % <span class="ui-button-text">$roundcube_text</span>
   % </a>
 % };
-<td class='sme-border' style="min-width:35em">
+<td class='sme-border'>
   <%= $c->render_to_string( inline => $actionModify ) %>
   <%= $c->render_to_string( inline => $actionResetPw ) %>
   <%= $c->render_to_string( inline => $actionLock ) %>
