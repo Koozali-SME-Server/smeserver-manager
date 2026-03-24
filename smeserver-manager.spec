@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 190
+%define release 191
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-191.sme
+- Replace <font> tag by <span> in footer as <font> no longer exists in html5 [SME: 6278]
+
 * Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-190.sme
 - Add autocomplete to LDAP directory panel [SME: 13483]
 
