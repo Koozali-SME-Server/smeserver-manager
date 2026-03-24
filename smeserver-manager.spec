@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 191
+%define release 192
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-192.sme
+- Remove align property from welcome screen <img> tag (no longer supported)  [SME: 6278]
+
 * Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-191.sme
 - Replace <font> tag by <span> in footer as <font> no longer exists in html5 [SME: 6278]
 

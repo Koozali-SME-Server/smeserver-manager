@@ -40,8 +40,7 @@
 
         <p>
         <a href="https://wiki.koozali.org/Donate" target="_blank">
-        <img src="images/btn_donateCC_LG.gif" alt="https://wiki.koozali.org/Donate" 
-        align="middle"></a>
+        <img src="images/btn_donateCC_LG.gif" alt="https://wiki.koozali.org/Donate"></a>
         </p>
 
         <br>
