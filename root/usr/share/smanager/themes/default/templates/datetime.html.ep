@@ -57,9 +57,9 @@
     %= hidden_field 'trt' => $dat_data->{trt};
 
     <span class=label>
-      %= label_for time_mode => $c->l('dat_Time_Setting_Mode')
+      %= label_for time_mode_select => $c->l('dat_Time_Setting_Mode')
     </span><span class=data2>
-      % param 'time_mode' => $dat_data->{time_mode} unless param 'time_mode';
+      % param 'time_mode' => $dat_data->{time_mode}, unless param 'time_mode';
       %= select_field time_mode => ( $mode_options, id => 'time_mode_select' )
     </span>
 
@@ -90,7 +90,7 @@
       <div class='datetime-config-row'>
         <div class='datetime-label-col'>
           <span class='datetime-label'>
-            %= label_for 'datetime_manual' => $c->l('dat_set_manually')
+            %= $c->l('dat_set_manually')
           </span>
         </div>
         <div class='datetime-fields-col' id='datetime_manual'>

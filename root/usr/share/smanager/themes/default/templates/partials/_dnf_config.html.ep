@@ -8,7 +8,7 @@
     <div class="dnf-field">
       <label for="yum_check4updates"><%= l('yum_LABEL_YUM_STATUS') %></label>
       <div class="dnf-field-control">
-        %= select_field yum_check4updates => $c->get_check_freq_opt()
+        %= select_field yum_check4updates => $c->get_check_freq_opt(), id =>"yum_check4updates"
       </div>
     </div>
 
@@ -18,7 +18,7 @@
     <div class="dnf-field">
       <label for="yum_PackageFunctions"><%= l('yum_LABEL_YUM_PACKAGEFUNCTIONS') %></label>
       <div class="dnf-field-control">
-        %= select_field yum_PackageFunctions => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]]
+        %= select_field yum_PackageFunctions => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]], id => "yum_PackageFunctions"
       </div>
     </div>
 
@@ -28,7 +28,7 @@
     <div class="dnf-field">
       <label for="SelectedRepositories"><%= l('yum_LABEL_ENABLED_REPOSITORIES') %></label>
       <div class="dnf-field-control">
-        %= select_field SelectedRepositories => $c->get_repository_options2(), class => 'input', multiple => '1', size => 10
+        %= select_field SelectedRepositories => $c->get_repository_options2(), class => 'input', multiple => '1', size => 10, id => "SelectedRepositories"
       </div>
     </div>
 
@@ -38,7 +38,7 @@
     <div class="dnf-field">
       <label for="yum_DeltaRpmProcess"><%= l('yum_LABEL_YUM_DELTARPMPROCESS') %></label>
       <div class="dnf-field-control">
-        %= select_field yum_DeltaRpmProcess => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]]
+        %= select_field yum_DeltaRpmProcess => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]], id => "yum_DeltaRpmProcess"
       </div>
     </div>
 
@@ -48,7 +48,7 @@
     <div class="dnf-field">
       <label for="yum_DownloadOnly"><%= l('yum_LABEL_YUM_DOWNLOADONLY') %></label>
       <div class="dnf-field-control">
-        %= select_field yum_DownloadOnly => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]]
+        %= select_field yum_DownloadOnly => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]], id => "yum_DownloadOnly"
       </div>
     </div>
 
@@ -58,7 +58,7 @@
     <div class="dnf-field">
       <label for="yum_AutoInstallUpdates"><%= l('yum_LABEL_YUM_AUTOINSTALLUPDATES') %></label>
       <div class="dnf-field-control">
-        %= select_field yum_AutoInstallUpdates => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]]
+        %= select_field yum_AutoInstallUpdates => [[ $c->l('DISABLED') => 'disabled' ], [ $c->l('ENABLED') => 'enabled' ]], id => "yum_AutoInstallUpdates"
       </div>
     </div>
 

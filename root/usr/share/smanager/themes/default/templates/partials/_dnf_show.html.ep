@@ -110,7 +110,7 @@
       <div class="pkg-picker-head">
         <span class="dnf-label label"><%= l('Packages') %></span>
         <span class="data">
-          <input class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
+          <input id = "pkg-search1" class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
           <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
           <div class="pkg-filter-msg" aria-live="polite"></div>
         </span>
@@ -126,8 +126,8 @@
 
     <div class="pkg-picker <%= $grp_count ? '' : 'is-hidden' %>" id="pkg-picker-groups">
       <div class="pkg-picker-head">
-        <label><span class="label"><%= l('Groups') %></span></label>
-        <input class="pkg-search" type="text" placeholder="Filter groups (text or /regex/flags)">
+        <span class="label"><%= l('Groups') %></span>
+        <input id = "pkg-search2" class="pkg-search" type="text" placeholder="Filter groups (text or /regex/flags)">
         <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
         <div class="pkg-filter-msg" aria-live="polite"></div>
       </div>

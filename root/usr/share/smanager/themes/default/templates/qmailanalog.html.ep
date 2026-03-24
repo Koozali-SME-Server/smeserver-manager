@@ -25,7 +25,7 @@
       <span class=label>
         %= label_for message_id => 'Message ID:'
       </span><span class=data>
-        %= text_field 'message_id', placeholder => 'Enter Postfix Message ID', id => 'message_id_group'
+        %= text_field 'message_id', placeholder => 'Enter Postfix Message ID', id => 'message_id'
       </span>
     </div>
 
@@ -33,7 +33,7 @@
       <span class=label>
         %= label_for email_address => 'Email Address:'
       </span><span class=data>
-        %= email_field 'email_address', placeholder => 'Enter email address', id => 'email_address_group';
+        %= email_field 'email_address', placeholder => 'Enter email address', id => 'email_address';
       </span>
     </div>
 
