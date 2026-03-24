@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 189
+%define release 190
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-190.sme
+- Add autocomplete to LDAP directory panel [SME: 13483]
+
 * Tue Mar 24 2026 Brian Read <brianr@koozali.org> 11.0.0-189.sme
 - Change html header to just <!DOCTYPE html> and avoiding quirk mode in browser [SME: 6278]
 

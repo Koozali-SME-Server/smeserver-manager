@@ -16,7 +16,7 @@
   <% 	my $btn = l('SAVE');  %>
 
 
-  %= form_for 'directory' => ( method => 'POST' ) => begin
+%= form_for 'directory' => ( method => 'POST', autocomplete => 'on' ) => begin
     <br>
     <p>
       <span class=label>
@@ -65,7 +65,7 @@
       <span class=label>
         %= l 'dir_PHONENUMBER', class => 'label'
       </span><span class=data>
-        %= text_field 'phonenumber', $dir_datas->{phonenumber}, class => 'input'
+        %= tel_field 'phonenumber', $dir_datas->{phonenumber}, class => 'input', autocomplete => 'tel'
       </span>
     </p>
     <p>
