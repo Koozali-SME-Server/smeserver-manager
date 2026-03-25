@@ -15,12 +15,18 @@ $(document).ready(function () {
   $('.sme-password').each(function () {
     var $pw = $(this);
 
-    // Wrap once
-    if (!$pw.parent().hasClass('input-container')) {
-      $pw.wrap('<div class="input-container"></div>');
-    }
+    //// Wrap once
+    //if (!$pw.parent().hasClass('input-container')) {
+      //$pw.wrap('<div class="input-container"></div>');
+    //}
 
-    var $container = $pw.parent('.input-container');
+    //var $container = $pw.parent('.input-container');
+
+    // Use existing parent as container; just add a class for styling
+    var $container = $pw.parent();
+    if (!$container.hasClass('input-container')) {
+      $container.addClass('input-container');
+    }
 
     // Add toggle icon once
     if (!$container.find('.toggle-password').length) {

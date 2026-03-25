@@ -1,14 +1,30 @@
-<div id="footer" class="module">
-  <!--<HR class="sme-copyrightbar">-->
-  <a href="https://mojolicious.org" target="_blank"><img src="images/sme-mojo-logo-white.png"></a>
-  <span class="sme-copyright">
+<footer id="footer" class="module footer">
+  <span class="sme-copyright footer-text">
     % if ( $c->is_logged_in && $c->is_admin) {
       SME Server <%= session 'releaseVersion' %>-<%= $c->app->VERSION %> Manager II
       % my $mode;
       % if ( config->{mode} eq 'development' ) { $mode = '-dev'; } else { $mode = ''; }
       (Mojo:<%= Mojolicious->VERSION %><%= $mode %>)
+      <br>
     % }
-    <br>Copyright 1999-2006 Mitel Corporation<br>
+    Copyright 1999-2006 Mitel Corporation<br>
     %= session 'copyRight'
-    <br>Copyright (c) 2013-2024 Koozali Foundation Inc.<br>
+    <br>Copyright (c) 2013-2026 Koozali Foundation Inc.<br>
   </span>
+
+  <div class="footer-icons">
+    <div class="image-wrapper">
+      <a href="https://mojolicious.org" target="_blank">
+        <img src="images/sme-mojo-logo-white.png" alt="Mojolicious">
+      </a>
+    </div>
+    % if ( config->{mode} eq 'development' ) {
+<!--    <div class="image-wrapper">
+      <a href="javascript:window.open('https://html5.validator.nu/?doc='+encodeURIComponent(window.location.href));void 0" title="Validate This Page">
+        <img src="images/html5-validator-badge.png" alt="HTML5 Valid">
+      </a>
+    </div>
+-->
+    % }
+  </div>
+</footer>

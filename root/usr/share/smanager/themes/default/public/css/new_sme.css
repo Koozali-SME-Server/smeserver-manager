@@ -8,6 +8,7 @@
 /* Make room for the icon inside the input */
 .input-container input.sme-password{
   padding-right: 3px;     /* space for the eye */
+  margin-left: 3px;
 }
 
 /* Icon sits inside the input area at the far right */
@@ -194,10 +195,6 @@
     padding: 0px;
 }
 
-#footer {
-    padding-left: 5px;
-}
-
 #header {
     width: 100%;
     margin: auto;
@@ -210,12 +207,6 @@
     background-color: #E8F3E1;
     overflow: auto;
     margin-top:2px;
-}
-
-#footer img {
-     float: right;
-     /*position: fixed;*/
-     /*margin-left: 40%;*/ 
 }
 
 .flag-style {
@@ -350,4 +341,35 @@ background-color: #e8f3e1;
 
 #swt_theme {
 	margin-left:10px;
+}
+
+.footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: nowrap; /* Single row priority */
+}
+
+.footer-text {
+  flex: 1 1 auto; /* Shrink + grow, base on content */
+  min-width: 0; /* Enables flex shrinking past content size */
+  /* No white-space, overflow, or text-overflow */
+}
+
+.footer-icons {
+  flex: 0 0 auto; /* Fixed size, no shrink */
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.image-wrapper {
+  flex: 1;
+}
+
+.footer-icons img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 2rem; /* Consistent row height */
 }
