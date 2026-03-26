@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 193
+%define release 194
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 26 2026 Brian Read <brianr@koozali.org> 11.0.0-194.sme
+- Provide full path for execution of db command in dnf update panel [SME: 13484]
+
 * Wed Mar 25 2026 Brian Read <brianr@koozali.org> 11.0.0-193.sme
 - Alter password visibility js to keep html legal (no div inside span) [SME: 6278]
 - Change html for footer to use specific <footer> tag [SME: 6278]

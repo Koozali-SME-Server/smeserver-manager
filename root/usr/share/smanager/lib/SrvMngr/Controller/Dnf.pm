@@ -109,7 +109,7 @@ sub _get_logfile_from_configdb_fresh ($c) {
 }
 
 sub _get_logfile_via_db_cmd ($c) {
-  open(my $fh, '-|', 'db', 'configuration', 'getprop', 'dnf', 'LogFile') or return '';
+  open(my $fh, '-|', '/usr/sbin/e-smith/db', 'configuration', 'getprop', 'dnf', 'LogFile') or return '';
   my $v = <$fh> // '';
   close $fh;
   chomp $v;
