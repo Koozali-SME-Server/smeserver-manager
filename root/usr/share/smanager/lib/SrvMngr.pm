@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '184.el8.sme'; 
+our $VERSION = '195.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -96,11 +96,15 @@ sub startup {
 
     my $self = shift;
 
+    $self->app->log->info("Server manager II version:$VERSION");
+    
     $self->plugin( Config => { file => $self->config_file()} );
 
     $self->mode( $self->config->{mode} || 'production' );	#'development'
 
     $ENV{'MOJO_SMANAGER_DEBUG'} = $self->config->{debug} || 0;
+    
+    $ENV{'PATH'} = '/root/perl5/bin:/usr/share/Modules/bin:/sbin/e-smith:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin';
 
     $self->setup_plugins;
 
@@ -683,6 +687,7 @@ sub theme_list {
     my @files = ();
     my @themes = ();
     my $theme_ignore = "(\.\.?)";
+    my $debug    = $c->config('debug');
 
 #    my $themedir = '/usr/share/smanager/themes/';
     my $themedir = $c->app->home->rel_file('themes/');
@@ -696,9 +701,9 @@ sub theme_list {
 
     foreach my $theme (@files) {
         if (-d "$themedir/$theme") {
-	        $c->app->log->info("Found theme:$theme");
-		push @themes, $theme;
-    	}
+	$c->log->debug("Found theme:$theme") if $debug;
+	push @themes, $theme;
+         }
     }
 
     return \@themes;

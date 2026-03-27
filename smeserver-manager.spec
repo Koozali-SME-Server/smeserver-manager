@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 194
+%define release 195
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Mar 27 2026 Brian Read <brianr@koozali.org> 11.0.0-195.sme
+- Add setting PATH in smanager startup  [SME: 13484]
+
 * Thu Mar 26 2026 Brian Read <brianr@koozali.org> 11.0.0-194.sme
 - Provide full path for execution of db command in dnf update panel [SME: 13484]
 
