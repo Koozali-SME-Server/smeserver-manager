@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 195
+%define release 196
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Mar 28 2026 Brian Read <brianr@koozali.org> 11.0.0-196.sme
+- Sort out lex strings not translated in dnf panel and also after timeout [SME: 12446]
+
 * Fri Mar 27 2026 Brian Read <brianr@koozali.org> 11.0.0-195.sme
 - Add setting PATH in smanager startup  [SME: 13484]
 

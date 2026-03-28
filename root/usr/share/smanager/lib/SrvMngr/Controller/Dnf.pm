@@ -20,6 +20,7 @@ use Mojo::Util qw(xml_escape);
 use Mojo::Cache;
 use Time::HiRes qw(time);
 use SrvMngr qw(theme_list init_session);
+use Mojo::Util 'dumper';
 
 use esmith::ConfigDB::UTF8;
 use esmith::util;
@@ -264,6 +265,7 @@ sub do_update ($c) {
 
 sub dnf_partial ($c) {
   my $function = lc($c->param('function') // 'update');
+  #$c->app->log->info(dumper $c->stash);
   $function =~ s/^\s+|\s+$//g;
   $function = 'update' unless $function =~ /^(update|install|remove|configure)$/;
 
@@ -294,7 +296,8 @@ sub dnf_partial ($c) {
 # GET /dnf?function=update|install|remove
 sub do_show ($c) {
   my $function = lc($c->param('function') // 'update');
-  $c->app->log->info("DNF do_show raw_function=[" . ($c->param('function') // '') . "] normalized=[$function]");
+  #$c->app->log->info(dumper $c->stash);
+  #$c->app->log->debug("DNF do_show raw_function=[" . ($c->param('function') // '') . "] normalized=[$function]");
   $function =~ s/^\s+|\s+$//g;
   $function = 'update' unless $function =~ /^(update|install|remove|configure)$/;
 

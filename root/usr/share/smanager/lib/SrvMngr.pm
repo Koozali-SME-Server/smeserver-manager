@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '195.el8.sme'; 
+our $VERSION = '196.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -157,7 +157,7 @@ sub _handle_tkt {
   $debug = 3 if $debug;
   my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();
   if ($ticket) {
-    $c->log->debug("auth_tkt: $ticket");
+    $c->log->debug("auth_tkt: $ticket") if $debug;
     # Check if the user is already "logged in" in the Mojo session
     my $valid_ticket = $at->validate_ticket($ticket, ip_addr =>'',ignore_ip => 1);
     if ( (defined $valid_ticket) && ($c->session('username')) ) {
@@ -620,7 +620,7 @@ sub setup_hooks {
     	    SrvMngr::init_session ( $c );
 	}
 	$c->lang_space();
-  $c->handle_tkt();
+          $c->handle_tkt();
     });
 
     if ( my $path = $ENV{MOJO_REVERSE_PROXY} ) {
@@ -934,10 +934,11 @@ sub simpleNavMerge {
 sub _lang_space {
 
     my $c = shift;
+    my $debug = 1;
 
-    my $panel = $c->tx->req->url;
-    if ( $panel =~ m/\.css$|\.js$|\.jpg$|\.gif$|\.png$/ ) {
-	#warn "panel not treated $panel";
+    my $path = $c->tx->req->url;
+    if ( $path =~ m/\.css$|\.js$|\.jpg$|\.gif$|\.png$/ ) {
+	#warn "path not treated $path";
 	return
     }
 
@@ -946,16 +947,11 @@ sub _lang_space {
     $lang = (split(/,/, $lang))[0];
     $c->stash(locale=>$lang);  #Stash it for template use
 
-#    my $lang = (split(/,/, $c->tx->req->headers->accept_language))[0];
-## convert xx_XX lang format to xx-xx + delete .UTFxx + lowercase
-#    $lang =~ s/_(.*)\..*$/-${1}/;		# just keep 'en-us'
-    ##$lang = lc( substr( $lang,0,2 ) );	# just keep 'en'
-
-    $panel = '/initial' if ($panel eq '/' or $panel eq '');
-
-    (my $module = $panel) =~ s|\?.*$||;
-    $module =~ s|^/||;
+    $path = '/initial' if ($path eq '/' or $path eq ''); 
+    warn "langspace:path=$path" if $debug;
+    my ($module) = $path =~ m{\A([^/?]+)};
     $module = ucfirst($module);
+    warn "langspace:module=$module" if $debug;
 
     my $moduleLong = "SrvMngr::I18N::Modules::$module";
     (my $dir = $moduleLong) =~ s|::|/|g;

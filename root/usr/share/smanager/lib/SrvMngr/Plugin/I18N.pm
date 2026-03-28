@@ -7,10 +7,14 @@ use I18N::LangTags::Detect;
 
 our $VERSION = '1.6';
 
+#export MOJO_LOG_LEVEL='debug';
+
 # "Can we have Bender burgers again?
 #  No, the cat shelter’s onto me."
 sub register {
 	my ($plugin, $app, $conf) = @_;
+	
+	$app->log->level('debug');
 
 	# Initialize
 	my $namespace = $conf->{namespace} || ( (ref $app) . '::I18N' );
@@ -29,63 +33,88 @@ sub register {
 	};
 
 	# Add hook
-	$app->hook(
-		before_dispatch => sub {
-			my $self = shift;
+$app->hook(
+    before_dispatch => sub {
+        my $self = shift;
+        
+        #$self->app->log->warn('I18N before_dispatch reached');
 
-			# Handler
-			$handler->( $self );
+        #$self->app->log->debug('I18N before_dispatch start');
+        #$self->app->log->debug('  path=' . ($self->req->url->path->to_string // ''));
+        #$self->app->log->debug('  accept_language=' . ($self->req->headers->accept_language // ''));
+        #$self->app->log->debug('  host=' . ($self->req->headers->header('X-Host') || $self->req->headers->host || ''));
 
-			# Header detection
-			my @languages = $conf->{no_header_detect}
-				? ()
-				: I18N::LangTags::implicate_supers(
-					I18N::LangTags::Detect->http_accept_langs(
-						$self->req->headers->accept_language
-					)
-				)
-			;
+        # Handler
+        $handler->( $self );
 
-			# Host detection
-			my $host = $self->req->headers->header('X-Host') || $self->req->headers->host;
-			if ($conf->{support_hosts} && $host) {
-				warn $host;
-				$host =~ s/^www\.//; # hack
-				if (my $lang = $conf->{support_hosts}->{ $host }) {
-					$self->app->log->debug("Found language $lang, Host header is $host");
+        #$self->app->log->debug('  after handler: i18n class=' . ref($self->stash('i18n')));
+        #$self->app->log->debug('  after handler: namespace=' . ($self->stash('i18n')->{namespace} // 'undef'));
+        #$self->app->log->debug('  after handler: handle=' . (
+            #$self->stash('i18n')->{handle}
+            #? ref($self->stash('i18n')->{handle})
+            #: 'undef'
+        #));
 
-					unshift @languages, $lang;
-				}
-			}
+        # Header detection
+        my @languages = $conf->{no_header_detect}
+            ? ()
+            : I18N::LangTags::implicate_supers(
+                I18N::LangTags::Detect->http_accept_langs(
+                    $self->req->headers->accept_language
+                )
+            )
+        ;
 
-			# Set default language
-			$self->stash(lang_default => $languages[0]) if $languages[0];
+        #$self->app->log->debug('  languages from header=' . join(',', @languages));
 
-			# URL detection
-			if (my $path = $self->req->url->path) {
-				my $part = $path->parts->[0];
+        # Host detection
+        my $host = $self->req->headers->header('X-Host') || $self->req->headers->host;
+        if ($conf->{support_hosts} && $host) {
+            $self->app->log->debug("  host before normalize=$host");
+            $host =~ s/^www\.//;
+            if (my $lang = $conf->{support_hosts}->{ $host }) {
+                $self->app->log->debug("  host maps to language=$lang");
+                unshift @languages, $lang;
+            }
+        }
 
-				if ($part && $langs && grep { $part eq $_ } @$langs) {
-					# Ignore static files
-					return if $self->res->code;
+        # Set default language
+        $self->stash(lang_default => $languages[0]) if $languages[0];
+        #$self->app->log->debug('  lang_default=' . ($self->stash('lang_default') // 'undef'));
 
-					$self->app->log->debug("Found language $part in URL $path");
+        # URL detection
+        if (my $path = $self->req->url->path) {
+            my $part = $path->parts->[0];
+            #$self->app->log->debug('  first path part=' . ($part // 'undef'));
 
-					unshift @languages, $part;
+            if ($part && $langs && grep { $part eq $_ } @$langs) {
+                return if $self->res->code;
 
-					# Save lang in stash
-					$self->stash(lang => $part);
+                #$self->app->log->debug("  language found in URL=$part");
+                unshift @languages, $part;
+                $self->stash(lang => $part);
 
-					# Clean path
-					shift @{$path->parts};
-					$path->trailing_slash(0);
-				}
-			}
+                shift @{$path->parts};
+                $path->trailing_slash(0);
+                #$self->app->log->debug('  path rewritten=' . $path->to_string);
+            }
+        }
 
-			# Languages
-			$self->languages(@languages, $default);
-    	}
-	);
+        #$self->app->log->debug('  final languages=' . join(',', @languages) . ", default=$default");
+
+        # Languages
+        $self->languages(@languages, $default);
+
+        #$self->app->log->debug('  after languages: i18n class=' . ref($self->stash('i18n')));
+        #$self->app->log->debug('  after languages: namespace=' . ($self->stash('i18n')->{namespace} // 'undef'));
+        #$self->app->log->debug('  after languages: language=' . ($self->stash('i18n')->{language} // 'undef'));
+        #$self->app->log->debug('  after languages: handle=' . (
+            #$self->stash('i18n')->{handle}
+            #? ref($self->stash('i18n')->{handle})
+            #: 'undef'
+        #));
+    }
+);
 
 	# Add "i18ns" helper
 	$app->helper(i18ns => sub {
