@@ -947,7 +947,7 @@ sub _lang_space {
     $lang = (split(/,/, $lang))[0];
     $c->stash(locale=>$lang);  #Stash it for template use
 
-    $path = '/initial' if ($path eq '/' or $path eq ''); 
+    $path = 'initial' if ($path eq '/' or $path eq ''); 
     warn "langspace:path=$path" if $debug;
     my ($module) = $path =~ m{\A([^/?]+)};
     $module = ucfirst($module);
