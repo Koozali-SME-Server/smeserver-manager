@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '196.el8.sme'; 
+our $VERSION = '197.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -937,7 +937,7 @@ sub _lang_space {
     my $debug = 1;
 
     my $path = $c->tx->req->url;
-    if ( $path =~ m/\.css$|\.js$|\.jpg$|\.gif$|\.png$/ ) {
+    if ( $path =~ m/\.css$|\.js$|\.jpg$|\.gif$|\.png$|\.ico$/ ) {
 	#warn "path not treated $path";
 	return
     }
