@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 198
+%define release 199
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -152,6 +152,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Mar 30 2026 Brian Read <brianr@koozali.org> 11.0.0-199.sme
+- Add missing acs_Admin lex string to general lex file [SME: 12446]
+
 * Mon Mar 30 2026 Brian Read <brianr@koozali.org> 11.0.0-198.sme
 - Add .ico to ignored files for language space  [SME: 12446]
 

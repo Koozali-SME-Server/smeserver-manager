@@ -76,6 +76,7 @@
 'THEME' => 'Theme',
 
 # All other rules
+'acs_ADMIN' => 'Please login',
 'GROUP_ADD' => 'Add group',
 'USER_NAME' => 'User Name',
 'GROUP_NAME' => 'Group Name',
