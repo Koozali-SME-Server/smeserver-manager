@@ -44,6 +44,8 @@ use esmith::NetworksDB::UTF8;
 use esmith::HostsDB;
 use esmith::DomainsDB::UTF8;
 
+use SrvMngr::Controller::EmailsettingsCustomUI;
+
 my $cdb;
 my $adb;
 my $ndb; 
@@ -53,6 +55,7 @@ my $ddb;
 my %mai_data;
 
 require '/usr/share/smanager/lib/SrvMngr/Controller/Emailsettings-Custom.pm';  #The code that is to be added by the developer
+
 
 sub main {
 #
@@ -76,11 +79,12 @@ sub main {
 	 $hdb = esmith::HostsDB::UTF8->open() 	  || die("Couldn't open Hosts db");
 	 $ddb = esmith::DomainsDB::UTF8->open()  || die("Couldn't open Domains db");
 
-     %mai_data = ();
+    %mai_data = ();
     my $title = $c->l('mai_E-Mail');
     my $modul = '';
 
     $mai_data{'trt'} = 'FRONT';
+    $mai_data{'ui'} = $SrvMngr::Controller::Emailsetting::ui; 
     
     #Load any DB entries into the <prefix>_data area so as they are preset in the form
     # which DB - this only really works if the initial panel is a PARAMS type panel and not a TABLE
@@ -428,6 +432,9 @@ sub do_display {
      
 	
 	# Data for panel
+    $mai_data{'ui'} = $SrvMngr::Controller::Emailsettings::ui; 
+    #warn "::ui=$SrvMngr::Controller::Emailsetting::ui";
+
 	$c->stash( 
 		title 			=> $title, 
 		modul => $modul,

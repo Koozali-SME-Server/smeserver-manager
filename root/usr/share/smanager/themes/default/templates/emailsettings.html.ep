@@ -34,7 +34,7 @@
   </div>
   <br />
 
-  % } elsif ($c->stash('error')) {
+  % } elsif ($c->stash('error')) { 
   <div class='sme-error'>
     %= $c->l( $c->stash('error') );
   </div>
@@ -43,7 +43,6 @@
 
   %# Routing to partials according to trt parameter.
   %# This ought to be cascading if/then/elsif, but is easier to just stack the if/then's rather like a case statement'
-
   % if ($mai_data->{trt} eq "FRONT") {
     %= include 'partials/_mai_FRONT'
   % }

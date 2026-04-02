@@ -937,7 +937,7 @@ sub _lang_space {
     my $debug = 1;
 
     my $path = $c->tx->req->url;
-    if ( $path =~ m/\.css$|\.js$|\.jpg$|\.gif$|\.png$|\.ico$/ ) {
+    if ( $path =~ m/\.css$|\.js$|\.jpg$|\.gif$|\.png$|\.ico$|\.map$/ ) {
 	#warn "path not treated $path";
 	return
     }

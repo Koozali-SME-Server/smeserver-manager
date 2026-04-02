@@ -567,13 +567,17 @@ table.incolumn {
 }
 
 .section-title:active {
-    color: #006633 !important;
+    color: #006633 !important; 
 }
 
-.partial p{
-  display: flex;
-  align-items: stretch;   /* label matches data height */
-  margin: 0 0 .4rem;
+.partial p {
+    display: flex;
+    align-items: flex-end;
+    margin: 0 0 .4rem;
+    align-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
 .partial p > span.label{

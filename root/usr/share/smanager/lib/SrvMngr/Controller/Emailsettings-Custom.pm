@@ -14,11 +14,11 @@ use esmith::HostsDB;
 use esmith::DomainsDB::UTF8;
 use Data::Validate::IP qw(is_ipv4 is_ipv6);
 
+
 use constant FALSE => 0;
 use constant TRUE  => 1;
 
 our @EXPORT_OK = qw(get_current_webmail_status);
-
 
 #The most common ones - open DB when required.
 our $cdb; 
@@ -26,6 +26,8 @@ my $adb;
 my $ndb; 
 my $hdb; 
 my $ddb; 
+
+our $ui = SrvMngr::Controller::EmailSettingsCustomUI->new();
 
 #The most common ones - you might want to use these if you need to make sure that the DB is refreshed.
 #$cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
@@ -81,42 +83,42 @@ my $ddb;
 		my $c = shift;
 		my $mai_data = shift; #Data hash as parameter
 		# Validation for each field 
-		my ($retult,$ret) = '';
+		my ($result,$ret) = '';
 		CHECKS: {
 			$ret = $c->validate_ip_or_blank($c->param('DelegateMailServer'));
 			$c->app->log->info("$c->param('DelegateMailServer') $ret");
 			if ($ret ne 'ok') {
-				#$retult = $c->l($ret);
+				#$result = $c->l($ret);
 				last CHECKS;
 			}
 
 			$ret = $c->validate_smarthost($c->param('SMTPSmartHost'));
 			if ($ret ne 'ok') {
-				#$retult = $c->l($ret);
+				#$result = $c->l($ret);
 				last CHECKS;
 			}
 
 			$ret = $c->nonblank_if_smtpauth($c->param('SMTPSmartHost'));
 			if ($ret ne 'ok') {
-				#$retult = $c->l($ret);
+				#$result = $c->l($ret);
 				last CHECKS;
 			}
 
 			$ret = $c->nonblank_if_smtpauth($c->param('SMTPAUTHPROXY_Userid'));
 			if ($ret ne 'ok') {
-				#$retult = $c->l($ret);
+				#$result = $c->l($ret);
 				last CHECKS;
 			}
 
 			$ret = $c->nonblank_if_smtpauth($c->param('SMTPAUTHPROXY_Passwd'));
 			if ($ret ne 'ok') {
-				#$retult = $c->l($ret);
+				#$result = $c->l($ret);
 				last CHECKS;
 			}
 
 			$ret = $c->change_settings_delivery();
 			if ($ret ne 'ok') {
-				#$retult = $ret;
+				#$result = $ret;
 				last CHECKS;
 			}
 			#$result = '';
@@ -277,7 +279,9 @@ my $ddb;
 		my $ret = '';
 		my $db = $cdb; #maybe one of the others
 		my $dbkey = 'ChangeThis';
-		# To make it write to DB as comment, delete this (regex) string in each if statement "TRUE\) \#copy or perform with value: .* e.g."
+        $ui->apply_option('pop110_995',$c->param('POPAccess'));
+        $ui->apply_option('imap_143',$c->param('IMAPAccess'));
+        $ui->apply_option('webmail',$c->param('WebMail'));
 		$ret = $c->change_settings_access();
 		if ($ret eq '') {$ret = 'ok';}
 		return $ret;
@@ -301,7 +305,11 @@ my $ddb;
 		my $ret = '';
 		my $db = $cdb; #maybe one of the others
 		my $dbkey = 'ChangeThis';
-		# To make it write to DB as comment, delete this (regex) string in each if statement "TRUE\) \#copy or perform with value: .* e.g."
+		# Update the DB entries as specified in the ui structure.
+		$ui->apply_option('smtp_25',$c->param('SMTPAuth'));
+		$ui->apply_option('smtps_465',$c->param('sSMTPAuth'));
+		$ui->apply_option('submission_587',$c->param('uSMTPAuth'));
+		# Do the legacy rest.
 		$ret = $c->change_settings_reception();
 		if ($ret eq '') {$ret = 'ok';}
 		return $ret;
@@ -389,241 +397,245 @@ sub adjust_patterns {
     return scalar @selected;
 } ## end sub adjust_patterns
 
-sub get_current_pop3_access {
-    my ($c, $localise) = @_;
-	my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-    my $pop3Status  = $cdb->get_prop('pop3',  'status') || 'enabled';
-    my $pop3Access  = $cdb->get_prop('pop3',  'access') || 'private';
-    my $pop3sStatus = $cdb->get_prop('pop3s', 'status') || 'enabled';
-    my $pop3sAccess = $cdb->get_prop('pop3s', 'access') || 'private';
-    my $options     = get_pop_options();
+#sub get_current_pop3_access {
+    #my ($c, $localise) = @_;
+	#my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
+    #my $pop3Status  = $cdb->get_prop('pop3',  'status') || 'enabled';
+    #my $pop3Access  = $cdb->get_prop('pop3',  'access') || 'private';
+    #my $pop3sStatus = $cdb->get_prop('pop3s', 'status') || 'enabled';
+    #my $pop3sAccess = $cdb->get_prop('pop3s', 'access') || 'private';
+    #my $options     = get_pop_options();
 
-    if ($pop3Status ne 'enabled' && $pop3sStatus ne 'enabled') {
-        return $localise ? $c->l($options->{disabled}) : 'disabled';
-    } elsif ($pop3Status eq 'enabled' && $pop3Access eq 'public') {
-        return $localise ? $c->l($options->{public}) : 'public';
-    } elsif ($pop3sStatus eq 'enabled' && $pop3sAccess eq 'public') {
-        return $localise ? $c->l($options->{publicSSL}) : 'publicSSL';
-    }
-    return $localise ? $c->l($options->{private}) : 'private';
-} ## end sub get_current_pop3_access
+    #if ($pop3Status ne 'enabled' && $pop3sStatus ne 'enabled') {
+        #return $localise ? $c->l($options->{disabled}) : 'disabled';
+    #} elsif ($pop3Status eq 'enabled' && $pop3Access eq 'public') {
+        #return $localise ? $c->l($options->{public}) : 'public';
+    #} elsif ($pop3sStatus eq 'enabled' && $pop3sAccess eq 'public') {
+        #return $localise ? $c->l($options->{publicSSL}) : 'publicSSL';
+    #}
+    #return $localise ? $c->l($options->{private}) : 'private';
+#} ## end sub get_current_pop3_access
 
-sub get_current_imap_access {
-    my ($c, $localise) = @_;
-	my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-    my $imapStatus  = $cdb->get_prop('imap',  'status') || 'enabled';
-    my $imapAccess  = $cdb->get_prop('imap',  'access') || 'private';
-    my $imapsStatus = $cdb->get_prop('imaps', 'status') || 'enabled';
-    my $imapsAccess = $cdb->get_prop('imaps', 'access') || 'private';
-    my $options     = get_imap_options();
+#sub get_current_imap_access {
+    #my ($c, $localise) = @_;
+	#my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
+    #my $imapStatus  = $cdb->get_prop('imap',  'status') || 'enabled';
+    #my $imapAccess  = $cdb->get_prop('imap',  'access') || 'private';
+    #my $imapsStatus = $cdb->get_prop('imaps', 'status') || 'enabled';
+    #my $imapsAccess = $cdb->get_prop('imaps', 'access') || 'private';
+    #my $options     = get_imap_options();
 
-    if (($imapStatus ne 'enabled' || $imapAccess eq 'localhost') && $imapsStatus ne 'enabled') {
-        return $localise ? $c->l($options->{disabled}) : 'disabled';
-    }
+    #if (($imapStatus ne 'enabled' || $imapAccess eq 'localhost') && $imapsStatus ne 'enabled') {
+        #return $localise ? $c->l($options->{disabled}) : 'disabled';
+    #}
 
-    if ($imapStatus eq 'enabled' && $imapAccess eq 'public') {
-        return $localise ? $c->l($options->{public}) : 'public';
-    } elsif ($imapsStatus eq 'enabled' && $imapsAccess eq 'public') {
-        return $localise ? $c->l($options->{publicSSL}) : 'publicSSL';
-    }
-    return $localise ? $c->l($options->{private}) : 'private';
-} ## end sub get_current_imap_access
+    #if ($imapStatus eq 'enabled' && $imapAccess eq 'public') {
+        #return $localise ? $c->l($options->{public}) : 'public';
+    #} elsif ($imapsStatus eq 'enabled' && $imapsAccess eq 'public') {
+        #return $localise ? $c->l($options->{publicSSL}) : 'publicSSL';
+    #}
+    #return $localise ? $c->l($options->{private}) : 'private';
+#} ## end sub get_current_imap_access
 
-sub get_current_smtp_ssl_auth {
-    my ($c, $localise, $soru, $debug) = @_;
-	my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-    die "Error: \$soru must be either 's' or 'u':$soru.\n" unless $soru eq 's' || $soru eq 'u';
-    $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
+#sub get_current_smtp_ssl_auth {
+    #my ($c, $localise, $soru, $debug) = @_;
+	#my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
+    #die "Error: \$soru must be either 's' or 'u':$soru.\n" unless $soru eq 's' || $soru eq 'u';
+    #$cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
 
-    # Initialize variables with default values
-    my $smtpStatus = 'none';
-    my $smtpAccess = 'none';
-    my $smtpAuth   = 'disabled';    # assuming 'disabled' as a default
+    ## Initialize variables with default values
+    #my $smtpStatus = 'none';
+    #my $smtpAccess = 'none';
+    #my $smtpAuth   = 'disabled';    # assuming 'disabled' as a default
 
-    # Fetch SMTP settings based on the value of `$soru`
-    if ($soru eq "u") {
-        $smtpStatus = $cdb->get_prop('uqpsmtpd', 'status') || 'enabled';    # Fetch from uqpsmtpd
-        $smtpAccess = $cdb->get_prop('uqpsmtpd', 'access') || 'public';
-        $smtpAuth = 'enabled';    # Assuming authentication is enabled in this context
-    } else {
-        $smtpStatus = $cdb->get_prop('sqpsmtpd', 'status') || 'enabled';    # Fetch from sqpsmtpd
-        $smtpAccess = $cdb->get_prop('sqpsmtpd', 'access') || 'public';
-        $smtpAuth = 'enabled';    # Assuming authentication is enabled in this context
-    }
+    ## Fetch SMTP settings based on the value of `$soru`
+    #if ($soru eq "u") {
+        #$smtpStatus = $cdb->get_prop('uqpsmtpd', 'status') || 'enabled';    # Fetch from uqpsmtpd
+        #$smtpAccess = $cdb->get_prop('uqpsmtpd', 'access') || 'public';
+        #$smtpAuth = 'enabled';    # Assuming authentication is enabled in this context
+    #} else {
+        #$smtpStatus = $cdb->get_prop('sqpsmtpd', 'status') || 'enabled';    # Fetch from sqpsmtpd
+        #$smtpAccess = $cdb->get_prop('sqpsmtpd', 'access') || 'public';
+        #$smtpAuth = 'enabled';    # Assuming authentication is enabled in this context
+    #}
 
-    # Retrieve SMTP SSL authentication options
-    my $options = $c->get_smtp_ssl_auth_options();
+    ## Retrieve SMTP SSL authentication options
+    #my $options = $c->get_smtp_ssl_auth_options();
 
-    if ($soru eq "u" && $debug) {
-        $c->stash('smtp' =>
-                [ $smtpStatus, $smtpAccess, $smtpAuth, $soru, $options->{$smtpAccess}, $c->l($options->{$smtpAccess}) ]
-        );
+    #if ($soru eq "u" && $debug) {
+        #$c->stash('smtp' =>
+                #[ $smtpStatus, $smtpAccess, $smtpAuth, $soru, $options->{$smtpAccess}, $c->l($options->{$smtpAccess}) ]
+        #);
 
-        #		die "Stop $soru in get_current_smtp_ssl_auth";
-    } ## end if ($soru eq "u" && $debug)
+        ##		die "Stop $soru in get_current_smtp_ssl_auth";
+    #} ## end if ($soru eq "u" && $debug)
 
-    # Return appropriate message based on SMTP settings
-    if ($smtpStatus eq 'enabled' && $smtpAuth eq 'enabled') {
-        return $localise ? $c->l($options->{$smtpAccess}) : $smtpAccess;
-    }
-    return $localise ? $c->l($options->{disabled}) : 'disabled';
-} ## end sub get_current_smtp_ssl_auth
+    ## Return appropriate message based on SMTP settings
+    #if ($smtpStatus eq 'enabled' && $smtpAuth eq 'enabled') {
+        #return $localise ? $c->l($options->{$smtpAccess}) : $smtpAccess;
+    #}
+    #return $localise ? $c->l($options->{disabled}) : 'disabled';
+#} ## end sub get_current_smtp_ssl_auth
 
-sub get_current_smtp_auth {
-    my ($c, $localise) = @_;
-	my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-    my $smtpStatus = $cdb->get_prop('qpsmtpd', 'status')         || 'enabled';
-    my $smtpAuth   = $cdb->get_prop('qpsmtpd', 'Authentication') || 'enabled';
-    my $options    = get_smtp_auth_options();
+#sub get_current_smtp_auth {
+    #my ($c, $localise) = @_;
+	#my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
+    #my $smtpStatus = $cdb->get_prop('qpsmtpd', 'status')         || 'enabled';
+    #my $smtpAuth   = $cdb->get_prop('qpsmtpd', 'Authentication') || 'enabled';
+    #my $options    = get_smtp_auth_options();
 
-    if ($smtpStatus eq 'enabled' && $smtpAuth eq 'disabled') {
-        return $localise ? $c->l($options->{public}) : 'public';
-    } elsif ($smtpStatus eq 'enabled' && $smtpAuth eq 'enabled') {
-        return $localise ? $c->l($options->{publicSSL}) : 'publicSSL';
-    }
-    return $localise ? $c->l($options->{disabled}) : 'disabled';
-} ## end sub get_current_smtp_auth
+    #if ($smtpStatus eq 'enabled' && $smtpAuth eq 'disabled') {
+        #return $localise ? $c->l($options->{public}) : 'public';
+    #} elsif ($smtpStatus eq 'enabled' && $smtpAuth eq 'enabled') {
+        #return $localise ? $c->l($options->{publicSSL}) : 'publicSSL';
+    #}
+    #return $localise ? $c->l($options->{disabled}) : 'disabled';
+#} ## end sub get_current_smtp_auth
 
 sub get_current_webmail_status {
-    my ($c, $localise) = @_;
-	my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
+	my $webmail_current_menu_entry = $ui->get_current_menu_option('webmail');
+	return $webmail_current_menu_entry->{value};
+    #my ($c, $localise) = @_;
+	#my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
 
-    # determine status of webmail
-    my $WebmailStatus   = "disabled";
-    my $RoundcubeStatus = $cdb->get_prop('roundcube', 'status') || 'disabled';
-    my $MysqlStatus     = $cdb->get_prop('mariadb', 'status') || 'disabled';
-    my $PHPStatus       = $cdb->get_prop('php81-php-fpm', 'status') || 'disabled';
-    my $Networkaccess   = $cdb->get_prop('roundcube', 'access') || 'disabled';
+    ## determine status of webmail
+    #my $WebmailStatus   = "disabled";
+    #my $RoundcubeStatus = $cdb->get_prop('roundcube', 'status') || 'disabled';
+    #my $MysqlStatus     = $cdb->get_prop('mariadb', 'status') || 'disabled';
+    #my $PHPStatus       = $cdb->get_prop('php81-php-fpm', 'status') || 'disabled';
+    #my $Networkaccess   = $cdb->get_prop('roundcube', 'access') || 'disabled';
 
-    # all 3 components must be on for webmail to be working
-    if (   ($RoundcubeStatus eq "enabled")
-        && ($MysqlStatus eq "enabled")
-        && ($PHPStatus eq "enabled")
-        && ($Networkaccess eq "public"))
-    {
-        $WebmailStatus = "enabledSSL";
-    } elsif (($RoundcubeStatus eq "enabled")
-        && ($MysqlStatus eq "enabled")
-        && ($PHPStatus eq "enabled")
-        && ($Networkaccess eq "private"))
-    {
-        $WebmailStatus = "localnetworkSSL";
-    } ## end elsif (($RoundcubeStatus ...))
-    my $options = get_webmail_options();
-    return $localise
-        ? $c->l($options->{$WebmailStatus})
-        : $WebmailStatus;
+    ## all 3 components must be on for webmail to be working
+    #if (   ($RoundcubeStatus eq "enabled")
+        #&& ($MysqlStatus eq "enabled")
+        #&& ($PHPStatus eq "enabled")
+        #&& ($Networkaccess eq "public"))
+    #{
+        #$WebmailStatus = "enabledSSL";
+    #} elsif (($RoundcubeStatus eq "enabled")
+        #&& ($MysqlStatus eq "enabled")
+        #&& ($PHPStatus eq "enabled")
+        #&& ($Networkaccess eq "private"))
+    #{
+        #$WebmailStatus = "localnetworkSSL";
+    #} ## end elsif (($RoundcubeStatus ...))
+    #my $options = get_webmail_options();
+    #return $localise
+        #? $c->l($options->{$WebmailStatus})
+        #: $WebmailStatus;
 } ## end sub get_current_webmail_status
 
-sub get_pop_opt {
-    my $c = shift;
-    return [
-        [ $c->l('DISABLED')             => 'disabled' ],
-        [ $c->l('NETWORKS_ALLOW_LOCAL') => 'private' ],
-        [ $c->l('mai_SECURE_POP3')      => 'publicSSL' ],
-        [ $c->l('mai_INSECURE_POP3')    => 'public' ]
-    ];
-} ## end sub get_pop_opt
+#sub get_pop_opt {
+    #my $c = shift;
+    #return [
+        #[ $c->l('DISABLED')             => 'disabled' ],
+        #[ $c->l('NETWORKS_ALLOW_LOCAL') => 'private' ],
+        #[ $c->l('mai_SECURE_POP3')      => 'publicSSL' ],
+        #[ $c->l('mai_INSECURE_POP3')    => 'public' ]
+    #];
+#} ## end sub get_pop_opt
 
-sub get_pop_options {
-    my $c       = @_;
-    my %options = (
-        disabled  => 'DISABLED',
-        private   => 'NETWORKS_ALLOW_LOCAL',
-        publicSSL => 'mai_SECURE_POP3'
-    );
-	my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-    my $access = $cdb->get_prop('pop3', 'access') || 'private';
-    $options{public} = 'mai_INSECURE_POP3' if ($access eq 'public');
-    \%options;
-} ## end sub get_pop_options
+#sub get_pop_options {
+    #my $c       = @_;
+    #my %options = (
+        #disabled  => 'DISABLED',
+        #private   => 'NETWORKS_ALLOW_LOCAL',
+        #publicSSL => 'mai_SECURE_POP3'
+    #);
+	#my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
+    #my $access = $cdb->get_prop('pop3', 'access') || 'private';
+    #$options{public} = 'mai_INSECURE_POP3' if ($access eq 'public');
+    #\%options;
+#} ## end sub get_pop_options
 
-sub get_imap_opt {
-    my $c = shift;
-    return [
-        [ $c->l('DISABLED')             => 'disabled' ],
-        [ $c->l('NETWORKS_ALLOW_LOCAL') => 'private' ],
-        [ $c->l('mai_SECURE_IMAP')      => 'publicSSL' ],
-        [ $c->l('mai_INSECURE_IMAP')    => 'public' ]
-    ];
-} ## end sub get_imap_opt
+#sub get_imap_opt {
+    #my $c = shift;
+    #return [
+        #[ $c->l('DISABLED')             => 'disabled' ],
+        #[ $c->l('NETWORKS_ALLOW_LOCAL') => 'private' ],
+        #[ $c->l('mai_SECURE_IMAP')      => 'publicSSL' ],
+        #[ $c->l('mai_INSECURE_IMAP')    => 'public' ]
+    #];
+#} ## end sub get_imap_opt
 
-sub get_imap_options {
-    my $c       = shift;
-	my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-    my %options = (
-        disabled  => 'DISABLED',
-        private   => 'NETWORKS_ALLOW_LOCAL',
-        publicSSL => 'mai_SECURE_IMAP'
-    );
-    my $access = $cdb->get_prop('imap', 'access') || 'private';
-    $options{public} = 'mai_INSECURE_IMAP' if ($access eq 'public');
-    \%options;
-} ## end sub get_imap_options
+#sub get_imap_options {
+    #my $c       = shift;
+	#my $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
+    #my %options = (
+        #disabled  => 'DISABLED',
+        #private   => 'NETWORKS_ALLOW_LOCAL',
+        #publicSSL => 'mai_SECURE_IMAP'
+    #);
+    #my $access = $cdb->get_prop('imap', 'access') || 'private';
+    #$options{public} = 'mai_INSECURE_IMAP' if ($access eq 'public');
+    #\%options;
+#} ## end sub get_imap_options
 
-sub get_smtp_auth_opt {
-    my $c = shift;
-    return [
-        [ $c->l('mai_SECURE_SMTP')            => 'publicSSL' ],
-        [ $c->l('Only allow insecure access') => 'public' ],
-        [ $c->l('DISABLED')                   => 'disabled' ]
-    ];
-} ## end sub get_smtp_auth_opt
+#sub get_smtp_auth_opt {
+    #my $c = shift;
+    #return $ui->get_select_options('smtp_25');
+    ##return [
+        ##[ $c->l('mai_SECURE_SMTP')            => 'publicSSL' ],
+        ##[ $c->l('Only allow insecure access') => 'public' ],
+        ##[ $c->l('DISABLED')                   => 'disabled' ]
+    ##];
+#} ## end sub get_smtp_auth_opt
 
-sub get_smtp_auth_options {
-    my $c = shift;
-    my %options = (publicSSL => 'mai_SECURE_SMTP', public => 'Only allow insecure access', disabled => 'DISABLED');
-    return \%options;
-} ## end sub get_smtp_auth_options
+#sub get_smtp_auth_options {
+    #my $c = shift;
+    #my %options = (publicSSL => 'mai_SECURE_SMTP', public => 'Only allow insecure access', disabled => 'DISABLED');
+    #return \%options;
+#} ## end sub get_smtp_auth_options
 
-sub get_smtp_ssl_auth_options {
-    my $c = shift;
-    my %options = (public => 'Allow public access', local => 'Allow local access only', disabled => 'DISABLED');
-    return \%options;
-} ## end sub get_smtp_ssl_auth_options
+#sub get_smtp_ssl_auth_options {
+    #my $c = shift;
+    #my %options = (public => 'Allow public access', local => 'Allow local access only', disabled => 'DISABLED');
+    #return \%options;
+#} ## end sub get_smtp_ssl_auth_options
 
-sub get_smtp_ssl_auth_opt {
-    my $c = shift;
-    return [
-        [ $c->l('Allow public access')     => 'public' ],
-        [ $c->l('Allow local access only') => 'local' ],
-        [ $c->l('DISABLED')                => 'disabled' ]
-    ];
-} ## end sub get_smtp_ssl_auth_opt
+#sub get_smtp_ssl_auth_opt {
+    #my $c = shift;
+    #return $ui->get_select_options('smtps_465');
+    ##return [
+        ##[ $c->l('Allow public access')     => 'public' ],
+        ##[ $c->l('Allow local access only') => 'local' ],
+        ##[ $c->l('DISABLED')                => 'disabled' ]
+    ##];
+#} ## end sub get_smtp_ssl_auth_opt
 
-sub get_key_by_value {
-    my ($hash_ref, $target_value) = @_;
+#sub get_key_by_value {
+    #my ($hash_ref, $target_value) = @_;
 
-    # Iterate over the hash
-    while (my ($key, $value) = each %$hash_ref) {
-        return $key if $value eq $target_value;
-    }
-    return undef;    # Return undef if no match is found
-} ## end sub get_key_by_value
+    ## Iterate over the hash
+    #while (my ($key, $value) = each %$hash_ref) {
+        #return $key if $value eq $target_value;
+    #}
+    #return undef;    # Return undef if no match is found
+#} ## end sub get_key_by_value
 
-sub get_value_by_key {
-    my ($hash_ref, $key) = @_;
-    return $hash_ref->{$key};    # Return the value associated with the key
-}
+#sub get_value_by_key {
+    #my ($hash_ref, $key) = @_;
+    #return $hash_ref->{$key};    # Return the value associated with the key
+#}
 
-sub get_webmail_opt {
-    my $c = shift;
-    return [
-        [ $c->l('DISABLED')                   => 'disabled' ],
-        [ $c->l('mai_ENABLED_SECURE_ONLY')    => 'enabledSSL' ],
-        [ $c->l('mai_ONLY_LOCAL_NETWORK_SSL') => 'localnetworkSSL' ]
-    ];
-} ## end sub get_webmail_opt
+#sub get_webmail_opt {
+    #my $c = shift;
+    #return [
+        #[ $c->l('DISABLED')                   => 'disabled' ],
+        #[ $c->l('mai_ENABLED_SECURE_ONLY')    => 'enabledSSL' ],
+        #[ $c->l('mai_ONLY_LOCAL_NETWORK_SSL') => 'localnetworkSSL' ]
+    #];
+#} ## end sub get_webmail_opt
 
-sub get_webmail_options {
-    my $c       = shift;
-    my %options = (
-        disabled        => 'DISABLED',
-        enabledSSL      => 'mai_ENABLED_SECURE_ONLY',
-        localnetworkSSL => 'mai_ONLY_LOCAL_NETWORK_SSL'
-    );
-    return \%options;
-} ## end sub get_webmail_options
+#sub get_webmail_options {
+    #my $c       = shift;
+    #my %options = (
+        #disabled        => 'DISABLED',
+        #enabledSSL      => 'mai_ENABLED_SECURE_ONLY',
+        #localnetworkSSL => 'mai_ONLY_LOCAL_NETWORK_SSL'
+    #);
+    #return \%options;
+#} ## end sub get_webmail_options
 
 sub get_retrieval_opt {
     my $c = shift;
@@ -782,33 +794,33 @@ sub change_settings_reception {
     #$cdb->set_prop("qpsmtpd", "Authentication", "disabled" );
     #$cdb->set_prop("sqpsmtpd", "Authentication", "disabled" );
     #}
-    my @keys = qw(qpsmtpd uqpsmtpd sqpsmtpd);
+    #my @keys = qw(qpsmtpd uqpsmtpd sqpsmtpd);
 
-    foreach my $key (@keys) {
-        my $param_name
-            = $key eq 'qpsmtpd'  ? 'SMTPAuth'
-            : $key eq 'uqpsmtpd' ? 'uSMTPAuth'
-            :                      'sSMTPAuth';    # Defaults to 'sSMTPAuth' for 'sqpsmtpd'
-        my $SMTPAuth = $c->param($param_name);
+    #foreach my $key (@keys) {
+        #my $param_name
+            #= $key eq 'qpsmtpd'  ? 'SMTPAuth'
+            #: $key eq 'uqpsmtpd' ? 'uSMTPAuth'
+            #:                      'sSMTPAuth';    # Defaults to 'sSMTPAuth' for 'sqpsmtpd'
+        #my $SMTPAuth = $c->param($param_name);
 
-        if ($SMTPAuth eq 'disabled') {
-            $cdb->set_prop($key, 'status', 'disabled');
-            $cdb->set_prop($key, 'access', 'disabled');
-        } else {
-            $cdb->set_prop($key, 'status', 'enabled');
+        #if ($SMTPAuth eq 'disabled') {
+            #$cdb->set_prop($key, 'status', 'disabled');
+            #$cdb->set_prop($key, 'access', 'disabled');
+        #} else {
+            #$cdb->set_prop($key, 'status', 'enabled');
 
-            if ($key eq 'qpsmtpd') {
-                my $auth_status = $SMTPAuth eq 'publicSSL' ? 'enabled' : 'disabled';
-                $cdb->set_prop($key, 'Authentication', $auth_status);
-                $cdb->set_prop($key, 'access',         'public');
-            } else {
-                $cdb->set_prop($key, 'Authentication', 'enabled');
-                my $auth_key     = ($key eq 'uqpsmtpd')             ? 'uSMTPAuth' : 'sSMTPAuth';
-                my $access_value = $c->param($auth_key) eq 'public' ? 'public'    : 'local';
-                $cdb->set_prop($key, 'access', $access_value);
-            } ## end else [ if ($key eq 'qpsmtpd')]
-        } ## end else [ if ($SMTPAuth eq 'disabled')]
-    } ## end foreach my $key (@keys)
+            #if ($key eq 'qpsmtpd') {
+                #my $auth_status = $SMTPAuth eq 'publicSSL' ? 'enabled' : 'disabled';
+                #$cdb->set_prop($key, 'Authentication', $auth_status);
+                #$cdb->set_prop($key, 'access',         'public');
+            #} else {
+                #$cdb->set_prop($key, 'Authentication', 'enabled');
+                #my $auth_key     = ($key eq 'uqpsmtpd')             ? 'uSMTPAuth' : 'sSMTPAuth';
+                #my $access_value = $c->param($auth_key) eq 'public' ? 'public'    : 'local';
+                #$cdb->set_prop($key, 'access', $access_value);
+            #} ## end else [ if ($key eq 'qpsmtpd')]
+        #} ## end else [ if ($SMTPAuth eq 'disabled')]
+    #} ## end foreach my $key (@keys)
 
     unless (system("/sbin/e-smith/signal-event", "email-update") == 0) {
         return $c->l('mai_ERROR_UPDATING_CONFIGURATION');
@@ -840,71 +852,72 @@ sub change_settings_delivery {
 sub change_settings_access {
     my $c = shift;
     $cdb = esmith::ConfigDB::UTF8->open || die "Couldn't open config db";
-    my $pop3Access = ($c->param('POPAccess') || 'private');
+    
+    #my $pop3Access = ($c->param('POPAccess') || 'private');
 
-    if ($pop3Access eq 'disabled') {
-        $cdb->set_prop('pop3',  "status", "disabled");
-        $cdb->set_prop('pop3s', "status", "disabled");
-    } else {
-        $cdb->set_prop('pop3',  "status", "enabled");
-        $cdb->set_prop('pop3s', "status", "enabled");
-    }
+    #if ($pop3Access eq 'disabled') {
+        #$cdb->set_prop('pop3',  "status", "disabled");
+        #$cdb->set_prop('pop3s', "status", "disabled");
+    #} else {
+        #$cdb->set_prop('pop3',  "status", "enabled");
+        #$cdb->set_prop('pop3s', "status", "enabled");
+    #}
 
-    if ($pop3Access eq 'public') {
-        $cdb->set_prop('pop3',  "access", "public");
-        $cdb->set_prop('pop3s', "access", "public");
-    } elsif ($pop3Access eq 'publicSSL') {
-        $cdb->set_prop('pop3',  "access", "private");
-        $cdb->set_prop('pop3s', "access", "public");
-    } else {
-        $cdb->set_prop('pop3',  "access", "private");
-        $cdb->set_prop('pop3s', "access", "private");
-    }
-    my $imapAccess = ($c->param('IMAPAccess') || 'private');
+    #if ($pop3Access eq 'public') {
+        #$cdb->set_prop('pop3',  "access", "public");
+        #$cdb->set_prop('pop3s', "access", "public");
+    #} elsif ($pop3Access eq 'publicSSL') {
+        #$cdb->set_prop('pop3',  "access", "private");
+        #$cdb->set_prop('pop3s', "access", "public");
+    #} else {
+        #$cdb->set_prop('pop3',  "access", "private");
+        #$cdb->set_prop('pop3s', "access", "private");
+    #}
+    #my $imapAccess = ($c->param('IMAPAccess') || 'private');
 
-    if ($imapAccess eq 'disabled') {
-        $cdb->set_prop('imap',  "status", "enabled");
-        $cdb->set_prop('imap',  "access", "localhost");
-        $cdb->set_prop('imaps', "status", "enabled");
-        $cdb->set_prop('imaps', "access", "localhost");
-    } elsif ($imapAccess eq 'public') {
-        $cdb->set_prop('imap',  "status", "enabled");
-        $cdb->set_prop('imap',  "access", "public");
-        $cdb->set_prop('imaps', "status", "enabled");
-        $cdb->set_prop('imaps', "access", "public");
-    } elsif ($imapAccess eq 'publicSSL') {
-        $cdb->set_prop('imap',  "status", "enabled");
-        $cdb->set_prop('imap',  "access", "private");
-        $cdb->set_prop('imaps', "status", "enabled");
-        $cdb->set_prop('imaps', "access", "public");
-    } else {
-        $cdb->set_prop('imap',  "status", "enabled");
-        $cdb->set_prop('imap',  "access", "private");
-        $cdb->set_prop('imaps', "status", "enabled");
-        $cdb->set_prop('imaps', "access", "private");
-    } ## end else [ if ($imapAccess eq 'disabled')]
+    #if ($imapAccess eq 'disabled') {
+        #$cdb->set_prop('imap',  "status", "enabled");
+        #$cdb->set_prop('imap',  "access", "localhost");
+        #$cdb->set_prop('imaps', "status", "enabled");
+        #$cdb->set_prop('imaps', "access", "localhost");
+    #} elsif ($imapAccess eq 'public') {
+        #$cdb->set_prop('imap',  "status", "enabled");
+        #$cdb->set_prop('imap',  "access", "public");
+        #$cdb->set_prop('imaps', "status", "enabled");
+        #$cdb->set_prop('imaps', "access", "public");
+    #} elsif ($imapAccess eq 'publicSSL') {
+        #$cdb->set_prop('imap',  "status", "enabled");
+        #$cdb->set_prop('imap',  "access", "private");
+        #$cdb->set_prop('imaps', "status", "enabled");
+        #$cdb->set_prop('imaps', "access", "public");
+    #} else {
+        #$cdb->set_prop('imap',  "status", "enabled");
+        #$cdb->set_prop('imap',  "access", "private");
+        #$cdb->set_prop('imaps', "status", "enabled");
+        #$cdb->set_prop('imaps', "access", "private");
+    #} ## end else [ if ($imapAccess eq 'disabled')]
 
-    #------------------------------------------------------------
-    # Set webmail state in configuration database, and access
-    # type for SSL
-    # PHP and MySQL should always be on, and are enabled by default
-    # We don't do anything with them here.
-    #------------------------------------------------------------
-    my $webmail = ($c->param('WebMail') || 'disabled');
+    ##------------------------------------------------------------
+    ## Set webmail state in configuration database, and access
+    ## type for SSL
+    ## PHP and MySQL should always be on, and are enabled by default
+    ## We don't do anything with them here.
+    ##------------------------------------------------------------
+    #my $webmail = ($c->param('WebMail') || 'disabled');
 
-    if ($webmail eq "enabledSSL") {
-        $cdb->set_prop('php81-php-fpm', "status", "enabled");
-        $cdb->set_prop('mariadb',       "status", "enabled");
-        $cdb->set_prop('roundcube',     "status", 'enabled');
-        $cdb->set_prop('roundcube',     "access", "public");
-    } elsif ($webmail eq "localnetworkSSL") {
-        $cdb->set_prop('php81-php-fpm', "status", "enabled");
-        $cdb->set_prop('mariadb',       "status", "enabled");
-        $cdb->set_prop('roundcube',     "status", 'enabled');
-        $cdb->set_prop('roundcube',     "access", "private");
-    } else {
-        $cdb->set_prop('roundcube', "status", 'disabled');
-    }
+    #if ($webmail eq "enabledSSL") {
+        #$cdb->set_prop('php81-php-fpm', "status", "enabled");
+        #$cdb->set_prop('mariadb',       "status", "enabled");
+        #$cdb->set_prop('roundcube',     "status", 'enabled');
+        #$cdb->set_prop('roundcube',     "access", "public");
+    #} elsif ($webmail eq "localnetworkSSL") {
+        #$cdb->set_prop('php81-php-fpm', "status", "enabled");
+        #$cdb->set_prop('mariadb',       "status", "enabled");
+        #$cdb->set_prop('roundcube',     "status", 'enabled');
+        #$cdb->set_prop('roundcube',     "access", "private");
+    #} else {
+        #$cdb->set_prop('roundcube', "status", 'disabled');
+    #}
 
     unless (system("/sbin/e-smith/signal-event", "email-update") == 0) {
         return $c->l('mai_ERROR_UPDATING_CONFIGURATION');
@@ -960,7 +973,7 @@ sub get_secondary_mail_use_envelope {
     } else {
         return ('off');
     }
-} ## end sub get_secondary_mail_use_envelope
+} ## end sub get_secondary_mail_use_envelope 
 
 sub validate_smarthost {
     my $c        = shift;
@@ -981,5 +994,27 @@ sub validate_ip_or_blank {
   return "mai_INVALID_DELEGATE";
 }
 
+sub get_localised_menu_items {
+    my ($c, $svc) = @_;
+
+    my $select = $ui->get_menu_options($svc);
+    return [] unless $select && ref($select) eq 'ARRAY';
+
+    my @localised;
+
+    for my $item (@$select) {
+        next unless ref($item) eq 'HASH';
+        
+        my %copy = %$item;
+        if (defined $copy{label} && length $copy{label}) {
+             $copy{label} = $c->l($copy{label});
+         }
+        
+        # Convert hashref to arrayref for select_field
+        push @localised, [ $copy{label}, $copy{value} ];
+    }
+
+    return \@localised;
+}
 
 1;
