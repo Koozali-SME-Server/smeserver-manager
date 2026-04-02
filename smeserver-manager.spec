@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 200
+%define release 201
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,7 +153,7 @@ true
 %defattr(-,root,root)
 
 %changelog
-* Thu Apr 02 2026 Brian Read <brianr@koozali.org> 11.0.0-200.sme
+* Thu Apr 02 2026 Brian Read <brianr@koozali.org> 11.0.0-201.sme
 - Refactor emailsettings panel controller logic to make DB entries more visible and conform to latest reqs  [SME: 13299]
 
 * Mon Mar 30 2026 Brian Read <brianr@koozali.org> 11.0.0-199.sme
