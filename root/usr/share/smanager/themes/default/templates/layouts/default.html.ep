@@ -4,6 +4,8 @@
 <title><%= $title %></title>
     <link rel="made" href="mailto:bugs%40koozali.org">
     <meta name="copyright" content="(head.tmpl)Copyright 2003-2004 Mitel Corporation">
+    
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
     %= stylesheet '/css/new_sme.css'
     %= stylesheet '/css/new-sme-main.css'

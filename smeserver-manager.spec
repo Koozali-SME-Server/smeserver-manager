@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 201
+%define release 202
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Apr 12 2026 Brian Read <brianr@koozali.org> 11.0.0-202.sme
+- Add favicon.ico to images directory and specify in defaults template  [SME: 13495]
+
 * Thu Apr 02 2026 Brian Read <brianr@koozali.org> 11.0.0-201.sme
 - Refactor emailsettings panel controller logic to make DB entries more visible and conform to latest reqs  [SME: 13299]
 

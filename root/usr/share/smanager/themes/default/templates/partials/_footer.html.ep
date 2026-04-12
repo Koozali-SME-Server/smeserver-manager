@@ -19,12 +19,13 @@
       </a>
     </div>
     % if ( config->{mode} eq 'development' ) {
-<!--    <div class="image-wrapper">
-      <a href="javascript:window.open('https://html5.validator.nu/?doc='+encodeURIComponent(window.location.href));void 0" title="Validate This Page">
-        <img src="images/html5-validator-badge.png" alt="HTML5 Valid">
-      </a>
-    </div>
--->
+		<div class="image-wrapper">
+			<a href="http://192.168.1.197:8888/?doc=<%= $c->url_for->to_abs %>"
+				target="_blank"
+				title="Validate This Page">
+			<img src="images/html5-validator-badge.png" alt="HTML5 Valid">
+			</a>
+		</div>
     % }
   </div>
 </footer>
