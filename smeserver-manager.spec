@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 202
+%define release 203
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Apr 12 2026 Brian Read <brianr@koozali.org> 11.0.0-203.sme
+- Add Lang atribute to  html tag as help for readers, etc  [SME: 13496]
+- Remove unnecessary hashes from CSP override rules [SME: 13497]
+
 * Sun Apr 12 2026 Brian Read <brianr@koozali.org> 11.0.0-202.sme
 - Add favicon.ico to images directory and specify in defaults template  [SME: 13495]
 

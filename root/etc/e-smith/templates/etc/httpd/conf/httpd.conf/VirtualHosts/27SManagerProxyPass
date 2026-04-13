@@ -41,9 +41,17 @@
             $OUT .= "#       private access by default\n";
             $OUT .= "        Require ip $localAccess $externalSSLAccess\n";
         }
-        # CSP header - single clean concatenation
-        $OUT .= "        Header set Content-Security-Policy \"script-src 'self' 'unsafe-eval' 'unsafe-hashes' 'sha256-T5nv1LP9Xxdv7I1tsdTYprjvwoZyVEvfe8Y4TLx59pk=' 'sha256-TxVHbw3t1mXreukND/yBI+H+CscZDpyxPoNoBrRhmSE=' 'sha256-30Xxu25YbRvjbQ2ngJ8EyneSz0No788PqjM9XbQh+qM=' 'sha256-5PrS/6zSCY/wROLKhAm4ymOuYsfvvScrC9Vp8FtOpxU=' 'sha256-pxCV6zyLaFSTIpOP2p4ULot8y+QsEmSEjKE54zDTWQ=' 'sha256-P51OyslUh5bGkoWk9qY+o4Su4HuwNFoQcFCeNxF7Ms8='; style-src 'self' 'unsafe-hashes';\"\n";
-        
+
+		# CSP header - re-instate formatted structure       
+        $OUT .= qq{        Header always set Content-Security-Policy "}
+              . " script-src 'self' 'unsafe-eval' 'unsafe-hashes' "
+              . " 'sha256-T5nv1LP9Xxdv7I1tsdTYprjvwoZyVEvfe8Y4TLx59pk=' "  # tognav
+              . " 'sha256-TxVHbw3t1mXreukND/yBI+H+CscZDpyxPoNoBrRhmSE=' "  # swapClass
+              . " 'sha256-30Xxu25YbRvjbQ2ngJ8EyneSz0No788PqjM9XbQh+qM=' "  # togglePassword...
+              . " ; "
+              . " style-src 'self' 'unsafe-hashes' ;"
+              . qq{"\n};
+                                          
         $OUT .= "    </Location>\n";
         $OUT .= "   <LocationMatch \"/$place/.+\.(html|cgi)\$\">\n";
         $OUT .= "                   Header set Cache-Control no-store\n";

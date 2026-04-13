@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= stash('locale') || 'en' %>" >
 <head>
 <title><%= $title %></title>
     <link rel="made" href="mailto:bugs%40koozali.org">
