@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 203
+%define release 204
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Apr 15 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-204.sme
+- fix datetime form and js [SME: 13047]
+
 * Sun Apr 12 2026 Brian Read <brianr@koozali.org> 11.0.0-203.sme
 - Add Lang atribute to  html tag as help for readers, etc  [SME: 13496]
 - Remove unnecessary hashes from CSP override rules [SME: 13497]

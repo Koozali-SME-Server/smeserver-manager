@@ -173,7 +173,7 @@ sub do_update {
 						modul => $modul,
 						dat_data  => \%dat_data
 					);
-					$c->render(template => "datetime");	
+					$c->do_display($dat_data{'trt'});	
 					return
 				} else {
 					if ($c->param('time_mode') eq 'dat_manually_set') {

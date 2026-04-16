@@ -245,7 +245,7 @@ sub validate_change_datetime {
         $hour = "12";
     }
 
-    if (($hour < 1) || ($hour > 23)) {
+    if (($hour < 0) || ($hour > 23)) {
         return $c->l('dat_INVALID_HOUR') . " $hour. " . $c->l('dat_BETWEEN_0_AND_23');
     }
     my $minute = $c->param('minute');
