@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '197.el8.sme'; 
+our $VERSION = '205.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -948,10 +948,10 @@ sub _lang_space {
     $c->stash(locale=>$lang);  #Stash it for template use
 
     $path = 'initial' if ($path eq '/' or $path eq ''); 
-    warn "langspace:path=$path" if $debug;
+    #warn "langspace:path=$path" if $debug;
     my ($module) = $path =~ m{\A([^/?]+)};
     $module = ucfirst($module);
-    warn "langspace:module=$module" if $debug;
+    #warn "langspace:module=$module" if $debug;
 
     my $moduleLong = "SrvMngr::I18N::Modules::$module";
     (my $dir = $moduleLong) =~ s|::|/|g;

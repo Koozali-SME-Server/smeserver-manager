@@ -40,6 +40,7 @@ sub main {
     $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
     my $viewlog = $cdb->get('viewlogfiles');
     $log_datas{default_op} = ($viewlog ? $viewlog->prop('DefaultOperation') : undef) || 'view';
+    $log_datas{Filename} = 'messages';
     $c->stash(title => $title, notif => $notif, log_datas => \%log_datas);
     $c->render(template => 'viewlogfiles');
 } ## end sub main
@@ -52,10 +53,10 @@ sub do_action {
     my $notif     = '';
     my $result    = "";
     my %log_datas = ();
-    $log_datas{filename}         = $c->param('Filename');
-    $log_datas{matchpattern}     = $c->param('Matchpattern');
-    $log_datas{highlightpattern} = $c->param('Highlightpattern');
-    $log_datas{operation}        = $c->param('Operation');
+    $log_datas{filename}         = $c->param('Filename') || 'messages' ;
+    $log_datas{matchpattern}     = $c->param('Matchpattern') || '';
+    $log_datas{highlightpattern} = $c->param('Highlightpattern') || '';
+    $log_datas{operation}        = $c->param('Operation') || 'view';
 
     if ($log_datas{operation} eq 'download') {
         $log_datas{'trt'} = "DOWN";
@@ -89,7 +90,7 @@ sub do_action {
     }
 
     if ($log_datas{trt} eq "SHOW") {
-		$c->app->log->info("Show");
+       # $c->app->log->info("Show");
         #if (!$result) {
         #    $result = $c->render_to_string(inline => showlogFile($c, %log_datas));
         #}
@@ -101,7 +102,7 @@ sub do_action {
     } ## end if ($log_datas{trt} eq...)
 
     if ($log_datas{trt} eq 'DOWN') {
-		$c->app->log->info("Down");
+        #$c->app->log->info("Down");
         my $modul = 'Log file download';
         $notif = download_logFile($c, %log_datas);
         return undef unless defined $notif;
@@ -116,8 +117,8 @@ sub timestamp2local {
     #if (/^(\@[0-9a-f]{24})(.*)/s) {
     #    return Time::TAI64::tai64nlocal($1) . $2;
     #} els
-	if (/^([0-9]{10}\.[0-9]{3})(.*)/s) {
-		return localtime($1) . $2;
+    if (/^([0-9]{10}\.[0-9]{3})(.*)/s) {
+        return localtime($1) . $2;
     }
     return $_;
 } ## end sub timestamp2local
@@ -186,9 +187,9 @@ sub findlogFiles {
 }
 
 sub showlogFile {
-	#
-	# Not used - Feb 2026
-	#
+    #
+    # Not used - Feb 2026
+    #
     my ($c, %log_datas) = @_;
     my $fullpath = "/var/log/$log_datas{filename}";
     my $out      = '';
@@ -338,9 +339,9 @@ sub stream_logs {
     $c->app->log->info($c->log_req);
     
     my $filename = $c->param('Filename') // 'messages';
-	my $filter    = $c->param('Matchpattern') // '';
-	my $highlight = $c->param('highlight') // '';
-	
+    my $filter    = $c->param('Matchpattern') // '';
+    my $highlight = $c->param('highlight') // '';
+    
    
     $filename = "/var/log/$filename" unless $filename =~ m{^/var/log/};
     $filename =~ s{[^\w./-]}{}g;
@@ -352,12 +353,12 @@ sub stream_logs {
     
     my $fh; 
     if (is_gzipped($filename)) {
-		open $fh, "-|", "zcat", $filename or die "Cannot zcat $filename: $!";
-		$c->app->log->debug("Using zcat for $filename");
-	} else {
-		open $fh, "<", $filename or die "Cannot open $filename: $!";
-		$c->app->log->debug( "Using direct read for $filename");
-	}
+        open $fh, "-|", "zcat", $filename or die "Cannot zcat $filename: $!";
+        #$c->app->log->debug("Using zcat for $filename");
+    } else {
+        open $fh, "<", $filename or die "Cannot open $filename: $!";
+        #$c->app->log->debug( "Using direct read for $filename");
+    }
 
     $c->res->headers->header('X-Accel-Buffering' => 'no');
     $c->res->headers->cache_control('no-cache');
@@ -411,48 +412,48 @@ sub stream_next_chunk {
     my $max_lines = 50;
     
     while ($lines_read < $max_lines && (my $line = <$fh>)) {
-	# Enhanced filter - supports both literal text and /regex/ patterns
-		next if $filter && do {
-			if ($filter =~ m{^/(.*)/$}) {
-				my $regex = $1;
-				$line !~ qr/$regex/;
-			} else {
-				my $quoted = quotemeta($filter);
-				$line !~ qr/$quoted/i;
-			}
-		};
+    # Enhanced filter - supports both literal text and /regex/ patterns
+        next if $filter && do {
+            if ($filter =~ m{^/(.*)/$}) {
+                my $regex = $1;
+                $line !~ qr/$regex/;
+            } else {
+                my $quoted = quotemeta($filter);
+                $line !~ qr/$quoted/i;
+            }
+        };
       
         $line_count++;
         $lines_read++;
         
         # enhanced highlight - supports both literal text and /regex/ patterns
-		my $escaped = Mojo::Util::xml_escape($line);
-		if ($highlight) {
-			if ($highlight =~ m{^/(.*)/$} ) {
-				# Regex mode - extract pattern between slashes
-				my $regex_pattern = $1;
-				if ($line =~ m/$regex_pattern/g) {
-					#$c->app->log->info("Regex:$regex_pattern");
-					$escaped =~ s/($regex_pattern)/<span class="hl">$1<\/span>/gi;
-				}
-			} else {
-				# Plain text mode
-				my $quoted = quotemeta($highlight);   # or: my $quoted = "\Q$highlight\E";
-				#$c->app->log->info("Not Regex:$quoted");
-				$escaped =~ s/($quoted)/<span class="hl">$1<\/span>/gi;
-			}
-		}
+        my $escaped = Mojo::Util::xml_escape($line);
+        if ($highlight) {
+            if ($highlight =~ m{^/(.*)/$} ) {
+                # Regex mode - extract pattern between slashes
+                my $regex_pattern = $1;
+                if ($line =~ m/$regex_pattern/g) {
+                    #$c->app->log->info("Regex:$regex_pattern");
+                    $escaped =~ s/($regex_pattern)/<span class="hl">$1<\/span>/gi;
+                }
+            } else {
+                # Plain text mode
+                my $quoted = quotemeta($highlight);   # or: my $quoted = "\Q$highlight\E";
+                #$c->app->log->info("Not Regex:$quoted");
+                $escaped =~ s/($quoted)/<span class="hl">$1<\/span>/gi;
+            }
+        }
 
-		$chunk_html .= sprintf(
-			'<tr><td class="line-num">%d</td><td><pre>%s</pre></td></tr>',
-			$line_count, $escaped
-		);
+        $chunk_html .= sprintf(
+            '<tr><td class="line-num">%d</td><td><pre>%s</pre></td></tr>',
+            $line_count, $escaped
+        );
     }
     
     $c->stash(line_count => $line_count); 
     
     if ($chunk_html) {
-		# this blows CSP, not sure if we need it or not.
+        # this blows CSP, not sure if we need it or not.
         #$chunk_html .= '<script>window.scrollTo(0,document.body.scrollHeight);</script>';
         $c->write_chunk($chunk_html);
         
@@ -474,20 +475,20 @@ sub live_page {
     my $file      = $c->param('Filename') // 'messages';
     my $filter    = $c->param('Matchpattern') // '';
     my $highlight = $c->param('Highlightpattern') // '';
-	$c->app->log->info("Stream_logs:$file $filter $highlight");
+    #$c->app->log->info("Stream_logs:$file $filter $highlight");
     
     # Build iframe src to the actual streaming endpoint
     my $src = $c->url_for('viewlogfilest')->query(
-		Filename 		=> $c->param('Filename') // 'messages',
-        Matchpattern  	=> $c->param('Matchpattern') // '',
-        highlight 		=> $c->param('Highlightpattern') // '',
+        Filename         => $c->param('Filename') // 'messages',
+        Matchpattern      => $c->param('Matchpattern') // '',
+        highlight         => $c->param('Highlightpattern') // '',
     );
-    $c->app->log->info($src);
-   	$c->stash(
+    #$c->app->log->info($src);
+    $c->stash(
         title     => $c->l('log_FORM_TITLE'),
-		Filename 		=> $c->param('Filename') // 'messages',
-        Matchpattern  	=> $c->param('Matchpattern') // '',
-        highlight 		=> $c->param('Highlightpattern') // '',
+        Filename         => $c->param('Filename') // 'messages',
+        Matchpattern      => $c->param('Matchpattern') // '',
+        highlight         => $c->param('Highlightpattern') // '',
         stream_src => $src,
     );
     return $c->render(template => 'viewlogfiles2');

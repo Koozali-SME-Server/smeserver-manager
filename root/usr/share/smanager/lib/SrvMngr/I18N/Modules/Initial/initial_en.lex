@@ -1,6 +1,7 @@
 
 'initial_FORM_TITLE' => 'Welcome to the server manager',
 'initial_FRAMES_BODY' => '
+        <p>
         Welcome to SME Server, the leading Linux distribution for
         small and medium enterprises. SME Server is brought to
         you by <A HREF="https://www.koozali.org/" TARGET="_blank">Koozali Foundation, Inc.</A>,

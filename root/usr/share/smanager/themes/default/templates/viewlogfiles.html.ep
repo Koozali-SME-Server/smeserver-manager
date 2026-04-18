@@ -20,7 +20,7 @@
   <p>
     <span class=label><%= l 'log_LOG_FILE_SELECT_DESC' %></span>
     <span class=data>
-      % param 'Filename' => 'messages';
+      % param 'Filename' => $log_datas->{Filename} unless param 'Filename';
       %= select_field 'Filename' => $c->findlogFiles(), class => 'input'
     </span>
   </p>
@@ -29,7 +29,8 @@
   <p>
     <span class=label><%= l 'log_FILTER_PATTERN_LABEL' %></span>
     <span class=data>
-      %= text_field 'Matchpattern', class => 'input'
+      % param 'Matchpattern' => $log_datas->{Matchpattern} unless param 'Matchpattern';
+      %= text_field 'Matchpattern', class => 'input', placeholder => "text or /regex/flags"
     </span>
   </p>
       %= l 'log_MATCH_PATTERN_DESC'
@@ -37,32 +38,33 @@
   <p>
     <span class=label><%= l 'log_MATCH_PATTERN_LABEL' %></span>
     <span class=data>
-      %= text_field 'Highlightpattern', class => 'input'
+      % param 'Highlightpattern' => $log_datas->{Highlightpattern} unless param 'Highlightpattern';
+      %= text_field 'Highlightpattern', class => 'input', placeholder => "text or /regex/flags"
     </span>
   </p>
 
       %= l 'log_OP_DESC'
 
-<p>
+  <p>
     <span class="label"><%= l 'log_OP_LABEL' %></span>
     <span class="data">
-      % if ($log_datas->{'default_op'} eq 'download') {
-        % param 'Operation' => 'download';
-      % }
+      % if (!exists $log_datas->{operation}) {
+        % if ($log_datas->{default_op} eq 'download') {
+            % param 'Operation' => 'download';
+        % } else {
+            % param 'Operation' => 'view';
+        % }
+      % }   
+      % param 'Operation' => $log_datas->{Operation} unless param 'Operation';
       <%= select_field 'Operation' => [
         [ l('log_VIEW'), 'view' ],
         [ l('DOWNLOAD'), 'download' ]
       ], class => 'input' %>
     </span>
-</p>
+  </p>
   %#= l 'log_END_DESC'  #No longer need to warn about takingt a long time.
-  %= submit_button l('NEXT'), class => 'action'
+  %= submit_button l('NEXT'), class => 'action no-disable'
 
-  <!-- Provide stream URL template for external JS (no inline script) -->
-<!--
-<input type="hidden" id="stream_base"
-       value="<%= url_for('viewlogfilesl') %>?file=__FILE__">
--->
 % end
 </div>
 % end

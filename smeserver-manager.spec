@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 204
+%define release 205
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Apr 16 2026 Brian Read <brianr@koozali.org> 11.0.0-205.sme
+- Fix viewlogfiles to retain selected log on refresh [SME: 13500]
+
 * Wed Apr 15 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-204.sme
 - fix datetime form and js [SME: 13047]
 

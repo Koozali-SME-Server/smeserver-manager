@@ -82,8 +82,8 @@ body {
     margin:0;
 }
 
-#log-body,#log-body-legacy .hl {
-  background-color: #ffffcc;
+.hl {
+  background-color: #ffff2d;
   color: #000000;
   padding: 1px 4px;
   border-radius: 2px;

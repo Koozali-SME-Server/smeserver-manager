@@ -3,10 +3,20 @@
 % content_for 'module' => begin
 <div class="module viewlogfiles-panel">
   <h1><%= $title %></h1>
+  
+  %# Build the refresh query based on the stashed parameters
+  % my $src = $c->url_for('viewlogfilesd')->query(
+            % Filename         => $c->stash('Filename') // 'messages',
+            % Matchpattern      => $c->stash('Matchpattern') // '',
+            % Highlightpattern  => $c->stash('highlight') // '',
+  % );
 
-  %= form_for $c->url_for->query([]) => (method => 'POST') => begin
+  %= form_for $src => (method => 'POST') => begin
+    %# $c->app->log->info("refresh url:".$src);
+    %# $c->app->log->info("refresh log_data:".$log_datas->{Filename});
+    
     %= csrf_field
-    %= submit_button 'Refresh', class => 'btn btn-refresh'
+    %= submit_button 'Refresh', class => 'btn btn-refresh no-disable'
   % end
 
   <div class="viewlogfiles-live-meta">

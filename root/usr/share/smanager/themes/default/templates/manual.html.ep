@@ -2,7 +2,7 @@
 
 % content_for 'module' => begin
   <div id='module' class='module manual-panel'>
-    <p><h1><%= $title %></h1></p>
+    <h1><%= $title %></h1>
     %= $c->render_to_string( inline => stash 'modul' )
   </div>
 
