@@ -5,6 +5,9 @@ package SrvMngr::Controller::Reboot;
 # description : Reboot or shutdown
 # navigation  : 4000 700
 #
+#    $if_admin->get('/reboot')->to('reboot#main')->name('reboot');
+#    $if_admin->post('/reboot')->to('reboot#do_action')->name('rebootact');
+#
 # routes : end
 #----------------------------------------------------------------------
 use strict;

@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 206
+%define release 207
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Apr 18 2026 Brian Read <brianr@koozali.org> 11.0.0-207.sme
+- Bring reboot panel into line [SME: 13492]
+
 * Sat Apr 18 2026 Brian Read <brianr@koozali.org> 11.0.0-206.sme
 - re-instate missing lex string in lex file for domain panel  [SME: 13487]
 

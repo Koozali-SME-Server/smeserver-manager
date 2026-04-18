@@ -20,7 +20,10 @@
   <h1><%= $title %></h1>
 
   <div class="module-content">
-    <%= $c->render_to_string( inline => stash 'modul' ) %>
+	<p>
+		<br>
+		<%= $c->render_to_string( inline => stash 'modul' ) %>
+    </p>
   </div>
 </div>
 
