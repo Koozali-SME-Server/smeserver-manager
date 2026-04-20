@@ -153,7 +153,7 @@
   gap: 0.25rem;
   align-items: flex-end;
   border-bottom: 1px solid #b9bcc2;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0 0;
   padding: 0;
 }
 
@@ -161,7 +161,7 @@
   appearance: none;
   border: 1px solid #b9bcc2;
   border-bottom: none;
-  background: #eef0f3;
+  background: #e8f3e1; /*#eef0f3*/
   color: #222;
   padding: 0.45rem 0.85rem;
   border-top-left-radius: 6px;

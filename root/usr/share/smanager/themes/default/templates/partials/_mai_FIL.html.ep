@@ -84,14 +84,21 @@
     </span></p>
 
     %= l 'mai_DESC_BLOCK_EXECUTABLE_CONTENT'
-
-    <p><span class=label>
-        %= l 'mai_LABEL_CONTENT_TO_BLOCK'
-      </span><span class=input>
-        % param 'BlockExecutableContent' => $c->get_patterns_current_opt() unless param 'BlockExecutableContent';
-        %= select_field 'BlockExecutableContent' => $c->get_patterns_opt(), class => 'input', multiple => "1";
-    </span></p>
-
+	
+	<div class='parameter-config-row'>
+	  <div class='parameter-label-col'>
+	    <span class=parameter-label>
+			%= l 'mai_LABEL_CONTENT_TO_BLOCK'
+		</span>
+	  </div>
+	  <div class='parameter-fields-col' id='datetime_manual'>
+	    <span class=input>
+			% param 'BlockExecutableContent' => $c->get_patterns_current_opt() unless param 'BlockExecutableContent';
+			%= select_field 'BlockExecutableContent' => $c->get_patterns_opt(), class => 'input', multiple => "1";
+		</span>
+	  </div>
+	</div>
+	
     %# ....
     %# Probably finally by a submit.
     %= submit_button $btn, class => 'action'

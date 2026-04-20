@@ -184,7 +184,7 @@ $(document).ready(function () {
     var $existingDice = $container.next('.sme-dice');
     if (!$existingDice.length) {
       var $dice = $(
-        '<img src="images/dice_3293.png" alt="Generate password" title="Generate password" class="sme-dice" />'
+        '<img src="images/icons8-dice-50.png" alt="Generate password" title="Generate password" class="sme-dice" />'
       );
       $container.after($dice);
     }

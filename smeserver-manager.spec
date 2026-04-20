@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 207
+%define release 208
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Apr 19 2026 Brian Read <brianr@koozali.org> 11.0.0-208.sme
+- Work on format and spacing - maek it a bit more consistent [SME: 13486]
+
 * Sat Apr 18 2026 Brian Read <brianr@koozali.org> 11.0.0-207.sme
 - Bring reboot panel into line [SME: 13492]
 
