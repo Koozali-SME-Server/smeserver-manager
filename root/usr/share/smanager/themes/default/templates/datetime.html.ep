@@ -29,15 +29,15 @@
   <% my $btn = l('SAVE'); %>
   <br /><br />
   <span>
-    %= label_for 'real-time-clock' => $c->l('dat_The_time_is_currently'), class => 'parameter-clock-label';
+    %= label_for 'real-time-clock' => $c->l('dat_The_time_is_currently'), class => 'datetime-clock-label';
   </span><span class=data2>
     <!--
     <div id="real-time-clock"></div>
     -->
-    %= text_field 'clock', id => 'real-time-clock', readonly => 'readonly', class => 'parameter-clock', value => $dat_data->{currentdatetime};
+    %= text_field 'clock', id => 'real-time-clock', readonly => 'readonly', class => 'datetime-clock', value => $dat_data->{currentdatetime};
   </span>
   % if ($dat_data->{ntpstatus} eq 'disabled') {
-    <div class='parameter-set-ntp'>
+    <div class='datetime-set-ntp'>
       %= l 'dat_NTP_ENABLE_DESC'
       <br>
     </div>

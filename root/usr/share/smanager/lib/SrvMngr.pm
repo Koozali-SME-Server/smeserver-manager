@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '205.el8.sme'; 
+our $VERSION = '208.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -530,7 +530,8 @@ sub setup_routing {
     $if_admin->get ('/dnf/stream/:run_id')->to('dnf#dnf_stream')->name('dnf_stream');
     $if_admin->get('/dnf/options/:function')->to('dnf#dnf_options')->name('dnf_options');
     $if_admin->get('/dnf/partial')->to('dnf#dnf_partial')->name('dnf_partial');
-    $if_admin->get('/dnfd')->to('dnf#do_update')->name('dnfd');
+    $if_admin->post('/dnfd')->to('dnf#do_update')->name('dnfd');
+    $if_admin->get('/dnfd')->to('dnf#dnf_options')->name('dnf_from_config');
 
     $if_admin->get('/welcome')->to('welcome#main')->name('welcome');
 
@@ -605,7 +606,7 @@ sub setup_routing {
 
 sub get_locale {
   my $c = shift;
-  $c->app->log->info($c->log_req);
+  # $c->app->log->info($c->log_req); #Reduce noise in log.
   # Locale already saved in stash 'locale'
   $c->render(template => 'get-locale', format => 'js');
 };

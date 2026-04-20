@@ -127,6 +127,7 @@
         e.preventDefault();
 
         const u = new URL(window.location.href);
+        u.pathname = u.pathname.replace(/\/dnfd$/, '/dnf'); //Sometimes is is running in the dnfd window
         u.searchParams.set('function', mode);
         window.location.href = u.toString();
       });

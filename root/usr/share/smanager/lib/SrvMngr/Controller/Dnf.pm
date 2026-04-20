@@ -9,7 +9,7 @@ package SrvMngr::Controller::Dnf;
 #    $if_admin->get ('/dnf/stream/:run_id')->to('dnf#dnf_stream')->name('dnf_stream');
 #    $if_admin->get('/dnf/options/:function')->to('dnf#dnf_options')->name('dnf_options');
 #    $if_admin->get('/dnf/partial')->to('dnf#dnf_partial')->name('dnf_partial');
-#    $if_admin->get('/dnfd')->to('dnf#do_update')->name('dnfd');
+#    $if_admin->post('/dnfd')->to('dnf#do_update')->name('dnfd');
 #
 # routes : end
 #----------------------------------------------------------------------
@@ -253,6 +253,7 @@ sub get_repository_options2 {
 # ---- Actions ----
 
 sub do_update ($c) {
+   $c->app->log->info($c->log_req);
    my $res=$c->change_settings();
    if ($res eq 'OK'){
        $c->stash('success',$c->l('yum_SUCCESS'));
@@ -264,6 +265,7 @@ sub do_update ($c) {
 }
 
 sub dnf_partial ($c) {
+  $c->app->log->info($c->log_req);
   my $function = lc($c->param('function') // 'update');
   #$c->app->log->info(dumper $c->stash);
   $function =~ s/^\s+|\s+$//g;
@@ -295,6 +297,7 @@ sub dnf_partial ($c) {
 
 # GET /dnf?function=update|install|remove
 sub do_show ($c) {
+  $c->app->log->info($c->log_req);
   my $function = lc($c->param('function') // 'update');
   #$c->app->log->info(dumper $c->stash);
   #$c->app->log->debug("DNF do_show raw_function=[" . ($c->param('function') // '') . "] normalized=[$function]");
@@ -326,6 +329,7 @@ sub do_show ($c) {
 
 # GET /dnf/options/:function  (implemented for completeness)
 sub dnf_options ($c) {
+  $c->app->log->info($c->log_req);
   my $function = $c->param('function') // '';
   return $c->render(json => { error => "Invalid function" }, status => 400)
     unless $function =~ /^(update|install|remove|configure)$/;
@@ -362,6 +366,7 @@ sub dnf_options ($c) {
 
 # POST /dnf/start/:function  (route uses start_dnf)
 sub start_dnf ($c) {
+  $c->app->log->info($c->log_req);
   my $function = $c->param('function') // '';
   $c->app->log->info("DNF start dnf raw_function=[" . ($c->param('function') // '') . "] normalized=[$function]");
   $function = lc $function;
@@ -401,6 +406,7 @@ use Mojo::Util qw(xml_escape);
 my $DNF_END_MARKER_RE = qr/^---- dnf event finished at .*?\(exit=\d+\) ----/;
 
 sub dnf_stream ($c) {
+  $c->app->log->info($c->log_req);
   my $t0_i   = int($c->param('started_i') // time());
   my $old_db = $c->param('old_db') // '';
 

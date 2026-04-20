@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 208
+%define release 209
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Apr 20 2026 Brian Read <brianr@koozali.org> 11.0.0-209.sme
+- Re-factor menu to show hover and current selected item [SME: 13504]
+- Fix crash on configure save in dnf panel [SME: 13502]
+
 * Sun Apr 19 2026 Brian Read <brianr@koozali.org> 11.0.0-208.sme
 - Work on format and spacing - maek it a bit more consistent [SME: 13486]
 
