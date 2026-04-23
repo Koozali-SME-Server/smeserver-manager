@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 209
+%define release 210
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Apr 23 2026 Brian Read <brianr@koozali.org> 11.0.0-210.sme
+- Update favicon so that it shows correctly proportioned [SME: 13514]
+
 * Mon Apr 20 2026 Brian Read <brianr@koozali.org> 11.0.0-209.sme
 - Re-factor menu to show hover and current selected item [SME: 13504]
 - Fix crash on configure save in dnf panel [SME: 13502]
