@@ -248,7 +248,7 @@ sub create_modify_domain {
     }
 
     if (not $rec and $action eq 'modify') {
-        return $c->l('dom_NONEXISTENT_DOMAIN_ERROR');
+        return $c->l('dom_NONEXISTENT_DOMAIN_ERROR',$domain);
     }
     $rec ||= $ddb->new_record($domain, { type => 'domain' });
     my %props;
@@ -273,11 +273,11 @@ sub delete_domain {
     $domain = $1 if ($domain =~ /^($REGEXP_DOMAIN)$/);
     return ($c->l('dom_ERROR_WHILE_REMOVING_DOMAIN') . ' Ctl') unless ($domain);
     my $rec = $ddb->get($domain);
-    return ($c->l('dom_NONEXISTENT_DOMAIN_ERROR')) if (not $rec);
+    return ($c->l('dom_NONEXISTENT_DOMAIN_ERROR',$domain)) if (not $rec);
     $rec->set_prop('type', 'domain-deleted');
 
     if (system("/sbin/e-smith/signal-event", "domain-delete", "$domain") != 0) {
-        return ($c->l('dom_ERROR_WHILE_REMOVING_DOMAIN') . 'Exe');
+        return ($c->l('dom_ERROR_WHILE_REMOVING_DOMAIN',$domain) . 'Exe');
     }
     $rec->delete;
     return 'OK';
