@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 210
+%define release 211
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue May 05 2026 Brian Read <brianr@koozali.org> 11.0.0-211.sme
+- Add in domain name to error messages in domans panel [SME: 13526]
+
 * Thu Apr 23 2026 Brian Read <brianr@koozali.org> 11.0.0-210.sme
 - Update favicon so that it shows correctly proportioned [SME: 13514]
 
