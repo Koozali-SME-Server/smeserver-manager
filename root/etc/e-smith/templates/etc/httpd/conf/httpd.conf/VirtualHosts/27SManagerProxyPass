@@ -48,8 +48,25 @@
               . " 'sha256-T5nv1LP9Xxdv7I1tsdTYprjvwoZyVEvfe8Y4TLx59pk=' "  # tognav
               . " 'sha256-TxVHbw3t1mXreukND/yBI+H+CscZDpyxPoNoBrRhmSE=' "  # swapClass
               . " 'sha256-30Xxu25YbRvjbQ2ngJ8EyneSz0No788PqjM9XbQh+qM=' "  # togglePassword...
+	      . "" 
               . " ; "
-              . " style-src 'self' 'unsafe-hashes' ;"
+              . " style-src 'self' 'unsafe-hashes'"
+	      . " 'sha256-L260MRnxEncfXZ+9PpNg4DK22yWkJ0oGX8rXX/HVe0M=' " # phpsysinfo ...
+	      . " 'sha256-iYwYhiMcsGmXCUzLEpEzZNz5dINrlkqf1sLbLhEcqGM=' 'sha256-hLI2iq8MKqWTTKw4iS6ZRki64cZn5WwLCVIrTGIzjzs=' 'sha256-ThQ3F6Z+79/krfeefK3C/jbobubZq4KMF/JVtyp94WQ=' "
+	      . " 'sha256-u7H67A5MarYROFEG6L3hLE/V6BEDSWQ0jVRpZYI9iI0=' 'sha256-LmVYhdHTzbJ6m6t329tP5mYAY59jnZrdDDJhWZtl3Nw=' 'sha256-TkQEhgatO0tm/yqps35DBRUbR0QPH+7TiaRN6ZJJUBE=' "
+	      . " 'sha256-+/8l6fxQyrdundiK66ViWS5VlHiQUAi4V/Ir8XXFYh0=' 'sha256-FDvyVGI+Db5fDavJp34H2/54jcDsoimYiVqyzyLv8js=' 'sha256-4NtfvxDR3mtkbq1XvVrxfzoEIJtLLgpXIxNUdxWnRGY=' "
+	      . " 'sha256-7YiM3AKVkhmdHSD8ehc5JCa+aZErSPDWG/sbuclARMc=' 'sha256-nsS/IGKDP6sL8sr41bFWh/hm3Cn/kAr4jRRuHq5+wmE=' 'sha256-ikUNTtISn9gcy9sp8j9u7toL9HasItnaovxEoR+Lhnc=' "
+	      . " 'sha256-5TmCSWsRHHKtNC4AgS23KS5Z9SBqma0xikI6H6iJ1/Y=' 'sha256-ikUNTtISn9gcy9sp8j9u7toL9HasItnaovxEoR+Lhnc=' 'sha256-PGJ8tjuz2DXGgB1Sie9pW8BrxBGK6EQndbLEkXd44T8='  "
+	      . " 'sha256-U/VfITP5CJt3nIxJHjqupT+2qaw5RgLGUTwqkCVmIiE=' 'sha256-l8u5iA18Di/vQl3aSZp+L1NrgNt9Zvi8YAEba6bJBGw=' 'sha256-fsJ9oOzStyGjfZR+00k0qEpXUu6jF7A6V5etfc69Qhs=' "  
+	      . " 'sha256-gajNlnWomfuW9hmqTkMB2ALLeYnXnOGepFlVtjR4+1U=' 'sha256-SmNfrqgLltMTiVkP6tRXkJ832X2JoLpbgDr8wcXj8cE=' 'sha256-e7/ArYryB+wQHerYE0UxYoDJvn1t1kxaM5vrAePJpVw=' " 
+	      . " 'sha256-7tKWu4WeLWw6RdsAFm6e5FkykA0Rsh6YGIufvnBjgH0=' 'sha256-3K+5ryx3vKrdTWCsUOk5hfk2x/AZjc6ThRaNkIHBnI8=' 'sha256-qOdHEuOwMzE60qs7bXvHtdjjjax8V94fJvH2/I4BfKM=' "
+	      . " 'sha256-3owP4u+yl6cCpbqKC0NxFGzfBWEdwY48gwr595I5jys=' 'sha256-H83p8ZvSTTUdNnZg2gyvkfkEBZxU58g0bjYjIKIncfw=' 'sha256-AZNujibVVa5bCyLsy7aFjE8qsBWP3QHi/lQJadehGq4=' " 
+	      . " 'sha256-tpnBcwnNOA5p0Wt5bTFq2ph+jbcpn0M1R5wJ9n0qaIg=' 'sha256-gNTILWdTwB9vaTSlcTtgr6X+b7KWO+7Wz53YzJHr/OE=' 'sha256-5NXPG0Wu5x29lw9bvKPfzU7Dv2bLkE7g2YdyAfuuA2w=' " 
+	      . " 'sha256-0MB9QMGDg1ZwGSMvUuYbYLX/BQJxCjj+4VE7PUtoOWY=' 'sha256-YsubCtHPuQqeOIihGNf5qcz8Fug/jC+8DzU9sSP4s+s=' " # ..phpsysinfo
+	      . " 'sha256-iYwYhiMcsGmXCUzLEpEzZNz5dINrlkqf1sLbLhEcqGM=' " # phpPgAdmin
+	      . " 'sha256-N5D2sUYunteYT2px/FluaXoLlmXCHFmr3Nyl8QKwuAc=' " # xt_geoip
+	      . " 'sha256-s5prmeEVVB9iBhgkjqIedHByPVwdai9DevTuMD8LR00=' " # xt_geoip
+	      . " ; "
               . qq{"\n};
                                           
         $OUT .= "    </Location>\n";

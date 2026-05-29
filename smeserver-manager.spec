@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 212
+%define release 213
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri May 29 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-213.sme
+- workaround csp for few contribs [SME: 13321]
+
 * Tue May 05 2026 Brian Read <brianr@koozali.org> 11.0.0-212.sme
 - Add in domain name to error messages in domains panel [SME: 13526]
 
