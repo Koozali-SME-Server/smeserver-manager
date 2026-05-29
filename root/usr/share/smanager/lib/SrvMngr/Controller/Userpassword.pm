@@ -178,7 +178,7 @@ sub reset_password {
     return $c->l('NO_SUCH_USER', $user) unless ($acct->prop('type') eq 'user');
     $ret = esmith::util::setUserPasswordRequirePrevious($user, $oldpassword, $password) if $trt ne 'RESET';
     $ret = esmith::util::setUserPassword($user, $password) if $trt eq 'RESET';
-    return $c->l('pwd_ERROR_PASSWORD_CHANGE') . ' ' . $trt unless $ret;
+    return $c->l('pwd_ERROR_PASSWORD_CHANGE') unless $ret;
     $acct->set_prop("PasswordSet", "yes");
     undef $adb;
 

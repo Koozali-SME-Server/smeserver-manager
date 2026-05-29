@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 213
+%define release 214
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri May 29 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-214.sme
+- remove extra string in error message [SME: 9844]
+
 * Fri May 29 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-213.sme
 - workaround csp for few contribs [SME: 13321]
 
