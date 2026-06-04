@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 214
+%define release 215
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Jun 04 2026 Brian Read <brianr@koozali.org> 11.0.0-215.sme
+- Add missing lex file entry to bug report panel [SME: 13569]
+- Remove old Software installer [SME: 13570]
+
 * Fri May 29 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-214.sme
 - remove extra string in error message [SME: 9844]
 
