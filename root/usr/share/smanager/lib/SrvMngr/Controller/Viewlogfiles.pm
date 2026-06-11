@@ -167,7 +167,10 @@ sub findlogFiles {
 
         # Size adjunct "(<size> mb)"
         my $mb = $bytes / (1024 * 1024);
-        my $size_suffix = sprintf(' (%.2f mb)', $mb);
+        my $size_suffix = $mb < 1 
+	    ? sprintf(' (%.1f kb)', $mb * 1024) 
+	    : sprintf(' (%.1f mb)', $mb);
+
 
         my ($file_base, $file_path, $file_type) = fileparse($path);
 
