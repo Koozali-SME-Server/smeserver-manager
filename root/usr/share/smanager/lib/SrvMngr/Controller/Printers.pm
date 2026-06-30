@@ -13,7 +13,7 @@ use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
-use SrvMngr qw(theme_list init_session);
+use SrvMngr qw(theme_list init_session ip_number);
 use esmith::AccountsDB::UTF8;
 our $adb;
 
@@ -271,7 +271,7 @@ sub hostname_or_ip2 {
     my ($fm, $data) = @_;
 
     if ($data =~ /^[\d\.]+$/) {
-        if (ip_number2($fm, $data) eq "OK") {
+        if (ip_number($fm, $data) eq "OK") {
             return "OK";
         } else {
             return $fm->l('prt_MUST_BE_VALID_HOSTNAME_OR_IP');
@@ -282,22 +282,6 @@ sub hostname_or_ip2 {
         return $fm->l('prt_MUST_BE_VALID_HOSTNAME_OR_IP');
     }
 } ## end sub hostname_or_ip2
-
-sub ip_number2 {
-
-    # from CGI::FormMagick::Validator::ip_number($fm, $data)
-    my ($fm, $data) = @_;
-    return undef unless defined $data;
-    return 'FM_IP_NUMBER1' unless $data =~ /^[\d.]+$/;
-    my @octets = split /\./, $data;
-    my $dots = ($data =~ tr/.//);
-    return 'FM_IP_NUMBER2' unless (scalar @octets == 4 and $dots == 3);
-
-    foreach my $octet (@octets) {
-        return $fm->l("FM_IP_NUMBER3", { octet => $octet }) if $octet > 255;
-    }
-    return 'OK';
-} ## end sub ip_number2
 
 =head2 publicAccess_list
 

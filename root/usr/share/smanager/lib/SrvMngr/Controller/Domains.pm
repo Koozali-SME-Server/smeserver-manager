@@ -12,7 +12,7 @@ use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
-use SrvMngr qw(theme_list init_session);
+use SrvMngr qw(theme_list init_session ip_number ip_number_or_blank);
 use esmith::DomainsDB::UTF8;
 use esmith::AccountsDB::UTF8;
 
@@ -396,31 +396,4 @@ sub validate_Description {
         : 'DOMAIN_DESCRIPTION_VALIDATION_ERROR';
 } ## end sub validate_Description
 
-sub ip_number_or_blank {
-
-    # XXX - FIXME - we should push this down into CGI::FormMagick
-    my $c  = shift;
-    my $ip = shift;
-
-    if (!defined($ip) || $ip eq "") {
-        return 'OK';
-    }
-    return ip_number($c, $ip);
-} ## end sub ip_number_or_blank
-
-sub ip_number {
-
-    #  from CGI::FormMagick::Validator qw( ip_number );
-    my ($c, $data) = @_;
-    return undef unless defined $data;
-    return $c->l('FM_IP_NUMBER1') unless $data =~ /^[\d.]+$/;
-    my @octets = split /\./, $data;
-    my $dots = ($data =~ tr/.//);
-    return $c->l('FM_IP_NUMBER2') unless (scalar @octets == 4 and $dots == 3);
-
-    foreach my $octet (@octets) {
-        return $c->l("FM_IP_NUMBER3", $octet) if $octet > 255;
-    }
-    return 'OK';
-} ## end sub ip_number
 1;

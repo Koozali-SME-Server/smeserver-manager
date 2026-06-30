@@ -11,8 +11,7 @@ use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
-use SrvMngr qw(theme_list init_session);
-use SrvMngr qw(gen_locale_date_string);
+use SrvMngr qw(theme_list init_session get_public_ip_address gen_locale_date_string);
 use esmith::ConfigDB::UTF8;
 use esmith::DomainsDB::UTF8;
 use esmith::NetworksDB::UTF8;
@@ -33,7 +32,25 @@ sub main {
     $rvw_datas{'servermode'} = (get_value('', 'SystemMode') || '');
     $rvw_datas{'localip'}          = get_value('$c', 'LocalIP') . '/' . get_value('$c', 'LocalNetmask');
     $rvw_datas{'publicip'}         = $c->get_public_ip_address($c);
-    $rvw_datas{'gateway'}          = $c->render_to_string(inline => print2_gateway_stanza($c));
+    my $externalip;
+    my $gateway;
+    if ( $rvw_datas{'servermode'} =~ /servergateway/) {
+        $externalip = get_value('', 'ExternalIP');
+        my $static
+            = (get_value('', 'AccessType') eq 'dedicated')
+            && (get_value('', 'ExternalDHCP') eq 'off')
+            && (get_prop('pppoe', 'status') eq 'disabled');
+
+        if ($static) {
+            $externalip .= "/" . get_value('', 'ExternalNetmask');
+        }
+
+        if ($static) {
+            $gateway= get_value('', 'GatewayIP');
+        }
+    }
+    $rvw_datas{'externalip'}       = $externalip;
+    $rvw_datas{'gateway'}          = $gateway;
     $rvw_datas{'serveronly'}       = $c->render_to_string(inline => print2_serveronly_stanza($c));
     $rvw_datas{'addlocalnetworks'} = get_local_networks($c);
     $rvw_datas{'dhcpserver'}       = $c->render_to_string(inline => print2_dhcp_stanza($c));
@@ -201,34 +218,6 @@ sub get_local_domain
 }
 
 
-=head2 print2_gateway_stanza
-
-If this system is a server gateway, show the external ip and gateway ip (mojo ver)
-
-=cut
-
-sub print2_gateway_stanza {
-    my $c = shift;
-
-    if (get_value($c, 'SystemMode') =~ /servergateway/) {
-        my $ip = get_value($c, 'ExternalIP');
-        my $static
-            = (get_value($c, 'AccessType') eq 'dedicated')
-            && (get_value($c, 'ExternalDHCP') eq 'off')
-            && (get_prop($c, 'pppoe', 'status') eq 'disabled');
-
-        if ($static) {
-            $ip .= "/" . get_value($c, 'ExternalNetmask');
-        }
-        my $out = $c->l('rvw_EXTERNAL_IP_ADDRESS_SUBNET_MASK') . ':' . $ip;
-
-        if ($static) {
-            $out .= $c->l('rvw_GATEWAY') . ':' . get_value($c, 'GatewayIP');
-        }
-        return $out;
-    } ## end if (get_value($c, 'SystemMode'...))
-} ## end sub print2_gateway_stanza
-
 =head2 print2_serveronly_stanza
 
 If this system is a standalone server with net access, show the external
@@ -267,6 +256,9 @@ sub print2_dhcp_stanza {
     return $out;
 } ## end sub print2_dhcp_stanza
 
+# always expects $fm or $c cgi  context, if callind directly 
+# you need to add a "" as first argument
+# FIXME like get_prop and reuse in SrvMngr.pm
 sub get_value {
   my $fm = shift;
   my $item = shift;
@@ -281,10 +273,10 @@ sub get_value {
   
 }
 
+# deetct if called directly
+#  do not need to add an extra first argument if notr called from cgi
 sub get_prop {
-  my $fm = shift if (ref($_[0]) ); # If we're being called in a formmagick context
-				 # The first argument will always be a fm.
-				 #otherwise, we don't want to grab it
+  my $fm = shift if (ref($_[0]) ); i
   my $item = shift;
   my $prop = shift;
   $db       = esmith::ConfigDB::UTF8->open_ro   || die "Couldn't open config db";
@@ -297,22 +289,5 @@ sub get_prop {
   }
 
 }
-
-sub get_public_ip_address
-{
-    my $self = shift;
-    $db       = esmith::ConfigDB::UTF8->open_ro   || die "Couldn't open config db";
-    my $sysconfig = $db->get('sysconfig');
-    if ($sysconfig)
-    {
-        my $publicIP = $sysconfig->prop('PublicIP');
-        if ($publicIP)
-        {
-            return $publicIP;
-        }
-    }
-    return undef;
-}
-
 
 1;

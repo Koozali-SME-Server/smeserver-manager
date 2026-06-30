@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 216
+%define release 217
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Jun 29 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-217.sme
+- cleanup Formmagick references [SME: 12906]
+  fixup review panel
+
 * Thu Jun 11 2026 Brian Read <brianr@koozali.org> 11.0.0-216.sme
 - Add horizontal scroll bar to viewlogfiles panel [SME: 13586]
 

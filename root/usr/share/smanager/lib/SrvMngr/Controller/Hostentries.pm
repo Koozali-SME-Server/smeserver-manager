@@ -13,7 +13,7 @@ use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
-use SrvMngr qw(theme_list init_session);
+use SrvMngr qw(theme_list init_session ip_number ip_number_or_blank mac_address mac_address_or_blank);
 use HTML::Entities;
 use Net::IPv4Addr qw(ipv4_in_network);
 use esmith::DomainsDB::UTF8;
@@ -430,55 +430,6 @@ sub split_hostname {
     my $hostname = shift;
     return ($hostname =~ /^([^\.]+)\.(.+)$/);
 }
-
-sub mac_address_or_blank {
-    my ($c, $data) = @_;
-    return "OK" unless $data;
-    return mac_address($c, $data);
-} ## end sub mac_address_or_blank
-
-sub mac_address {
-
-    #	from CGI::FormMagick::Validator::Network
-    my ($c, $data) = @_;
-    $_ = lc $data;    # easier to match on $_
-
-    if (not defined $_) {
-        return $c->l('FM_MAC_ADDRESS1');
-    } elsif (/^([0-9a-f][0-9a-f](:[0-9a-f][0-9a-f]){5})$/) {
-        return "OK";
-    } else {
-        return $c->l('FM_MAC_ADDRESS2');
-    }
-} ## end sub mac_address
-
-sub ip_number_or_blank {
-
-    # XXX - FIXME - we should push this down into CGI::FormMagick
-    my $c  = shift;
-    my $ip = shift;
-
-    if (!defined($ip) || $ip eq "") {
-        return 'OK';
-    }
-    return ip_number($c, $ip);
-} ## end sub ip_number_or_blank
-
-sub ip_number {
-
-    #  from CGI::FormMagick::Validator qw( ip_number );
-    my ($c, $data) = @_;
-    return undef unless defined $data;
-    return $c->l('FM_IP_NUMBER1') unless $data =~ /^[\d.]+$/;
-    my @octets = split /\./, $data;
-    my $dots = ($data =~ tr/.//);
-    return $c->l('FM_IP_NUMBER2') unless (scalar @octets == 4 and $dots == 3);
-
-    foreach my $octet (@octets) {
-        return $c->l("FM_IP_NUMBER3", $octet) if $octet > 255;
-    }
-    return 'OK';
-} ## end sub ip_number
 
 sub not_in_dhcp_range {
     my $c       = shift;
