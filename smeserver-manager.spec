@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 217
+%define release 218
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Jun 30 2026 Brian Read <brianr@koozali.org> 11.0.0-218.sme
+- Fix typo / extraneous character in review.pm  [SME: 12906]
+
 * Mon Jun 29 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-217.sme
 - cleanup Formmagick references [SME: 12906]
   fixup review panel

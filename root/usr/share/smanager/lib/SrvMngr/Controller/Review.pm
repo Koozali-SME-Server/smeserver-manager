@@ -276,7 +276,7 @@ sub get_value {
 # deetct if called directly
 #  do not need to add an extra first argument if notr called from cgi
 sub get_prop {
-  my $fm = shift if (ref($_[0]) ); i
+  my $fm = shift if (ref($_[0]) );
   my $item = shift;
   my $prop = shift;
   $db       = esmith::ConfigDB::UTF8->open_ro   || die "Couldn't open config db";
