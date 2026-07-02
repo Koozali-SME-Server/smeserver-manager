@@ -39,7 +39,7 @@ use Data::Dumper;
 use esmith::util;
 use esmith::util::network;
 use esmith::ConfigDB::UTF8;
-use esmith::AccountsDB;
+use esmith::AccountsDB::UTF8;
 use esmith::NetworksDB::UTF8;
 use esmith::HostsDB;
 use esmith::DomainsDB::UTF8;

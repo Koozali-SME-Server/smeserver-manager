@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 218
+%define release 219
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Jul 02 2026 Brian Read <brianr@koozali.org> 11.0.0-219.sme
+- Make sure all use and open for the AccountsDB is through the UTF8 routine [SME: 13639]
+- Arrange CSS so that Login/logout button visually responds to hover and click [SME: 12428]
+
 * Tue Jun 30 2026 Brian Read <brianr@koozali.org> 11.0.0-218.sme
 - Fix typo / extraneous character in review.pm  [SME: 12906]
 
