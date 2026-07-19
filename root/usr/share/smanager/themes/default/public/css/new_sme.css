@@ -419,6 +419,7 @@ background-color: #e8f3e1;
 
 .parameter-label {
 	display:inline-flex;
+	padding-right: 0.5rem;
 }
 
 .parameter-fields-col {

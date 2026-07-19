@@ -69,7 +69,7 @@ sub main {
 
 	#The most common ones - you might want to delete some of these if they are not used.
 	 $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-	 $adb = esmith::AccountsDB->open() || die("Couldn't open Accounts db");
+	 $adb = esmith::AccountsDB::UTF8->open() || die("Couldn't open Accounts db");
 	 $ndb = esmith::NetworksDB->open() || die("Couldn't open Network db");
 	 $hdb = esmith::HostsDB::UTF8->open() 	  || die("Couldn't open Hosts db");
 	 $ddb = esmith::DomainsDB::UTF8->open()  || die("Couldn't open Domains db");
@@ -123,7 +123,7 @@ sub do_update {
 
 	#The most common ones - you might want to delete some of these if they are not used.
 	 $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-	 $adb = esmith::AccountsDB->open() || die("Couldn't open Accounts db");
+	 $adb = esmith::AccountsDB::UTF8->open() || die("Couldn't open Accounts db");
 	 $ndb = esmith::NetworksDB->open() || die("Couldn't open Network db");
 	 $hdb = esmith::HostsDB::UTF8->open() 	  || die("Couldn't open Hosts db");
 	 $ddb = esmith::DomainsDB::UTF8->open()  || die("Couldn't open Domains db");
@@ -214,7 +214,7 @@ sub do_display {
 
 	#The most common ones - you might want to delete some of these if they are not used.
 	 $cdb = esmith::ConfigDB::UTF8->open()   || die("Couldn't open config db");
-	 $adb = esmith::AccountsDB->open() || die("Couldn't open Accounts db");
+	 $adb = esmith::AccountsDB::UTF8->open() || die("Couldn't open Accounts db");
 	 $ndb = esmith::NetworksDB->open() || die("Couldn't open Network db");
 	 $hdb = esmith::HostsDB::UTF8->open() 	  || die("Couldn't open Hosts db");
 	 $ddb = esmith::DomainsDB::UTF8->open()  || die("Couldn't open Domains db");

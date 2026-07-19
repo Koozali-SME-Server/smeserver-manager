@@ -7,7 +7,7 @@ sub new {
     my ($class, %args) = @_;
 
     my $db = $args{db};
-    $db ||= esmith::ConfigDB->open
+    $db ||= esmith::ConfigDB::UTF8->open
         or die "Couldn't open ConfigDB\n";
 
     my $self = {
