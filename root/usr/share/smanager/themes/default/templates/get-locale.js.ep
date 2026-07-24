@@ -1,2 +1,3 @@
 var locale = "<%= stash('locale') %>";
+var pleasewait = "<%= stash('pleasewait') %>";
 	console.log(`locale:${locale}`);

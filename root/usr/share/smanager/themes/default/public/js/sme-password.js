@@ -63,8 +63,12 @@ $(document).ready(function () {
 		return true; // don't change button, don't add busy
 	}
 	
+	let waitText = (typeof pleasewait === 'string' && pleasewait.trim() !== '')
+  ? pleasewait
+  : 'Please Wait...';
+	
     $(this).find('button[type="submit"]').each(function () {
-      $(this).text('Please wait...')
+      $(this).text(waitText)
         .addClass('visually-disabled')
         .css({
           'pointer-events': 'none',
@@ -74,7 +78,7 @@ $(document).ready(function () {
     });
 
     $(this).find('input[type="submit"]').each(function () {
-      $(this).val('Please wait...')
+      $(this).val(waitText)
         .addClass('visually-disabled')
         .css({
           'pointer-events': 'none',

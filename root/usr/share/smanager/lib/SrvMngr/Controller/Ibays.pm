@@ -18,6 +18,8 @@ use esmith::AccountsDB::UTF8;
 use esmith::ConfigDB::UTF8;
 use esmith::DomainsDB::UTF8;
 
+use Encode qw(encode);
+
 my ($adb,$cdb);
 
 sub main {
@@ -459,16 +461,15 @@ sub conflict_check {
 
     if (defined $rec) {
         my $type = $rec->prop('type');
-
         if ($type eq "pseudonym") {
             my $acct      = $rec->prop("Account");
             my $acct_type = $adb->get($acct)->prop('type');
             return $c->l('iba_ACCT_CLASHES_WITH_PSEUDONYM', $name, $acct_type, $acct);
         } ## end if ($type eq "pseudonym")
-    } elsif (defined getpwnam($name) || defined getgrnam($name)) {
-        $type = 'system';
-    } else {
-
+		} elsif (defined getpwnam(encode('locale', $name)) 
+			  || defined getgrnam(encode('locale', $name))) {
+			$type = 'system';
+		} else {
         # No account record and no account
         return 'OK';
     }

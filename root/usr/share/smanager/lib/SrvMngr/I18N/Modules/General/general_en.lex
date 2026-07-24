@@ -131,3 +131,4 @@
 'ACCOUNT_NAME_INVALID_CHARS' => 'The account name you entered contained invalid characters.',
 'PASSWORD_OLD_INVALID_CHARS' => 'The old password you entered contained invalid characters.',
 'ERROR_UPDATING_CONFIGURATION' => 'Error occurred while updating system configuration.',
+'Please_Wait' => 'Please Wait...',

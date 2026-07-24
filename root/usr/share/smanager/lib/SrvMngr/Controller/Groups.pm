@@ -17,6 +17,8 @@ use SrvMngr qw(theme_list init_session);
 use esmith::AccountsDB::UTF8;
 use esmith::ConfigDB::UTF8;
 
+use Encode qw(encode);
+
 our ($cdb,$adb);
 
 sub main {
@@ -303,14 +305,16 @@ sub validate_group_naming_conflict {
     my $groupName = shift;
     my $account   = $adb->get($groupName);
     my $type;
-
+    
     if (defined $account) {
-        $type = $account->prop('type');
-    } elsif (defined getpwnam($groupName) || defined getgrnam($groupName)) {
-        $type = "system";
-    } else {
-        return ('OK');
+			$type = $account->prop('type');
+	} elsif (defined getpwnam(encode('locale', $groupName)) 
+		  || defined getgrnam(encode('locale', $groupName))) {
+		$type = "system";
+	} else {
+			return ('OK');
     }
+
     return ($c->l('grp_ACCOUNT_CONFLICT', $groupName, $type));
 } ## end sub validate_group_naming_conflict
 

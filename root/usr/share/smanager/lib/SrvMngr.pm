@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '208.el8.sme'; 
+our $VERSION = '220.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -608,6 +608,7 @@ sub get_locale {
   my $c = shift;
   # $c->app->log->info($c->log_req); #Reduce noise in log.
   # Locale already saved in stash 'locale'
+  # and "Please Wait" localised saved in stash "pleasewait"
   $c->render(template => 'get-locale', format => 'js');
 };
 
@@ -933,9 +934,17 @@ sub simpleNavMerge {
 
 
 sub _lang_space {
+	# This progmram uses the URL of the request (route) to derive the module that is being called
+	# in order that the context for I18N lexical translation can occur, however some routes are for images etc, and one or two routes 
+	# are utility routes used to pass data to JS code in the client browser or extra special routes for templates to use.
+	# Consequently we need to eliminate these and give it the initial module context.
+	# It may be that an alternative way to derive the module using the module/route would get us to the proper module without 
+	# the special cases.  This can be investigated later?
 
     my $c = shift;
     my $debug = 1;
+    
+    #$c->app->log->info("lang_space path=" . $c->req->url->path->to_string);
 
     my $path = $c->tx->req->url;
     if ( $path =~ m/\.css$|\.js$|\.jpg$|\.gif$|\.png$|\.ico$|\.map$/ ) {
@@ -948,7 +957,7 @@ sub _lang_space {
     $lang = (split(/,/, $lang))[0];
     $c->stash(locale=>$lang);  #Stash it for template use
 
-    $path = 'initial' if ($path eq '/' or $path eq ''); 
+    $path = 'initial' if ($path eq '/' or $path eq '' or $path eq 'get-locale'); 
     #warn "langspace:path=$path" if $debug;
     my ($module) = $path =~ m{\A([^/?]+)};
     $module = ucfirst($module);
@@ -970,6 +979,10 @@ sub _lang_space {
     } else {
         #warn "Locale lexicon missing for $module \n"; #Take out as too many of them!
     }
+    #Only do this once the localise functions are setup.
+    $c->stash(pleasewait=>$c->l('Please_Wait')); #Used in JS
+    #$c->app->log->info("Localised pleasewait: ".$c->stash('pleasewait'));
+
 };
 
 

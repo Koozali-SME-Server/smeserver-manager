@@ -26,6 +26,8 @@ use esmith::AccountsDB::UTF8;
 use esmith::ConfigDB::UTF8;
 use esmith::util;
 
+use Encode qw(encode);
+
 #use File::Basename;
 #use Exporter;
 #use Carp qw(verbose);
@@ -526,9 +528,10 @@ sub validate_acctName_conflict {
 
     if (defined $account) {
         $type = $account->prop('type');
-    } elsif (defined getpwnam($acctName) || defined getgrnam($acctName)) {
-        $type = "system";
-    } else {
+} elsif (defined getpwnam(encode('locale', $acctName)) 
+      || defined getgrnam(encode('locale', $acctName))) {
+    $type = "system";
+} else {
         return ('OK');
     }
     return $c->l('usr_ACCOUNT_CONFLICT', $acctName, $type);

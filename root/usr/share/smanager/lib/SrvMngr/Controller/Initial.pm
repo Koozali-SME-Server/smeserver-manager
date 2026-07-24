@@ -28,6 +28,7 @@ sub get_locale {
   my $c = shift;
   #$c->app->log->info($c->log_req); #reduce noise in logs
   # Locale already saved in stash 'locale'
+  # and "Please Wait" localised saved in stash "pleasewait"
   $c->render(template => 'get-locale', format => 'js');
 };
 
