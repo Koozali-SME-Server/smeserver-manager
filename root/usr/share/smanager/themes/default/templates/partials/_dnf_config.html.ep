@@ -1,6 +1,8 @@
 %# INCLUDE partial: Configure tab body (no layout/content_for)
 
-<form id="dnf-config-form" class="dnf-config-form" method="post" action="<%= url_for('dnfd') %>">
+<!--<form id="dnf-config-form" class="dnf-config-form" method="post" action="<%#= url_for('dnfd') %>">-->
+
+%= form_for url_for('dnfd') => (method => 'post', id => 'dnf-config-form', class => 'dnf-config-form') => begin
   <fieldset class="dnf-config">
     <legend><%#= l('Configure') %></legend>
 
@@ -68,4 +70,4 @@
       %= submit_button $c->l('SAVE'), class => 'btn action', id => 'dnf-config-save'
     </div>
   </fieldset>
-</form>
+% end

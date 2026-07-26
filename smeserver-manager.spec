@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 221
+%define release 222
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Jul 26 2026 Brian Read <brianr@koozali.org> 11.0.0-222.sme
+- Remove call to self->localise in quota panel [SME: 13676]
+- Add CSRFProtectBuiltin plugin to protect POST requests [SME: 11708]
+- Make <form> in _dnf_config use % form_for [SME: 11708]
+
 * Thu Jul 23 2026 Brian Read <brianr@koozali.org> 11.0.0-221.sme
 - Localise the please wait message  [SME: 13661]
 - add encode call to validation of user, group ad ibay names [SME: 12720] 

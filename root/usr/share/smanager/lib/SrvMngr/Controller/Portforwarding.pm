@@ -259,7 +259,6 @@ sub validate_source_port {
         #$self->debug_msg("looping on port $port");
         if (!isValidPort($port)) {
 
-            #$self->debug_msg("returning: " . $self->localise('ERR_BADPORT'));
             return (ret => 'pf_ERR_BADPORT');
         }
     } ## end foreach my $port (@ports)
@@ -344,7 +343,6 @@ sub validate_destination_port {
         #$self->debug_msg("looping on port $port");
         if (!isValidPort($port)) {
 
-            #$self->debug_msg("returning: " . $self->localise('ERR_BADPORT'));
             return (ret => 'pf_ERR_BADPORT');
         }
     } ## end foreach my $port (@ports)

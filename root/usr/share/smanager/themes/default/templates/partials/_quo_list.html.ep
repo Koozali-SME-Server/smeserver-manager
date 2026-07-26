@@ -45,7 +45,7 @@
         % {
           % my $uid = getpwnam( $user->key );
           % unless ($uid) {
-            % warn( $self->localise('COULD_NOT_GET_UID'), $user->key );
+            % warn( $c->l('COULD_NOT_GET_UID'), $user->key );
             % next;
           % }
         % my $name = $user->prop("FirstName") . " " . $user->prop("LastName");
