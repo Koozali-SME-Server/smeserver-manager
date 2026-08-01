@@ -21,6 +21,7 @@ templates2events("$mngrdir/conf/srvmngr.conf",
 templates2events("/etc/httpd/conf/httpd.conf",
         qw( smeserver-manager-update smanager-modify ));
 
+templates2events("/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg", "smeserver-manager-update");
 
 # services to launch on event
 for my $event ( qw( smeserver-manager-update smanager-modify ) )

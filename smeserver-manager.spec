@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 222
+%define release 223
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Aug 01 2026 Brian Read <brianr@koozali.org> 11.0.0-223.sme
+- Add AuthTKT.cfg expand template to creatlinks [SME: 12669]
+
 * Sun Jul 26 2026 Brian Read <brianr@koozali.org> 11.0.0-222.sme
 - Remove call to self->localise in quota panel [SME: 13676]
 - Add CSRFProtectBuiltin plugin to protect POST requests [SME: 11708]
