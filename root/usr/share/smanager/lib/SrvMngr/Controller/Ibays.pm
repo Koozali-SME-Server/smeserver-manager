@@ -466,8 +466,8 @@ sub conflict_check {
             my $acct_type = $adb->get($acct)->prop('type');
             return $c->l('iba_ACCT_CLASHES_WITH_PSEUDONYM', $name, $acct_type, $acct);
         } ## end if ($type eq "pseudonym")
-		} elsif (defined getpwnam(encode('locale', $name)) 
-			  || defined getgrnam(encode('locale', $name))) {
+		} elsif (defined getpwnam(encode('UTF-8', $name)) 
+			  || defined getgrnam(encode('UTF-8', $name))) {
 			$type = 'system';
 		} else {
         # No account record and no account

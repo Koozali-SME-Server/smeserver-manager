@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 225
+%define release 226
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Aug 03 2026 Brian Read <brianr@koozali.org> 11.0.0-226.sme
+- Set UTF-8 in encode call in user/groups/ibays [SME: 13682]
+
 * Mon Aug 03 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-225.sme
 - pm files not updated from lex files [SME: 13681]
 

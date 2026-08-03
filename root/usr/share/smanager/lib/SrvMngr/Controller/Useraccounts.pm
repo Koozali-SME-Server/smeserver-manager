@@ -528,8 +528,8 @@ sub validate_acctName_conflict {
 
     if (defined $account) {
         $type = $account->prop('type');
-} elsif (defined getpwnam(encode('locale', $acctName)) 
-      || defined getgrnam(encode('locale', $acctName))) {
+} elsif (defined getpwnam(encode('UTF-8', $acctName)) 
+      || defined getgrnam(encode('UTF-8', $acctName))) {
     $type = "system";
 } else {
         return ('OK');

@@ -308,8 +308,8 @@ sub validate_group_naming_conflict {
     
     if (defined $account) {
 			$type = $account->prop('type');
-	} elsif (defined getpwnam(encode('locale', $groupName)) 
-		  || defined getgrnam(encode('locale', $groupName))) {
+	} elsif (defined getpwnam(encode('UTF-8', $groupName)) 
+		  || defined getgrnam(encode('UTF-8', $groupName))) {
 		$type = "system";
 	} else {
 			return ('OK');
