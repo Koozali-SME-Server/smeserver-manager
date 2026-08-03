@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 223
+%define release 224
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Aug 02 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-224.sme
+- fix not redirected after authentication check [SME: 13679]
+
 * Sat Aug 01 2026 Brian Read <brianr@koozali.org> 11.0.0-223.sme
 - Add AuthTKT.cfg expand template to creatlinks [SME: 12669]
 

@@ -138,9 +138,25 @@ sub setup_sessions {
 
 sub _handle_tkt {
   my $c  = shift;
-  # test tkt and if user logged in ?
-  my $from = $c->param('From') || $c->home_page;
-  $from = $c->home_page if ($from eq 'login');
+  # Extract the raw path string (e.g., "/smanager/useraccounts/subdir")
+  my $from = $c->req->url->path->to_string;
+  
+  # Safely strip the "smanager/" prefix if it exists
+  #TODO FIXME :detect this a better way in case we change the path to manager
+  $from =~ s{^/?smanager/}{};
+  
+  # Add a leading slash so Mojolicious treats it as a root-level absolute path
+  $from = "/$from" unless $from =~ m{^/};
+
+  # Append query string if present (e.g., ?id=12)
+  my $query = $c->req->url->query->to_string;
+  $from .= "?$query" if $query;
+
+  # Fallbacks: If it is empty, root, or pointing directly to login, use the home page
+  if (!$from || $from eq '/' || $from =~ m{^/login}) {
+      $from = $c->home_page;
+  }
+
   $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
   my $ticket= ( $c->cookie('auth_tkt') ) ? url_unescape $c->cookie('auth_tkt') : undef;
   my $server_name = $c->req->headers->header('X-Forwarded-Host');
