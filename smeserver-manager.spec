@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 224
+%define release 225
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Aug 03 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-225.sme
+- pm files not updated from lex files [SME: 13681]
+
 * Sun Aug 02 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-224.sme
 - fix not redirected after authentication check [SME: 13679]
 
