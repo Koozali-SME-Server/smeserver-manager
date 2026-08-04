@@ -168,42 +168,52 @@ sub do_update {
         my $last  = $c->param('LastName');
         my $mail  = $c->param('ForwardAddress');
 
-        unless ($first) {
-            $result .= $c->l('FM_NONBLANK') . ' - ';
-        }
+##        unless ($first) {
+#            $result .= $c->l('FM_NONBLANK') . ' - ';
+#        }
 
-        unless ($last) {
-            $result .= $c->l('FM_NONBLANK') . ' - ';
-        }
+#        unless ($last) {
+#            $result .= $c->l('FM_NONBLANK') . ' - ';
+#        }
 
-        #unless ( $mail ) {
-        #    $result .= $c->l('FM_NONBLANK') . ' - ';
-        #}
-        $res = $c->validate_acctName($user);
-        $result .= $res unless $res eq 'OK';
-        $res = $c->validate_acctName_length($user);
-        $result .= $res unless $res eq 'OK';
-        $res = $c->validate_acctName_conflict($user);
-        $result .= $res unless $res eq 'OK';
-        $res = $c->pseudonym_clash($first);
-        $result .= $res unless $res eq 'OK';
+		$c->app->log->info("$user");
+		for my $check (
+			sub { $c->validate_acctName($user) },
+			sub { $c->validate_acctName_length($user) },
+			sub { $c->validate_acctName_conflict($user) },
+			sub { $c->pseudonym_clash($first) },
+		    sub {
+				return $c->l('FM_NONBLANK') unless $first;
+				return 'OK';
+			},
+			sub {
+				return $c->l('FM_NONBLANK') unless $last;
+				return 'OK';
+			},
+			defined($mail) ? (sub { $c->emailforward($mail) }) : (),
+		) {
+			$res = $check->();
+			#$c->app->log->info("$res");
 
-        if (defined $mail) {
-            $res = $c->emailforward($mail);
-            $result .= $res unless $res eq 'OK';
-        }
+			if ($res ne 'OK') {
+				$result = $res;     # retain the first error only
+				last;               # do not perform further tests
+			}
+		}
 
-        #$result .= 'Blocked for testing';
-        if (!$result) {
-            $res = create_user($c, $user);
-            $result .= $res unless $res eq 'OK';
+		if (!$result) {
+			$res = create_user($c, $user);
 
-            if (!$result) {
-                $result = $c->l('usr_USER_CREATED') . ' ' . $user;
-                $usr_datas{trt} = 'SUC';
-            }
-        } ## end if (!$result)
-    } ## end if ($trt eq 'ADD')
+			if ($res eq 'OK') {
+				$result = $c->l('usr_USER_CREATED') . ' ' . $user;
+				$usr_datas{trt} = 'SUC';
+			}
+			else {
+				$result = $res;
+			}
+		}    
+		#$c->app->log->info("Final:$result");
+	} ## end if ($trt eq 'ADD')
 
     if ($trt eq 'UPD' or $trt eq 'UPS') {
 
@@ -528,8 +538,10 @@ sub validate_acctName_conflict {
 
     if (defined $account) {
         $type = $account->prop('type');
-} elsif (defined getpwnam(encode('UTF-8', $acctName)) 
-      || defined getgrnam(encode('UTF-8', $acctName))) {
+#} elsif (defined getpwnam(encode('UTF-8', $acctName)) 
+#      || defined getgrnam(encode('UTF-8', $acctName))) {
+} elsif (defined getpwnam($acctName) 
+      || defined getgrnam($acctName)) {
     $type = "system";
 } else {
         return ('OK');

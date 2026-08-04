@@ -109,39 +109,53 @@ sub do_update {
     $grp_datas{'group'} = $groupName;
     my @members = ();
 
-    if ($trt eq 'ADD') {
-        my $groupDesc = $c->param('groupDesc');
-        @members = @{ $c->every_param('groupMembers') };
-        my $members = join(",", @members);
+	if ($trt eq 'ADD') {
+		my $groupDesc = $c->param('groupDesc');
 
-        # controls
-        $res = $c->validate_group($groupName);
-        $result .= $res . '<br>' unless $res eq 'OK';
-        $res = $c->validate_group_length($groupName);
-        $result .= $res . '<br>' unless $res eq 'OK';
-        $res = $c->validate_group_naming_conflict($groupName);
-        $result .= $res . '<br>' unless $res eq 'OK';
-        $res = $c->validate_description($groupDesc);
-        $result .= $res . '<br>' unless $res eq 'OK';
-        $res = $c->validate_group_has_members(@members);
-        $result .= $res . '<br>' unless $res eq 'OK';
-        my %props = ('type', 'group', 'Description', $groupDesc, 'Members', $members);
-        $res = '';
+		my @members = @{ $c->every_param('groupMembers') };
+		my $members = join(',', @members);
 
-        if (!$result) {
-            $adb->new_record($groupName, \%props);
+		$res    = 'OK';
+		$result = '';
 
-            # Untaint groupName before use in system()
-            ($groupName) = ($groupName =~ /^([a-z][\-\_\.a-z0-9]*)$/);
-            system("/sbin/e-smith/signal-event", "group-create", "$groupName") == 0
-                or $result .= $c->l('grp_CREATE_ERROR') . "\n";
-        } ## end if (!$result)
+		# Validation: stop at the first error.
+		for my $check (
+			sub { $c->validate_group($groupName) },
+			sub { $c->validate_group_length($groupName) },
+			sub { $c->validate_group_naming_conflict($groupName) },
+			sub { $c->validate_description($groupDesc) },
+			sub { $c->validate_group_has_members(@members) },
+		) {
+			$res = $check->();
 
-        if (!$result) {
-            $result = $c->l('grp_CREATED_GROUP') . ' ' . $groupName;
-            $res    = 'OK';
-        }
-    } ## end if ($trt eq 'ADD')
+			if ($res ne 'OK') {
+				$result = $res;
+				last;
+			}
+		}
+
+		my %props = (
+			type        => 'group',
+			Description => $groupDesc,
+			Members     => $members,
+		);
+
+		if ($res eq 'OK') {
+			$adb->new_record($groupName, \%props);
+
+			# Untaint groupName before use in system().
+			($groupName) = ($groupName =~ /^([a-z][\-_\.a-z0-9]*)$/);
+
+			if (system('/sbin/e-smith/signal-event', 'group-create', $groupName) != 0) {
+				$res    = $c->l('grp_CREATE_ERROR');
+				$result = $res;
+			}
+		}
+
+		if ($res eq 'OK') {
+			$result = $c->l('grp_CREATED_GROUP') . ' ' . $groupName;
+		}
+	} ## end if ($trt eq 'ADD')
 
     if ($trt eq 'UPD') {
         my $groupDesc = $c->param('groupDesc');

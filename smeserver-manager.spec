@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 226
+%define release 227
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Aug 04 2026 Brian Read <brianr@koozali.org> 11.0.0-227.sme
+- Re-factor tests in Users and Groups to pre-emptive [SME: 13682]
+- Revert -226 (encode in call to getpwdnam) [SME: 13682]
+
 * Mon Aug 03 2026 Brian Read <brianr@koozali.org> 11.0.0-226.sme
 - Set UTF-8 in encode call in user/groups/ibays [SME: 13682]
 
