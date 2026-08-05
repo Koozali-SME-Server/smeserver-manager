@@ -40,12 +40,20 @@ sub do_update {
     my $servername      = ($c->param('ServerName') || 'WS');
     my $roamingprofiles = ($c->param('RoamingProfiles') || 'no');
     my $serverrole      = ($c->param('ServerRole') || 'WS');
+    my $res = '';
 
     # controls
-    my $res = validate2_workgroup($c, $workgroup, $servername);
-    $result .= $res unless $res eq 'OK';
-    $res = validate2_servername($c, $servername);
-    $result .= $res unless $res eq 'OK';
+	for my $check (
+		sub { validate2_workgroup($c, $workgroup, $servername) },
+		sub { validate2_servername($c, $servername) },
+	) {
+		$res = $check->();
+
+		if ($res ne 'OK') {
+			$result = $res;
+			last;
+		}
+	}
 
     if ($result eq '') {
         $db->get('smb')->set_prop('Workgroup',       $workgroup);
@@ -54,7 +62,7 @@ sub do_update {
         $db->get('smb')->set_prop('RoamingProfiles', $roamingprofiles);
     } ## end if ($result eq '')
     system("/sbin/e-smith/signal-event", "workgroup-update") == 0
-        or $result = $c->l('ERROR_UPDATING') . " system";
+        or $result = $c->l('wkg_ERROR_UPDATING') . " system";
     my $title = $c->l('wkg_FORM_TITLE');
     if ($result eq '') { $result = $c->l('wkg_SUCCESS'); }
     $c->stash(title => $title, modul => $result);
@@ -65,7 +73,7 @@ sub validate2_servername {
     my $c          = shift;
     my $servername = shift;
     return ('OK') if ($servername =~ /^([a-zA-Z][\-\w]*)$/);
-    return $c->l('INVALID_SERVERNAME');
+    return $c->l('wkg_INVALID_SERVERNAME');
 } ## end sub validate2_servername
 
 sub validate2_workgroup {
@@ -75,8 +83,8 @@ sub validate2_workgroup {
 
     #    my $workgroup = $c->l(shift);
     #    my $servername = $c->l(shift);
-    return $c->l('INVALID_WORKGROUP') unless ($workgroup =~ /^([a-zA-Z0-9][\-\w\.]*)$/);
-    return $c->l('INVALID_WORKGROUP_MATCHES_SERVERNAME') if ($servername eq $workgroup);
+    return $c->l('wkg_INVALID_WORKGROUP') unless ($workgroup =~ /^([a-zA-Z0-9][\-\w\.]*)$/);
+    return $c->l('wkg_INVALID_WORKGROUP_MATCHES_SERVERNAME') if ($servername eq $workgroup);
     return ('OK');
 } ## end sub validate2_workgroup
 1;

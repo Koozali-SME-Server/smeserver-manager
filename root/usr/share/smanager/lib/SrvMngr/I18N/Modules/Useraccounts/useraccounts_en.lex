@@ -31,7 +31,7 @@
 'usr_LOCK_DESC' => 'You are about to lock the user account "[_1]" ([_2])',
 'usr_LOCKED_ACCOUNT' => 'Successfully locked account for user "[_1]".',
 'usr_NO_SUCH_USER' => 'Error: the user account "[_1]" does not exist.',
-'usr_PSEUDONYM_CLASH' => 'Error: the pseudonym "[_1]" is already taken by the existing user account "[_1]".To differentiate, add initials to this field.',
+'usr_PSEUDONYM_CLASH' => 'Error: the pseudonym "[_3]" is already taken by the existing user account "[_2]".To differentiate, add initials to this field.',
 # 'usr_LOCK_ACCOUNT' => 'Lock account',
 'usr_LOCK_ACCOUNT_TITLE' => 'Lock user account',
 'usr_LOCK_DESC2' => 'This user account will be locked. This means that this user will not be able to log in, and will not be able to collect e-mail. Any e-mail arriving will still be stored and/or forwarded to an external e-mail address, as configured. The account may be activated in the future by setting a new password. The current password will not be retained.<b>Are you sure you wish to lock this account?</b>',

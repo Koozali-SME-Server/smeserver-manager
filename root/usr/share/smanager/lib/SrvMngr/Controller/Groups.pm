@@ -162,50 +162,81 @@ sub do_update {
         @members = @{ $c->every_param('groupMembers') };
         my $members = join(",", @members);
 
-        # controls
-        $res = '';
-        $res = validate_description($c, $groupDesc);
-        $result .= $res . '<br>' unless $res eq 'OK';
-        $res = validate_group_has_members($c, @members);
-        $result .= $res . '<br>' unless $res eq 'OK';
-        $res = '';
+		# controls: stop at the first validation failure
+		for my $check (
+			sub { validate_description($c, $groupDesc) },
+			sub { validate_group_has_members($c, @members) },
+		) {
+			$res = $check->();
 
-        if (!$result) {
-            $adb->get($groupName)->set_prop('Members',     $members);
-            $adb->get($groupName)->set_prop('Description', $groupDesc);
+			if ($res ne 'OK') {
+				$result = $res . '<br>';
+				last;
+			}
+		}
 
-            # Untaint groupName before use in system()
-            ($groupName) = ($groupName =~ /^([a-z][\-\_\.a-z0-9]*)$/);
-            system("/sbin/e-smith/signal-event", "group-modify", "$groupName") == 0
-                or $result .= $c->l('grp_MODIFY_ERROR') . "\n";
-        } ## end if (!$result)
+		if (!$result) {
+			$adb->get($groupName)->set_prop('Members',     $members);
+			$adb->get($groupName)->set_prop('Description', $groupDesc);
 
-        if (!$result) {
-            $result = $c->l('grp_MODIFIED_GROUP') . ' ' . $groupName;
-            $res    = 'OK';
-        }
-    } ## end if ($trt eq 'UPD')
+			# Untaint groupName before use in system()
+			($groupName) = ($groupName =~ /^([a-z][\-_\.a-z0-9]*)$/);
 
-    if ($trt eq 'DEL') {
-        if ($groupName =~ /^([a-z][\-\_\.a-z0-9]*)$/) {
-            $groupName = $1;
-        } else {
-            $result .= $c->l('grp_ERR_INTERNAL_FAILURE') . ':' . $groupName;
-        }
-        my $rec = $adb->get($groupName);
-        $result .= $c->l('grp_ERR_INTERNAL_FAILURE') . ':' . $groupName unless ($rec);
-        $res = '';
+			if (system('/sbin/e-smith/signal-event', 'group-modify', $groupName) != 0) {
+				$res    = $c->l('grp_MODIFY_ERROR');
+				$result = $res . "\n";
+			}
+		}
 
-        if (!$result) {
-            $res = delete_group($c, $groupName);
-            $result .= $res unless $res eq 'OK';
+		if (!$result) {
+			$result = $c->l('grp_MODIFIED_GROUP') . ' ' . $groupName;
+			$res    = 'OK';
+		}
+	}
+	
+	if ($trt eq 'DEL') {
+		my $rec;
 
-            if (!$result) {
-                $result = $c->l('grp_DELETED_GROUP') . ' ' . $groupName;
-                $res    = 'OK';
-            }
-        } ## end if (!$result)
-    } ## end if ($trt eq 'DEL')
+		# Validation: stop at the first failure.
+		if (!$result) {
+			for my $check (
+				sub {
+					if ($groupName =~ /^([a-z][\-_\.a-z0-9]*)$/) {
+						$groupName = $1;    # untaint it
+						return 'OK';
+					}
+
+					return $c->l('grp_ERR_INTERNAL_FAILURE') . ':' . $groupName;
+				},
+				sub {
+					$rec = $adb->get($groupName);
+
+					return 'OK' if $rec;
+					return $c->l('grp_ERR_INTERNAL_FAILURE') . ':' . $groupName;
+				},
+			) {
+				$res = $check->();
+
+				if ($res ne 'OK') {
+					$result = $res;
+					last;
+				}
+			}
+		}
+
+		if (!$result) {
+			$res = delete_group($c, $groupName);
+
+			if ($res ne 'OK') {
+				$result = $res;
+			}
+		}
+
+		if (!$result) {
+			$result = $c->l('grp_DELETED_GROUP') . ' ' . $groupName;
+			$res    = 'OK';
+		}
+	} ## end if ($trt eq 'DEL')
 
     # common parts
     if ($res ne 'OK') {

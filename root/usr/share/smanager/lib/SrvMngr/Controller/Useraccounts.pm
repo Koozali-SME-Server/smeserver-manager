@@ -215,122 +215,146 @@ sub do_update {
 		#$c->app->log->info("Final:$result");
 	} ## end if ($trt eq 'ADD')
 
-    if ($trt eq 'UPD' or $trt eq 'UPS') {
+	if ($trt eq 'UPD' or $trt eq 'UPS') {
 
-        # controls
         my $first = $c->param('FirstName');
         my $last  = $c->param('LastName');
         my $mail  = $c->param('ForwardAddress');
+		# Validation: stop at the first failure.
+		for my $check (
+			sub {
+				return $c->l('FM_NONBLANK') unless $first;
+				return 'OK';
+			},
+			sub {
+				return $c->l('FM_NONBLANK') unless $last;
+				return 'OK';
+			},
+			# sub {
+			#     return $c->l('FM_NONBLANK') unless $mail;
+			#     return 'OK';
+			# },
+			sub { $c->pseudonym_clash($first) },
+			$mail ? (sub { $c->emailforward($mail) }) : (),
+		) {
+			$res = $check->();
 
-        unless ($first) {
-            $result .= $c->l('FM_NONBLANK') . ' - ';
-        }
+			if ($res ne 'OK') {
+				$result = $res;
+				last;
+			}
+		}
 
-        unless ($last) {
-            $result .= $c->l('FM_NONBLANK') . ' - ';
-        }
+		if (!$result) {
+			if ($trt eq 'UPS') {
+				$res = $c->modify_admin();
+			}
+			else {
+				$res = $c->modify_user($user);
+			}
 
-        #unless ( $mail ) {
-        #    $result .= $c->l('FM_NONBLANK') . ' - ';
-        #}
-        $res = $c->pseudonym_clash($first);
-        $result .= $res unless $res eq 'OK';
+			if ($res ne 'OK') {
+				$result = $res;
+			}
+		}
 
-        if (defined $mail) {
-            $res = $c->emailforward($mail);
-            $result .= $res unless $res eq 'OK';
-        }
+		if (!$result) {
+			$result = $c->l('usr_USER_MODIFIED') . ' ' . $user;
+			$usr_datas{trt} = 'SUC';
+			$res            = 'OK';
+		}
+	} ## end if ($trt eq 'UPD' or $trt eq 'UPS')
+	
+	if ($trt eq 'PWD') {
+		my $pass1 = $c->param('newPass');
+		my $pass2 = $c->param('newPassVerify');
 
-        #$result .= 'Blocked for testing';
-        if (!$result) {
+		# Validation: stop at the first failure.
+		for my $check (
+			sub {
+				return $c->l('FM_NONBLANK') . ' - ' unless $pass1;
+				return 'OK';
+			},
+			sub {
+				return $c->l('PASSWORD_VERIFY_ERROR') . ' - '
+					unless $pass1 eq $pass2;
+				return 'OK';
+			},
+			sub { check_password($c, $pass1) },
+		) {
+			$res = $check->();
 
-            if ($trt eq 'UPS') {
-                $res = $c->modify_admin();
-            } else {
-                $res = $c->modify_user($user);
-            }
-            $result .= $res unless $res eq 'OK';
+			if ($res ne 'OK') {
+				$result = $res;
+				last;
+			}
+		}
 
-            if (!$result) {
-                $result = $c->l('usr_USER_MODIFIED') . ' ' . $user;
-                $usr_datas{trt} = 'SUC';
-            }
-        } ## end if (!$result)
-    } ## end if ($trt eq 'UPD' or $trt...)
+		if ($user eq 'admin') {
+		     $result = 'System password should not be reset here !';
+		}
 
-    if ($trt eq 'PWD') {
-        my $pass1 = $c->param('newPass');
-        my $pass2 = $c->param('newPassVerify');
+		if (!$result) {
+			$res = $c->reset_password($user, $pass1);
 
-        # controls
-        unless ($pass1) {
-            $result .= $c->l('FM_NONBLANK') . ' - ';
-        }
+			if ($res ne 'OK') {
+				$result = $res;
+			}
+		}
 
-        unless ($pass1 eq $pass2) {
-            $result .= $c->l('PASSWORD_VERIFY_ERROR') . ' - ';
-        }
+		if (!$result) {
+			$result = $c->l('usr_PASSWORD_CHANGE_SUCCEEDED', $user);
+			$usr_datas{trt} = 'SUC';
+			$res            = 'OK';
+		}
+	} ## end if ($trt eq 'PWD')
 
-        if (!$result) {
-            $res = check_password($c, $pass1);
-            $result .= $res unless $res eq 'OK';
-        }
+	if ($trt eq 'PWS') {    # system password reset (admin)
+		my $curpass = $c->param('CurPass');
+		my $pass1   = $c->param('Pass');
+		my $pass2   = $c->param('PassVerify');
 
-        if ($user eq 'admin') {
-            $result .= "System password  should not be reset here !";
-        }
+		# Validation: stop at the first failure.
+		for my $check (
+			sub {
+				return $c->l('FM_NONBLANK') . ' - ' unless $curpass;
+				return $c->system_authenticate_password($curpass);
+			},
+			sub {
+				return $c->l('FM_NONBLANK') . ' - '
+					unless $pass1 and $pass2;
+				return 'OK';
+			},
+			sub {
+				return $c->l('usr_SYSTEM_PASSWORD_VERIFY_ERROR') . ' - '
+					unless $pass1 eq $pass2;
+				return 'OK';
+			},
+			sub { $c->system_validate_password($pass1) },
+			sub { $c->system_check_password($pass1) },
+		) {
+			$res = $check->();
 
-        #$result .= 'Blocked for testing';
-        if (!$result) {
-            my $res = $c->reset_password($user, $pass1);
-            $result .= $res unless $res eq 'OK';
+			if ($res ne 'OK') {
+				$result = $res;
+				last;
+			}
+		}
 
-            if (!$result) {
-                $result = $c->l('usr_PASSWORD_CHANGE_SUCCEEDED', $user);
-                $usr_datas{trt} = 'SUC';
-            }
-        } ## end if (!$result)
-    } ## end if ($trt eq 'PWD')
+		if (!$result) {
+			$res = $c->system_change_password();
 
-    if ($trt eq 'PWS') {    # system password reset (admin)
-        my $curpass = $c->param('CurPass');
-        my $pass1   = $c->param('Pass');
-        my $pass2   = $c->param('PassVerify');
+			if ($res ne 'OK') {
+				$result = $res;
+			}
+		}
 
-        # controls
-        if ($curpass) {
-            $res = $c->system_authenticate_password($curpass);
-            $result .= $res unless $res eq 'OK';
-        } else {
-            $result .= $c->l('FM_NONBLANK') . ' - ';
-        }
-
-        unless ($pass1 and $pass2) {
-            $result .= $c->l('FM_NONBLANK') . ' - ';
-        }
-
-        unless ($pass1 eq $pass2) {
-            $result .= $c->l('usr_SYSTEM_PASSWORD_VERIFY_ERROR') . ' - ';
-        }
-
-        if (!$result) {
-            $res = $c->system_validate_password($pass1);
-            $result .= $res unless $res eq 'OK';
-            $res = $c->system_check_password($pass1);
-            $result .= $res unless $res eq 'OK';
-        } ## end if (!$result)
-
-        #$result .= 'Blocked for testing';
-        if (!$result) {
-            my $res = $c->system_change_password();
-            $result .= $res unless $res eq 'OK';
-
-            if (!$result) {
-                $result = $c->l('usr_SYSTEM_PASSWORD_CHANGED', $user);
-                $usr_datas{trt} = 'SUC';
-            }
-        } ## end if (!$result)
-    } ## end if ($trt eq 'PWS')
+		if (!$result) {
+			$result = $c->l('usr_SYSTEM_PASSWORD_CHANGED', $user);
+			$usr_datas{trt} = 'SUC';
+			$res            = 'OK';
+		}
+	} ## end if ($trt eq 'PWS')
 
     if ($trt eq 'LCK') {
 
@@ -580,7 +604,8 @@ sub get_pptp_value {
 sub pseudonym_clash {
     my ($c, $first) = @_;
     $first ||= "";
-    my $last     = $c->param('LastName') || "";
+    $first = lc($first);
+    my $last     = lc($c->param('LastName') || "");
     my $acctName = $c->param('user')     || "";
     my $up       = "$first $last";
     $up =~ s/^\s+//;

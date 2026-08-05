@@ -13,6 +13,12 @@
 
   <h1><%= $title %></h1>
   <br>
+  % if ( defined stash('notif') && length stash('notif')  ) {
+    <br>
+    <span class=sme-error>
+      <%= stash('notif') %>
+    </span>
+  % }
   <%= $modul %>
   <% 	my $btn = l('SAVE');  %>
 

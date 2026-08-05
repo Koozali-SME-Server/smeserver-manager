@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 227
+%define release 228
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Aug 04 2026 Brian Read <brianr@koozali.org> 11.0.0-228.sme
+- Re-factor other places in controller files where cascaded validations are applied  [SME: 13686]
+- Make sure pseudonym check compares lowercase first and second name [SME: 13692]
+
 * Tue Aug 04 2026 Brian Read <brianr@koozali.org> 11.0.0-227.sme
 - Re-factor tests in Users and Groups to pre-emptive [SME: 13682]
 - Revert -226 (encode in call to getpwdnam) [SME: 13682]

@@ -93,30 +93,42 @@ sub do_action {
     $v->required('SshTCPPort')->num(1, 65535)->is_valid;
     $result .= 'field validation error' if $v->has_error;
 
-    if (!$result) {
+	if (!$result) {
 
-        # controls
-        #$res = pptp_and_dhcp_range( $c, $rma_datas{pptpSessions} );
-        #$result .= $res . ' ' unless $res eq 'OK';
-        $res = ip_number_or_blank($c, $rma_datas{validFromNetwork});
-        $result .= $res . ' ' unless $res eq 'OK';
-        $res = subnet_mask_or_blank($c, $rma_datas{validFromMask});
-        $result .= $res . ' ' unless $res eq 'OK';
-        $res = validate_network_and_mask($c, $rma_datas{validFromNetwork}, $rma_datas{validFromMask});
-        $result .= $res . ' ' unless $res eq 'OK';
+		# Validation: stop at the first failure.
+		for my $check (
+			# sub { pptp_and_dhcp_range($c, $rma_datas{pptpSessions}) },
+			sub { ip_number_or_blank($c, $rma_datas{validFromNetwork}) },
+			sub { subnet_mask_or_blank($c, $rma_datas{validFromMask}) },
+			sub {
+				validate_network_and_mask(
+					$c,
+					$rma_datas{validFromNetwork},
+					$rma_datas{validFromMask},
+				);
+			},
+		) {
+			$res = $check->();
 
-        #$result .= ' blocked for testing !' . $rma_datas{remove_nets};
-    } ## end if (!$result)
+			if ($res ne 'OK') {
+				$result = $res . ' ';
+				last;
+			}
+		}
+	}
 
-    if (!$result) {
-        $res = change_settings($c, %rma_datas);
-        $result .= $res unless $res eq 'OK';
-    }
+	if (!$result) {
+		$res = change_settings($c, %rma_datas);
 
-    if ($result eq "") {
-        $result = $c->l('rma_SUCCESS');
-        $trt    = 'SUC';
-    }
+		if ($res ne 'OK') {
+			$result = $res;
+		}
+	}
+
+	if (!$result) {
+		$result = $c->l('rma_SUCCESS');
+		$trt    = 'SUC';
+	}
     $c->stash(title => $title, notif => $result, rma_datas => \%rma_datas);
 
     #return $c->render( template => 'remoteaccess' );
@@ -286,7 +298,7 @@ sub validate_network_and_mask {
     my $mask = shift || "";
 
     if ($net xor $mask) {
-        return $c->l('rma_ERR_INVALID_PARAMS' . " (" . $net . "/" . $mask . ")");
+        return $c->l('rma_ERR_INVALID_PARAMS') . " (" . $net . "/" . $mask . ")";
     }
     return 'OK';
 } ## end sub validate_network_and_mask
