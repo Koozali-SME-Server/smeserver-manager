@@ -279,7 +279,8 @@ our $ui = SrvMngr::Controller::EmailSettingsCustomUI->new();
 		my $ret = '';
 		my $db = $cdb; #maybe one of the others
 		my $dbkey = 'ChangeThis';
-        $ui->apply_option('pop110_995',$c->param('POPAccess'));
+		#$c->app->log->info("pop:".$c->param('POPAccess'));
+        if (!$ui->apply_option('pop_110_995',$c->param('POPAccess'))) {$c->app->log->info($c->param('POPAccess')."Not written to DB");}
         $ui->apply_option('imap_143',$c->param('IMAPAccess'));
         $ui->apply_option('webmail',$c->param('WebMail'));
 		$ret = $c->change_settings_access();
@@ -822,8 +823,10 @@ sub change_settings_reception {
         #} ## end else [ if ($SMTPAuth eq 'disabled')]
     #} ## end foreach my $key (@keys)
 
-    unless (system("/sbin/e-smith/signal-event", "email-update") == 0) {
-        return $c->l('mai_ERROR_UPDATING_CONFIGURATION');
+	#Note -successful return from signal-event is 1 (true)
+    my $status = system("/sbin/e-smith/signal-event", "email-update");   
+	if (!$status) { 
+        return $c->l('mai_ERROR_UPDATING_CONFIGURATION',$status);
     }
     return '';
 } ## end sub change_settings_reception
@@ -843,8 +846,10 @@ sub change_settings_delivery {
     }
     $proxy->merge_props(%props);
 
-    unless (system("/sbin/e-smith/signal-event", "email-update") == 0) {
-        return $c->l('mai_ERROR_UPDATING_CONFIGURATION');
+	#Note -successful return from signal-event is 1 (true)
+    my $status = system("/sbin/e-smith/signal-event", "email-update");   
+	if (!$status) { 
+        return $c->l('mai_ERROR_UPDATING_CONFIGURATION',$status);
     }
     return '';
 } ## end sub change_settings_delivery
@@ -919,8 +924,10 @@ sub change_settings_access {
         #$cdb->set_prop('roundcube', "status", 'disabled');
     #}
 
-    unless (system("/sbin/e-smith/signal-event", "email-update") == 0) {
-        return $c->l('mai_ERROR_UPDATING_CONFIGURATION');
+	#Note -successful return from signal-event is 1 (true)
+    my $status = system("/sbin/e-smith/signal-event", "email-update");   
+	if (!$status) { 
+        return $c->l('mai_ERROR_UPDATING_CONFIGURATION',$status);
     }
     return '';
 } ## end sub change_settings_access
@@ -947,8 +954,10 @@ sub change_settings_filtering {
     my $patterns_status = $c->adjust_patterns() ? 'enabled' : 'disabled';
     $cdb->set_prop("qpsmtpd", 'PatternsScan', $patterns_status);
 
-    unless (system("/sbin/e-smith/signal-event", "email-update") == 0) {
-        return $c->l('mai_ERROR_UPDATING_CONFIGURATION');
+	#Note -successful return from signal-event is 1 (true)
+    my $status = system("/sbin/e-smith/signal-event", "email-update");   
+	if (!$status) { 
+        return $c->l('mai_ERROR_UPDATING_CONFIGURATION',$status);
     }
     return '';
 } ## end sub change_settings_filtering

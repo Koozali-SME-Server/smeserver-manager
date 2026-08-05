@@ -198,7 +198,7 @@ sub do_update {
 					modul => $modul,
 					mai_data  => \%mai_data
 				);
-				$c->render(template => "emailsettings");	
+				$c->do_display($mai_data{'trt'});	
 				return
 			} else {
 				$c->stash( success => $c->l('mai_FRONT_panel_action_was_successful')); #A bit bland - edit it in the lex file
@@ -216,7 +216,7 @@ sub do_update {
 					modul => $modul,
 					mai_data  => \%mai_data
 				);
-				$c->render(template => "emailsettings");	
+				$c->do_display($mai_data{'trt'});	
 				return
 			} else {
 				$c->stash( success => $c->l('mai_ACC_panel_action_was_successful')); #A bit bland - edit it in the lex file
@@ -234,7 +234,7 @@ sub do_update {
 					modul => $modul,
 					mai_data  => \%mai_data
 				);
-				$c->render(template => "emailsettings");	
+				$c->do_display($mai_data{'trt'});	
 				return
 			} else {
 				$c->stash( success => $c->l('mai_FIL_panel_action_was_successful')); #A bit bland - edit it in the lex file
@@ -252,7 +252,7 @@ sub do_update {
 					modul => $modul,
 					mai_data  => \%mai_data
 				);
-				$c->render(template => "emailsettings");	
+				$c->do_display($mai_data{'trt'});	
 				return
 			} else {
 				$c->stash( success => $c->l('mai_REC_panel_action_was_successful')); #A bit bland - edit it in the lex file
@@ -270,7 +270,7 @@ sub do_update {
 					modul => $modul,
 					mai_data  => \%mai_data
 				);
-				$c->render(template => "emailsettings");	
+				$c->do_display($mai_data{'trt'});	
 				return
 			} else {
 				$c->stash( success => $c->l('mai_DEL_panel_action_was_successful')); #A bit bland - edit it in the lex file
