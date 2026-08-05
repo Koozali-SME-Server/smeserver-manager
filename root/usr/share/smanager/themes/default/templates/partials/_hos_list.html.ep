@@ -50,7 +50,7 @@
             %= t td => ( class => 'sme-border' ) => $_->{'MACAddress'};
             %= t td => ( class => 'sme-border' ) => $_->{'Comment'};
             <td class='sme-border'>
-              % my ( $actionModify, $actionRemove ) = '&nbsp;';
+              % my ( $actionModify, $actionRemove ) = ('&nbsp;') x 2;
               % my $static = $_->{'static'} || "no";
               % if ($static ne 'yes') {
                 % my $modify_text = l('MODIFY'); # Localized text

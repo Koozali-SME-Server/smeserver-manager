@@ -47,7 +47,7 @@
           %= t td => ( class => 'sme-border' ) => $ibay->key
           %= t td => ( class => 'sme-border' ) => $ibay->prop('Name')
           <td class='sme-border'>
-            % my ( $actionModify, $actionResetPw, $actionRemove ) = '&nbsp;';
+            % my ( $actionModify, $actionResetPw, $actionRemove ) = ('&nbsp;') x 3;
             % if ($modifiable eq 'yes') {
               % my $modify_text = l('MODIFY'); # Localized text
               % my $csrf_token = "TOKEN"; # CSRF token for security

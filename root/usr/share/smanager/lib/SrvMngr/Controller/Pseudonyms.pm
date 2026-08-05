@@ -93,7 +93,7 @@ sub do_update {
 	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     my %pse_datas = ();
     $pse_datas{'trt'} = $trt;
-    my ($res, $result) = '';
+    my ($res, $result) = ('') x 2;
 
     #my $pseudonym = uri_unescape($c->param('Pseudonym'));
     my $pseudonym = $c->param('Pseudonym');

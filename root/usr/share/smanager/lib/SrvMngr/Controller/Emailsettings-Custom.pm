@@ -83,7 +83,7 @@ our $ui = SrvMngr::Controller::EmailSettingsCustomUI->new();
 		my $c = shift;
 		my $mai_data = shift; #Data hash as parameter
 		# Validation for each field 
-		my ($result,$ret) = '';
+		my ($result,$ret) = ('') x 2;
 		CHECKS: {
 			$ret = $c->validate_ip_or_blank($c->param('DelegateMailServer'));
 			$c->app->log->info("$c->param('DelegateMailServer') $ret");

@@ -82,7 +82,7 @@ sub main {
         $notif = $c->l("bac_BACKUP_DESKTOP_TOO_BIG") . ' : ' . $tarsize;
     }
     my $rec = $cdb->get('backup');
-    my ($backup_status, $backupwk_status) = 'disabled';
+    my ($backup_status, $backupwk_status) = ('disabled') x 2;
 
     if ($rec) {
         $backup_status = $rec->prop('status') || 'disabled';
@@ -112,7 +112,7 @@ sub do_display {
     my $c = shift;
     $c->app->log->info($c->log_req);
     my $rt = $c->current_route;
-    my ($res, $result) = '';
+    my ($res, $result) = ('') x 2;
     my $function = $c->param('Function');
    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open config db";
    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
@@ -286,7 +286,7 @@ sub do_update {
     my %bac_datas = ();
     $bac_datas{function} = $function;
     my $title = $c->l('bac_BACKUP_TITLE');
-    my ($dest, $res, $result) = '';
+    my ($dest, $res, $result) = ('') x 3;
 
     if ($function eq 'desktop_backup') {
 
@@ -699,7 +699,7 @@ sub workstnBackupConfig {
     my ($c) = @_;
     my $out;
     my $backupwk_status;
-    my $enabledIncOnlyTimeout = "";
+    # my $enabledIncOnlyTimeout = ""; Not used anywhere
     my $backupwkLogin         = 'backup';
     my $backupwkPassword      = 'backup';
     my $backupwkStation       = 'host';
@@ -1800,7 +1800,7 @@ sub get_Restorefiles_options {
     } else {
         die('Unsecure data : ' . $backupkey);
     }
-    my $seldatebf;
+    #my $seldatebf; - Not used anywhere
     my $backupwkrec = $cdb->get('backupwk');
     my $smbhost     = $backupwkrec->prop('SmbHost');
     my $smbshare    = $backupwkrec->prop('SmbShare');

@@ -32,7 +32,7 @@ my $DURATION_BLOCKED     = 30 * 60;        # access blocked for 30 min
 my $TIMEOUT_FAILED_LOGIN = 1;
 my $RESET_DURATION       = 2 * 60 * 60;    # 2 hours for resetting
 our $adb;
-my $allowed_user_re = qr/^\w{5,10}$/;
+#my $allowed_user_re = qr/^\w{5,10}$/; Not used anywhere
 my %Login_Attempts;
 
 sub main {

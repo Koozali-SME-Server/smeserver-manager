@@ -125,7 +125,7 @@ sub do_update {
     $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
     $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     my %dom_datas = ();
-    my ($res, $result) = '';
+    my ($res, $result) = ('') x 2;
 
     #my $domain = uri_unescape($c->param('domain'));
     my $domain = $c->param('Domain');
@@ -150,9 +150,9 @@ sub do_update {
     } ## end if ($trt eq 'ADD')
 
     if ($trt eq 'UPD') {
-        my $description = $c->param('Description');
-        my $content     = $c->param('Content');
-        my $nameservers = $c->param('Nameservers');
+        #my $description = $c->param('Description'); Not used anywhere
+        #my $content     = $c->param('Content'); Not used anywhere
+        #my $nameservers = $c->param('Nameservers'); Not used anywhere
 
         # controls
         #$res = validate_description( $c, $account );

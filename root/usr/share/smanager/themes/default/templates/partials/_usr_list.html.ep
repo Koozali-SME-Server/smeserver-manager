@@ -61,7 +61,7 @@
           %= t td => ( class => 'sme-border' ) => "$first $last"
           %= t td => ( class => 'sme-border' ) => $vpnaccess
           %= t td => ( class => 'sme-border' ) => $fwd
-          % my ( $actionModify, $actionLock, $actionResetPw, $actionRemove, $actionroundcube ) = '&nbsp;';
+          % my ( $actionModify, $actionLock, $actionResetPw, $actionRemove, $actionroundcube ) = ('&nbsp;') x 5;
           % my $modify_text = l('MODIFY'); # Localized text
           % my $csrf_token = "TOKEN"; # CSRF token for security
           % my $useraccounts_user_name = $user->key; # useraccountss_entry name extracted from the data structure

@@ -81,7 +81,7 @@ sub do_update {
     my $title     = $c->l('prt_FORM_TITLE');
     $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $prt_datas{'trt'} = $trt;
-    my ($res, $result) = '';
+    my ($res, $result) = ('') x 2;
 
     if ($trt eq 'ADD') {
         my $name        = ($c->param('Name')        || '');

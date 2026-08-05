@@ -58,7 +58,7 @@ sub do_action {
     my $c = shift;
     $c->app->log->info($c->log_req);
     my $title = $c->l('rma_FORM_TITLE');
-    my ($result, $res, $trt) = '';
+    my ($result, $res, $trt) = ('') x 3;
     my %rma_datas = ();
     $db = esmith::ConfigDB::UTF8->open || warn "Couldn't open configuration database";
     $rma_datas{ipsecrwSess}  = ($c->param('IpsecrwSess')  || '');

@@ -34,8 +34,8 @@ sub main {
 sub do_update {
     my $c = shift;
     $c->app->log->info($c->log_req);
-    my $http_clamav_status = $c->param('http_clamav_status') || 'disabled';
-    my $smtp_clamav_status = $c->param('smtp_clamav_status') || '';
+    #my $http_clamav_status = $c->param('http_clamav_status') || 'disabled'; Not used anywhere
+    #my $smtp_clamav_status = $c->param('smtp_clamav_status') || '';   Not used anywhere
     my $result             = "";
     $c->change_settings();
 

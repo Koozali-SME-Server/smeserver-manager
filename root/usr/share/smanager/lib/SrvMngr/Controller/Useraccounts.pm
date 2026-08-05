@@ -55,7 +55,7 @@ sub do_display {
     my $user      = ($c->param('user') || '');
     my %usr_datas = ();
     my $title     = $c->l('usr_FORM_TITLE');
-    my ($notif, $modul) = '';
+    my ($notif, $modul) = ('') x 2;
 	$cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
 	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $usr_datas{'trt'} = $trt;
@@ -157,7 +157,7 @@ sub do_update {
     my %usr_datas = ();
     $usr_datas{trt} = $trt;
     my $title = $c->l('usr_FORM_TITLE');
-    my ($res, $result) = '';
+    my ($res, $result) = ('') x 2;
 	$cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
 	$adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
 

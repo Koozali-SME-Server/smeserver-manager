@@ -54,7 +54,7 @@
             %= t td => ( class => 'sme-border' ) => $account
 
             <td class='sme-border'>
-              % my ( $actionModify, $actionRemove ) = '&nbsp;';
+              % my ( $actionModify, $actionRemove ) = ('&nbsp;') x 2;
               % if ($modifiable eq 'yes') {
                 % my $modify_text = l('MODIFY'); # Localized text
                 % my $csrf_token = "TOKEN"; # CSRF token for security

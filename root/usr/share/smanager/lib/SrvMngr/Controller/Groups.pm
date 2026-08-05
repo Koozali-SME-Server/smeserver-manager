@@ -101,7 +101,7 @@ sub do_update {
     my $trt       = ($c->param('trt') || 'LST');
     my $groupName = $c->param('groupName') || '';
     my $title     = $c->l('grp_FORM_TITLE');
-    my ($res, $result) = '';
+    my ($res, $result) = ('') x 2;
     my %grp_datas = ();
     $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open configuration db";
     $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";

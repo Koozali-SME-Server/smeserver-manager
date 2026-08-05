@@ -9,7 +9,7 @@
       % <=> ($nav{$b}{'WEIGHT'}/$nav{$b}{'COUNT'}) } keys %nav) {
       <div><a class='section section-title'><%= $c->l($h) %></a></div>
       <div class='togms'>
-        % my ( $classNew, $target, $href ) = '';
+        % my ( $classNew, $target, $href ) = ('') x 3;
         % foreach (sort { $a->{'WEIGHT'} <=> $b->{'WEIGHT'} } @{$nav{$h}{'DESCRIPTIONS'}}) {
 
           % next if ( $_->{'MENUCAT'} ne 'A' ); # menu Admin

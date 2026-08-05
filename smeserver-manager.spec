@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 228
+%define release 229
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Aug 05 2026 Brian Read <brianr@koozali.org> 11.0.0-229.sme
+- Apply fixes to controller code found in scan [SME: 13691]
+- Apply fixes to my ($a,$b) = 'string' statements in controller and templates [SME: 13689]
+
 * Tue Aug 04 2026 Brian Read <brianr@koozali.org> 11.0.0-228.sme
 - Re-factor other places in controller files where cascaded validations are applied  [SME: 13686]
 - Make sure pseudonym check compares lowercase first and second name [SME: 13692]
