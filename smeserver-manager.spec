@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 230
+%define release 231
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Aug 06 2026 Brian Read <brianr@koozali.org> 11.0.0-231.sme
+- Add csrf token to datetime call to test time server  [SME: 13695]
+
 * Wed Aug 05 2026 Brian Read <brianr@koozali.org> 11.0.0-230.sme
 - Fix emailsettings pop property not setting  [SME: 13690]
 
