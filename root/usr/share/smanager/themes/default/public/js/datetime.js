@@ -64,11 +64,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     result.textContent = "Testing...";
     result.classList.add('ntp-test-wait');
+    
+    const csrfToken = document.querySelector(
+		'form[action="/smanager/datetimeu"] input[name="csrf_token"]'
+	)?.value;
 
     fetch('/smanager/datetimet', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ ntpserver: server })
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
+		  'X-CSRF-Token': csrfToken
+		},
+		body: JSON.stringify({ ntpserver: server })
     })
     .then(response => {
       if (!response.ok) {
