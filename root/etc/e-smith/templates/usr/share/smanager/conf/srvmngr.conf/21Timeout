@@ -1,2 +1,19 @@
     # session timeout
-    timeout => '{ $smanager{'Timeout'} || 300 }',
+    timeout => '{ 
+
+my $raw_timeout = $smanager{'Timeout'} || ${'httpd-admin'}{ManagerTimeout} || "30m"; 
+
+my ($val, $unit) = $raw_timeout =~ /^(\d+)([smhd]?)$/i;
+my %multipliers = (
+        ''  => 1,        # Raw number defaults to seconds
+        's' => 1,        # Seconds
+        'm' => 60,       # Minutes
+        'h' => 3600,     # Hours
+        'd' => 86400,    # Days
+   );
+# fallback to the default 1800 s or 30m if malformed
+$OUT = ($val && exists $multipliers{lc($unit)}) 
+                ? $val * $multipliers{lc($unit)} 
+                : 1800;
+
+}',

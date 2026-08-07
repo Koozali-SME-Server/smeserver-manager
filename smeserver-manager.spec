@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 231
+%define release 232
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Aug 06 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-232.sme
+- session timeout aligned with tkt to 1800s/30m [SME: 13680]
+
 * Thu Aug 06 2026 Brian Read <brianr@koozali.org> 11.0.0-231.sme
 - Add csrf token to datetime call to test time server  [SME: 13695]
 
