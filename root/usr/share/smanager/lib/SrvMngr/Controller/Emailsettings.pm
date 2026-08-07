@@ -84,7 +84,7 @@ sub main {
     my $modul = '';
 
     $mai_data{'trt'} = 'FRONT';
-    $mai_data{'ui'} = $SrvMngr::Controller::Emailsetting::ui; 
+    $mai_data{'ui'} = ui(); #$SrvMngr::Controller::Emailsettings::ui; 
     
     #Load any DB entries into the <prefix>_data area so as they are preset in the form
     # which DB - this only really works if the initial panel is a PARAMS type panel and not a TABLE
@@ -432,7 +432,7 @@ sub do_display {
      
 	
 	# Data for panel
-    $mai_data{'ui'} = $SrvMngr::Controller::Emailsettings::ui; 
+    $mai_data{'ui'} = ui(); #$SrvMngr::Controller::Emailsettings::ui; 
     #warn "::ui=$SrvMngr::Controller::Emailsetting::ui";
 
 	$c->stash( 

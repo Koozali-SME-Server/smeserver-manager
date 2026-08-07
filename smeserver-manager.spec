@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 232
+%define release 233
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Aug 07 2026 Brian Read <brianr@koozali.org> 11.0.0-233.sme
+- Get return result from signal-event correctly tsted in emailsettings [SME: 13690]
+- Remove commented out code [SME: 13690]
+- Make access to ui object through accessor funxction rather than an our var [SME: 13690]
+
 * Thu Aug 06 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-232.sme
 - session timeout aligned with tkt to 1800s/30m [SME: 13680]
 

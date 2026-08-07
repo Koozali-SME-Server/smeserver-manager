@@ -1,4 +1,4 @@
-package SrvMngr::Controller::EmailSettingsCustomUI;
+package SrvMngr::Controller::EmailsettingsCustomUI;
 use strict;
 use warnings;
 use esmith::ConfigDB;
@@ -40,7 +40,7 @@ sub new {
                                 { prop => 'status',         value => 'enabled'  },
                                 { prop => 'Authentication', value => 'enabled' },
                                 { prop => 'access',         value => 'public'    },
-                                { prop => 'AuthAccess',     value => 'public'   },
+                                { prop => 'AuthAccess',     value => 'private'   },
                             ],
                         },
                         {
