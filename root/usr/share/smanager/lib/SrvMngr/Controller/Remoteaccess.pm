@@ -68,8 +68,8 @@ sub do_action {
     $rma_datas{validFromNetwork} = ($c->param('ValidFromNetwork') || '');
     $rma_datas{validFromMask}    = ($c->param('ValidFromMask')    || '');
 ##	my @remove = $q->param('validFromRemove');  ???????? the first one only !!
-    my @vals = $c->param('Remove_nets');
-    $rma_datas{remove_nets} = join ',', @vals;
+    my $vals = $c->every_param('Remove_nets') // [];
+    $rma_datas{remove_nets} = join ',', @$vals;
     $rma_datas{sshaccess}                 = ($c->param('SshAccess')                 || 'off');
     $rma_datas{sshPermitRootLogin}        = ($c->param('SshPermitRootLogin')        || 'no');
     $rma_datas{sshPasswordAuthentication} = ($c->param('SshPasswordAuthentication') || 'no');

@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 233
+%define release 234
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Aug 08 2026 Brian Read <brianr@koozali.org> 11.0.0-234.sme
+- Sort out multiple network delete in remoteaccess panel [SME: 13659]
+
 * Fri Aug 07 2026 Brian Read <brianr@koozali.org> 11.0.0-233.sme
 - Get return result from signal-event correctly tsted in emailsettings [SME: 13690]
 - Remove commented out code [SME: 13690]
