@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 235
+%define release 236
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,11 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Aug 09 2026 Brian Read <brianr@koozali.org> 11.0.0-236.sme
+- Allow password change for admin from menu [SME: 13620]
+- Password error message identifies old and new the same  [SME: 9844]
+- Fix display of lexical string after error [SME: 13450]
+
 * Sat Aug 08 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-235.sme
 - rename qmailanalog panel [SME: 12951]
 

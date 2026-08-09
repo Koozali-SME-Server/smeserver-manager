@@ -51,17 +51,8 @@ sub main {
         $c->flash(success => $c->l('pwd_OK_FOR_RESET'));
     } ## end else [ if ($c->is_logged_in) ]
 
-	my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
-    my $rec = $cdb->get('passwordstrength');
-	$pwd_datas{passwdlength} = ($rec ? ($rec->prop('length') || 12) : 12);
-	if ($c->is_admin){
-		$pwd_datas{passwdstrength} = ($rec ? ($rec->prop('Admin') || 'none') : 'none');
-	} else {
-		$pwd_datas{passwdstrength} = ($rec ? ($rec->prop('Users') || 'none') : 'none');
-	}
-	if ( !(defined $pwd_datas{passwdstrength} && $pwd_datas{passwdstrength} =~ /^(none|normal|intermediate|strong)$/)) {
-		$pwd_datas{passwdstrength} = 'strong';
-	}
+    _add_pwd_strength_info($c, \%pwd_datas);
+
     $c->stash(pwd_datas => \%pwd_datas);
     $c->render('userpassword');
 } ## end sub main
@@ -107,18 +98,22 @@ sub change_password {
     $pwd_datas{Account} = $acctName;
     $pwd_datas{trt}     = $trt;
 
+    # NEW: make sure passwdlength/passwdstrength are always present,
+    # exactly as main() provides them, for every render('userpassword') below
+    _add_pwd_strength_info($c, \%pwd_datas);
+
     # common controls
-    if ($acctName eq 'admin') {
-        $result .= "Admin password should not be reset here !";
-    } else {
+    #if ($acctName eq 'admin') {
+    #    $result .= "Admin password should not be reset here !";
+    #} else {
 
         unless ($pass && $passVerify) {
-            $result .= $c->l('pwd_FIELDS_REQUIRED') . "<br>";
+            $result .= $c->l('pwd_FIELDS_REQUIRED') ;
         } else {
-            $result .= $c->l('pwd_PASSWORD_INVALID_CHARS') . "<br>" unless (($pass) = ($pass =~ /^([ -~]+)$/));
-            $result .= $c->l('pwd_PASSWORD_VERIFY_ERROR') . "<br>" unless ($pass eq $passVerify);
+            $result .= $c->l('pwd_PASSWORD_INVALID_CHARS')  unless (($pass) = ($pass =~ /^([ -~]+)$/));
+            $result .= $c->l('pwd_PASSWORD_VERIFY_ERROR')  unless ($pass eq $passVerify);
         }
-    } ## end else [ if ($acctName eq 'admin')]
+    #} ## end else [ if ($acctName eq 'admin')]
 
     if ($result ne '') {
         $c->stash(error => $result, pwd_datas => \%pwd_datas);
@@ -126,16 +121,16 @@ sub change_password {
     }
 
     # validate new password
-    $res = $c->check_password($pass);
-    $result .= $res . "<br>" unless ($res eq 'OK');
+    $res = $c->check_password($pass, $pwd_datas{passwdstrength});
+    $result .= $res  unless ($res eq 'OK');
 
     #  controls old password
     if ($trt ne 'RESET') {
 
         unless ($oldPass) {
-            $result .= $c->l('pwd_FIELDS_REQUIRED') . "<br>" unless $trt eq 'RESET';
+            $result .= $c->l('pwd_FIELDS_REQUIRED')  unless $trt eq 'RESET';
         } else {
-            $result .= $c->l('pwd_PASSWORD_OLD_INVALID_CHARS') . "<br>" unless (($oldPass) = ($oldPass =~ /^(\S+)$/));
+            $result .= $c->l('pwd_PASSWORD_OLD_INVALID_CHARS')  unless (($oldPass) = ($oldPass =~ /^(\S+)$/));
         }
 
         if ($result ne '') {
@@ -145,7 +140,7 @@ sub change_password {
 
         # verify old password
         if ($trt ne 'RESET') {
-            $result .= $c->l('pwd_ERROR_PASSWORD_CHANGE') . "<br>"
+            $result .= $c->l('pwd_ERROR_PASSWORD_CHANGE') 
                 unless (SrvMngr::Model::Main->check_credentials($acctName, $oldPass));
         }
     } ## end if ($trt ne 'RESET')
@@ -168,6 +163,24 @@ sub change_password {
     $c->redirect_to($c->home_page);
 } ## end sub change_password
 
+# --- NEW shared helper, extracted from the tail of main() ---
+sub _add_pwd_strength_info {
+    my ($c, $pwd_datas) = @_;
+
+    my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
+    my $rec = $cdb->get('passwordstrength');
+    $pwd_datas->{passwdlength} = ($rec ? ($rec->prop('length') || 12) : 12);
+    if ($c->is_admin) {
+        $pwd_datas->{passwdstrength} = ($rec ? ($rec->prop('Admin') || 'none') : 'none');
+    } else {
+        $pwd_datas->{passwdstrength} = ($rec ? ($rec->prop('Users') || 'none') : 'none');
+    }
+    if (!(defined $pwd_datas->{passwdstrength} && $pwd_datas->{passwdstrength} =~ /^(none|normal|intermediate|strong)$/)) {
+        $pwd_datas->{passwdstrength} = 'strong';
+    }
+    return;
+} ## end sub _add_pwd_strength_info
+
 sub reset_password {
     my ($c, $trt, $user, $password, $oldpassword) = @_;
     my $ret;
@@ -175,8 +188,8 @@ sub reset_password {
     $user = $1;
     my $adb  = esmith::AccountsDB::UTF8->open();
     my $acct = $adb->get($user);
-    return $c->l('NO_SUCH_USER', $user) unless ($acct->prop('type') eq 'user');
-    $ret = esmith::util::setUserPasswordRequirePrevious($user, $oldpassword, $password) if $trt ne 'RESET';
+	return $c->l('NO_SUCH_USER', $user) unless ($c->is_admin || $acct->prop('type') eq 'user');    
+	$ret = esmith::util::setUserPasswordRequirePrevious($user, $oldpassword, $password) if $trt ne 'RESET';
     $ret = esmith::util::setUserPassword($user, $password) if $trt eq 'RESET';
     return $c->l('pwd_ERROR_PASSWORD_CHANGE') unless $ret;
     $acct->set_prop("PasswordSet", "yes");
@@ -219,10 +232,10 @@ sub record_password_change_attempt {
 sub check_password {
     my $c        = shift;
     my $password = shift;
-    my $strength;
-    my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
-    my $rec = $cdb->get('passwordstrength');
-    $strength = ($rec ? ($rec->prop('Users') || 'none') : 'none');
+    my $strength = shift;
+    #my $cdb = esmith::ConfigDB::UTF8->open_ro || die "Couldn't open configuration db";
+    #my $rec = $cdb->get('passwordstrength');
+    #$strength = ($rec ? ($rec->prop('Users') || 'none') : 'none');
     return validate_password($c, $strength, $password);
 } ## end sub check_password
 
