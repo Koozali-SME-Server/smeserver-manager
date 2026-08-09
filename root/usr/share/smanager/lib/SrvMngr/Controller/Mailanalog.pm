@@ -1,4 +1,4 @@
-package SrvMngr::Controller::Qmailanalog;
+package SrvMngr::Controller::Mailanalog;
 
 #----------------------------------------------------------------------
 # heading     : Investigation
@@ -21,10 +21,10 @@ use List::Util qw(sum);
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
-    my $title = $c->l('qma_FORM_TITLE');
-    my $modul = $c->render_to_string(inline => $c->l('qma_INITIAL_DESC'));
+    my $title = $c->l('mai_FORM_TITLE');
+    my $modul = $c->render_to_string(inline => $c->l('mai_INITIAL_DESC'));
     $c->stash(title => $title, modul => $modul);
-    $c->render(template => 'qmailanalog');
+    $c->render(template => 'mailanalog');
 } ## end sub main
 
 sub do_update {
@@ -41,7 +41,7 @@ sub do_update {
         $result      = $c->l('INVALID_REPORT_TYPE') . $report_type;
         $report_type = undef;
     }
-    my $title = $c->l('qma_FORM_TITLE');
+    my $title = $c->l('mai_FORM_TITLE');
     $result = $c->render_to_string(inline => generateReport($c, $report_type)) if $report_type;
     $c->stash(title => $title, modul => $result);
     $c->render(template => 'module');
@@ -119,20 +119,20 @@ sub generateReport {
 sub reportType_list {
     my $c     = shift;
     my @array = (
-		[$c->l('qma_Daily_Summary_Report_yesterday') => 'daily_summary'],
-		[$c->l('qma_Daily_Summary_Report_today') => 'daily_summary_today'],
-		[$c->l('qma_Daily_Summary_Report_all') => 'daily_summary_all'],
-		#[$c->l('qma_Top Senders and Recipients') => 'top_senders'],
-		#[$c->l('qma_Bounce Rate Analysis') => 'bounce_analysis'],
-		#[$c->l('qma_Spam and Virus Filtering Report') => 'spam_and_virus'],
-		#[$c->l('qma_Delivery Status Report') => 'delivery_status'],
-		#[$c->l('qma_Geographic Analysis of Email') => 'geo_analysis'],
-		#[$c->l('qma_Traffic Analysis') => 'traffic_analysis'],
-		#[$c->l('qma_Authentication Analysis') => 'auth_analysis'],
-		#[$c->l('qma_User Activity Report') => 'user_activity'],
-		#[$c->l('qma_Error Reporting') => 'error_reporting'],
-		#[$c->l('qma_Comparison Reports') => 'comparison_reports'],
-		#[$c->l('qma_Customized Reports') => 'customized_reports'],
+		[$c->l('mai_Daily_Summary_Report_yesterday') => 'daily_summary'],
+		[$c->l('mai_Daily_Summary_Report_today') => 'daily_summary_today'],
+		[$c->l('mai_Daily_Summary_Report_all') => 'daily_summary_all'],
+		#[$c->l('mai_Top Senders and Recipients') => 'top_senders'],
+		#[$c->l('mai_Bounce Rate Analysis') => 'bounce_analysis'],
+		#[$c->l('mai_Spam and Virus Filtering Report') => 'spam_and_virus'],
+		#[$c->l('mai_Delivery Status Report') => 'delivery_status'],
+		#[$c->l('mai_Geographic Analysis of Email') => 'geo_analysis'],
+		#[$c->l('mai_Traffic Analysis') => 'traffic_analysis'],
+		#[$c->l('mai_Authentication Analysis') => 'auth_analysis'],
+		#[$c->l('mai_User Activity Report') => 'user_activity'],
+		#[$c->l('mai_Error Reporting') => 'error_reporting'],
+		#[$c->l('mai_Comparison Reports') => 'comparison_reports'],
+		#[$c->l('mai_Customized Reports') => 'customized_reports'],
 	);
     my @sorted_array = sort { $a->[0] cmp $b->[0] } @array;
     return \@sorted_array;
@@ -232,130 +232,5 @@ sub format_as_html {
 <pre>$content</pre>
 HTML
 }
-
-
-### 1. Message Tracking
-#sub trace_message {
-    #my ($log_path, $message_id) = @_;
-    ##my $tracer = Mail::Log::Trace::Postfix->new({log_file => $log_path});
-    ##$tracer->set_message_id($message_id);
-    
-    #my $output = "Message Tracking Report for ID: $message_id\n";
-    ##$output .= "=" x 50 . "\n";
-    ##$output .= sprintf "%-12s: %s\n", 'From', $tracer->get_from_address;
-    ##$output .= sprintf "%-12s: %s\n", 'Status', $tracer->get_final_status;
-    
-    ##$output .= "\nRecipients:\n";
-    ##$output .= join("\n", map { "- $_" } $tracer->get_recipient_addresses);
-    
-    ##$output .= "\n\nTimeline:\n";
-    ##my $timeline = $tracer->get_timestamps;
-    ##while (my ($stage, $time) = each %$timeline) {
-        ##$output .= sprintf "%-10s: %s\n", ucfirst($stage), $time;
-    ##}
-    
-    #return $output || "No records found for message ID: $message_id";
-#}
-
-#### 2. Queue Analysis
-#sub get_queue_stats {
-    #my $spool_dir = '/var/spool/postfix';
-    #my %queues = map { $_ => 0 } qw(active deferred bounce hold corrupt);
-    
-    #foreach my $q (keys %queues) {
-        #opendir(my $dh, "$spool_dir/$q");
-        #$queues{$q} = scalar(grep { -f "$spool_dir/$q/$_" } readdir($dh));
-        #closedir($dh);
-    #}
-    
-    #my $output = "Current Postfix Queue Status\n";
-    #$output .= "=" x 30 . "\n";
-    #$output .= sprintf "%-10s: %3d messages\n", ucfirst($_), $queues{$_} 
-        #for sort keys %queues;
-    #$output .= "\nTotal: " . sum(values %queues) . " messages in queue";
-    
-    #return $output;
-#}
-
-#### 3. Message Statistics
-#sub get_message_stats {
-    #my ($log_path) = @_;
-    #my %stats = (received => 0, rejected => 0, delivered => 0, 
-                #deferred => 0, bounced => 0, held => 0);
-
-    #open(my $fh, '<', $log_path);
-    #while(<$fh>) {
-        #$stats{received}++ if /qmgr.*: [A-Z0-9]+: from=/;
-        #$stats{delivered}++ if /status=sent/;
-        #$stats{rejected}++ if /NOQUEUE: reject/;
-        #$stats{deferred}++ if /status=deferred/;
-        #$stats{bounced}++ if /status=bounced/;
-        #$stats{held}++ if /status=hold/;
-    #}
-    #close($fh);
-    
-    #my $output = "Message Statistics for " . localtime . "\n";
-    #$output .= "=" x 40 . "\n";
-    #$output .= sprintf "%-12s: %6d\n", 'Received', $stats{received};
-    #$output .= sprintf "%-12s: %6d (%.1f%%)\n", 'Delivered', $stats{delivered},
-        #($stats{received} ? ($stats{delivered}/$stats{received}*100) : 0);
-    #$output .= sprintf "%-12s: %6d\n", 'Rejected', $stats{rejected};
-    #$output .= sprintf "%-12s: %6d\n", 'Deferred', $stats{deferred};
-    #$output .= sprintf "%-12s: %6d\n", 'Bounced', $stats{bounced};
-    #$output .= sprintf "%-12s: %6d\n", 'Held', $stats{held};
-    
-    #return $output;
-#}
-
-#### 4. User Activity Audit
-#sub get_user_activity {
-    #my ($log_path, $email) = @_;
-    ##my $tracer = Mail::Log::Trace::Postfix->new({log_file => $log_path});
-    
-    ##my $sent = scalar $tracer->find_messages_by_sender($email);
-    ##my $received = scalar $tracer->find_messages_by_recipient($email);
-    
-    #my $output = "Activity Report for: $email\n";
-    ##$output .= "=" x (length($email) + 18) . "\n";
-    ##$output .= "Messages sent:     $sent\n";
-    ##$output .= "Messages received: $received\n\n";
-    
-    ##$output .= "Last week's activity:\n";
-    ##$output .= join("\n", map { sprintf "- %s: %d messages", $_->[0], $_->[1] }
-        ##$tracer->get_weekly_stats($email));
-    
-    #return $output || "No activity found for $email";
-#}
-
-#### 5. Security Monitoring
-#sub detect_auth_failures {
-    #my ($log_path) = @_;
-    #my %failures;
-    
-    #open(my $fh, '<', $log_path);
-    #while(<$fh>) {
-        #if(/SASL (?:LOGIN|PLAIN) authentication failed.*?\[([0-9.]+)\]/) {
-            #$failures{$1}++;
-        #}
-    #}
-    #close($fh);
-    
-    #return "No authentication failures found" unless keys %failures;
-    
-    #my $output = "Authentication Failure Report\n";
-    #$output .= "=" x 30 . "\n";
-    #$output .= sprintf "%-15s %s\n", 'IP Address', 'Attempts';
-    #$output .= sprintf "%-15s %s\n", '-' x 15, '-' x 7;
-    
-    #foreach my $ip (sort { $failures{$b} <=> $failures{$a} } keys %failures) {
-        #$output .= sprintf "%-15s %5d\n", $ip, $failures{$ip};
-    #}
-    #$output .= "\nTotal failures: " . sum(values %failures);
-    
-    #return $output;
-#}
-
-
-
 
 1;

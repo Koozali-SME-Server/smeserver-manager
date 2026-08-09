@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageIdGroup = document.getElementById('message_id_group');
     const emailAddressGroup = document.getElementById('email_address_group');
 
+    if (!analysisType || !messageIdGroup || !emailAddressGroup) {
+        return; // stop there if missing element
+    }
+
     // Initially hide both controls
     messageIdGroup.style.display = 'none';
     emailAddressGroup.style.display = 'none';
