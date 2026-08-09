@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '222.el8.sme'; 
+our $VERSION = '236.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -501,8 +501,8 @@ sub setup_routing {
     $if_admin->get('/pseudonyms2')->to('pseudonyms#do_display')->name('pseudonymd');
     $if_admin->post('/pseudonyms2')->to('pseudonyms#do_update')->name('pseudonymu');
 
-    $if_admin->get('/qmailanalog')->to('qmailanalog#main')->name('qmailanalog');
-    $if_admin->post('/qmailanalog')->to('qmailanalog#do_update')->name('qmailanalog2');
+    $if_admin->get('/mailanalog')->to('mailanalog#main')->name('mailanalog');
+    $if_admin->post('/mailanalog')->to('mailanalog#do_update')->name('mailanalog2');
 
     $if_admin->get('/quota')->to('quota#main')->name('quota');
     $if_admin->get('/quotad')->to('quota#do_display')->name('quotalist');

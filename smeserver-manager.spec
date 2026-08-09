@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 236
+%define release 237
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Aug 09 2026 Brian Read <brianr@koozali.org> 11.0.0-237.sme
+- Alter routing for the mailanalog panel [SME: 12951]
+
 * Sun Aug 09 2026 Brian Read <brianr@koozali.org> 11.0.0-236.sme
 - Allow password change for admin from menu [SME: 13620]
 - Password error message identifies old and new the same  [SME: 9844]
