@@ -93,9 +93,9 @@ sub do_display {
     #if ( $trt eq 'DEL' ) {
     #    my $rec = $hdb->get($hostname);
     #    if ( $rec ) {
-    #	get_hos_datas( $rec, %hos_datas );
+    #    get_hos_datas( $rec, %hos_datas );
     #    } else {
-    #	$notif = "Hostname $hostname not found !"
+    #    $notif = "Hostname $hostname not found !"
     #    }
     #}
     if ($trt eq 'LIST') {
@@ -116,38 +116,38 @@ sub do_update {
     $ndb = esmith::NetworksDB::UTF8->open || die "Couldn't open networks db";
     my $notif     = '';
     my $result    = '';
-	# Fetch parameters with forced scalar context and default empty string if undefined
-	$hos_datas{'name'}       = lc(scalar $c->param('Name') // '');
-	$hos_datas{'domain'}     = lc(scalar $c->param('Domain') // '');
-	$hos_datas{'hostname'}   = scalar $c->param('Hostname') // '';
-	$hos_datas{'comment'}    = scalar $c->param('Comment') // '';
-	$hos_datas{'hosttype'}   = scalar $c->param('Hosttype') // '';
-	$hos_datas{'internalip'} = scalar $c->param('Internalip') // '';
-	$hos_datas{'externalip'} = scalar $c->param('Externalip') // '';
+    # Fetch parameters with forced scalar context and default empty string if undefined
+    $hos_datas{'name'}       = lc(scalar $c->param('Name') // '');
+    $hos_datas{'domain'}     = lc(scalar $c->param('Domain') // '');
+    $hos_datas{'hostname'}   = scalar $c->param('Hostname') // '';
+    $hos_datas{'comment'}    = scalar $c->param('Comment') // '';
+    $hos_datas{'hosttype'}   = scalar $c->param('Hosttype') // '';
+    $hos_datas{'internalip'} = scalar $c->param('Internalip') // '';
+    $hos_datas{'externalip'} = scalar $c->param('Externalip') // '';
 
-	my $hostname = "$hos_datas{'name'}.$hos_datas{'domain'}";
-	
+    my $hostname = "$hos_datas{'name'}.$hos_datas{'domain'}";
+    
 
-	if (my $hostrec = $hdb->get($hostname)) {
-		my $hosttype = $hostrec->prop('HostType') // '';
-		#$c->app->log->info("$hosttype $hos_datas{'hosttype'} $hos_datas{'comment'} $hostrec->prop('Comment')");
-		# Clear comment if hosttype changes to 'self' and comment was not intentionally changed
-		if ($hosttype ne 'Self' 
-			&& $hos_datas{'hosttype'} eq 'Self' 
-			&& $hos_datas{'comment'} eq $hostrec->prop('Comment')) {
-			$hos_datas{'comment'} = '';
-		}
-	}
+    if (my $hostrec = $hdb->get($hostname)) {
+        my $hosttype = $hostrec->prop('HostType') // '';
+        #$c->app->log->info("$hosttype $hos_datas{'hosttype'} $hos_datas{'comment'} $hostrec->prop('Comment')");
+        # Clear comment if hosttype changes to 'self' and comment was not intentionally changed
+        if ($hosttype ne 'Self' 
+            && $hos_datas{'hosttype'} eq 'Self' 
+            && $hos_datas{'comment'} eq $hostrec->prop('Comment')) {
+            $hos_datas{'comment'} = '';
+        }
+    }
 
-	# Clear MAC address if hosttype is 'self', otherwise get from param
-	if ($hos_datas{'hosttype'} eq 'Self') {
-		$hos_datas{'macaddress'} = '';
-		$hos_datas{'internalip'} = '';
-		#$c->app->log->info("yes $hos_datas{'hosttype'} $hos_datas{'macaddress'}");
-	} else {
-		$hos_datas{'macaddress'} = scalar $c->param('Macaddress') // '';
-		#$c->app->log->info("no $hos_datas{'hosttype'} $hos_datas{'macaddress'}");
-	}
+    # Clear MAC address if hosttype is 'self', otherwise get from param
+    if ($hos_datas{'hosttype'} eq 'Self') {
+        $hos_datas{'macaddress'} = '';
+        $hos_datas{'internalip'} = '';
+        #$c->app->log->info("yes $hos_datas{'hosttype'} $hos_datas{'macaddress'}");
+    } else {
+        $hos_datas{'macaddress'} = scalar $c->param('Macaddress') // '';
+        #$c->app->log->info("no $hos_datas{'hosttype'} $hos_datas{'macaddress'}");
+    }
 
     if ($trt eq 'ADD') {
         $hos_datas{'hostname'} = $hostname;
@@ -156,13 +156,13 @@ sub do_update {
         my $res = '';
 
         unless ($hos_datas{'name'} =~ /^[a-z0-9][a-z0-9-]*$/) {
-            $result .= $c->l('hos_HOSTNAME_VALIDATOR_ERROR') . '<br>';
+            $result .= $c->l('hos_HOSTNAME_VALIDATOR_ERROR',$hostname) . '<br>';
         }
 
         unless ($hos_datas{comment} =~ /^([a-zA-Z0-9][\_\.\-,A-Za-z0-9\s]*)$/
             || $hos_datas{comment} eq '')
         {
-            $result .= $c->l('hos_HOSTNAME_COMMENT_ERROR') . '<br>';
+            $result .= $c->l('hos_HOSTNAME_COMMENT_ERROR',$hostname) . '<br>';
         } ## end unless ($hos_datas{comment...})
 
         # Look for duplicate hosts.

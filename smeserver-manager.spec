@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 237
+%define release 238
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Aug 09 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-238.sme
+- verify domain on validation [SME: 13675]
+
 * Sun Aug 09 2026 Brian Read <brianr@koozali.org> 11.0.0-237.sme
 - Alter routing for the mailanalog panel [SME: 12951]
 

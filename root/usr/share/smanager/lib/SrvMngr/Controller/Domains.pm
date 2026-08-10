@@ -129,16 +129,24 @@ sub do_update {
 
     #my $domain = uri_unescape($c->param('domain'));
     my $domain = $c->param('Domain');
+    my $description = $c->param('Description');
+    $res    = 'OK';
+    $result = '';
+
+    # Validation: stop at the first error.
+    for my $check (
+        sub { $c->validate_Domain($domain) },
+        sub { $c->validate_Description($description) },
+    ) {
+        $res = $check->();
+
+        if ($res ne 'OK') {
+           $result = $res;
+           last;
+        }
+    }
 
     if ($trt eq 'ADD') {
-        my $account = $c->param('Account');
-
-        # controls (validate ?????)
-        #? validate_new_domain_name( $c, $domain, $account );
-        #$result .= $res unless $res eq 'OK';
-        #$result .= ' blocked';
-        $res = '';
-
         if (!$result) {
             $res = $c->create_modify_domain('create', $domain);
             $result .= $res unless $res eq 'OK';
@@ -150,16 +158,6 @@ sub do_update {
     } ## end if ($trt eq 'ADD')
 
     if ($trt eq 'UPD') {
-        #my $description = $c->param('Description'); Not used anywhere
-        #my $content     = $c->param('Content'); Not used anywhere
-        #my $nameservers = $c->param('Nameservers'); Not used anywhere
-
-        # controls
-        #$res = validate_description( $c, $account );
-        #$result .= $res unless $res eq 'OK';
-        #$result .= 'blocked';
-        $res = '';
-
         if (!$result) {
             $res = $c->create_modify_domain('modify', $domain);
             $result .= $res unless $res eq 'OK';
@@ -216,7 +214,7 @@ sub do_update {
         my $title = $c->l('dom_FORM_TITLE');
         $dom_datas{'domain'} = $domain;
         $dom_datas{'trt'}    = $trt;
-        $c->stash(error => $result . "($res)");
+        $c->stash(error => $result );
         $c->stash(title => $title, dom_datas => \%dom_datas);
         return $c->render('domains');
     } ## end if ($res ne 'OK')
