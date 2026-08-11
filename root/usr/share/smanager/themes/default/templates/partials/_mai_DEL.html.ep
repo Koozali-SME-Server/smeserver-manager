@@ -29,7 +29,7 @@
 
     <p><span class=label>
         %= l 'mai_LABEL_UNKNOWN'
-      </span><span class=input>
+      </span><span class=data>
         % param 'EmailUnknownUser' => $mai_data->{emailunknownuser} unless param 'EmailUnknownUser';
         %= select_field 'EmailUnknownUser' => $c->get_emailunknownuser_opt(), class => 'input'
     </span></p>
@@ -43,7 +43,7 @@
 
     <p><span class=label>
         %= l 'mai_LABEL_DELEGATE'
-      </span><span class=input>
+      </span><span class=data>
         % param 'DelegateMailServer' => $mai_data->{delegatemailserver} unless param 'DelegateMailServer';
         %= text_field 'DelegateMailServer', class => 'input', autocomplete => 'off'
     </span></p>
@@ -57,14 +57,14 @@
 
     <p><span class=label>
         %= l 'mai_LABEL_SMARTHOST'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SMTPSmartHost' => $mai_data->{smtpsmarthost} unless param 'SMTPSmartHost';
         %= text_field 'SMTPSmartHost', class => 'input'
     </span></p>
 
     <p><span class=label>
         %= l 'mai_LABEL_SMARTHOST_SMTPAUTH_PEERPORT'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SMTPAUTHPROXY_PeerPort' => $mai_data->{smtpauthproxypeerport} unless param 'SMTPAUTHPROXY_PeerPort';
         %= text_field 'SMTPAUTHPROXY_PeerPort', class => 'input'
         %= l 'mai_DESC_PEERPORT'
@@ -72,21 +72,21 @@
 
     <p><span class=label>
         %= l 'mai_LABEL_SMARTHOST_SMTPAUTH_STATUS'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SMTPAUTHPROXY_Status' => $mai_data->{smtpauthproxystatus} unless param 'SMTPAUTHPROXY_Status';
         %= select_field 'SMTPAUTHPROXY_Status' => [ [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'ENABLED' ) => 'enabled' ] ], class => 'input';
     </span></p>
 
     <p><span class=label>
         %= l 'mai_LABEL_SMARTHOST_SMTPAUTH_USERID'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SMTPAUTHPROXY_Userid' => $mai_data->{smtpauthproxyuserid} unless param 'SMTPAUTHPROXY_Userid';
         %= text_field 'SMTPAUTHPROXY_Userid', class => 'input'
     </span></p>
 
     <p><span class=label>
         %= l 'mai_LABEL_SMARTHOST_SMTPAUTH_PASSWD'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SMTPAUTHPROXY_Passwd' => $mai_data->{smtpauthproxypassword} unless param 'SMTPAUTHPROXY_Passwd';
         %# keep using autocomplete => 'new-password' and not current-password or anything, otherwise the value will be auto filled
         %# by password software as if the page would be a login page. you might end up with the real value being overwritten without noticing.

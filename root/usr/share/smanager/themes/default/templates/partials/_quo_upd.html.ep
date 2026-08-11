@@ -1,4 +1,4 @@
-<div id='quo_upd'>
+<div id='quo_upd' class="partial">
 
   % my $btn = l('SAVE');
 

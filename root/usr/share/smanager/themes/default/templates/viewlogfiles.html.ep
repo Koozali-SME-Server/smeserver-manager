@@ -1,7 +1,7 @@
 % layout 'default', title => "Sme server 2 - viewlogfiles";
 
 % content_for 'module' => begin
-  <div id='module' class='module viewlogfiles-panel'>
+  <div id='module' class='module viewlogfiles-panel partial'>
     % if (config->{debug} == 1) {
       <p>
         (DBG)route: <%= $c->current_route %><br>

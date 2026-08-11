@@ -1,4 +1,4 @@
-<div id='ln_add'>
+<div id='ln_add' class="partial">
 
   % my $retref = $c->stash("ret");
   % my %ret = $retref ? %$retref : ( ret => "" );
@@ -41,23 +41,23 @@
     </h2>
     <p>
       %= $c->render_to_string( inline => l('ln_ADD_DESC') );
-    </p><br>
+    </p><p>
     <span class=label>
       %= l "NETWORK"
     </span><span class=data>
       %= text_field 'networkAddress'
-    </span><br><br>
+    </span></p><p>
     <span class=label>
       %= l "ln_SUBNET_MASK"
     </span><span class=data>
       %= text_field 'networkMask'
-    </span><br><br>
+    </span></p><p>
     <span class=label>
       %= l "ROUTER"
     </span>
     <span class=data>
       %= text_field 'networkRouter'
-    </span><br><br>
+    </span></p>
     <p>
       <br>
       %= submit_button "$btn", class => 'action'

@@ -1,4 +1,4 @@
-<div id='pf_add'>
+<div id='pf_add' class='partial'>
 
   % my $retref = $c->stash("ret");
   % my %ret = $retref ? %$retref : ( ret => "" );
@@ -40,41 +40,41 @@
   </h2>
   <p>
     %= l "pf_SUMMARY_ADD_DESC"
-  </p><br>
+  </p><p>
   <span class=label>
     %= l "pf_LABEL_PROTOCOL"
   </span><span class=data>
     %= select_field 'proto' => [ "TCP", "UDP" ]
-  </span><br><br>
+  </span></p><p>
   <span class=label>
     %= l "pf_LABEL_SOURCE_PORT"
   </span><span class=data>
     %= text_field 'sport'
-  </span><br><br>
+  </span></p><p>
   <span class=label>
     %= l "pf_LABEL_DESTINATION_PORT"
   </span>
   <span class=data>
     %= text_field 'dport'
-  </span><br><br>
+  </span></p><p>
   <span class=label>
     %= l "pf_LABEL_DESTINATION_HOST"
   </span>
   <span class=data>
     %= text_field 'dhost'
-  </span><br><br>
+  </span></p><p>
   <span class=label>
     %= l "pf_ALLOW_HOSTS"
   </span>
   <span class=data>
     %= text_field 'allow'
-  </span><br><br>
+  </span></p><p>
   <span class=label>
     %= l "pf_RULE_COMMENT"
   </span>
   <span class=data>
     %= text_field 'cmmnt'
-  </span><br><br>
+  </span></p>
   <p>
     <br>
     %= submit_button "$btn", class => 'action'

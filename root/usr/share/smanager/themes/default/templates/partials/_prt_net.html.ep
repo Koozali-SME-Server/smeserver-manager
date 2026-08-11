@@ -1,4 +1,4 @@
-<div id='prt_net'>
+<div id='prt_net' class='partial'>
 
   % my $btn = l('ADD');
 

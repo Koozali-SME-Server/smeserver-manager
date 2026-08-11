@@ -1,4 +1,4 @@
-<div id='grp_add'>
+<div id='grp_add' class="partial" >
 
   % my $btn = l('ADD');
 
@@ -19,7 +19,9 @@
 
     <p>
       %= l 'grp_GROUP_DESC_EXPL'
-      <br><br>
+    </p>
+
+    <p> 
       <span class=label>
         %= l 'grp_GROUP_DESC', class => 'label'
       </span><span class=data>

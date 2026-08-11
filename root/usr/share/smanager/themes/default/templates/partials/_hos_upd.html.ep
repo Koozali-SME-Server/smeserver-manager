@@ -1,4 +1,4 @@
-<div id='hos_upd'>
+<div id='hos_upd' class='partial'>
 
   % my $btn = l('NEXT');
 

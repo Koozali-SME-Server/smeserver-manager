@@ -1,7 +1,7 @@
 % layout 'default', title => "Sme server 2 - proxy";
 
 % content_for 'module' => begin
-  <div id='module' class='module proxy-panel'>
+  <div id='module' class='module proxy-panel partial'>
     % if (config->{debug} == 1) {
       <p>(DBG)route: <%= $c->current_route %><br>
         (DBG)ht stat: <%= $prx_datas->{http_proxy_status} %> <br>
@@ -16,7 +16,7 @@
   %= form_for 'proxy' => ( method => 'POST' ) => begin
     <p>
       %= l 'prx_HTTP_PROXY_STATUS_DESCRIPTION'
-      <br><br>
+      </p><p>
       <span class=label>
         %= l 'prx_HTTP_PROXY_STATUS_LABEL'
       </span><span class=data>
@@ -27,13 +27,12 @@
     % if ( $prx_datas->{smtp_proxy_status} ) {
       <p>
         %= l 'prx_SMTP_PROXY_STATUS_DESCRIPTION'
-        <br><br>
+        </p><p>
         <span class=label>
           %= l 'prx_SMTP_PROXY_STATUS_LABEL'
         </span><span class=data>
           % param 'smtp_proxy_status' => $prx_datas->{smtp_proxy_status} unless param 'smtp_proxy_status';
           %= select_field 'smtp_proxy_status' => [ [ ( l 'ENABLED' ) => 'transparent' ], [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'prx_BLOCKED' ) => 'blocked' ] ], class => 'input', id => 'smproxstat', default => $prx_datas->{smtp_proxy_status};
-          <br><br>
         </span>
       </p>
     % }

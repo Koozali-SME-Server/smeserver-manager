@@ -1,7 +1,7 @@
 % layout 'default', title => "Sme server 2 - workgroup";
 
 % content_for 'module' => begin
-  <div id='module' class='module workgroup-panel'>
+  <div id='module' class='module workgroup-panel partial'>
 
     % if (config->{debug} == 1) {
       <p>
@@ -25,7 +25,7 @@
   %= form_for 'workgroup' => ( method => 'POST' ) => begin
     <p>
       %= l 'wkg_DESC_WORKGROUP', class => 'desc'
-      <br><br>
+      </p><p>
       <span class=label>
         %= l 'wkg_LABEL_WORKGROUP', class => 'label'
       </span><span class=data>
@@ -34,7 +34,7 @@
     </p>
     <p>
       %= l 'wkg_DESC_SERVERNAME', class => 'desc'
-      <br><br>
+      </p><p>
       <span class=label>
         %= l 'wkg_LABEL_SERVERNAME', class => 'label'
       </span><span class=data>
@@ -43,7 +43,7 @@
     </p>
     <p>
       %= $c->render_to_string( inline => l 'wkg_DESC_PDC' )
-      <br>
+      </p><p>
       <span class=label>
         %= l 'wkg_LABEL_PDC', class => 'label'
       </span><span class=data>
@@ -53,7 +53,7 @@
     </p>
     <p>
       %= $c->render_to_string( inline => l 'wkg_DESC_ROAM' )
-      <br>
+      </p><p>
       <span class=label>
         %= l 'wkg_LABEL_ROAM', class => 'label'
       </span><span class=data>

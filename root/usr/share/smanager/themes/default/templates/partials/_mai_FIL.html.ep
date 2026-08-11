@@ -25,7 +25,7 @@
 
     <p><span class=label>
         %= l 'mai_LABEL_VIRUS_SCAN'
-      </span><span class=input>
+      </span><span class=data>
         % param 'VirusStatus' => $mai_data->{virusstatus} unless param 'VirusStatus';
         %= select_field 'VirusStatus' => [ [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'ENABLED' ) => 'enabled' ] ], class => 'input';
       </span><br></p>
@@ -34,35 +34,35 @@
 
     <p><span class=label>
         %= l 'mai_LABEL_SPAM_SCAN'
-      </span><span class=input>
+      </span><span class=data>
         % param 'Spamstatus' => $mai_data->{spamstatus} unless param 'Spamstatus';
         %= select_field 'Spamstatus' => [ [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'ENABLED' ) => 'enabled' ] ], class => 'input';
     </span></p>
 
     <p><span class=label>
         %= l 'mai_LABEL_SPAM_SENSITIVITY'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SpamSensitivity' => $mai_data->{spamsensitivity} unless param 'SpamSensitivity';
         %= select_field 'SpamSensitivity' => $c->get_spam_sensitivity_opt(), class => 'input'
     </span></p>
 
     <p><span class=label>
         %= l 'mai_LABEL_SPAM_TAGLEVEL'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SpamTagLevel' => $mai_data->{spamtaglevel} unless param 'SpamTagLevel';
         %= select_field 'SpamTagLevel' => $c->get_spam_level_options(), class => 'input'
     </span></p>
 
     <p><span class=label>
         %= l 'mai_LABEL_SPAM_REJECTLEVEL'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SpamRejectLevel' => $mai_data->{spamrejectlevel} unless param 'SpamRejectLevel';
         %= select_field 'SpamRejectLevel' => $c->get_spam_level_options(), class => 'input'
     </span></p>
 
     <p><span class=label>
         %= l 'mai_LABEL_SORTSPAM'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SpamSortSpam' => $mai_data->{spamsortspam} unless param 'SpamSortSpam';
         %= select_field 'SpamSortSpam' => [ [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'ENABLED' ) => 'enabled' ] ], class => 'input';
     </span></p>
@@ -71,14 +71,14 @@
 
     <p><span class=label>
         %= l 'mai_LABEL_SPAM_SUBJECTTAG'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SpamSubjectTag' => $mai_data->{spamsubjecttag} unless param 'SpamSubjectTag';
         %= select_field 'SpamSubjectTag' => [ [ ( l 'DISABLED' ) => 'disabled' ], [ ( l 'ENABLED' ) => 'enabled' ] ], class => 'input';
     </span></p>
 
     <p><span class=label>
         %= l 'mai_LABEL_SPAM_SUBJECT'
-      </span><span class=input>
+      </span><span class=data>
         % param 'SpamSubject' => $mai_data->{spamsubject} unless param 'SpamSubject';
         %= text_field 'SpamSubject' => class => 'input'
     </span></p>
@@ -92,10 +92,12 @@
 		</span>
 	  </div>
 	  <div class='parameter-fields-col' id='datetime_manual'>
-	    <span class=input>
+        <p>
+	    <span class=data>
 			% param 'BlockExecutableContent' => $c->get_patterns_current_opt() unless param 'BlockExecutableContent';
 			%= select_field 'BlockExecutableContent' => $c->get_patterns_opt(), class => 'input', multiple => "1";
 		</span>
+        </p>
 	  </div>
 	</div>
 	

@@ -1,4 +1,4 @@
-<div id='dom_upd'>
+<div id='dom_upd' class='partial'>
 
   % my $btn = l('ADD');
 
@@ -37,9 +37,9 @@
     </span>
   </p>
 
-  <p><br>
+  <p>
     %= l 'dom_CONTENT_FIELD_DESCRIPTION'
-    <br>
+    </p>  <p>
     <span class=label>
       %= $c->l( 'dom_CONTENT', '' );
     </span><span class=data>
@@ -48,9 +48,9 @@
     </span>
   </p>
 
-  <p><br>
+  <p>
     %= l 'dom_DESC_NAMESERVERS'
-    <br>
+    </p>  <p>
     <span class=label>
       %= l 'dom_LABEL_NAMESERVERS', class => 'label'
     </span><span class=data>

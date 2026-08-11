@@ -2,7 +2,7 @@
 
 % content_for 'module' => begin
 
-  <div id='module' class='module reboot-panel'>
+  <div id='module' class='partial module reboot-panel'>
 
     % if (config->{debug} == 1) {
       <p>

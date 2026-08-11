@@ -1,4 +1,4 @@
-<div id='hos_ulc'>
+<div id='hos_ulc' class='partial'>
   <!--	UPDATE HOST TYPE -->
 
   % my $btn = l('NEXT');

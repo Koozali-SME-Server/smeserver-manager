@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 239
+%define release 240
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Aug 11 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-240.sme
+- add partial class to core panels forms [SME: 13449]
+
 * Sun Aug 09 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-239.sme
 - verify domain on validation [SME: 13675]
 - add error strings

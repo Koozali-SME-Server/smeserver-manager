@@ -1,4 +1,4 @@
-<div id='usr_upd'>
+<div id='usr_upd' class="partial" >
 
 
   % my $btn = l('ADD');

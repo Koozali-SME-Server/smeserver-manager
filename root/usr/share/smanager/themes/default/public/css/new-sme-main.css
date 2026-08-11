@@ -480,6 +480,12 @@ table.incolumn {
   max-width: 100%;
   box-sizing: border-box;
 }
+.partial p > span.data > input[type="checkbox"] {
+    /* Vos propriétés CSS ici */
+  width: 50px ;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 
  .inline-buttons {
     display: flex; /* Use flexbox to arrange items horizontally */
