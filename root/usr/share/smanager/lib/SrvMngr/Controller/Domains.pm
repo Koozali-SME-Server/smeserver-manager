@@ -127,22 +127,23 @@ sub do_update {
     my %dom_datas = ();
     my ($res, $result) = ('') x 2;
 
-    #my $domain = uri_unescape($c->param('domain'));
     my $domain = $c->param('Domain');
     my $description = $c->param('Description');
     $res    = 'OK';
     $result = '';
 
-    # Validation: stop at the first error.
-    for my $check (
-        sub { $c->validate_Domain($domain) },
-        sub { $c->validate_Description($description) },
-    ) {
-        $res = $check->();
+    if (($trt eq 'ADD') or ($trt eq 'UPD')) {
+        # Validation: stop at the first error.
+        for my $check (
+            sub { $c->validate_Domain($domain) },
+            sub { $c->validate_Description($description) },
+        ) {
+            $res = $check->();
 
-        if ($res ne 'OK') {
-           $result = $res;
-           last;
+            if ($res ne 'OK') {
+               $result = $c->l($res,$domain);
+               last;
+            }
         }
     }
 
@@ -378,20 +379,15 @@ sub validate_Domain {
     my $domain = lc shift;
     return ($domain =~ /^($REGEXP_DOMAIN)$/)
         ? 'OK'
-        : 'DOMAIN_NAME_VALIDATION_ERROR';
+        : 'dom_DOMAIN_NAME_VALIDATION_ERROR';
 } ## end sub validate_Domain
 
 sub validate_Description {
-
-    # XXX - FIXME - NOTREACHED
-    # We used to use the Description in the Appletalk volume name
-    # which meant it needed validation. I don't see any reason to
-    # do this any more
     my $c           = shift;
     my $description = shift;
     return ($description =~ /^([\-\'\w][\-\'\w\s\.]*)$/)
         ? 'OK'
-        : 'DOMAIN_DESCRIPTION_VALIDATION_ERROR';
+        : 'dom_DOMAIN_DESCRIPTION_VALIDATION_ERROR';
 } ## end sub validate_Description
 
 1;
