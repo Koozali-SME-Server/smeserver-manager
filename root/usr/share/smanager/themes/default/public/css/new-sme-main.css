@@ -472,14 +472,15 @@ table.incolumn {
   padding-left: 6px;
 }
 
-/* optional: make inputs/textarea fill the remaining width */
+/* make inputs/textarea fill the remaining width to 50%, but auto sized */
 .partial p > span.data > input,
 .partial p > span.data > textarea,
 .partial p > span.data > select{
-  width: 50%;
-  max-width: 100%;
+  width: auto%;
+  max-width: 50%;
   box-sizing: border-box;
 }
+
 .partial p > span.data > input[type="checkbox"] {
     /* Vos propriétés CSS ici */
   width: 50px ;

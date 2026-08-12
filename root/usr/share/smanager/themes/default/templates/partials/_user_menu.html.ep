@@ -12,7 +12,9 @@
       <!-- div class='section'><%= $h %></div> nnnn-->
     % my ( $classNew, $target, $href ) = ('') x 3;
     % foreach (sort { $a->{'WEIGHT'} <=> $b->{'WEIGHT'} } @{$nav{$h}{'DESCRIPTIONS'}}) {
+	  %# $c->app->log->info("Menu:".$_->{'DESCRIPTION'});
       % next if ( $_->{'MENUCAT'} ne 'A' && $_->{'MENUCAT'} ne 'U' ); # menu User
+      % next if ($_->{'DESCRIPTION'} eq 'Change password' && $c->is_admin);
       % if ( $_->{'FILENAME'} =~ m/^2\// ) {
         % $target = '_self';
         % ( my $file2 = $_->{'FILENAME'} ) =~ s|^2/||;

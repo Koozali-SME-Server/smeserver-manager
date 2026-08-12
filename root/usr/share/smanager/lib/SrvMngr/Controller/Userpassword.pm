@@ -103,9 +103,10 @@ sub change_password {
     _add_pwd_strength_info($c, \%pwd_datas);
 
     # common controls
-    #if ($acctName eq 'admin') {
-    #    $result .= "Admin password should not be reset here !";
-    #} else {
+    if ($acctName eq 'admin') {
+        $result .= "Admin password should not be reset here !";
+        # This should not happen - panel is excluded when the menu got admin is built.
+    } else {
 
         unless ($pass && $passVerify) {
             $result .= $c->l('pwd_FIELDS_REQUIRED') ;
@@ -113,7 +114,7 @@ sub change_password {
             $result .= $c->l('pwd_PASSWORD_INVALID_CHARS')  unless (($pass) = ($pass =~ /^([ -~]+)$/));
             $result .= $c->l('pwd_PASSWORD_VERIFY_ERROR')  unless ($pass eq $passVerify);
         }
-    #} ## end else [ if ($acctName eq 'admin')]
+    } ## end else [ if ($acctName eq 'admin')]
 
     if ($result ne '') {
         $c->stash(error => $result, pwd_datas => \%pwd_datas);
@@ -188,7 +189,7 @@ sub reset_password {
     $user = $1;
     my $adb  = esmith::AccountsDB::UTF8->open();
     my $acct = $adb->get($user);
-	return $c->l('NO_SUCH_USER', $user) unless ($c->is_admin || $acct->prop('type') eq 'user');    
+	return $c->l('NO_SUCH_USER', $user) unless ($acct->prop('type') eq 'user');    
 	$ret = esmith::util::setUserPasswordRequirePrevious($user, $oldpassword, $password) if $trt ne 'RESET';
     $ret = esmith::util::setUserPassword($user, $password) if $trt eq 'RESET';
     return $c->l('pwd_ERROR_PASSWORD_CHANGE') unless $ret;
