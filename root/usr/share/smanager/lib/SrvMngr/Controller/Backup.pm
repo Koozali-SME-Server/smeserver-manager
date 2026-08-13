@@ -39,10 +39,6 @@ use constant FALSE => 0;
 use constant TRUE  => 1;
 
 my ($cdb,$adb,$rdb);
-my $es_backup = new esmith::Backup or die "Couldn't create Backup object\n";
-my @directories = $es_backup->restore_list;
-@directories = grep { -e "/$_" } @directories;
-my @backup_excludes = $es_backup->excludes;
 
 # Unbuffer standard output so that files and directories are listed as
 # they are restored
@@ -114,9 +110,14 @@ sub do_display {
     my $rt = $c->current_route;
     my ($res, $result) = ('') x 2;
     my $function = $c->param('Function');
-   $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open config db";
-   $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
-   $rdb = esmith::ConfigDB::UTF8->open('/etc/e-smith/restore');
+    $cdb = esmith::ConfigDB::UTF8->open   || die "Couldn't open config db";
+    $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
+    $rdb = esmith::ConfigDB::UTF8->open('/etc/e-smith/restore');
+    my $es_backup = new esmith::Backup or die "Couldn't create Backup object\n";
+    my @directories = $es_backup->restore_list;
+    @directories = grep { -e "/$_" } @directories;
+    my @backup_excludes = $es_backup->excludes;
+
 
     if ($function =~ /^(\S+)$/) {
         $function = $1;
@@ -1862,6 +1863,11 @@ sub get_Restorefiles_options {
 
 sub CalculateSizes () {
     my $c = shift;
+
+    my $es_backup = new esmith::Backup or die "Couldn't create Backup object\n";
+    my @directories = $es_backup->restore_list;
+    @directories = grep { -e "/$_" } @directories;
+    my @backup_excludes = $es_backup->excludes;
 
     #------------------------------------------------------------
     # figure out the size of the tar file.

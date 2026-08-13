@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 241
+%define release 242
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Aug 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-242.sme
+- move backup list [SME: 13652]
+
 * Tue Aug 11 2026 Brian Read <brianr@koozali.org> 11.0.0-241.sme
 - Edit partial css to restore auto length (ragged right edge) to controls [SME: 13449]
 - Revert User password panel to only users (not admins) and suppress menu entry when admin logged in [SME: 9844]
