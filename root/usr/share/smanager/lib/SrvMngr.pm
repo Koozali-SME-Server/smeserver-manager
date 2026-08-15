@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '236.el8.sme'; 
+our $VERSION = '242.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -59,7 +59,8 @@ our @EXPORT_OK = qw(
 	getNavigation ip_number validate_password is_normal_password email_simple
 	mac_address_or_blank mac_address ip_number_or_blank
 	handle_tkt lang_space get_routes_list subnet_mask get_reg_mask
-	gen_locale_date_string get_public_ip_address simpleNavMerge
+	gen_locale_date_string get_public_ip_address simpleNavMerge 
+    validate_Phone validate_NonEmptyString
 	);
 
 has home => sub {
@@ -1172,6 +1173,44 @@ sub get_reg_mask {
     my $block = new Net::Netmask("$address/$mask");
 
     return $block->mask();
+}
+
+sub validate_NonEmptyString {
+    my $c           = shift;
+    my $description = shift;
+    # first character needs to be a unicode 
+    # other can be unicode or - ' ` . , or space
+    return ($description =~ /^([\w][\-\'\`,\w\s\.]*)$/u)
+        ? 'OK'
+        : 'STRING_VALIDATION';
+} 
+
+sub validate_Phone {
+    my $c           = shift;
+    my $description = shift;
+    # Regex breakdown:
+    # ^                                -> Start of string
+    # (?:                              -> Start of Main Phone Group
+    #   (?:\+?1[-. ]?)?                -> Optional country code (+1 or 1)
+    #   (?:(?:\(([0-9]{3})\)|([0-9]{3}))[-. ]?)? -> OPTIONAL 3-digit area code (with or without parentheses)
+    #   ([0-9]{3})[-. ]?([0-9]{4})     -> Required 3-digit exchange + 4-digit line number
+    #   (?:(?:,\s*|[ ]+|ext\.?|x)([0-9]{2,5}))?  -> Optional 2 to 5 digit extension ($5)
+    # )                                -> End of Main Phone Group
+    # |                                -> OR alternative
+    # ^([0-9]{2,5})$                   -> Standalone 2 to 5 digit extension ($6)
+    my $phone_regex = qr/
+        ^(?:
+            (?:\+?1[-. ]?)?
+            (?:(?:\(([0-9]{3})\)|([0-9]{3}))[-. ]?)?
+            ([0-9]{3})[-. ]?([0-9]{4})
+            (?:(?:,\s*|[ ]+|ext\.?|x)([0-9]{2,5}))?
+        )$
+        |
+        ^([0-9]{2,5})$
+    /xi;
+    return ($description =~ $phone_regex)
+        ? 'OK'
+        : 'PHONE_VALIDATION';
 }
 
 

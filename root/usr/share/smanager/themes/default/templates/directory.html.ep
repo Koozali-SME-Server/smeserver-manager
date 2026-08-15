@@ -15,6 +15,12 @@
   <%= $modul %>
   <% 	my $btn = l('SAVE');  %>
 
+  % if ( stash 'error' ) {
+    <br><div class=sme-error>
+      %= $c->render_to_string( inline => stash 'error' )
+    </div>
+  % }
+
 
 %= form_for 'directory' => ( method => 'POST', autocomplete => 'on' ) => begin
     <br>

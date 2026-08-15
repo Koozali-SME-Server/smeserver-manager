@@ -14,7 +14,7 @@ use Locale::gettext;
 use SrvMngr::I18N;
 use esmith::ConfigDB::UTF8;
 use esmith::AccountsDB::UTF8;
-use SrvMngr qw(theme_list init_session);
+use SrvMngr qw(theme_list init_session validate_NonEmptyString validate_Phone);
 
 our $db; 
 
@@ -48,6 +48,29 @@ sub do_update {
     my $phonenumber = $c->param('phonenumber');
     my $existing    = $c->param('existing');
     my $result      = "";
+
+    # check we have the mandatory fields
+    my $res    = 'OK';
+
+    # Validation: stop at the first error.
+    $result .= $c->l('dir_DEPARTMENT').": " .$c->l('STRING_VALIDATION') if $c->validate_NonEmptyString($department) ne 'OK';
+    $result .= "<br>\n".$c->l('dir_COMPANY').": " .$c->l('STRING_VALIDATION') if $c->validate_NonEmptyString($company) ne 'OK';
+    $result .= "<br>\n".$c->l('dir_STREET').": " .$c->l('STRING_VALIDATION') if $c->validate_NonEmptyString($street) ne 'OK';
+    $result .= "<br>\n".$c->l('dir_CITY').": " .$c->l('STRING_VALIDATION') if $c->validate_NonEmptyString($city) ne 'OK';
+    $result .= "<br>\n".$c->l('dir_PHONE') .": " .$c->l('PHONE_VALIDATION') if $c->validate_Phone($phonenumber) ne 'OK';
+    $result =~ s/^(?:\n|<\s*br\s*\/?>)+//gi;
+
+    if ($result ne '') {
+        my $title = $c->l('dom_FORM_TITLE');
+        my $modul     = $c->render_to_string(inline => $c->l('dir_DESCRIPTION'));
+        my %dir_datas = $c->param;
+        $c->stash(error => $result );
+        $c->stash(title => $title, modul => $modul, dir_datas => \%dir_datas);
+        return $c->render(template => 'directory');
+    } 
+
+
+
     $db->get('ldap')->set_prop('access',             $access);
     $db->get('ldap')->set_prop('defaultDepartment',  $department);
     $db->get('ldap')->set_prop('defaultCompany',     $company);
@@ -94,4 +117,5 @@ sub get_value {
         return '';
     }
 }
+
 1;
