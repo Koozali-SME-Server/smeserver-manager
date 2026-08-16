@@ -12,10 +12,10 @@
 
   <h1><%= $title %></h1>
 
-  % if ( $notif ) {
+  % if ( stash 'notif' ) {
     <br>
     <span class=sme-error>
-      <%= $c->render_to_string( inline => $notif ) %>
+      %= $c->render_to_string( inline => stash 'notif' ) 
     </span>
   % }
 

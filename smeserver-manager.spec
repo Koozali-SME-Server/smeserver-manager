@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 242
+%define release 243
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Aug 15 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-243.sme
+- mandatory fields company, departement, phone, street [SME: 13702]
+  for both directory and useraccount panels
+
 * Wed Aug 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-242.sme
 - move backup list [SME: 13652]
 

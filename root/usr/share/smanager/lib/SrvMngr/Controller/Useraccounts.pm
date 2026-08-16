@@ -21,7 +21,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Locale::gettext;
 use SrvMngr::I18N;
 use SrvMngr qw(theme_list init_session
-    validate_password email_simple);
+    validate_password email_simple validate_Phone validate_NonEmptyString);
 use esmith::AccountsDB::UTF8;
 use esmith::ConfigDB::UTF8;
 use esmith::util;
@@ -167,14 +167,11 @@ sub do_update {
         my $first = $c->param('FirstName');
         my $last  = $c->param('LastName');
         my $mail  = $c->param('ForwardAddress');
-
-##        unless ($first) {
-#            $result .= $c->l('FM_NONBLANK') . ' - ';
-#        }
-
-#        unless ($last) {
-#            $result .= $c->l('FM_NONBLANK') . ' - ';
-#        }
+        my $dept  = $c->param('Dept');
+        my $Phone = $c->param('Phone');
+        my $Company = $c->param('Company');
+        my $City  = $c->param('City');
+        my $Street  = $c->param('Street');
 
 		$c->app->log->info("$user");
 		for my $check (
@@ -190,6 +187,22 @@ sub do_update {
 				return $c->l('FM_NONBLANK') unless $last;
 				return 'OK';
 			},
+            sub {
+                my $res= ($c->validate_NonEmptyString($dept) eq 'OK')? 'OK' : $c->l('usr_DEPARTMENT') .": " .$c->l('STRING_VALIDATION');
+                return $res;
+            },
+            sub {
+                my $res= ($c->validate_NonEmptyString($Company) eq 'OK')? 'OK' : $c->l('usr_COMPANY').": " .$c->l('STRING_VALIDATION');
+                return $res;
+            },
+            sub {
+                my $res= ($c->validate_NonEmptyString($Street) eq 'OK')? 'OK' : $c->l('usr_STREET_ADDRESS').": " .$c->l('STRING_VALIDATION');
+                return $res;
+            },
+            sub {
+                my $res= ($c->validate_Phone($Phone) eq 'OK')? 'OK' : $c->l('usr_PHONE_NUMBER').": ".$c->l('PHONE_VALIDATION');
+                return $res;
+            },
 			defined($mail) ? (sub { $c->emailforward($mail) }) : (),
 		) {
 			$res = $check->();
@@ -220,6 +233,12 @@ sub do_update {
         my $first = $c->param('FirstName');
         my $last  = $c->param('LastName');
         my $mail  = $c->param('ForwardAddress');
+        my $dept  = $c->param('Dept');
+        my $Phone = $c->param('Phone');
+        my $Company = $c->param('Company');
+        my $City  = $c->param('City');
+        my $Street  = $c->param('Street');
+
 		# Validation: stop at the first failure.
 		for my $check (
 			sub {
@@ -230,6 +249,23 @@ sub do_update {
 				return $c->l('FM_NONBLANK') unless $last;
 				return 'OK';
 			},
+            sub {
+                my $res= ($c->validate_NonEmptyString($dept) eq 'OK')? 'OK' : $c->l('usr_DEPARTMENT') .": " .$c->l('STRING_VALIDATION');
+                return $res;
+            },
+            sub {
+                my $res= ($c->validate_NonEmptyString($Company) eq 'OK')? 'OK' : $c->l('usr_COMPANY').": " .$c->l('STRING_VALIDATION');
+                return $res;
+            },
+            sub {
+                my $res= ($c->validate_NonEmptyString($Street) eq 'OK')? 'OK' : $c->l('usr_STREET_ADDRESS').": " .$c->l('STRING_VALIDATION');
+                return $res;
+            },
+            sub {
+                my $res= ($c->validate_Phone($Phone) eq 'OK')? 'OK' : $c->l('usr_PHONE_NUMBER').": ".$c->l('PHONE_VALIDATION');
+                return $res;
+            },
+
 			# sub {
 			#     return $c->l('FM_NONBLANK') unless $mail;
 			#     return 'OK';
