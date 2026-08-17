@@ -15,13 +15,16 @@
     </p>
 
     <p>
-      % my $strength = uc( $usr_datas->{passwdstrength} );
-      <%== $c->render_to_string( inline => l( 'usr_' . $strength . '_PASSWORD_DESCRIPTION', $usr_datas->{passwdlength},$usr_datas->{passwdstrength}  ) ); %>
-      <br /><br />
-      <%= $c->render_to_string( inline => l('usr_PASSWORD_WIKI') ) %>
+    % my $strength = uc( $usr_datas->{passwdstrength} );
+	% my %strength_key = (
+	%   NONE         => 'usr_NONE_PASSWORD_DESCRIPTION',
+	%   NORMAL       => 'usr_NORMAL_PASSWORD_DESCRIPTION',
+	%   INTERMEDIATE => 'usr_INTERMEDIATE_PASSWORD_DESCRIPTION',
+	%   STRONG       => 'usr_STRONG_PASSWORD_DESCRIPTION',
+	% );
+	<%== $c->render_to_string( inline => l( $strength_key{$strength} || 'usr_NONE_PASSWORD_DESCRIPTION', $usr_datas->{passwdlength}, $usr_datas->{passwdstrength} ) ); %>      <br /><br />
+	<%= $c->render_to_string( inline => l('usr_PASSWORD_WIKI') ) %>
     </p>
-
-
     <p>
       <span class=label>
         %= l 'PASSWORD_NEW', class => 'label'

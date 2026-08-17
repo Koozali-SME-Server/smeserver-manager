@@ -356,13 +356,23 @@ sub nameserver_options_list {
     my $c      = shift;
     my $domain = $c->param('Domain') || undef;
     my @opts   = qw(localhost internet);
-    push @opts, 'corporate' if ($cdb->get_prop('dnscache', 'Forwarder'));
+
+    my $has_forwarder = $cdb->get_prop('dnscache', 'Forwarder');
+    push @opts, 'corporate' if $has_forwarder;
+
     my $ns = ($ddb->get_prop($domain, 'Nameservers') || 'internet');
     push @opts, $ns unless scalar grep {/^$ns$/} @opts;
-    my @options;
 
+    my %ns_label_key = (
+        localhost => 'dom_localhost',
+        internet  => 'dom_internet',
+    );
+    $ns_label_key{corporate} = 'dom_corporate' if $has_forwarder;
+
+    my @options;
     foreach (@opts) {
-        push @options, [ $c->l("dom_$_") => $_ ];
+        my $label = $ns_label_key{$_} ? $c->l( $ns_label_key{$_} ) : $_;   # raw fallback for a legacy/custom value
+        push @options, [ $label => $_ ];
     }
     return \@options;
 } ## end sub nameserver_options_list

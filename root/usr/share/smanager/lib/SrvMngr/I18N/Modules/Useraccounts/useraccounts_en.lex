@@ -7,7 +7,7 @@
 'usr_USER_CREATED' => 'Successfully created user account. ',
 'usr_USER_MODIFIED' => 'Successfully modified user account. ',
 'usr_CANNOT_MODIFY_USER' => 'Error: an internal error occurred while attempting to modify the user "[_1]".',
-# 'usr_CANNOT_MODIFY_USER_GROUPS' =>'Error: an internal error occurred while attempting to modify the group "[_1]" for user "[_2]".',
+'usr_CANNOT_MODIFY_USER_GROUPS' =>'Error: an internal error occurred while attempting to modify the group "[_1]" for user "[_2]".',
 'usr_TAINTED_USER' => 'The account name "[_1]" contains invalid characters.',
 'usr_TAINTED_PASSWORD' => 'The new password starts with invalid characters.',
 'usr_ACCOUNT_NAME' => 'Account name',
@@ -32,7 +32,7 @@
 'usr_LOCKED_ACCOUNT' => 'Successfully locked account for user "[_1]".',
 'usr_NO_SUCH_USER' => 'Error: the user account "[_1]" does not exist.',
 'usr_PSEUDONYM_CLASH' => 'Error: the pseudonym "[_3]" is already taken by the existing user account "[_2]".To differentiate, add initials to this field.',
-# 'usr_LOCK_ACCOUNT' => 'Lock account',
+'usr_LOCK_ACCOUNT' => 'Lock account',
 'usr_LOCK_ACCOUNT_TITLE' => 'Lock user account',
 'usr_LOCK_DESC2' => 'This user account will be locked. This means that this user will not be able to log in, and will not be able to collect e-mail. Any e-mail arriving will still be stored and/or forwarded to an external e-mail address, as configured. The account may be activated in the future by setting a new password. The current password will not be retained.<b>Are you sure you wish to lock this account?</b>',
 'usr_REMOVE_ACCOUNT_TITLE' => 'Remove user account',
@@ -49,7 +49,7 @@
 'usr_UNACCEPTABLE_CHARS' => 'This field must contain only letters, numbers, dots, hypens and underscores and start with a letter',
 'usr_MEMBER' => 'Member?',
 'usr_VPN_CLIENT_ACCESS' => 'VPN Client Access',
-# 'usr_SYSTEM_PASSWORD_FORM_TITLE' => 'Change system password',
+'usr_SYSTEM_PASSWORD_FORM_TITLE' => 'Change system password',
 'usr_SYSTEM_PASSWORD_DESCRIPTION' => 'Certain services on this server installation require a username and password (for example this web page for the server manager application). The username is always admin. You can change the system password using the fields below.',
 'usr_SYSTEM_PASSWORD_UNPRINTABLES_IN_PASS' => 'Password must contain only printable characters',
 'usr_SYSTEM_PASSWORD_VERIFY_ERROR' => 'The two passwords are not identical.',
@@ -68,3 +68,10 @@
 'usr_ERR_OCCURRED_LOCKING' => 'Err occurred locking',
 'usr_MAX_user_NAME_LENGTH_ERROR' => 'Max user name length error',
 'usr_SUCCESSFULLY_DELETED_USER' => 'Successfully deleted user',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'Error occurred while modifying password for admin.' => 'Error occurred while modifying password for admin.',  # AUTO-ADDED, needs review -- found at Useraccounts.pm:921
+'LOCK_ACCOUNT' => 'LOCK_ACCOUNT',  # AUTO-ADDED, needs review -- found at _usr_list.html.ep:108
+'Webmail' => 'Webmail',  # AUTO-ADDED, needs review -- found at _usr_list.html.ep:142
+'usr_' => 'usr_',  # AUTO-ADDED, needs review -- found at _usr_pwd.html.ep:19, _usr_pwds.html.ep:12

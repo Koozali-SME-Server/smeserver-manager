@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 243
+%define release 244
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -153,6 +153,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Aug 17 2026 Brian Read <brianr@koozali.org> 11.0.0-244.sme
+- Bring some of the access to localise strings in line for future tranfer to po files  [SME: 9999]
+
 * Sat Aug 15 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-243.sme
 - mandatory fields company, departement, phone, street [SME: 13702]
   for both directory and useraccount panels
