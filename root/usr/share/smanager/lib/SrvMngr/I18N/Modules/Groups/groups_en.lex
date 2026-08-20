@@ -30,3 +30,7 @@ something else afterward):',
 'grp_CURRENT_LIST' => 'Current list of User Groups',
 'grp_DELETE_DESCRIPTION' => 'You are about to remove the user group "[_1]."',
 'grp_ERR_INTERNAL_FAILURE' => 'Err internal failure',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'DELETE_ERROR' => 'DELETE_ERROR',  # AUTO-ADDED, needs review -- found at Groups.pm:263

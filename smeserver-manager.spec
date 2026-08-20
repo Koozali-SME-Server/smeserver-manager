@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 244
+%define release 246
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -27,7 +27,7 @@ Requires: smeserver-lib >= 11.0.0-13
 Requires: e-smith-manager >= 2.4.0-22
 Requires: smeserver-apache >= 2.6.0-19
 Requires: smeserver-php >= 3.0.0-43
-#Requires: smeserver-manager-locale >= 11.0.0
+Requires: smeserver-manager-locale >= 11.0.0-21
 Requires: perl(Mojolicious) >= 8.42
 Requires: perl(Mojolicious::Plugin::I18N) >= 1.6
 Requires: perl(Mojolicious::Plugin::RenderFile) >= 0.12
@@ -45,32 +45,6 @@ Requires: smeserver-certificates >= 11.0
 Requires: smeserver-clamav >= 11.0.0-7
 #Requires: js-jquery > 2.2.4-3 (optional)
 Requires: smeserver-postfix >= 1.0-14
-Requires: smeserver-manager-locale-bg
-Requires: smeserver-manager-locale-da
-Requires: smeserver-manager-locale-de
-Requires: smeserver-manager-locale-el
-Requires: smeserver-manager-locale-es
-Requires: smeserver-manager-locale-et
-Requires: smeserver-manager-locale-fr
-Requires: smeserver-manager-locale-he
-Requires: smeserver-manager-locale-hu
-Requires: smeserver-manager-locale-id
-Requires: smeserver-manager-locale-it
-Requires: smeserver-manager-locale-ja
-Requires: smeserver-manager-locale-nb
-Requires: smeserver-manager-locale-nl
-Requires: smeserver-manager-locale-pl
-Requires: smeserver-manager-locale-pt
-Requires: smeserver-manager-locale-pt_BR
-Requires: smeserver-manager-locale-ro
-Requires: smeserver-manager-locale-ru
-Requires: smeserver-manager-locale-sl
-Requires: smeserver-manager-locale-sv
-Requires: smeserver-manager-locale-th
-Requires: smeserver-manager-locale-tr
-Requires: smeserver-manager-locale-zh_CN
-Requires: smeserver-manager-locale-zh_TW
-
 Provides: server-manager
 Provides: perl(SrvMngr::Controller::EmailsettingsCustomUI)
 BuildRequires:  perl(ExtUtils::Manifest)
@@ -153,8 +127,15 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Aug 19 2026 Brian Read <brianr@koozali.org> 11.0.0-246.sme
+- Update I18N plugin to use .mo or .po or .pm lexical transaltion files  [SME: 13705]
+
+* Tue Aug 18 2026 Brian Read <brianr@koozali.org> 11.0.0-245.sme
+- Add change to I18N plugin to pick up the .mo fies if they exist rather than .pm files [SME: 13705]
+- Add .po files for Useraccounts as an initial test
+
 * Mon Aug 17 2026 Brian Read <brianr@koozali.org> 11.0.0-244.sme
-- Bring some of the access to localise strings in line for future tranfer to po files  [SME: 9999]
+- Bring some of the access to localise strings in line for future transfer to po files  [SME:13705]
 
 * Sat Aug 15 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-243.sme
 - mandatory fields company, departement, phone, street [SME: 13702]

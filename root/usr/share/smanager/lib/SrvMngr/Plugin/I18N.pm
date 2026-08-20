@@ -5,7 +5,14 @@ use Mojo::URL;
 use I18N::LangTags;
 use I18N::LangTags::Detect;
 
-our $VERSION = '1.6';
+our $VERSION = '1.9';
+
+	# Directory tree of compiled .mo files, checked in preference to the
+	# static per-module .pm lexicon when one exists for a given module/
+	# language pair (see _Handler::_mo_file / _load_module below). The
+	# actual default lives in _Handler::_mo_file - $self->{mo_root} is
+	# never populated from $conf here, so this dead top-level statement
+	# (which referenced $conf before it existed in this scope) is removed.
 
 #export MOJO_LOG_LEVEL='debug';
 
@@ -187,6 +194,7 @@ $app->hook(
 
 package SrvMngr::Plugin::I18N::_Handler;
 use Mojo::Base -base;
+use File::Basename qw(dirname basename);
 
 use constant DEBUG => $ENV{MOJO_I18N_DEBUG} || 0;
 
@@ -247,11 +255,125 @@ sub localize {
 	return $handle->maketext($key, @_);
 }
 
+sub _po_file {
+	my ($self, $namespace, $lang) = @_;
+	my $mo_path = $self->_mo_file($namespace, $lang) or return;
+	my $lc_messages_dir = dirname($mo_path);   # .../Useraccounts/en/LC_MESSAGES
+	my $lang             = basename(dirname($lc_messages_dir)); # "en"
+	my $module_dir        = dirname(dirname($lc_messages_dir));  # .../Useraccounts
+	my $po_path            = "$module_dir/$lang.po";
+	
+	#(my $po = $mo) =~ s/\.mo\z/.po/;
+	return $po_path;
+}
+
+# GNU gettext .mo files always start with a fixed 4-byte magic number, in
+# either byte order (0x950412de big-endian or 0xde120495 little-endian).
+# Locale::Maketext::Lexicon's pure-Perl .mo parser does not reliably die on
+# malformed binary input - it can silently "succeed" with a broken lexicon,
+# and later use of that lexicon has been observed to crash the whole worker
+# process (heap corruption / SIGABRT), which no eval{} can catch. So we
+# refuse to even attempt loading a .mo whose header doesn't look right.
+sub _looks_like_valid_mo {
+	my ($self, $file) = @_;
+	return 0 unless $file && -e $file;
+	open my $fh, '<:raw', $file or return 0;
+	my $magic;
+	my $n = read($fh, $magic, 4);
+	close $fh;
+	return 0 unless defined $n && $n == 4;
+	my $be = unpack('N', $magic);
+	my $le = unpack('V', $magic);
+	return ($be == 0xde120495 || $le == 0x950412de) ? 1 : 0;
+}
+
+# Try to load one gettext-format file (.mo or .po - Locale::Maketext::Lexicon::Gettext
+# accepts either) into $namespace's %Lexicon for $lang. Returns 1 on success, 0 if the
+# file is missing or fails to parse/load.
+sub _load_gettext_lexicon {
+	my ($self, $namespace, $lang, $file) = @_;
+	return 0 unless $file && -e $file;
+
+	my $ok = eval qq{
+		package $namespace;
+		use Locale::Maketext::Lexicon {
+			'$lang' => [ Gettext => '$file' ],
+		};
+		1;
+	};
+	return 0 unless $ok;
+
+	# gettext's own convention stores the .po/.mo file HEADER (Project-Id-Version,
+	# POT-Creation-Date, etc.) as the translation for the empty msgid (""). Both
+	# the raw-.po and compiled-.mo Gettext backends load that header text
+	# straight into %Lexicon under the '' key - it is not a translatable string,
+	# but it IS directly retrievable via $Lexicon{''} or maketext(''), which any
+	# caller can trigger by accident (e.g. l($maybe_empty_var) in a template).
+	# Strip it immediately so it can never leak into rendered output. See
+	# https://www.gnu.org/software/gettext/manual/html_node/More-Details.html and
+	# https://www.gnu.org/software/gettext/manual/html_node/MO-Files.html - and
+	# Locale::Maketext::Lexicon::Gettext's parse()/parse_mo() (both build
+	# %Lexicon by merging the header's __-prefixed metadata copy with an
+	# unconditional msgid/msgstr push that has no msgid-eq-'' exclusion).
+	# There is no module option to suppress this - _allow_empty and _use_fuzzy
+	# are the only related switches and neither applies here. This fix runs
+	# purely in memory, after the file has already been parsed - the .po/.mo
+	# file on disk is never modified.
+	no strict 'refs';
+	my $lex = \%{"${namespace}::${lang}::Lexicon"};
+	delete $lex->{''} if exists $lex->{''};
+
+	return 1;
+}
+
 sub _load_module {
 	my $self = shift;
 
 	my($namespace, $lang) = @_;
 	return unless $namespace && $lang;
+
+	my $mo_file = $self->_mo_file($namespace, $lang);
+	warn "mo:".$mo_file;
+	my $po_file = $self->_po_file($namespace, $lang);
+	warn "po:".$po_file;
+
+	my $loaded = 0;
+
+	# 1st choice: compiled .mo - but only if its header actually looks like a real .mo
+	if ($mo_file && -e $mo_file && !$self->_looks_like_valid_mo($mo_file)) {
+		# always unconditional - a bad-magic .mo on disk is a real anomaly worth knowing about
+		warn("REJECTED .mo for $namespace ($lang) - not a valid gettext .mo (bad magic number): $mo_file - will try .po");
+	} elsif ($mo_file && -e $mo_file) {
+		if ($self->_load_gettext_lexicon($namespace, $lang, $mo_file)) {
+			#DEBUG && 
+			warn("OK: loaded .mo lexicon for $namespace ($lang) from $mo_file");
+			$loaded = 1;
+		} else {
+			# a .mo existed but Locale::Maketext::Lexicon couldn't use it - always worth logging
+			#warn("FAILED to load .mo lexicon for $namespace ($lang) from $mo_file: $@ - will try .po");
+		}
+	} else {
+		#DEBUG && 
+		warn("No .mo file found for $namespace ($lang), expected at $mo_file");
+	}
+
+	# 2nd choice: uncompiled .po, only if the .mo path above didn't already succeed
+	if (!$loaded && $po_file && -e $po_file) {
+		if ($self->_load_gettext_lexicon($namespace, $lang, $po_file)) {
+			# unconditional - not gated by DEBUG - running on raw .po is a build-process
+			# signal worth always seeing, not routine
+			warn("Loaded UNCOMPILED .po lexicon for $namespace ($lang) from $po_file - .mo missing or failed, check build");
+			$loaded = 1;
+		} else {
+			#warn("FAILED to load .po lexicon for $namespace ($lang) from $po_file: $@ - will fall back to .pm");
+		}
+	}
+
+	unless ($loaded) {
+		# 3rd choice: fall through to the existing .pm-based mechanism below
+		#DEBUG && 
+		warn("No usable .mo or .po lexicon for $namespace ($lang) - falling back to .pm");
+	}
 
 	# lang such as en-us
 	$lang =~ s/-/_/g;
@@ -291,6 +413,29 @@ sub _load_module {
 	}
 }
 
+# Path to a module's compiled .mo file for a given language, or undef if
+# the namespace doesn't resolve to a recognizable module name. Derived from
+# the last component of the namespace (e.g. SrvMngr::I18N::Modules::Dnf ->
+# "dnf"), matching the gettext domain convention already used for RPM
+# packaging: <mo_root>/<lang>/LC_MESSAGES/<module>.mo
+# (default mo_root: /usr/share/smanager/lib/SrvMngr/I18N/po -- co-located with
+# the .po sources rather than a separate top-level locale/ tree, matching the
+# real smeserver-manager-locale spec's %build/%install layout).
+sub _mo_file {
+	my ($self, $namespace, $lang) = @_;
+	return unless $namespace && $lang;
+
+	warn "Namespace:".$namespace;
+	my ($domain) = $namespace =~ /([^:]+)\z/;
+	warn "domain:".$domain;
+
+	return unless $domain;
+	my $domainLC = lc $domain;
+	warn "domainLC:".$domainLC; 
+
+	my $root = $self->{mo_root} || '/usr/share/smanager/lib/SrvMngr/I18N/po';
+	return "$root/$domain/$lang/LC_MESSAGES/$domainLC.mo";
+}
 1;
 
 __END__

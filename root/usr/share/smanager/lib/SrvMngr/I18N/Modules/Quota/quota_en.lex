@@ -38,3 +38,7 @@ for either limit disables that limit for the corresponding user.',
 'quo_SUCCESSFULLY_MODIFIED' => 'Successfully modified quota for user account: ',
 'Quotas' => 'Quotas',
 
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'COULD_NOT_GET_UID' => 'COULD_NOT_GET_UID',  # AUTO-ADDED, needs review -- found at Quota.pm:118, _quo_list.html.ep:48, _quo_upd.html.ep:25

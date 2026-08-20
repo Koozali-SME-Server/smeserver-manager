@@ -68,10 +68,8 @@
 'usr_ERR_OCCURRED_LOCKING' => 'Err occurred locking',
 'usr_MAX_user_NAME_LENGTH_ERROR' => 'Max user name length error',
 'usr_SUCCESSFULLY_DELETED_USER' => 'Successfully deleted user',
-
 # --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
 # controller/templates but missing from this file. Please verify wording. ---
 'Error occurred while modifying password for admin.' => 'Error occurred while modifying password for admin.',  # AUTO-ADDED, needs review -- found at Useraccounts.pm:921
 'LOCK_ACCOUNT' => 'LOCK_ACCOUNT',  # AUTO-ADDED, needs review -- found at _usr_list.html.ep:108
 'Webmail' => 'Webmail',  # AUTO-ADDED, needs review -- found at _usr_list.html.ep:142
-'usr_' => 'usr_',  # AUTO-ADDED, needs review -- found at _usr_pwd.html.ep:19, _usr_pwds.html.ep:12
