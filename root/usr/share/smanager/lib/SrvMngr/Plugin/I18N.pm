@@ -259,7 +259,6 @@ sub _po_file {
 	my ($self, $namespace, $lang) = @_;
 	my $mo_path = $self->_mo_file($namespace, $lang) or return;
 	my $lc_messages_dir = dirname($mo_path);   # .../Useraccounts/en/LC_MESSAGES
-	my $lang             = basename(dirname($lc_messages_dir)); # "en"
 	my $module_dir        = dirname(dirname($lc_messages_dir));  # .../Useraccounts
 	my $po_path            = "$module_dir/$lang.po";
 	
@@ -333,9 +332,9 @@ sub _load_module {
 	return unless $namespace && $lang;
 
 	my $mo_file = $self->_mo_file($namespace, $lang);
-	warn "mo:".$mo_file;
+	#warn "mo:".$mo_file;
 	my $po_file = $self->_po_file($namespace, $lang);
-	warn "po:".$po_file;
+	#warn "po:".$po_file;
 
 	my $loaded = 0;
 
@@ -345,16 +344,14 @@ sub _load_module {
 		warn("REJECTED .mo for $namespace ($lang) - not a valid gettext .mo (bad magic number): $mo_file - will try .po");
 	} elsif ($mo_file && -e $mo_file) {
 		if ($self->_load_gettext_lexicon($namespace, $lang, $mo_file)) {
-			#DEBUG && 
-			warn("OK: loaded .mo lexicon for $namespace ($lang) from $mo_file");
+			DEBUG && warn("OK: loaded .mo lexicon for $namespace ($lang) from $mo_file");
 			$loaded = 1;
 		} else {
 			# a .mo existed but Locale::Maketext::Lexicon couldn't use it - always worth logging
-			#warn("FAILED to load .mo lexicon for $namespace ($lang) from $mo_file: $@ - will try .po");
+			warn("FAILED to load .mo lexicon for $namespace ($lang) from $mo_file: $@ - will try .po");
 		}
 	} else {
-		#DEBUG && 
-		warn("No .mo file found for $namespace ($lang), expected at $mo_file");
+		DEBUG && warn("No .mo file found for $namespace ($lang), expected at $mo_file");
 	}
 
 	# 2nd choice: uncompiled .po, only if the .mo path above didn't already succeed
@@ -365,14 +362,13 @@ sub _load_module {
 			warn("Loaded UNCOMPILED .po lexicon for $namespace ($lang) from $po_file - .mo missing or failed, check build");
 			$loaded = 1;
 		} else {
-			#warn("FAILED to load .po lexicon for $namespace ($lang) from $po_file: $@ - will fall back to .pm");
+			warn("FAILED to load .po lexicon for $namespace ($lang) from $po_file: $@ - will fall back to .pm");
 		}
 	}
 
 	unless ($loaded) {
 		# 3rd choice: fall through to the existing .pm-based mechanism below
-		#DEBUG && 
-		warn("No usable .mo or .po lexicon for $namespace ($lang) - falling back to .pm");
+		DEBUG && warn("No usable .mo or .po lexicon for $namespace ($lang) - falling back to .pm");
 	}
 
 	# lang such as en-us
@@ -425,13 +421,13 @@ sub _mo_file {
 	my ($self, $namespace, $lang) = @_;
 	return unless $namespace && $lang;
 
-	warn "Namespace:".$namespace;
+	#warn "Namespace:".$namespace;
 	my ($domain) = $namespace =~ /([^:]+)\z/;
-	warn "domain:".$domain;
+	#warn "domain:".$domain;
 
 	return unless $domain;
 	my $domainLC = lc $domain;
-	warn "domainLC:".$domainLC; 
+	#warn "domainLC:".$domainLC; 
 
 	my $root = $self->{mo_root} || '/usr/share/smanager/lib/SrvMngr/I18N/po';
 	return "$root/$domain/$lang/LC_MESSAGES/$domainLC.mo";
