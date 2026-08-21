@@ -268,3 +268,11 @@ with this panel and the next one.</p><p/>',
 'bac_INVALID_FUNCTION' => 'Invalid function',
 'bac_OPERATION_STATUS_REPORT' => 'Operation status report',
 'bac_SUCCESS' => 'Success',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'ALL_BACKUPS' => 'ALL_BACKUPS',  # AUTO-ADDED, needs review -- found at Backup.pm:1260
+'Mounted disk' => 'Mounted disk',  # AUTO-ADDED, needs review -- found at Backup.pm:1576
+'cifs' => 'cifs',  # AUTO-ADDED, needs review -- found at Backup.pm:1573
+'local removable disk' => 'local removable disk',  # AUTO-ADDED, needs review -- found at Backup.pm:1575
+'nfs' => 'nfs',  # AUTO-ADDED, needs review -- found at Backup.pm:1574

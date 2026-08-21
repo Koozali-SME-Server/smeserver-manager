@@ -85,3 +85,9 @@ should be installed as soon as possible.',
 'yum_check4updates' => 'Check4updates',
 'yum_MULTI_SELECT' => '<strong>Ctrl/Cmd-click</strong> toggles individual items and <strong>Shift-click</strong> selects ranges.
 <br /><strong>Case-insensitive</strong> search unless you enter a <strong>regex</strong> in <i>/pattern/flags</i> form (e.g. /maria.*client/i)..',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'Groups' => 'Groups',  # AUTO-ADDED, needs review -- found at _dnf_show.html.ep:129
+'Packages' => 'Packages',  # AUTO-ADDED, needs review -- found at _dnf_show.html.ep:111
+'Start' => 'Start',  # AUTO-ADDED, needs review -- found at _dnf_show.html.ep:48

@@ -30,3 +30,7 @@
 'ln_SUCCESS_NONSTANDARD_RANGE' =>'Successfully added network [_1]/[_2] via router [_3].  Your server will grant local access privileges to [_4] IP addresses in the range [_5] to [_6].  Warning: the ProFTPd FTP server cannot handle this nonstandard subnet mask. The simpler specification  <b>[_7]</b> will be used instead.',
 # 'ln_Failed to find network in Db' => 'Failed to find network in Db',
 'ln_LOCAL_NETWORK_NONE' => 'Local network none',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'ln_Failed to find network in Db' => 'ln_Failed to find network in Db',  # AUTO-ADDED, needs review -- found at Localnetworks.pm:137

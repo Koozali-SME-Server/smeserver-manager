@@ -29,3 +29,7 @@
 'pwd_ERR_OCCURRED_MODIFYING_PASSWORD' => 'Err occurred modifying password',
 'pwd_INVALID_REQUEST' => 'Invalid request',
 'pwd_OK_FOR_RESET' => 'Ok for reset',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'NO_SUCH_USER' => 'NO_SUCH_USER',  # AUTO-ADDED, needs review -- found at Userpassword.pm:192

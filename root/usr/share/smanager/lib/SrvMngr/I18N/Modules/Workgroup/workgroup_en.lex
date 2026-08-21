@@ -26,3 +26,7 @@ know that this feature is required.',
  These values must be different in order for filesharing to be turned on. ',
 'Workgroup' => 'Workgroup',
 
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'wkg_ERROR_UPDATING' => 'wkg_ERROR_UPDATING',  # AUTO-ADDED, needs review -- found at Workgroup.pm:65

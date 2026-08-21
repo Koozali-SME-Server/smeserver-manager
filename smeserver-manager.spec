@@ -128,7 +128,7 @@ true
 
 %changelog
 * Wed Aug 19 2026 Brian Read <brianr@koozali.org> 11.0.0-246.sme
-- Update I18N plugin to use .mo or .po or .pm lexical transaltion files  [SME: 13705]
+- Update I18N plugin to use .mo or .po or .pm for lexical translation files  [SME: 13705]
 
 * Tue Aug 18 2026 Brian Read <brianr@koozali.org> 11.0.0-245.sme
 - Add change to I18N plugin to pick up the .mo fies if they exist rather than .pm files [SME: 13705]

@@ -172,3 +172,8 @@ enabled.',
 'mai_No_Authentication' => 'No Authentication',
 'mai_Authentication_allowed_(LAN_and_public)' => 'Authentication allowed (LAN and public)',
 'mai_ERROR_UPDATING_CONFIGURATION' => 'System call to email-update returned a failure ([_1])',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'Modify' => 'Modify',  # AUTO-ADDED, needs review -- found at _mai_FRONT.html.ep:18
+'Submission port %u status:' => 'Submission port %u status:',  # AUTO-ADDED, needs review -- found at _mai_REC.html.ep:63

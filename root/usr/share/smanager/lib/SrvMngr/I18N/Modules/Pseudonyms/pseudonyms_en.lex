@@ -66,3 +66,8 @@ domains that are valid on this server. For example
 'pse_EVERYONE' => 'Everyone',
 'Pseudonyms' => 'Pseudonyms',
 'pse_ACCOUNT_PSEUDONYM_NONE' => 'Account pseudonym none',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'EVERYONE' => 'EVERYONE',  # AUTO-ADDED, needs review -- found at Pseudonyms.pm:274
+'NOT_A_PSEUDONYM' => 'NOT_A_PSEUDONYM',  # AUTO-ADDED, needs review -- found at Pseudonyms.pm:354

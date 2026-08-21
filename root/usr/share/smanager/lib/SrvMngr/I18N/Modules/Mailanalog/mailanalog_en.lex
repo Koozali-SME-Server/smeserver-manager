@@ -28,3 +28,19 @@ these reports</P>',
 # 'mai_SENDMAIL_STYLE' => 'Sendmail style log',
 # 'mai_REASONS_SUCCESS' => 'Reasons for success',
 # 'mai_SENDER_UIDS' => 'Sender uids',
+
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'INVALID_REPORT_TYPE' => 'INVALID_REPORT_TYPE',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:41
+'REPORT_GENERATED' => 'REPORT_GENERATED',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:59
+'mai_Authentication Analysis' => 'mai_Authentication Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:131
+'mai_Bounce Rate Analysis' => 'mai_Bounce Rate Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:126
+'mai_Comparison Reports' => 'mai_Comparison Reports',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:134
+'mai_Customized Reports' => 'mai_Customized Reports',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:135
+'mai_Delivery Status Report' => 'mai_Delivery Status Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:128
+'mai_Error Reporting' => 'mai_Error Reporting',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:133
+'mai_Geographic Analysis of Email' => 'mai_Geographic Analysis of Email',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:129
+'mai_Spam and Virus Filtering Report' => 'mai_Spam and Virus Filtering Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:127
+'mai_Top Senders and Recipients' => 'mai_Top Senders and Recipients',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:125
+'mai_Traffic Analysis' => 'mai_Traffic Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:130
+'mai_User Activity Report' => 'mai_User Activity Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:132

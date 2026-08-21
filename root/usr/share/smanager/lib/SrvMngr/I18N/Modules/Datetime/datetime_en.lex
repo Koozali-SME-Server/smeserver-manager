@@ -51,3 +51,13 @@ server.When the NTP service is disabled, you can set the system date and time ma
 'dat_Time_Configuration' => 'Time Configuration',
 'dat_Time_Setting_Mode' => 'Time Setting Mode',
 'dat_Test_Server' => 'Test NTP Server',
+# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
+# controller/templates but missing from this file. Please verify wording. ---
+'COULD_NOT_OPEN_TZ_FILE' => 'COULD_NOT_OPEN_TZ_FILE',  # AUTO-ADDED, needs review -- found at Datetime-Custom.pm:177
+'Day:' => 'Day:',  # AUTO-ADDED, needs review -- found at datetime.html.ep:1, datetime.html.ep:109
+'Hour:' => 'Hour:',  # AUTO-ADDED, needs review -- found at datetime.html.ep:1, datetime.html.ep:116
+'Minute:' => 'Minute:',  # AUTO-ADDED, needs review -- found at datetime.html.ep:1, datetime.html.ep:121
+'Month:' => 'Month:',  # AUTO-ADDED, needs review -- found at datetime.html.ep:1, datetime.html.ep:104
+'Second:' => 'Second:',  # AUTO-ADDED, needs review -- found at datetime.html.ep:1, datetime.html.ep:126
+'Year:' => 'Year:',  # AUTO-ADDED, needs review -- found at datetime.html.ep:1, datetime.html.ep:99
+'dat_BETWEEN_0_AND_23' => 'dat_BETWEEN_0_AND_23',  # AUTO-ADDED, needs review -- found at Datetime-Custom.pm:249
