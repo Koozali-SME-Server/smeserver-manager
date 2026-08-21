@@ -5,7 +5,7 @@ use Mojo::URL;
 use I18N::LangTags;
 use I18N::LangTags::Detect;
 
-our $VERSION = '1.13';
+our $VERSION = '1.14';
 
 	# Directory tree of compiled .mo files, checked in preference to the
 	# static per-module .pm lexicon when one exists for a given module/
@@ -293,10 +293,24 @@ sub _load_gettext_lexicon {
 	my ($self, $namespace, $lang, $file) = @_;
 	return 0 unless $file && -e $file;
 
+	# _decode => 1 is required for the Gettext backend to actually call
+	# Encode::decode_utf8() on every loaded msgid/msgstr (see
+	# Locale::Maketext::Lexicon::Gettext's transform(), which only decodes
+	# when $DoEncoding is true, and Locale::Maketext::Lexicon.pm's own
+	# '_decode'/'_encoding' option docs). Without it, raw UTF-8 bytes are
+	# left as un-decoded bytes; Mojolicious's own UTF-8 encoding of the
+	# HTTP response then re-encodes those already-UTF-8 bytes a second
+	# time, producing exactly the "Ã¨"-style mojibake seen for French (and
+	# any other non-ASCII) locales. No explicit _encoding is given, so the
+	# default (native utf8-flagged Perl strings) is used, which is what
+	# Mojolicious's template rendering and later encoding step expect.
+	# Confirmed for real: without this option utf8::is_utf8() on loaded
+	# lexicon values returns false; with it, true.
 	my $ok = eval qq{
 		package $namespace;
 		use Locale::Maketext::Lexicon {
-			'$lang' => [ Gettext => '$file' ],
+			'$lang'  => [ Gettext => '$file' ],
+			_decode  => 1,
 		};
 		1;
 	};
@@ -324,6 +338,7 @@ sub _load_gettext_lexicon {
 
 	return 1;
 }
+
 
 # Orchestrator: resolve $namespace's own lexicon for $lang, then - unless
 # $namespace IS the shared "General" module - fold General's lexicon in on
