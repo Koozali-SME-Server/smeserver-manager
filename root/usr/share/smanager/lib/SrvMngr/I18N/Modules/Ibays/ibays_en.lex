@@ -27,8 +27,7 @@ names, but "3associates", "John Smith" and
 'iba_REMOVE_TITLE' => 'Remove information bay',
 'iba_REMOVE_DESC' => 'You are about to remove the information bay [_1] ([_2]).
 All files belonging to this information bay will be deleted.
-Are you sure you wish to remove this information bay?
-',
+Are you sure you wish to remove this information bay?',
 'iba_ERROR_WHILE_CREATING_IBAY' => 'An error occurred while creating the i-bay.',
 'iba_SUCCESSFULLY_CREATED_IBAY' => 'Successfully created i-bay.',
 'iba_NO_IBAYS' => 'There are no i-bays currently configured.',
