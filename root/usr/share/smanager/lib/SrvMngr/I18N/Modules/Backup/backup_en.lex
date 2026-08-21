@@ -58,19 +58,13 @@ Check that desktop backup file is less than [_2] before
 commencing the restore.',
 'bac_MUST_REBOOT_AFTER_RESTORE' => 'After the restore completes you must reboot the server.',
 'bac_FILE_TO_RESTORE' => 'Backup file to restore from',
-'bac_VERIFY_BACKUP_DESC' => '
-<p>This option will display the names of all files
-in a previously created desktop backup file. You
-can use this option to verify the contents of the
-backup file.</p> ',
+'bac_VERIFY_BACKUP_DESC' => '<p>This option will display the names of all files in a previously created desktop backup file. You can use this option to verify the contents of the backup file.</p> ',
 'bac_SELECT_BACKUP_FILE' => 'Select backup file',
 'bac_VERIFY' => 'Verify',
 'bac_RESTORE_CANNOT_PROCEED' => 'Unable to proceed with restore of server configuration',
 'bac_ANOTHER_RESTORE_IN_PROGRESS' => 'Another restore is in progress. Please try again later.',
 'bac_RESTORE_IN_PROGRESS' => 'Restore in progress',
-'bac_RESTORE_IN_PROGRESS_DESC' => 'After the restore completes you must reboot the server. Your restore is
-complete when the words "Restore complete" appear at the bottom of your screen.
-',
+'bac_RESTORE_IN_PROGRESS_DESC' => 'After the restore completes you must reboot the server. Your restore is complete when the words "Restore complete" appear at the bottom of your screen.',
 'bac_FILES_HAVE_BEEN_RESTORED' => 'The following files and directories have been restored:',
 'bac_RESTORE_FAILED_MSG' => 'Restore failed! There was an error in reading the backup file.',
 'bac_RESTORE_COMPLETE' => 'Restore complete',
