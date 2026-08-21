@@ -122,7 +122,7 @@ sub gen2_domains {
     my $numvirtual = @virtual;
 
     if ($numvirtual == 0) {
-        $c->localise("NO_VIRTUAL_DOMAINS");
+        $c->localise("rvw_NO_VIRTUAL_DOMAINS");
     } else {
         my $out = "";
         my $domain;
@@ -192,7 +192,7 @@ sub get_local_networks {
 
     my $numNetworks = @nets;
     if ($numNetworks == 0) {
-        return  $fm->localise('NO_NETWORKS');
+        return  $fm->localise('rvw_NO_NETWORKS');
     }
     else {
         my $out = "";

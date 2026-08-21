@@ -271,7 +271,7 @@ sub get_pseudonym_account {
     if ($a eq "admin") {
         $a = "Administrator";
     } elsif ($a eq "shared") {
-        $a = $c->l("EVERYONE");
+        $a = $c->l("pse_EVERYONE");
     }
     return ($a);
 } ## end sub get_pseudonym_account
@@ -351,7 +351,7 @@ sub validate_is_pseudonym {
     my $type = $pseudonym->prop('type');
 
     unless (defined $type && ($type eq 'pseudonym')) {
-        return ($c->l('NOT_A_PSEUDONYM'));
+        return ($c->l('pse_NOT_A_PSEUDONYM'));
     }
     return ('OK');
 } ## end sub validate_is_pseudonym

@@ -21,7 +21,7 @@ use SrvMngr qw(theme_list init_session);
 sub main {
     my $c = shift;
     $c->app->log->info($c->log_req);
-    my $title            = $c->l('Webmail');
+    my $title            = $c->l('rc_WEBMAIL');
     my $roundcube_url    = $c->param('url');
     $c->stash(title => $title, modul => $roundcube_url);
     $c->render(template => 'roundcube');

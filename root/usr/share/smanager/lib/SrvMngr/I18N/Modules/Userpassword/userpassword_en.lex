@@ -32,4 +32,4 @@
 
 # --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
 # controller/templates but missing from this file. Please verify wording. ---
-'NO_SUCH_USER' => 'NO_SUCH_USER',  # AUTO-ADDED, needs review -- found at Userpassword.pm:192
+'NO_SUCH_USER' => 'There does not appear to be any such user',  # AUTO-ADDED, needs review -- found at Userpassword.pm:192

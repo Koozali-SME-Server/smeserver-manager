@@ -8,8 +8,8 @@ reports are available.</P>
 these reports</P>',
 'mai_REPORT_TYPE' => 'Choose a report type',
 'mai_GENERATE_REPORT' => 'Generate report',
-# 'mai_INVALID_REPORT_TYPE' => 'Invalid report type: ',
-# 'mai_REPORT_GENERATED' => 'Report generated: ',
+'mai_INVALID_REPORT_TYPE' => 'Invalid report type: ',
+'mai_REPORT_GENERATED' => 'Report generated: ',
 # 'mai_END_OF_REPORT' => 'End of Report',
 'Mail log file analysis' => 'Mail log file analysis',
 'mai_Daily_Summary_Report_yesterday' => 'Summary report for yesterday',
@@ -31,16 +31,14 @@ these reports</P>',
 
 # --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
 # controller/templates but missing from this file. Please verify wording. ---
-'INVALID_REPORT_TYPE' => 'INVALID_REPORT_TYPE',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:41
-'REPORT_GENERATED' => 'REPORT_GENERATED',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:59
-'mai_Authentication Analysis' => 'mai_Authentication Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:131
-'mai_Bounce Rate Analysis' => 'mai_Bounce Rate Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:126
-'mai_Comparison Reports' => 'mai_Comparison Reports',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:134
-'mai_Customized Reports' => 'mai_Customized Reports',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:135
-'mai_Delivery Status Report' => 'mai_Delivery Status Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:128
-'mai_Error Reporting' => 'mai_Error Reporting',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:133
-'mai_Geographic Analysis of Email' => 'mai_Geographic Analysis of Email',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:129
-'mai_Spam and Virus Filtering Report' => 'mai_Spam and Virus Filtering Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:127
-'mai_Top Senders and Recipients' => 'mai_Top Senders and Recipients',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:125
-'mai_Traffic Analysis' => 'mai_Traffic Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:130
-'mai_User Activity Report' => 'mai_User Activity Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:132
+'mai_Authentication Analysis' => 'Authentication Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:131
+'mai_Bounce Rate Analysis' => 'Bounce Rate Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:126
+'mai_Comparison Reports' => 'Comparison Reports',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:134
+'mai_Customized Reports' => 'Customized Reports',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:135
+'mai_Delivery Status Report' => 'Delivery Status Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:128
+'mai_Error Reporting' => 'Error Reporting',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:133
+'mai_Geographic Analysis of Email' => 'Geographic Analysis of Email',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:129
+'mai_Spam and Virus Filtering Report' => 'Spam and Virus Filtering Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:127
+'mai_Top Senders and Recipients' => 'Top Senders and Recipients',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:125
+'mai_Traffic Analysis' => 'Traffic Analysis',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:130
+'mai_User Activity Report' => 'User Activity Report',  # AUTO-ADDED, needs review -- found at Mailanalog.pm:132

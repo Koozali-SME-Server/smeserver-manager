@@ -34,9 +34,6 @@ page and use it as a reference.',
 'rvw_NO_NETWORKS' => 'No additional networks defined',
 'rvw_INTERNET_VISIBLE_ADDRESS' => 'Internet Visible IP Address',
 'Review configuration' => 'Review configuration',
-
-
 # --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
 # controller/templates but missing from this file. Please verify wording. ---
-'NO_NETWORKS' => 'NO_NETWORKS',  # AUTO-ADDED, needs review -- found at Review.pm:195
-'NO_VIRTUAL_DOMAINS' => 'NO_VIRTUAL_DOMAINS',  # AUTO-ADDED, needs review -- found at Review.pm:125
+'rvw_NO_VIRTUAL_DOMAINS' => 'rvw_NO_VIRTUAL_DOMAINS',  # AUTO-ADDED, needs review -- found at Review.pm:125

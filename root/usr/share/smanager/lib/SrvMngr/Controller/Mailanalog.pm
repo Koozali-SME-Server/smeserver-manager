@@ -38,7 +38,7 @@ sub do_update {
     } elsif ($report_type =~ /^\s*$/) {
         $report_type = "zoverall";
     } else {
-        $result      = $c->l('INVALID_REPORT_TYPE') . $report_type;
+        $result      = $c->l('mai_INVALID_REPORT_TYPE') . $report_type;
         $report_type = undef;
     }
     my $title = $c->l('mai_FORM_TITLE');
@@ -56,7 +56,7 @@ sub generateReport {
     #------------------------------------------------------------
     my $now_string = $c->gen_locale_date_string();
     my $log_path = '/var/log/maillog';
-    $out .= sprintf("<h3>%s %s </h3>", $c->l('REPORT_GENERATED'), $now_string);
+    $out .= sprintf("<h3>%s %s </h3>", $c->l('mai_REPORT_GENERATED'), $now_string);
     $out .= sprintf "<pre>";
     # Get the selected report from the form submission
     my $selected_report = $report_type;
