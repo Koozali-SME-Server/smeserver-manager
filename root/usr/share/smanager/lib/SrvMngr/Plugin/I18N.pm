@@ -5,7 +5,7 @@ use Mojo::URL;
 use I18N::LangTags;
 use I18N::LangTags::Detect;
 
-our $VERSION = '1.9';
+our $VERSION = '1.12';
 
 	# Directory tree of compiled .mo files, checked in preference to the
 	# static per-module .pm lexicon when one exists for a given module/
@@ -261,7 +261,7 @@ sub _po_file {
 	my $lc_messages_dir = dirname($mo_path);   # .../Useraccounts/en/LC_MESSAGES
 	my $module_dir        = dirname(dirname($lc_messages_dir));  # .../Useraccounts
 	my $po_path            = "$module_dir/$lang.po";
-	
+
 	#(my $po = $mo) =~ s/\.mo\z/.po/;
 	return $po_path;
 }
@@ -325,7 +325,52 @@ sub _load_gettext_lexicon {
 	return 1;
 }
 
+# Orchestrator: resolve $namespace's own lexicon for $lang, then - unless
+# $namespace IS the shared "General" module - fold General's lexicon in on
+# top (see _merge_general_lexicon below). Deliberately calls
+# _load_own_lexicon directly for BOTH namespaces rather than recursing back
+# into itself for General, so there is no recursive or mutual call anywhere
+# in this path - _load_own_lexicon never calls _load_module, and
+# _merge_general_lexicon never calls _load_module either.
 sub _load_module {
+	my $self = shift;
+	my ($namespace, $lang) = @_;
+	return unless $namespace && $lang;
+
+	$self->_load_own_lexicon($namespace, $lang);
+
+	# Fold in the shared "General" module's lexicon (SAVE, CANCEL, OK,
+	# day/month names, etc.) so an ordinary panel module can use those
+	# keys without ever declaring them itself. Real production's old
+	# .pm-only world got this for free: locales2-conf (in
+	# smeserver-manager) always compiles General's .lex FIRST and then
+	# bakes "%{ General::$lang::Lexicon }, %lexicon" straight into every
+	# other module's generated .pm, module-specific keys listed last so
+	# they win on collision. That merge has no equivalent for the new
+	# .mo/.po tiers - each module's .po is intentionally left to contain
+	# ONLY that module's own strings (confirmed against the real, live
+	# Useraccounts.pot: 74 msgids, none of them shared General keys) -
+	# duplicating General's ~134 strings into every module's .po would
+	# mean translating the same string N times over in Weblate with no
+	# guarantee of staying in sync. So the merge is done dynamically
+	# here instead, at load time, working the same way no matter which
+	# tier (.mo, .po or .pm) either side happens to resolve through -
+	# General's own lookup gets its own full .mo -> .po -> .pm cascade,
+	# same as any other module, resolved directly below (never via
+	# _load_module).
+	if (my $general_ns = $self->_general_namespace($namespace)) {
+		for my $lc ($self->{default}, $lang) {
+			$self->_load_own_lexicon($general_ns, $lc);
+			$self->_merge_general_lexicon($namespace, $general_ns, $lc);
+		}
+	}
+}
+
+# The .mo -> .po -> .pm cascade for a single namespace/lang pair. This is
+# the ONLY place that resolves a namespace's own lexicon - it has no
+# awareness of "General" at all, and never calls _load_module or any
+# General-related method, so it cannot itself be part of any recursion.
+sub _load_own_lexicon {
 	my $self = shift;
 
 	my($namespace, $lang) = @_;
@@ -409,11 +454,54 @@ sub _load_module {
 	}
 }
 
+# Sibling "General" namespace for a module namespace, e.g.
+# SrvMngr::I18N::Modules::Useraccounts -> SrvMngr::I18N::Modules::General.
+# Returns undef for General itself (nothing to merge into itself) and for
+# a namespace with no "::"-separated parent (no sibling to derive).
+sub _general_namespace {
+	my ($self, $namespace) = @_;
+	return undef unless $namespace =~ /^(.*)::([^:]+)\z/;
+	my ($prefix, $leaf) = ($1, $2);
+	return undef if $leaf eq 'General';
+	return "${prefix}::General";
+}
+
+# Copy any entry $general_ns's ALREADY-RESOLVED lexicon for $lang defines
+# that $namespace's own (also already-resolved) lexicon for $lang doesn't
+# already have. $namespace's own entries always win on collision - same
+# precedence order as locales2-conf's existing (%General, %lexicon) merge.
+# Locale::Maketext control keys (leading underscore, e.g. the _AUTO flag a
+# from-scratch lexicon gets initialised with) are never copied across -
+# only real msgid/msgstr pairs. Pure hash merge, no cascade/file logic and
+# no call back into _load_module or _load_own_lexicon - the caller
+# (_load_module) is responsible for resolving both sides first.
+sub _merge_general_lexicon {
+	my ($self, $namespace, $general_ns, $lang) = @_;
+	return unless $namespace && $general_ns && $lang;
+
+	no strict 'refs';
+	my $general_lex = \%{"${general_ns}::${lang}::Lexicon"};
+	my $target_lex  = \%{"${namespace}::${lang}::Lexicon"};
+
+	for my $key (keys %$general_lex) {
+		next if $key =~ /^_/;
+		$target_lex->{$key} = $general_lex->{$key}
+			unless exists $target_lex->{$key};
+	}
+	return 1;
+}
+
 # Path to a module's compiled .mo file for a given language, or undef if
 # the namespace doesn't resolve to a recognizable module name. Derived from
-# the last component of the namespace (e.g. SrvMngr::I18N::Modules::Dnf ->
-# "dnf"), matching the gettext domain convention already used for RPM
-# packaging: <mo_root>/<lang>/LC_MESSAGES/<module>.mo
+# the last component of the namespace (e.g. SrvMngr::I18N::Modules::Useraccounts
+# -> "Useraccounts"), matching the real runtime layout used by
+# smeserver-manager's Plugin/I18N.pm and smeserver-manager-locale packaging:
+#   <mo_root>/<Module>/<lang>/LC_MESSAGES/<module-lowercase>.mo
+#   <mo_root>/<Module>/<lang>.po                  (see _po_file above)
+# The <Module> directory component keeps its ORIGINAL CASE (e.g.
+# "Useraccounts"), matching the module's own directory name on disk -
+# only the .mo filename itself ($domainLC) is lowercased. The .po file
+# lives one directory level UP from LC_MESSAGES, not inside it.
 # (default mo_root: /usr/share/smanager/lib/SrvMngr/I18N/po -- co-located with
 # the .po sources rather than a separate top-level locale/ tree, matching the
 # real smeserver-manager-locale spec's %build/%install layout).
@@ -427,7 +515,7 @@ sub _mo_file {
 
 	return unless $domain;
 	my $domainLC = lc $domain;
-	#warn "domainLC:".$domainLC; 
+	#warn "domainLC:".$domainLC;
 
 	my $root = $self->{mo_root} || '/usr/share/smanager/lib/SrvMngr/I18N/po';
 	return "$root/$domain/$lang/LC_MESSAGES/$domainLC.mo";
