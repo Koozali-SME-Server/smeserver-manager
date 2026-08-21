@@ -5,7 +5,7 @@ use Mojo::URL;
 use I18N::LangTags;
 use I18N::LangTags::Detect;
 
-our $VERSION = '1.12';
+our $VERSION = '1.13';
 
 	# Directory tree of compiled .mo files, checked in preference to the
 	# static per-module .pm lexicon when one exists for a given module/
@@ -433,6 +433,27 @@ sub _load_own_lexicon {
 		}
 	}
 
+	# NOTE (fixed): the upstream .pm-tier fallback used to only synthesize an
+	# empty placeholder class (use base $namespace; %Lexicon=(_AUTO=>1)) when
+	# $_ eq $self->{default} - i.e. ONLY for the default language, never for
+	# the actually-requested $lang. When neither a real .mo/.po lexicon nor a
+	# real per-language .pm file exists for that $lang (true for every
+	# language on the bare top-level default namespace, e.g. SrvMngr::I18N::fr
+	# - confirmed against the real repo: locales2-conf only ever generates
+	# SrvMngr::I18N::Modules::<Module>::<lang>, never a bare
+	# SrvMngr::I18N::<lang>), "${namespace}::${lang}" was left as a package
+	# with no %Lexicon and no @ISA at all - it has no usable new(). Whether
+	# that blows up immediately or only much later (Locale::Maketext's
+	# get_handle() normally skips an unusable candidate via its own _try_use()
+	# check, but _try_use() memoizes per-process once it ever sees a non-empty
+	# %Lexicon or non-empty @ISA for that exact package - so this can look
+	# harmless for a long time and then die with "Can't locate object method
+	# 'new' via package ..." the moment something in the same long-running
+	# worker process changes that) is exactly the shape of the real crash
+	# reported by the user when selecting the French UI locale. Fix: apply
+	# the SAME fallback-creation to both languages in the loop, symmetrically
+	# - not just the default - so every language this loop touches always
+	# ends up with a real, working new().
 	for ($self->{default}, $lang) {
 		my $module = "${namespace}::$_";
 		unless ($module->can('new')) {
@@ -441,14 +462,11 @@ sub _load_own_lexicon {
 			(my $file = $module) =~ s{::|'}{/}g;
 			eval qq(require "$file.pm");
 
-			my $default = $self->{default};
 			if ($@ || not eval "\%${module}::Lexicon") {
-				if ($_ eq $default) {
-					DEBUG && warn("Create the I18N class $module");
+				DEBUG && warn("Create the I18N class $module");
 
-					eval "package ${module}; use base '$namespace';" . 'our %Lexicon = (_AUTO => 1); 1;';
-					die qq/Couldn't initialize I18N class "$namespace": $@/ if $@;
-				}
+				eval "package ${module}; use base '$namespace';" . 'our %Lexicon = (_AUTO => 1); 1;';
+				die qq/Couldn't initialize I18N class "$namespace": $@/ if $@;
 			}
 		}
 	}
