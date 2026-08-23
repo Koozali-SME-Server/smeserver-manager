@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '242.el8.sme'; 
+our $VERSION = '246.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -820,10 +820,43 @@ sub getNavigation {
     use constant NAVIGATIONDIR => '/home/e-smith/db/navigation2';
 #    use constant WEBFUNCTIONS  => '/etc/e-smith/web/functions';
 
-    my $navinfo = NAVIGATIONDIR . "/navigation.$lang";
-
-    my $navdb = esmith::NavigationDB->open_ro( $navinfo ) or die "Couldn't open $navinfo\n"; # no UTF8
-
+    # $lang here is whatever the I18N layer negotiated for this request - it
+    # can be a bare base language (e.g. 'en') but it can equally be a full
+    # region-qualified tag straight from the browser's Accept-Language header
+    # (e.g. 'en-gb', 'en-us', 'fr-ca'). navigation2-conf only ever builds one
+    # navigation.$lang file per base language returned by
+    # esmith::I18N->availableLanguages() (which lists /etc/e-smith/locale) -
+    # it never creates region-qualified variants UNLESS that exact tag was
+    # itself one of the base languages the module ships translations for
+    # (e.g. 'pt-br' and 'zh-tw' are real, distinct first-class languages in
+    # this project, not fallbacks of 'pt'/'zh'). So: try the exact requested
+    # tag first (this is what makes pt-br/zh-tw work correctly on their own
+    # file), and only degrade to the base language / 'en' if that exact file
+    # doesn't exist - instead of dying outright for any tag that happens not
+    # to have its own file.
+	my @lang_candidates = ( $lang );
+	if ( $lang =~ /^([a-zA-Z]+)[-_]/ ) {
+		my $base = lc($1);
+		push @lang_candidates, $base unless lc($lang) eq $base;
+	}
+	push @lang_candidates, 'en' unless grep {
+		lc($_) eq 'en'
+	}
+	@lang_candidates;
+	my ( $navdb, $navinfo );
+	my @tried;
+	for my $candidate (@lang_candidates) {
+		my $try_navinfo = NAVIGATIONDIR . "/navigation.$candidate";
+		push @tried, $try_navinfo;
+		next unless -e $try_navinfo;
+		$navdb = esmith::NavigationDB->open_ro( $try_navinfo );
+		if ($navdb) {
+			$navinfo = $try_navinfo;
+			last;
+		}
+	}
+	die "Couldn't open any navigation database for language '$lang' (tried: " . join( ', ', @tried ) . ")\n" unless $navdb;
+	# no UTF8
     # Check the navdb for anything with a UrlPath, which means that it doesn't
     # have a cgi file to be picked up by the above code. Ideally, only pages
     # that exist should be in the db, but that's not the case. Anything
@@ -962,11 +995,21 @@ sub _lang_space {
 	return
     }
 
-    my $lang = ( $c->tx->req->headers->accept_language || ['en_US'] );
-       
+    # NOTE (fixed): the fallback here used to be the arrayref ['en_US']
+    # instead of the plain string 'en_US'. When no Accept-Language header
+    # is present at all, split(/,/, $lang) on an arrayref stringifies it to
+    # "ARRAY(0x...)" (no commas to split on), which then gets used to build
+    # a package name like "...::Initial::ARRAY(0x...)" - Perl's parser
+    # chokes on the "(0x...)" trying to read it as a version number, dying
+    # with "Invalid version format". This was always latent but only
+    # started actually firing once i18ns() became unconditional (see fix
+    # above) for requests with no Accept-Language header at all.
+    my $lang = ( $c->tx->req->headers->accept_language || 'en_US' );
     $lang = (split(/,/, $lang))[0];
     $c->stash(locale=>$lang);  #Stash it for template use
-
+    
+    warn "LANG_DEBUG pid=$$ path=$path raw_header='" . ( $c->tx->req->headers->accept_language // '<none>' ) . "' parsed_lang='$lang'";
+    
     $path = 'initial' if ($path eq '/' or $path eq '' or $path eq 'get-locale'); 
     #warn "langspace:path=$path" if $debug;
     my ($module) = $path =~ m{\A([^/?]+)};
@@ -978,17 +1021,42 @@ sub _lang_space {
     my $I18Ndir = $c->app->home->rel_file('lib/') . '/' . $dir;
 
     ##$c->app->log->debug("$panel $module $moduleLong $I18Ndir");
+    # If the plural-named legacy directory doesn't exist, see if a
+    # singular-named legacy directory does (some older routes/modules used
+    # a singular form there) and use that name instead - but ONLY when it
+    # actually exists. If NEITHER exists, keep the original (plural,
+    # route-derived) name: that's what the newer .po/.mo toolchain
+    # (smeserver-manager-locale) keys its per-module directories by, so
+    # falling back to a blindly-stripped name here would silently point
+    # i18ns() at the wrong namespace for every module migrated to that tier.
     if ( ! -d $I18Ndir ) {
-	( $moduleLong = $moduleLong) =~ s/.$//;
-	( $I18Ndir = $I18Ndir) =~ s/.$//;
+	( my $singularLong = $moduleLong) =~ s/.$//;
+	( my $singularDir  = $I18Ndir)   =~ s/.$//;
+	if ( -d $singularDir ) {
+	    $moduleLong = $singularLong;
+	    $I18Ndir    = $singularDir;
+	}
     }
-    if ( -d $I18Ndir ) {
     ##    $c->app->log->debug("hook_b_r->panel route. lang: $lang  namespace: $moduleLong ldir; $I18Ndir");
-        warn "NS already loaded: $moduleLong \n" if ( $c->i18ns() eq $moduleLong );		# i18ns changed
-	$c->i18ns( $moduleLong, $lang );
-    } else {
-        #warn "Locale lexicon missing for $module \n"; #Take out as too many of them!
-    }
+    # Always attempt to switch the I18N namespace to this module, whether or
+    # not the legacy per-module Perl-lexicon directory ($I18Ndir, computed
+    # above) exists on disk. That directory only ever holds the OLD
+    # locales2-conf-generated *.pm lexicons; modules migrated to the newer
+    # .po/.mo toolchain (smeserver-manager-locale) no longer ship it at all.
+    # Gating the i18ns() call on -d $I18Ndir silently skipped it entirely for
+    # every migrated module - which meant not just that module's own strings,
+    # but also the shared General-lexicon merge that i18namespace() performs
+    # on every call, never happened either, so panels fell all the way back
+    # to raw untranslated keys. i18namespace() -> _load_module() ->
+    # _load_own_lexicon() already falls back to a harmless empty placeholder
+    # when nothing at all is found for a given namespace+lang (the same
+    # mechanism that already protects languages with no translations at
+    # all - see the "symmetric fallback" fix in SrvMngr::Plugin::I18N), so
+    # calling this unconditionally is safe for modules with no lexicon of
+    # any kind, and now correctly picks up real content for modules whose
+    # translations moved to the new tier.
+    warn "NS already loaded: $moduleLong \n" if ( $c->i18ns() eq $moduleLong );		# i18ns changed
+    $c->i18ns( $moduleLong, $lang );
     #Only do this once the localise functions are setup.
     $c->stash(pleasewait=>$c->l('Please_Wait')); #Used in JS
     #$c->app->log->info("Localised pleasewait: ".$c->stash('pleasewait'));

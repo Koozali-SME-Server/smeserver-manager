@@ -426,6 +426,44 @@ sub _load_own_lexicon {
 		}
 	}
 
+	# 2.5th choice: if the exact region-qualified tag (e.g. en_GB) has no
+	# real .mo/.po of its own, try the base language (e.g. en) instead.
+	# Real packaged translations only ever ship base-language directories
+	# (en, fr, de, ...), never region-qualified sub-variants - so a request
+	# for anything region-qualified (which is how real browsers virtually
+	# always send Accept-Language, e.g. en-GB/en-US/fr-BR) would otherwise
+	# always fall through to an empty _AUTO=>1 placeholder below, even
+	# though a real, fully-translated lexicon for the base language is
+	# sitting right next to it on disk. Confirmed via real .mo fixtures:
+	# without this, get_handle('en_GB') resolves module-specific keys to
+	# raw untranslated keys, while General's merged strings still translate
+	# fine only because _load_module()'s merge loop always additionally
+	# loads General with the bare default 'en' directly, independent of
+	# what was actually requested. This mirrors the same exact-then-base
+	# fallback philosophy already used for navigation.
+	my ($base_lang) = split /[-_]/, $lang, 2;
+	if (!$loaded && $base_lang && lc($base_lang) ne lc($lang)) {
+		my $base_mo = $self->_mo_file($namespace, $base_lang);
+		my $base_po = $self->_po_file($namespace, $base_lang);
+
+		if ($base_mo && -e $base_mo && $self->_looks_like_valid_mo($base_mo)) {
+			if ($self->_load_gettext_lexicon($namespace, $lang, $base_mo)) {
+				DEBUG && warn("OK: loaded BASE-language .mo lexicon for $namespace ($lang) from $base_mo (region-qualified fallback to '$base_lang')");
+				$loaded = 1;
+			} else {
+				warn("FAILED to load base-language .mo lexicon for $namespace ($lang) from $base_mo: $@");
+			}
+		}
+		if (!$loaded && $base_po && -e $base_po) {
+			if ($self->_load_gettext_lexicon($namespace, $lang, $base_po)) {
+				warn("Loaded UNCOMPILED base-language .po lexicon for $namespace ($lang) from $base_po (region-qualified fallback to '$base_lang')");
+				$loaded = 1;
+			} else {
+				warn("FAILED to load base-language .po lexicon for $namespace ($lang) from $base_po: $@");
+			}
+		}
+	}
+
 	unless ($loaded) {
 		# 3rd choice: fall through to the existing .pm-based mechanism below
 		DEBUG && warn("No usable .mo or .po lexicon for $namespace ($lang) - falling back to .pm");
@@ -512,9 +550,54 @@ sub _merge_general_lexicon {
 	my ($self, $namespace, $general_ns, $lang) = @_;
 	return unless $namespace && $general_ns && $lang;
 
+	# Locale::Maketext::Lexicon's own import() always lowercases (and
+	# underscore-izes) the language tag when constructing the per-language
+	# subclass name (see Locale/Maketext/Lexicon.pm import(): $lang =
+	# lc($lang); $lang =~ s/-/_/g;) - so the REAL populated package for e.g.
+	# 'en_GB' is "${namespace}::en_gb", never "${namespace}::en_GB".
+	# get_handle() tolerates the original mixed case via its own
+	# case-insensitive alternate-tag fallback (I18N::LangTags), which is why
+	# module-specific content still resolves correctly - but here we access
+	# the symbol table directly with no such fallback, so we must normalize
+	# the same way Lexicon.pm does or we silently read an empty/nonexistent
+	# package and merge nothing in. Confirmed via a minimal, isolated repro
+	# of Locale::Maketext::Lexicon 1.00's import().
+	(my $norm_lang = lc $lang) =~ s/-/_/g;
+
+	my $general_class = "${general_ns}::${norm_lang}";
+	my $target_class  = "${namespace}::${norm_lang}";
+
+	# Only ever dereference a class's %Lexicon symbolically if that class
+	# can already demonstrably new() - i.e. it was genuinely set up moments
+	# ago by _load_own_lexicon/Locale::Maketext::Lexicon. A bare
+	# \%{"Pkg::Lexicon"} silently autovivifies that package's own
+	# symbol-table entry even when nothing is ever written through it and
+	# even though the class is otherwise never touched. That alone is
+	# enough to fool Locale::Maketext's own get_handle()/_try_use() into
+	# treating an otherwise nonexistent candidate tag as "already seen" the
+	# next time ANYTHING in the same long-running worker process asks for
+	# that exact tag - producing a "Can't locate object method new" crash
+	# far away from this line, on a totally unrelated request/module.
+	# can() is a safe, non-autovivifying check; symbolic %{"..."} access is
+	# not. Confirmed via a real regression repro (Initial module, default
+	# en_US resolution with no Accept-Language header at all).
+	return 1 unless $general_class->can('new');
+	return 1 unless $target_class->can('new');
+
 	no strict 'refs';
-	my $general_lex = \%{"${general_ns}::${lang}::Lexicon"};
-	my $target_lex  = \%{"${namespace}::${lang}::Lexicon"};
+
+	# CRITICAL: never do a wholesale hash-copy (my %h = %{"Pkg::Lexicon"})
+	# on a Gettext-backed lexicon. Locale::Maketext::Lexicon 1.00 ties
+	# %Lexicon to its own lazy FETCH/FIRSTKEY/NEXTKEY implementation, and
+	# flattening the whole tied hash in one go SEGFAULTS the Perl
+	# interpreter outright on this Perl/module combination - confirmed via
+	# a minimal, dependency-free repro (`my %copy = %{"Pkg::lang::Lexicon"}`
+	# reliably crashes with SIGSEGV on a real .mo-backed tied lexicon,
+	# while the iterate-keys-then-fetch-each-value pattern below, matching
+	# what this function already did before any of these fixes, does not).
+	# Always take a reference and fetch values one key at a time.
+	my $general_lex = \%{"${general_class}::Lexicon"};
+	my $target_lex  = \%{"${target_class}::Lexicon"};
 
 	for my $key (keys %$general_lex) {
 		next if $key =~ /^_/;
