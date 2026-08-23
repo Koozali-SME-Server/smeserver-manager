@@ -985,14 +985,14 @@ sub _lang_space {
 	# the special cases.  This can be investigated later?
 
     my $c = shift;
-    my $debug = 1;
+	my $debug    = $c->config('debug');
     
     #$c->app->log->info("lang_space path=" . $c->req->url->path->to_string);
 
     my $path = $c->tx->req->url;
     if ( $path =~ m/\.css$|\.js$|\.jpg$|\.gif$|\.png$|\.ico$|\.map$/ ) {
-	#warn "path not treated $path";
-	return
+		#warn "path not treated $path";
+		return
     }
 
     # NOTE (fixed): the fallback here used to be the arrayref ['en_US']
@@ -1008,7 +1008,7 @@ sub _lang_space {
     $lang = (split(/,/, $lang))[0];
     $c->stash(locale=>$lang);  #Stash it for template use
     
-    warn "LANG_DEBUG pid=$$ path=$path raw_header='" . ( $c->tx->req->headers->accept_language // '<none>' ) . "' parsed_lang='$lang'";
+    warn "LANG_DEBUG pid=$$ path=$path raw_header='" . ( $c->tx->req->headers->accept_language // '<none>' ) . "' parsed_lang='$lang'" if $debug;
     
     $path = 'initial' if ($path eq '/' or $path eq '' or $path eq 'get-locale'); 
     #warn "langspace:path=$path" if $debug;
@@ -1030,12 +1030,12 @@ sub _lang_space {
     # falling back to a blindly-stripped name here would silently point
     # i18ns() at the wrong namespace for every module migrated to that tier.
     if ( ! -d $I18Ndir ) {
-	( my $singularLong = $moduleLong) =~ s/.$//;
-	( my $singularDir  = $I18Ndir)   =~ s/.$//;
-	if ( -d $singularDir ) {
-	    $moduleLong = $singularLong;
-	    $I18Ndir    = $singularDir;
-	}
+		( my $singularLong = $moduleLong) =~ s/.$//;
+		( my $singularDir  = $I18Ndir)   =~ s/.$//;
+		if ( -d $singularDir ) {
+			$moduleLong = $singularLong;
+			$I18Ndir    = $singularDir;
+		}
     }
     ##    $c->app->log->debug("hook_b_r->panel route. lang: $lang  namespace: $moduleLong ldir; $I18Ndir");
     # Always attempt to switch the I18N namespace to this module, whether or
