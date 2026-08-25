@@ -128,7 +128,7 @@ true
 
 %changelog
 * Tue Aug 25 2026 Brian Read <brianr@koozali.org> 11.0.0-248.sme
-- fix [SME: ]
+- Regression - po details shown on menu pane [SME: 13705]
 
 * Tue Aug 25 2026 Brian Read <brianr@koozali.org> 11.0.0-247.sme
 - Sort out typo and lexical strings in Directory panel [SME: 13702]
