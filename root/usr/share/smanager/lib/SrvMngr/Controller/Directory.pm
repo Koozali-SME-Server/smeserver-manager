@@ -57,11 +57,11 @@ sub do_update {
     $result .= "<br>\n".$c->l('dir_COMPANY').": " .$c->l('STRING_VALIDATION') if $c->validate_NonEmptyString($company) ne 'OK';
     $result .= "<br>\n".$c->l('dir_STREET').": " .$c->l('STRING_VALIDATION') if $c->validate_NonEmptyString($street) ne 'OK';
     $result .= "<br>\n".$c->l('dir_CITY').": " .$c->l('STRING_VALIDATION') if $c->validate_NonEmptyString($city) ne 'OK';
-    $result .= "<br>\n".$c->l('dir_PHONE') .": " .$c->l('PHONE_VALIDATION') if $c->validate_Phone($phonenumber) ne 'OK';
+    $result .= "<br>\n".$c->l('dir_PHONENUMBER') .": " .$c->l('PHONE_VALIDATION') if $c->validate_Phone($phonenumber) ne 'OK';
     $result =~ s/^(?:\n|<\s*br\s*\/?>)+//gi;
 
     if ($result ne '') {
-        my $title = $c->l('dom_FORM_TITLE');
+        my $title = $c->l('dir_FORM_TITLE');
         my $modul     = $c->render_to_string(inline => $c->l('dir_DESCRIPTION'));
         my %dir_datas = $c->param;
         $c->stash(error => $result );

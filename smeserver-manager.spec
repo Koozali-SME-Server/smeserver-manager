@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 246
+%define release 247
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -127,6 +127,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Aug 25 2026 Brian Read <brianr@koozali.org> 11.0.0-247.sme
+- Sort out typo and lexical strings in Directory panel [SME: 13702]
+
 * Wed Aug 19 2026 Brian Read <brianr@koozali.org> 11.0.0-246.sme
 - Update I18N plugin to use .mo or .po or .pm for lexical translation files  [SME: 13705]
 

@@ -27,7 +27,3 @@ new users, or you can apply the above defaults to all existing users as well.',
 'dir_UPDATE' => 'Update with new defaults',
 'Directory' => 'Directory',
 
-# --- keys below auto-added by lex-to-po.pl: found via l()/maketext() in
-# controller/templates but missing from this file. Please verify wording. ---
-'dir_PHONE' => 'dir_PHONE',  # AUTO-ADDED, needs review -- found at Directory.pm:60
-'dom_FORM_TITLE' => 'dom_FORM_TITLE',  # AUTO-ADDED, needs review -- found at Directory.pm:64
