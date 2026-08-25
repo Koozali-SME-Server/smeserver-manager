@@ -332,9 +332,22 @@ sub _load_gettext_lexicon {
 	# are the only related switches and neither applies here. This fix runs
 	# purely in memory, after the file has already been parsed - the .po/.mo
 	# file on disk is never modified.
+
+	# IMPORTANT: overwrite with '', do NOT delete the key outright. If the key
+	# is removed entirely, Locale::Maketext's own maketext() (see its core
+	# lookup loop) finds no entry for '' anywhere in the @ISA chain and, since
+	# this is a real gettext-backed lexicon (no _AUTO flag), falls through to
+	# Carp::croak("maketext doesn't know how to say:\n...\nas needed") - i.e.
+	# any accidental l('') / maketext('') call (the same "$maybe_empty_var"
+	# case the header-leak fix itself is guarding against) would go from
+	# "leaks ugly header text" to "fatal exception, 500s the whole request".
+	# Confirmed via a real, isolated repro against Locale::Maketext 1.x's
+	# maketext(): delete => croak; assigning '' => returns '' cleanly, with
+	# real translated keys still resolving normally either way.
 	no strict 'refs';
-	my $lex = \%{"${namespace}::${lang}::Lexicon"};
-	delete $lex->{''} if exists $lex->{''};
+	(my $norm_lang = lc $lang) =~ s/-/_/g;
+	my $lex = \%{"${namespace}::${norm_lang}::Lexicon"};
+	$lex->{''} = '' if exists $lex->{''};
 
 	return 1;
 }
