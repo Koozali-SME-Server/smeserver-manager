@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 248
+%define release 249
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -127,6 +127,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Aug 26 2026 Brian Read <brianr@koozali.org> 11.0.0-249.sme
+- CSRF Token missing from DNF update request in DNF panel [SME: 13713]
+
 * Tue Aug 25 2026 Brian Read <brianr@koozali.org> 11.0.0-248.sme
 - Regression - po details shown on menu pane [SME: 13705]
 

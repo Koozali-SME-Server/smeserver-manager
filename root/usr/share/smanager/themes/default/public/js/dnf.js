@@ -222,10 +222,21 @@
           const body = new URLSearchParams();
           selectedValues(pkgSel).forEach(v => body.append('SelectedPackages', v));
           selectedValues(grpSel).forEach(v => body.append('SelectedGroups', v));
+          // The Configure tab's form is always present in the DOM (just CSS-hidden
+          // on other tabs), and CSRFProtectBuiltin auto-injects a csrf_token hidden
+          // field into it via the wrapped form_for helper. Reuse that token here,
+          // mirroring the working pattern already used in datetime.js.
+          const csrfToken = document.querySelector(
+            '#dnf-config-form input[name="csrf_token"]'
+          )?.value;
+
 
           const r = await fetch(`${BASE}/dnf/start/${fn}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+              'X-CSRF-Token': csrfToken
+            },
             body
           });
 
