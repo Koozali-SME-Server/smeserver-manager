@@ -540,6 +540,7 @@ sub setup_routing {
     $if_admin->get ('/dnf/stream/:run_id')->to('dnf#dnf_stream')->name('dnf_stream');
     $if_admin->get('/dnf/options/:function')->to('dnf#dnf_options')->name('dnf_options');
     $if_admin->get('/dnf/partial')->to('dnf#dnf_partial')->name('dnf_partial');
+    $if_admin->get('/dnf/status')->to('dnf#dnf_status')->name('dnf_status');
     $if_admin->post('/dnfd')->to('dnf#do_update')->name('dnfd');
     $if_admin->get('/dnfd')->to('dnf#dnf_options')->name('dnf_from_config');
 

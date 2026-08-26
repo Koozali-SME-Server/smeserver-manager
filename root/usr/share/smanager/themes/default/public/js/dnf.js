@@ -177,6 +177,14 @@
       const pkgTotal = Number(msgEl.dataset.pkgTotal || 0);
       const grpTotal = Number(msgEl.dataset.grpTotal || 0);
 
+      if (dnfBusy) {
+        // A run is already in progress: keep Start disabled and leave the
+        // "still running" note (set by checkForRunningJob) alone rather than
+        // overwriting it with selection counts.
+        startBtn.disabled = true;
+        return;
+      }
+
       const pkgSelected = pkgSel ? pkgSel.selectedOptions.length : 0;
       const grpSelected = grpSel ? grpSel.selectedOptions.length : 0;
 
@@ -203,11 +211,55 @@
       else noteEl.textContent = `${selected} of ${total} selected (${what}).`;
     }
 
+    // True while a dnf run (started here, in another tab, or by another
+    // admin) is known to still be in progress. While true the Start button
+    // stays disabled regardless of package/group selection.
+    let dnfBusy = false;
+
     updateSelectedNoteAndStart();
     if (pkgSel) pkgSel.addEventListener('change', updateSelectedNoteAndStart);
     if (grpSel) grpSel.addEventListener('change', updateSelectedNoteAndStart);
 
     let runStarted = false;
+
+    // On (re)entry to the panel -- initial load, tab switch, or after a
+    // partial refresh -- check whether a dnf run is already in progress
+    // (e.g. it was started before a page reload, or from another session).
+    // If so, suppress Start and re-attach the log viewer to that run instead
+    // of leaving the panel looking idle.
+    async function checkForRunningJob() {
+      try {
+        const r = await fetch(`${BASE}/dnf/status`, { method: 'GET' });
+        if (!r.ok) return;
+        const data = await r.json().catch(() => ({}));
+        if (!data || !data.running) return;
+
+        dnfBusy = true;
+        if (startBtn) startBtn.disabled = true;
+
+        const noteEl = document.getElementById('dnf-selected-note');
+        if (noteEl) {
+          noteEl.textContent = data.function
+            ? `A previous ${data.function} is still running \u2014 showing its progress below.`
+            : 'A previous DNF operation is still running \u2014 showing its progress below.';
+        }
+
+        if (currentMode() !== 'configure' && frame && data.logfile) {
+          if (out) out.classList.remove('is-hidden');
+
+          const url = new URL(`${BASE}/dnf/stream/resume-${Date.now()}`, window.location.origin);
+          url.searchParams.set('logfile', data.logfile);
+
+          runStarted = true; // reuse the normal completion path (refresh + re-enable)
+          frame.src = url.toString();
+        }
+      } catch (e) {
+        // Non-fatal: if the status check fails, just leave the panel in its
+        // normal (idle) state rather than blocking the user.
+      }
+    }
+
+    checkForRunningJob();
 
     if (startBtn) {
       startBtn.addEventListener('click', async () => {
@@ -229,7 +281,6 @@
           const csrfToken = document.querySelector(
             '#dnf-config-form input[name="csrf_token"]'
           )?.value;
-
 
           const r = await fetch(`${BASE}/dnf/start/${fn}`, {
             method: 'POST',

@@ -9,6 +9,7 @@ package SrvMngr::Controller::Dnf;
 #    $if_admin->get ('/dnf/stream/:run_id')->to('dnf#dnf_stream')->name('dnf_stream');
 #    $if_admin->get('/dnf/options/:function')->to('dnf#dnf_options')->name('dnf_options');
 #    $if_admin->get('/dnf/partial')->to('dnf#dnf_partial')->name('dnf_partial');
+#    $if_admin->get('/dnf/status')->to('dnf#dnf_status')->name('dnf_status');
 #    $if_admin->post('/dnfd')->to('dnf#do_update')->name('dnfd');
 #
 # routes : end
@@ -387,6 +388,9 @@ sub start_dnf ($c) {
     my $values = $c->every_param($param) || [];
     $cfg->set_prop('dnf', $param, @$values ? join(',', @$values) : '');
   }
+  # Remember which action is running so a later /dnf/status poll (e.g. after
+  # the browser/panel is reloaded mid-run) can report it back to the UI.
+  $cfg->set_prop('dnf', 'RunningFunction', $function);
   $cfg->reload;
 
   esmith::util::backgroundCommand(0, "/sbin/e-smith/signal-event", "dnf-$function");
@@ -398,7 +402,34 @@ sub start_dnf ($c) {
   return $c->render(json => { run_id => $run_id, started_i => $t0_i, old_db => $old_db });
 }
 
+# GET /dnf/status
+# Lets the panel discover, on (re)load, whether a dnf run started earlier
+# (in this session, another tab, or another admin's session) is still in
+# progress -- so the UI can suppress the Start button and re-attach the log
+# viewer to that run instead of offering to start a new one.
+sub dnf_status ($c) {
+  $c->app->log->info($c->log_req);
+
+  my $status  = $c->_get_dnf_status;
+  my $running = $c->_is_dnf_running ? 1 : 0;
+
+  my ($logfile, $function) = ('', '');
+  if ($running) {
+    ($logfile, undef) = $c->_get_logfile_best_effort_with_source;
+    my $cfg = $c->_open_cfg;
+    $function = $cfg->get_prop('dnf', 'RunningFunction') // '';
+  }
+
+  return $c->render(json => {
+    running  => $running,
+    status   => $status,
+    logfile  => $logfile,
+    function => $function,
+  });
+}
+
 # GET /dnf/stream/:run_id?started_i=...&old_db=...
+# GET /dnf/stream/:run_id?logfile=...              (resuming an already-running job)
 # start at beginning + follow
 
 use Mojo::Util qw(xml_escape);
@@ -431,25 +462,39 @@ sub dnf_stream ($c) {
 <table class="dnf-stream-table"><tbody id="log-body">
 HTML
 
-  # Discover logfile (unchanged)
+  # Discover logfile.
+  #
+  # Normal (just-started) flow: poll until the dnf:LogFile prop changes away
+  # from $old_db, or a freshly-created log file shows up in the log dir.
+  #
+  # Resume flow: the caller (a panel that just noticed via /dnf/status that a
+  # run is already in progress) already knows the active logfile and passes
+  # it explicitly, so we can attach to it immediately without guessing which
+  # LogFile change belongs to "this" run.
   my ($logfile, $logsrc) = ('', '');
-  my $deadline = time() + 20;
+  my $resume_logfile = $c->param('logfile') // '';
 
-  while (time() < $deadline) {
-    my ($cur, $src) = $c->_get_logfile_best_effort_with_source;
+  if ($resume_logfile =~ m{^/var/log/dnf/dnf\.log\.\d+$} && -r $resume_logfile) {
+    ($logfile, $logsrc) = ($resume_logfile, 'resumed via explicit logfile param');
+  } else {
+    my $deadline = time() + 20;
 
-    if ($cur && $cur =~ m{^/var/log/dnf/dnf\.log\.\d+$} && -e $cur && ($old_db eq '' || $cur ne $old_db)) {
-      ($logfile, $logsrc) = ($cur, "dnf:LogFile via $src");
-      last;
+    while (time() < $deadline) {
+      my ($cur, $src) = $c->_get_logfile_best_effort_with_source;
+
+      if ($cur && $cur =~ m{^/var/log/dnf/dnf\.log\.\d+$} && -e $cur && ($old_db eq '' || $cur ne $old_db)) {
+        ($logfile, $logsrc) = ($cur, "dnf:LogFile via $src");
+        last;
+      }
+
+      my $n = $c->_newest_log_since($t0_i, 2);
+      if ($n && -e $n) {
+        ($logfile, $logsrc) = ($n, "directory scan (newest_log_since >= start)");
+        last;
+      }
+
+      select undef, undef, undef, 0.1;
     }
-
-    my $n = $c->_newest_log_since($t0_i, 2);
-    if ($n && -e $n) {
-      ($logfile, $logsrc) = ($n, "directory scan (newest_log_since >= start)");
-      last;
-    }
-
-    select undef, undef, undef, 0.1;
   }
 
   unless ($logfile && -r $logfile) {
