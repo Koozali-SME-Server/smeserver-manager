@@ -1,9 +1,15 @@
     # session timeout
+    # NB: deliberately keyed off httpd-admin{ManagerTimeout} only - this is the
+    # same property that drives TKTAuthTimeout in AuthTKT.cfg (see e-smith-manager's
+    # manager_access template). Do not add a separate smanager{Timeout} override here:
+    # the AuthTkt ticket timeout has no matching knob, so a second property would let
+    # the Mojolicious session and the auth_tkt cookie drift out of sync silently.
     timeout => '{ 
 
-my $raw_timeout = $smanager{'Timeout'} || ${'httpd-admin'}{ManagerTimeout} || "30m"; 
+my $raw_timeout = ${'httpd-admin'}{ManagerTimeout} || "30m"; 
 
 my ($val, $unit) = $raw_timeout =~ /^(\d+)([smhd]?)$/i;
+
 my %multipliers = (
         ''  => 1,        # Raw number defaults to seconds
         's' => 1,        # Seconds

@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 250
+%define release 251
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -127,6 +127,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Aug 27 2026 Brian Read <brianr@koozali.org> 11.0.0-251.sme
+- fix [SME: ]
+
 * Wed Aug 26 2026 Brian Read <brianr@koozali.org> 11.0.0-250.sme
 - Re-entry for dnf panel checks for existing running update/install/remove and shows log and supresses start button [SME: 13634]
 
