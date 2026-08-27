@@ -36,6 +36,9 @@ sub logout {
             @auth_domain,
      });
     $c->log->debug($c->req->headers->to_string);
-    $c->redirect_to($c->home_page);
+    # Send the user straight back to the login panel rather than the
+    # (now inaccessible) home panel - avoids the extra home->redirected->
+    # login bounce that just re-shows the same 'please log in' state.
+    $c->redirect_to('login');
 } ## end sub logout
 1;

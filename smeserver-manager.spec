@@ -128,7 +128,12 @@ true
 
 %changelog
 * Thu Aug 27 2026 Brian Read <brianr@koozali.org> 11.0.0-251.sme
-- fix [SME: ]
+- Remove reference to smanager[Timeout} in SrvMngr.conf timeout fragment to avoid potential exploit [SME: 13716]
+- Fix up so that login after timeout returns to current panel, not home panel [SME: 13714]
+- Also fix up security issues  - open redirect, per worker login attempts count, exponential delays on retries [SME: 13714]
+- Reset tokens logged in plain text, AuthTKT tickets logged against undef IP address (but not enforced) [SME: 13714]
+- Arrange that the logout button click goes straight to the login screen [SME: 13714]
+- On token expiry, go to login screen (which will renew the token) [SME 137814]
 
 * Wed Aug 26 2026 Brian Read <brianr@koozali.org> 11.0.0-250.sme
 - Re-entry for dnf panel checks for existing running update/install/remove and shows log and supresses start button [SME: 13634]

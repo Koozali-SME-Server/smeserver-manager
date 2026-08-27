@@ -160,11 +160,49 @@ $app->hook(
 		# Absolute URL
 		return $url if $url->is_abs;
 
-		# Discard target if present
-		shift if (@_ % 2 && !ref $_[0]) || (@_ > 1 && ref $_[-1]);
-
-		# Unveil params
-		my %params = @_ == 1 ? %{$_[0]} : @_;
+		# Unveil params.
+		#
+		# This mirrors the exact disambiguation rules Mojolicious itself
+		# uses in Mojo::Util::_options() (called from
+		# Mojolicious::Routes::Match::path_for) to split a url_for()/
+		# redirect_to() argument list into an optional target followed by
+		# params. The previous heuristic here guessed the presence of a
+		# target from the *ref-ness of the first/last element*, which is
+		# wrong whenever the target itself is a reference (e.g. a Mojo::URL
+		# object, as produced by ->query(...) or ->to_abs) followed by a
+		# trailing flat pair such as `status => 403`: with 3 total elements
+		# (ref, non-ref, non-ref) neither old condition fired, so no shift
+		# occurred and "%params = @_" was attempted on an odd-length,
+		# non-1-element list -- producing exactly the reported
+		# "Odd number of elements in hash assignment" warning (and a
+		# corrupted, meaningless %params to boot).
+		#
+		# Deciding purely from the *count* of @_ (as Mojolicious does)
+		# rather than from ref-ness of an element is safe for every
+		# call shape url_for()/redirect_to() support:
+		my %params;
+		if ( @_ == 0 ) {
+			%params = ();
+		}
+		elsif ( @_ == 1 ) {
+			# Lone target (route name/path/URL) -> no params;
+			# lone hashref -> that hashref *is* the params, no target.
+			%params = ref $_[0] eq 'HASH' ? %{ $_[0] } : ();
+		}
+		elsif ( @_ % 2 ) {
+			# Odd count > 1: first element is always the target
+			# (whatever its type), the rest is a flat params list.
+			my ( undef, @rest ) = @_;
+			%params = @rest;
+		}
+		else {
+			# Even count: a target followed by a single params hashref
+			# looks like (target, {..}) -- detect that by checking the
+			# *second* element, exactly as Mojo::Util::_options() does.
+			# Otherwise there is no target and the whole list is a flat
+			# params list for the current route.
+			%params = ref $_[1] eq 'HASH' ? %{ $_[1] } : @_;
+		}
 
 		# Detect lang
 		if (my $lang = $params{lang} || $self->stash('lang')) {

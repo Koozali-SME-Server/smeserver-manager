@@ -18,6 +18,7 @@ use strict;
 use warnings;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Util 'url_unescape';
+use List::Util qw(min);
 use Locale::gettext;
 use esmith::AccountsDB::UTF8;
 use SrvMngr::I18N;
@@ -29,18 +30,26 @@ my $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.c
 
 my $MAX_LOGIN_ATTEMPTS   = 3;
 my $DURATION_BLOCKED     = 30 * 60;        # access blocked for 30 min
-my $TIMEOUT_FAILED_LOGIN = 1;
+my $TIMEOUT_FAILED_LOGIN = 1;               # base delay (seconds) - doubled per attempt, see login()
 my $RESET_DURATION       = 2 * 60 * 60;    # 2 hours for resetting
 our $adb;
 #my $allowed_user_re = qr/^\w{5,10}$/; Not used anywhere
-my %Login_Attempts;
+# NB: attempt counters now live in $c->login_attempts_db (a DBM::Deep file,
+# see SrvMngr.pm), not in a per-process hash. hypnotoad runs several worker
+# processes, each of which used to keep its own independent copy of the old
+# %Login_Attempts hash, so an attacker only had to spread requests across
+# workers to bypass MAX_LOGIN_ATTEMPTS/DURATION_BLOCKED entirely.
 
 sub main {
     my $c = shift;
     $c->stash(trt => 'NORM');
     my $name; 
-    my $from = $c->param('From') || $c->home_page;
-    $from = $c->home_page if ($from eq 'login');
+    # sanitize_from() guards against an open redirect via a crafted
+    # ?From=https://evil.example/... link (see SrvMngr.pm for details) and
+    # also covers the old bare 'login' => home_page fallback, since 'login'
+    # (no leading slash) fails the same-path check.
+    my $from = $c->sanitize_from($c->param('From'));
+    $c->stash(From => $from);   # used by login.html.ep's hidden 'From' field
     my $debug    = $c->config('debug');
     # ticket might have changed since smanager has started.
     $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
@@ -100,6 +109,13 @@ sub main {
 sub login {
     my $c   = shift;
     my $trt = $c->param('Trt');
+    # sanitize_from() guards against an open redirect via a crafted
+    # ?From=https://evil.example/... form submission - see SrvMngr.pm for
+    # details. Stashed up front so every render('login') below (on any
+    # failure path) re-renders the hidden 'From' field with the same,
+    # already-validated target the user started with.
+    my $from = $c->sanitize_from($c->param('From'));
+    $c->stash(From => $from);
     $adb = esmith::AccountsDB::UTF8->open() or die "Couldn't open DB Accounts\n";
 
     # password reset request
@@ -118,7 +134,6 @@ sub login {
     # normal loggin
     my $name = $c->param('Username');
     my $pass = $c->param('Password');
-    my $from = $c->param('From');
 
     if (is_denied($c)) {
         $c->stash(error => $c->l('use_TOO_MANY_LOGIN'), trt => 'NORM');
@@ -155,8 +170,12 @@ sub login {
     my $back = $c->cookie($at->back_cookie_name) if $at->back_cookie_name;
     my $have_cookies = $ticket || $probe || $back || '';
     my $mode = 'login';
-    # TODO add ip of the browser (not the proxy)
-    my $ip_addr = undef;
+    # Real client IP, for consistency with the same fix in SrvMngr.pm's
+    # _handle_tkt() - baked into the issued ticket's data/ip_addr below.
+    # NB: validate_ticket() calls in this file still pass ignore_ip => 1,
+    # so this alone does not turn on IP-pinning - see the 'ignore_ip'
+    # evidence note in the patch write-up.
+    my $ip_addr = $c->tx->remote_address;
     my $debug    = $c->config('debug');
     $debug = 3 if $debug;
     my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();
@@ -188,17 +207,25 @@ sub login {
         $c->log->debug($c->req->headers->to_string) if $debug;
     } else {
         record_login_attempt($c, 'FAILED');
-        sleep $TIMEOUT_FAILED_LOGIN;
+        # Exponential backoff on the persisted per-IP attempt count, capped
+        # at 16s: a flat 1s sleep (the old behaviour) does nothing to slow
+        # down an attacker sending many requests in parallel, since the
+        # 1s delay for each of N concurrent guesses all elapses at roughly
+        # the same time. This is a light in-app speed bump only - the real
+        # backstop against brute-forcing is the shipped fail2ban jail
+        # (see additional/f2b/fail2ban_smanager in this repo).
+        my $tries = $c->login_attempts_db->{ $c->tx->remote_address }{tries} || 1;
+        sleep $TIMEOUT_FAILED_LOGIN * (2 ** (min($tries, 5) - 1));
         $c->stash(error => $c->l('use_SORRY'), trt => 'NORM');
         return $c->render('login');
     } ## end else [ if (SrvMngr::Model::Main...)]
-    $from = $c->home_page if ($from eq 'login');
     $c->redirect_to($from);
 } ## end sub login
 
 sub pwdrescue {
     my $c = shift;
     $c->stash(trt => 'RESET');
+    $c->stash(From => $c->sanitize_from($c->param('From')));   # see main()
     $c->render('login');
 } ## end sub pwdrescue
 
@@ -275,18 +302,19 @@ sub record_login_attempt {
     my ($c, $result) = @_;
     my $user       = $c->param('Username')||$c->session('username');
     my $ip_address = $c->tx->remote_address;
+    my $attempts   = $c->login_attempts_db;    # shared across hypnotoad workers, see SrvMngr.pm
 
     if ($result eq 'RESET') {
         $c->app->log->info(join "\t", "Password reset requested for : $user at ", $ip_address);
     } elsif ($result eq 'SUCCESS') {
         $c->app->log->info(join "\t", "Login succeeded: $user", $ip_address);
-        $Login_Attempts{$ip_address}->{tries} = 0;    # reset the number of login attempts
+        $attempts->{$ip_address}{tries} = 0;    # reset the number of login attempts
     } else {
         $c->app->log->info(join "\t", "Login FAILED: $user", $ip_address);
-        $Login_Attempts{$ip_address}->{tries}++;
+        $attempts->{$ip_address}{tries}++;
 
-        if ($Login_Attempts{$ip_address}->{tries} > $MAX_LOGIN_ATTEMPTS) {
-            $Login_Attempts{$ip_address}->{denied_until} = time() + $DURATION_BLOCKED;
+        if ($attempts->{$ip_address}{tries} > $MAX_LOGIN_ATTEMPTS) {
+            $attempts->{$ip_address}{denied_until} = time() + $DURATION_BLOCKED;
         }
     } ## end else [ if ($result eq 'RESET')]
 } ## end sub record_login_attempt
@@ -294,15 +322,16 @@ sub record_login_attempt {
 sub is_denied {
     my ($c) = @_;
     my $ip_address = $c->tx->remote_address;
+    my $attempts   = $c->login_attempts_db;
     return
-        unless exists $Login_Attempts{$ip_address}
-        && exists $Login_Attempts{$ip_address}->{denied_until};
+        unless exists $attempts->{$ip_address}
+        && exists $attempts->{$ip_address}{denied_until};
     return 'Denied'
-        if $Login_Attempts{$ip_address}->{denied_until} > time();
+        if $attempts->{$ip_address}{denied_until} > time();
 
     # TIMEOUT has expired, reset attempts
-    delete $Login_Attempts{$ip_address}->{denied_until};
-    $Login_Attempts{$ip_address}->{tries} = 0;
+    delete $attempts->{$ip_address}{denied_until};
+    $attempts->{$ip_address}{tries} = 0;
     return;
 } ## end sub is_denied
 1;

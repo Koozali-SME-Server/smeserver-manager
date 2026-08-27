@@ -50,7 +50,14 @@
     </span></p>
   % }
 
-  %= hidden_field 'From' => $c->tx->req->url
+  %# Use the already-validated target the controller stashed (see
+  %# Login::main/login/pwdrescue), not the raw request URL: the old
+  %# "$c->tx->req->url" value was the /login page's OWN url (which,
+  %# when it already has a ?From=... query string of its own from a prior
+  %# redirect, nests an unescaped querystring inside this field's value)
+  %# and was never validated against being an attacker-supplied absolute
+  %# URL in the first place.
+  %= hidden_field 'From' => (stash('From') // $c->home_page)
   %= hidden_field 'Trt' => $trt
 
   <br>

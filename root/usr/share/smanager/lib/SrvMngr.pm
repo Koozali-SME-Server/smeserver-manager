@@ -139,24 +139,9 @@ sub setup_sessions {
 
 sub _handle_tkt {
   my $c  = shift;
-  # Extract the raw path string (e.g., "/smanager/useraccounts/subdir")
-  my $from = $c->req->url->path->to_string;
-  
-  # Safely strip the "smanager/" prefix if it exists
-  #TODO FIXME :detect this a better way in case we change the path to manager
-  $from =~ s{^/?smanager/}{};
-  
-  # Add a leading slash so Mojolicious treats it as a root-level absolute path
-  $from = "/$from" unless $from =~ m{^/};
-
-  # Append query string if present (e.g., ?id=12)
-  my $query = $c->req->url->query->to_string;
-  $from .= "?$query" if $query;
-
-  # Fallbacks: If it is empty, root, or pointing directly to login, use the home page
-  if (!$from || $from eq '/' || $from =~ m{^/login}) {
-      $from = $c->home_page;
-  }
+  # Compute the path to return to after (re-)authentication - see the
+  # 'target_path' helper below, which this used to duplicate inline.
+  my $from = $c->target_path;
 
   $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
   my $ticket= ( $c->cookie('auth_tkt') ) ? url_unescape $c->cookie('auth_tkt') : undef;
@@ -168,8 +153,14 @@ sub _handle_tkt {
   my $back = $c->cookie($at->back_cookie_name) if $at->back_cookie_name;
   my $have_cookies = $ticket || $probe || $back || '';
   my $mode = 'login';
-  # TODO add ip of the browser (not the proxy)
-  my $ip_addr = undef;
+  # Real client IP (Mojolicious already resolves this from X-Forwarded-For
+  # when MOJO_REVERSE_PROXY is set - see setup_hooks() below), captured so
+  # AuthTkt tickets carry real IP data. NB: validate_ticket() below still
+  # passes ignore_ip => 1, so this alone does not enable IP-pinning - see
+  # the 'ignore_ip' evidence note in the patch write-up for why that is a
+  # separate, coordinated change (it also lives in e-smith-manager's Apache
+  # config, TKTAuthIgnoreIP).
+  my $ip_addr = $c->tx->remote_address;
   my $debug    = $c->config('debug');
   $debug = 3 if $debug;
   my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();
@@ -272,7 +263,12 @@ sub setup_helpers {
 	my $c  = shift;
         my $mess = shift || '';
         my $method = $c->req->method;
-        my $url = $c->req->url;
+        # Redact known sensitive query params (e.g. the one-time password-
+        # reset JWT passed to /loginc) before logging - they are opaque,
+        # short-lived tokens, not values that need to persist in plaintext
+        # in the app's own request/debug logs indefinitely.
+        my $url = $c->req->url->clone;
+        $url->query->remove('jwt') if defined $url->query->param('jwt');
         my $version = $c->req->version;
         my $ip    = $c->tx->remote_address;
         return "Request received => $method $url HTTP/$version from $ip : $mess ";
@@ -280,12 +276,102 @@ sub setup_helpers {
 
     $self->helper( 'home_page' => sub{ '/initial' } );
 
+    # Compute the path (+query string) the current request was aiming for,
+    # for use as a 'return here after login' target. This is the same logic
+    # _handle_tkt() used to duplicate inline for its own silent ticket-based
+    # reauth redirect; auth_fail() below now reuses it too, so a session/
+    # ticket timeout on any panel bounces the user back to that panel
+    # instead of unconditionally to home.
+    $self->helper( 'target_path' => sub {
+	my $c = shift;
+
+	# Extract the raw path string (e.g., "/smanager/useraccounts/subdir")
+	my $path = $c->req->url->path->to_string;
+
+	# Safely strip the "smanager/" prefix if it exists
+	#TODO FIXME :detect this a better way in case we change the path to manager
+	$path =~ s{^/?smanager/}{};
+
+	# Add a leading slash so Mojolicious treats it as a root-level absolute path
+	$path = "/$path" unless $path =~ m{^/};
+
+	# Append query string if present (e.g., ?id=12)
+	my $query = $c->req->url->query->to_string;
+	$path .= "?$query" if $query;
+
+	# Fallbacks: if empty, root, already pointing at the login page itself,
+	# or at the password-reset routes, use the home page instead. loginc/
+	# userpasswordr carry a one-time JWT in their query string (see
+	# Login::confpwd) - preserving them as a 'return to' target would
+	# re-embed that token into the login form's hidden field and into
+	# request logs a second time, for no benefit (they are not panels a
+	# logged-in user would ever want to 'return to').
+	return $c->home_page
+	    if (!$path || $path eq '/' || $path =~ m{^/(?:login|loginc|userpasswordr)\b});
+	return $path;
+    });
+
+    # Validate a candidate redirect target (typically the 'From' request
+    # param) is a same-site relative path before it is ever handed to
+    # redirect_to(). Without this, Login::main / Login::login would
+    # redirect_to() whatever a 'From' query/form param said verbatim - a
+    # classic open-redirect: a link such as
+    # https://server/login?From=https://evil.example/phish would render
+    # that attacker URL straight into the login form's hidden field and
+    # then redirect there after a successful login.
+    $self->helper( 'sanitize_from' => sub {
+	my $self = shift;
+	my $from = shift;
+	return $self->home_page unless defined $from && length $from;
+
+	# Reject scheme-qualified and protocol-relative URLs, e.g.
+	# "http://evil.example/...", "https://evil.example/...", or the
+	# protocol-relative "//evil.example/..." (browsers treat a leading
+	# "//" as "same scheme, different host").
+	return $self->home_page if $from =~ m{^\s*(?:[a-z][a-z0-9+.\-]*:)?/{2}}i;
+
+	# Anything else must be a plain absolute path on this site (also
+	# rejects bare "javascript:...", "data:...", "evil.example/..." etc,
+	# none of which start with a single '/').
+	return $self->home_page unless $from =~ m{^/};
+
+	return $from;
+    });
+
     $self->helper( 'auth_fail' => sub {
 	my $self = shift;
 	my $message = shift || $self->l('acs_NO');
         $self->flash( error => $message );
-        $self->redirect_to( $self->home_page, status => 403 );
+        my $target = $self->target_path;
+        if ($target eq $self->home_page) {
+            $self->redirect_to( $self->home_page, status => 403 );
+        } else {
+            # Preserve the panel the user was trying to reach across the
+            # login round-trip via ?From=..., the same mechanism
+            # Login::main/login already use for the ticket-based silent
+            # reauth path.
+            # Stringify explicitly: passing the Mojo::URL object itself as
+            # a positional arg alongside the trailing status=>403 pair
+            # triggers an unrelated latent bug in SrvMngr::Plugin::I18N's
+            # url_for() override on older heuristics; stringifying keeps
+            # this call unambiguous regardless of that plugin's internals.
+            $self->redirect_to( $self->url_for('login')->query(From => $target)->to_string, status => 403 );
+        }
         return 0;
+    });
+
+    # Shared, worker-safe login-attempt counter store (see Login.pm's
+    # record_login_attempt/is_denied). hypnotoad runs several worker
+    # processes; a plain per-process hash (the old %Login_Attempts) gave
+    # each worker its own independent counter, so an attacker only had to
+    # spread login attempts across workers (or simply retry enough times)
+    # to bypass MAX_LOGIN_ATTEMPTS/DURATION_BLOCKED entirely. DBM::Deep is
+    # already used the same way for password-reset state (see 'pwdrst'
+    # helper below) so this reuses an already-vetted pattern in this app.
+    $self->helper( 'login_attempts_db' => sub {
+	my $c = shift;
+	my $file = $c->app->data_dir().'/login_attempts.db';
+	state $db = DBM::Deep->new($file);
     });
 
     $self->helper( 'is_admin' => sub {
@@ -368,24 +454,46 @@ sub setup_plugins {
     $self->plugin('SrvMngr::Plugin::WithoutCache');
 
 	$self->plugin('SrvMngr::Plugin::CSRFProtectBuiltin' => {
+	    on_error => sub {
+		my $c = shift;
+		# CSRFProtectBuiltin's before_routes hook is registered in
+		# setup_plugins(), which runs BEFORE setup_hooks() registers the
+		# hook that calls lang_space() (the thing that points $c->l() at
+		# the right per-module lexicon, e.g. 'Login', based on the current
+		# path). Mojolicious runs all before_routes hooks regardless of
+		# what an earlier one rendered, but NOT in a way that lets us wait
+		# for lang_space() to run first - so without this explicit call,
+		# $c->l() below runs too early, finds no lexicon loaded yet, and
+		# just returns the raw key name instead of the translated string.
+		$c->lang_space();
+		# A CSRF-token mismatch here is almost always a stale form (an
+		# old login page or panel left open in this or another tab, or a
+		# session/ticket that got silently refreshed underneath the user -
+		# see _handle_tkt() above) rather than an actual cross-site attack.
+		# The plugin's own default behaviour is a dead-end "403 Forbidden!"
+		# text page with no way forward. Bounce back to the same URL with a
+		# plain GET instead, so the page re-renders with a fresh, valid
+		# CSRF token - the same click that failed normally just works next
+		# time, instead of leaving the user stuck.
+		$c->app->log->debug(
+		    'CSRFProtectBuiltin: token mismatch for [' . $c->req->url->path . '], redirecting back for a fresh form'
+		);
+		$c->flash(error => $c->l('use_INVALID_REQUEST'));
+		$c->redirect_to($c->req->url->clone);
+	    },
 	});
 
     $self->plugin('SrvMngr::Plugin::I18N' => {namespace => 'SrvMngr::I18N', default => 'en'});
 
 #    $self->plugin('Mojolicious::Plugin::FrozenSessions' => {});
 
-    $self->helper(log_req => sub {
-
-	my $c  = shift;
-        my $mess = shift || '';
-
-        my $method = $c->req->method;
-        my $url = $c->req->url;
-        my $version = $c->req->version;
-        my $ip    = $c->tx->remote_address;
-
-        return "Request received => $method $url HTTP/$version from $ip: $mess ";
-    });
+    # NB: log_req is registered once now, in setup_helpers(). It used to be
+    # registered a second time here with an (almost) identical body; since
+    # startup() calls setup_plugins() before setup_helpers() and helper
+    # registration is last-writer-wins, this copy was always immediately
+    # overwritten and never actually ran - dead code kept in sync by hand
+    # for no benefit (and it would NOT have picked up the query-string
+    # redaction added to setup_helpers()'s copy). Removed.
 }
 
 
