@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 252
+%define release 253
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -39,6 +39,8 @@ Requires: perl(Linux::Inotify2) >= 2.1-6
 #Requires: perl(IPS:Run) >= 0.99-1 - needed for enahnced qmailanalog run of pflogsumm
 #Requires: perl(Time::TAI64) >= 2.11
 Requires: perl(Data::Validate::IP)
+Requires: perl(Locale::Maketext::Lexicon)
+Requires: smeserver-update >= 11.0.0-39
 Requires: mutt >= 1.5.21
 Requires: smeserver-manager-jsquery >= 11.0.0-11
 Requires: smeserver-certificates >= 11.0
@@ -127,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Sep 05 2026 Brian Read <brianr@koozali.org> 11.0.0-253.sme
+- Enhance the menu creation and translate process to ignore comments and deal with quotes etc better [SME: ????]
+
 * Fri Sep 04 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-252.sme
 - add City is non empty for user [SME: 13702]
 

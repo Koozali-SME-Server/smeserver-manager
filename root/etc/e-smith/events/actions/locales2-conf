@@ -80,6 +80,14 @@ foreach my $module (@dirs) {
     #--------------------
     # copy lexicon to pm
     #--------------------
+    # The problem here is that the menu creation does not treat the .pm file as a perl file
+    # it uses it direct and thus if there is a comment on the assignment then that is incorporated into the 
+    # menu!
+    # 
+    # Soon the .pm files will be replaced by .po/.mo files, so the problem might not occur in the future.
+    # it makes more sense to fix this in the nav extracion rather than trying to avoid copying the comments in the .pm file.
+    # bjr 04Sept26
+    #
     open(FIL2, '<:encoding(UTF-8)', $long_lex)
          or die "Couldn't open ", $long_lex, " for reading.\n";
     while ( <FIL2> ) {

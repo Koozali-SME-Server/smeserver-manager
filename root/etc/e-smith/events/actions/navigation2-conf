@@ -141,24 +141,38 @@ foreach my $lang (@langs) {
         push(@panel_lex, @gen_lex);
         my $top_error = 0;
         chomp @panel_lex;
+	for (@panel_lex) {
+	    next unless $_;     # first one empty
+	    
+	    # Remove comments and trailing whitespace first
+	    $_ =~ s/\s*#.*$//;
+	    $_ =~ s/\s+$//;
 
-        for (@panel_lex) {
-            next unless $_;     # first one empty
-            my ($k, $v) = split / => /, $_;
-
-            #	errors on split to $v (use DEBUG to see)
-            if ($k and $v) {
-                $k =~ s/\'//g;
-                $v =~ s/\'//g;
-                $v =~ s/,$//g;
-                $Lexicon{ lc($k) } = $v;
-            } else {
-                $k = "?" unless ($k);
-                print STDERR "Error for $lang $file2 on $k \n" if DEBUG;
-                $top_error++;
-            }
-        } ## end for (@panel_lex)
-
+	    # Split on => but be careful about quoted strings
+	    my ($k, $v);
+	    my @parts = split / => /, $_, 2;  # Limit to 2 parts
+	    if (@parts == 2) {
+	        ($k, $v) = @parts;
+	        
+	        # Parse key and value with comprehensive quote handling
+	        ($k) = parse_advanced_quoted_string($k);
+	        ($v) = parse_advanced_quoted_string($v);
+	        
+	        $v =~ s/,$//;  # Remove trailing comma
+	        
+	        # Additional safety check for empty values
+	        if ($k && $v) {
+		  $Lexicon{ lc($k) } = $v;
+	        } else {
+		  print STDERR "Error for $lang $file2 on key='$k', value='$v' \n" if DEBUG;
+		  $top_error++;
+	        }
+	    } else {
+	        # If we don't have exactly 2 parts, it's a malformed line
+	        print STDERR "Error for $lang $file2 on malformed line: $_ \n" if DEBUG;
+	        $top_error++;
+	    }
+	}
         if ($top_error > 0) {
             if (DEBUG) {
                 print STDERR "$top_error errors for $lang $file2\n";
@@ -191,6 +205,43 @@ foreach my $lang (@langs) {
     $navdb->close();
 } ## end foreach my $lang (@langs)
 
+
+# Enhanced helper function for advanced quote handling
+sub parse_advanced_quoted_string {
+    my ($str) = @_;
+    
+    # Remove leading/trailing whitespace
+    $str =~ s/^\s+|\s+$//g;
+    
+    # Handle empty string case
+    return "" if !$str || $str eq "";
+    
+    # Check what type of quotes are used (single or double)
+    my $quote_char = substr($str, 0, 1);
+    
+    # If first character is not a quote, return as-is
+    return $str unless ($quote_char eq "'" || $quote_char eq '"');
+    
+    # Check if string starts and ends with the same quote type
+    my $last_quote_pos = rindex($str, $quote_char);
+    return $str if $last_quote_pos <= 0;  # No closing quote
+    
+    # Extract content between quotes
+    my $content = substr($str, 1, $last_quote_pos - 1);
+    
+    # Handle escaped quotes within the string (more sophisticated approach)
+    # This handles cases like: 'He said \'Hello\' to me'
+    if ($quote_char eq "'") {
+        # Remove backslash-escaped quotes
+        $content =~ s/\\(['"])/$1/g;
+    } elsif ($quote_char eq '"') {
+        # Remove backslash-escaped quotes  
+        $content =~ s/\\(['"])/$1/g;
+    }
+    
+    return $content;
+}
+
 sub localise {
     my ($lexicon, $string) = @_;
 
@@ -204,6 +255,7 @@ sub localise {
 } ## end sub localise
 
 # Subroutine to process localization
+# Tries the raw heading first, and if no hit, then adds the prefix and tries again.
 sub process_localization {
     my ($lexicon_ref, $heading, $lang, $prefix) = @_;
 
