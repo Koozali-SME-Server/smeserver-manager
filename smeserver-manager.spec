@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 251
+%define release 252
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -127,6 +127,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Sep 04 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-252.sme
+- add City is non empty for user [SME: 13702]
+
 * Thu Aug 27 2026 Brian Read <brianr@koozali.org> 11.0.0-251.sme
 - Remove reference to smanager[Timeout} in SrvMngr.conf timeout fragment to avoid potential exploit [SME: 13716]
 - Fix up so that login after timeout returns to current panel, not home panel [SME: 13714]

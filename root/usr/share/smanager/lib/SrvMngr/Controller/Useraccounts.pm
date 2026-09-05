@@ -200,6 +200,10 @@ sub do_update {
                 return $res;
             },
             sub {
+                my $res= ($c->validate_NonEmptyString($City) eq 'OK')? 'OK' : $c->l('usr_CITY').": " .$c->l('STRING_VALIDATION');
+                return $res;
+            },
+            sub {
                 my $res= ($c->validate_Phone($Phone) eq 'OK')? 'OK' : $c->l('usr_PHONE_NUMBER').": ".$c->l('PHONE_VALIDATION');
                 return $res;
             },
