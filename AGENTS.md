@@ -370,3 +370,7 @@ Key files involved:
 - Module-specific $module_$lang.lex files: Module-specific translations
 
 The translation mechanism uses a prefix-based lookup approach to find localized strings. The script processes all controllers, extracts their metadata, and combines it with translation data from .lex files to build the navigation database entries.
+
+Note on .mo/.po file locations:
+- .po files are located at root/usr/share/smanager/lib/SrvMngr/I18N/po/<module>/<lang>.po
+- .mo files are located at root/usr/share/smanager/lib/SrvMngr/I18N/po/<module>/<lang>/LC_MESSAGES/<module>.mo

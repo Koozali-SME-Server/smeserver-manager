@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 253
+%define release 254
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,8 +129,12 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Sep 05 2026 Brian Read <brianr@koozali.org> 11.0.0-254.sme
+- Change phone validation to be Lowest Common Denominator of formats [SME: 13712]
+- Re-factor navigation2-conf before adding in the .po and .mo options for translating menus [SME: 13720]
+
 * Sat Sep 05 2026 Brian Read <brianr@koozali.org> 11.0.0-253.sme
-- Enhance the menu creation and translate process to ignore comments and deal with quotes etc better [SME: ????]
+- Enhance the menu creation and translate process to ignore comments and deal with quotes etc better [SME: 13718]
 
 * Fri Sep 04 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-252.sme
 - add City is non empty for user [SME: 13702]
