@@ -32,6 +32,7 @@ binmode(STDOUT, ":encoding(UTF-8)");
 my $navigation_ignore = "(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm(-.*)?)";
 my $i18n              = new esmith::I18N;
 my %navdbs;
+my %lexicon_cache = ();  # Cache for lexicons to avoid reprocessing
 opendir FUNCTIONS, SMNGR_LIB . '/' . WEBFUNCTIONS
     or die "Couldn't open ", SMNGR_LIB . '/' . WEBFUNCTIONS, "\n";
 my @files = grep (!/^${navigation_ignore}$/, readdir(FUNCTIONS));
@@ -40,12 +41,9 @@ my @langs = $i18n->availableLanguages();
 
 #my @langs = ('tr');  #Temp override
 foreach my $lang (@langs) {
-    my $long_lex = SMNGR_LIB . '/' . I18NMODULES . "/General/general_$lang.lex";
-    next unless (-e $long_lex);
-    open(LEX, '<:encoding(UTF-8)', $long_lex)
-        or die "Couldn't open ", $long_lex, " for reading.\n";
-    my @gen_lex = <LEX>;
-    close LEX;
+    # Process lexicons only once per language and cache them
+    my $lexicon = get_lexicon_for_language($lang);
+    next unless defined $lexicon;
 
     #my @files = ('Portforwarding.pm');  #Temp override
     foreach my $file (@files) {
@@ -97,105 +95,27 @@ foreach my $lang (@langs) {
         $navdbs{$lang} ||= $navdb;
         my $rec = $navdb->get($file2)
             || $navdb->new_record($file2, { type => 'panel' });
-        my @panel_lex = ();
-        $long_lex = SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_$lang.lex";
-
-        if (-e $long_lex) {
-            open(LEX, '<:encoding(UTF-8)', $long_lex)
-                or die "Couldn't open ", $long_lex, " for reading.\n";
-            @panel_lex = <LEX>;
-            close LEX;
-        } ## end if (-e $long_lex)
-
-        #Extract the prefix for this module
-        my @keys   = values @panel_lex;    # Get all values from the array
-        my $i      = 0;                    # Initialize the index
-        my $found  = 0;                    # Flag to check if the prefix was found
-        my $prefix = "xx_";                # Probably never match!!
-
-        while ($i < @keys) {               # Loop until we run out of entries
-            my $extracted_value = $keys[$i] || "";    # The current entry
-                                                      #print("Extracted val: ".$extracted_value."\n");
-
-            # Extract prefix from the second value (up to and including the first underscore)
-            #my ($prefix) = $second_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
-            ($prefix) = $extracted_value =~ /^'(.*?_)/;    # Match everything up to and including the first underscore
-
-            if (defined $prefix) {
-                $found = 1;                                # Set found flag to true
-                last;                                      # Exit the loop if prefix is found
-            } else {
-
-                #print("Extracted Val: " . $extracted_value . "\n");
-            }
-            $i++;                                          # Increment the index to check the next entry
-        } ## end while ($i < @keys)
-
-        if (!$found) {
-            #print(STDERR "No valid prefix found in any entries: " . $file2 . " (" . $lang . ")\n");    # if DEBUG;
-            $prefix = "xx_";    # Probably never match!!
-        }
-
-        #print("Prefix: ".$prefix." ".$file2." (".$lang.")\n");
-        my %Lexicon = ();
-        push(@panel_lex, @gen_lex);
-        my $top_error = 0;
-        chomp @panel_lex;
-	for (@panel_lex) {
-	    next unless $_;     # first one empty
-	    
-	    # Remove comments and trailing whitespace first
-	    $_ =~ s/\s*#.*$//;
-	    $_ =~ s/\s+$//;
-
-	    # Split on => but be careful about quoted strings
-	    my ($k, $v);
-	    my @parts = split / => /, $_, 2;  # Limit to 2 parts
-	    if (@parts == 2) {
-	        ($k, $v) = @parts;
-	        
-	        # Parse key and value with comprehensive quote handling
-	        ($k) = parse_advanced_quoted_string($k);
-	        ($v) = parse_advanced_quoted_string($v);
-	        
-	        $v =~ s/,$//;  # Remove trailing comma
-	        
-	        # Additional safety check for empty values
-	        if ($k && $v) {
-		  $Lexicon{ lc($k) } = $v;
-	        } else {
-		  print STDERR "Error for $lang $file2 on key='$k', value='$v' \n" if DEBUG;
-		  $top_error++;
-	        }
-	    } else {
-	        # If we don't have exactly 2 parts, it's a malformed line
-	        print STDERR "Error for $lang $file2 on malformed line: $_ \n" if DEBUG;
-	        $top_error++;
-	    }
-	}
-        if ($top_error > 0) {
-            if (DEBUG) {
-                print STDERR "$top_error errors for $lang $file2\n";
-
-                #		print Dumper(\@panel_lex);
-                #		print Dumper(\%Lexicon);
-                #		exit 1;
-            } ## end if (DEBUG)
-        } ## end if ($top_error > 0)
+        
+        # Get the lexicon for this specific file
+        my $file_lexicon = get_file_lexicon($lexicon, $file2, $lang);
+        
+        # Extract prefix for this module
+        my $prefix = extract_prefix($file_lexicon);
+        
         $heading     = "" unless defined $heading;
         $description = "" unless defined $description;
 
         # Get the base language code from $lang
         my $base_lang       = (split('-', $lang))[0];
-        my $loc_heading     = process_localization(\%Lexicon, $heading,     $lang, $prefix);
-        my $loc_description = process_localization(\%Lexicon, $description, $lang, $prefix);
+        my $loc_heading     = process_localization($file_lexicon, $heading,     $lang, $prefix);
+        my $loc_description = process_localization($file_lexicon, $description, $lang, $prefix);
         $loc_heading     =~ s/^\s*(\w.*?)\s*$/$1/;
         $loc_description =~ s/^\s*(\w.*?)\s*$/$1/;
         $rec->merge_props(
             Heading           => $loc_heading,
             Description       => $loc_description,
-            HeadingWeight     => localise(\%Lexicon, $heading_weight),
-            DescriptionWeight => localise(\%Lexicon, $description_weight),
+            HeadingWeight     => localise($file_lexicon, $heading_weight),
+            DescriptionWeight => localise($file_lexicon, $description_weight),
             MenuCat           => (defined $menucat ? $menucat : 'A')
         );
     } ## end foreach my $file (@files)
@@ -205,6 +125,143 @@ foreach my $lang (@langs) {
     $navdb->close();
 } ## end foreach my $lang (@langs)
 
+# Subroutine to get lexicon for a specific language
+sub get_lexicon_for_language {
+    my ($lang) = @_;
+    
+    # Check if we've already processed this language's lexicons
+    return $lexicon_cache{$lang} if exists $lexicon_cache{$lang};
+    
+    my $long_lex = SMNGR_LIB . '/' . I18NMODULES . "/General/general_$lang.lex";
+    return undef unless (-e $long_lex);
+    
+    open(LEX, '<:encoding(UTF-8)', $long_lex)
+        or die "Couldn't open ", $long_lex, " for reading.\n";
+    my @gen_lex = <LEX>;
+    close LEX;
+    
+    # Process the lexicon data and store in cache
+    my %lexicon = ();
+    chomp @gen_lex;
+    for (@gen_lex) {
+        next unless $_;     # first one empty
+        
+        # Remove comments and trailing whitespace first
+        $_ =~ s/\s*#.*$//;
+        $_ =~ s/\s+$//;
+
+        # Split on => but be careful about quoted strings
+        my ($k, $v);
+        my @parts = split / => /, $_, 2;  # Limit to 2 parts
+        if (@parts == 2) {
+            ($k, $v) = @parts;
+            
+            # Parse key and value with comprehensive quote handling
+            ($k) = parse_advanced_quoted_string($k);
+            ($v) = parse_advanced_quoted_string($v);
+            
+            $v =~ s/,$//;  # Remove trailing comma
+            
+            # Additional safety check for empty values
+            if ($k && $v) {
+                $lexicon{ lc($k) } = $v;
+            } else {
+                print STDERR "Error for $lang on key='$k', value='$v' \n" if DEBUG;
+            }
+        } else {
+            # If we don't have exactly 2 parts, it's a malformed line
+            print STDERR "Error for $lang on malformed line: $_ \n" if DEBUG;
+        }
+    }
+    
+    # Cache the lexicon for this language
+    $lexicon_cache{$lang} = \%lexicon;
+    return \%lexicon;
+}
+
+# Subroutine to get lexicon for a specific file
+sub get_file_lexicon {
+    my ($base_lexicon, $file2, $lang) = @_;
+    
+    # Get the panel-specific lexicon
+    my $long_lex = SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_$lang.lex";
+    my @panel_lex = ();
+    
+    if (-e $long_lex) {
+        open(LEX, '<:encoding(UTF-8)', $long_lex)
+            or die "Couldn't open ", $long_lex, " for reading.\n";
+        @panel_lex = <LEX>;
+        close LEX;
+    }
+    
+    # Merge base lexicon with panel lexicon
+    my %file_lexicon = %$base_lexicon;
+    chomp @panel_lex;
+    for (@panel_lex) {
+        next unless $_;     # first one empty
+        
+        # Remove comments and trailing whitespace first
+        $_ =~ s/\s*#.*$//;
+        $_ =~ s/\s+$//;
+
+        # Split on => but be careful about quoted strings
+        my ($k, $v);
+        my @parts = split / => /, $_, 2;  # Limit to 2 parts
+        if (@parts == 2) {
+            ($k, $v) = @parts;
+            
+            # Parse key and value with comprehensive quote handling
+            ($k) = parse_advanced_quoted_string($k);
+            ($v) = parse_advanced_quoted_string($v);
+            
+            $v =~ s/,$//;  # Remove trailing comma
+            
+            # Additional safety check for empty values
+            if ($k && $v) {
+                $file_lexicon{ lc($k) } = $v;
+            } else {
+                print STDERR "Error for $lang $file2 on key='$k', value='$v' \n" if DEBUG;
+            }
+        } else {
+            # If we don't have exactly 2 parts, it's a malformed line
+            print STDERR "Error for $lang $file2 on malformed line: $_ \n" if DEBUG;
+        }
+    }
+    
+    return \%file_lexicon;
+}
+
+# Subroutine to extract prefix from lexicon
+sub extract_prefix {
+    my ($lexicon) = @_;
+    
+    # Get all values from the lexicon
+    my @keys = values %$lexicon;    # Get all values from the array
+    
+    my $i      = 0;                    # Initialize the index
+    my $found  = 0;                    # Flag to check if the prefix was found
+    my $prefix = "xx_";                # Probably never match!!
+
+    while ($i < @keys) {               # Loop until we run out of entries
+        my $extracted_value = $keys[$i] || "";    # The current entry
+
+        # Extract prefix from the value (up to and including the first underscore)
+        ($prefix) = $extracted_value =~ /^'(.*?_)/;    # Match everything up to and including the first underscore
+
+        if (defined $prefix) {
+            $found = 1;                                # Set found flag to true
+            last;                                      # Exit the loop if prefix is found
+        }
+        $i++;                                          # Increment the index to check the next entry
+    }
+
+    if (!$found) {
+        #print(STDERR "No valid prefix found in any entries\n");    # if DEBUG;
+        $prefix = "xx_";    # Probably never match!!
+    }
+
+    return $prefix;
+}
 
 # Enhanced helper function for advanced quote handling
 sub parse_advanced_quoted_string {
