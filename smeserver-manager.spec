@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 254
+%define release 255
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Sep 09 2026 Brian Read <brianr@koozali.org> 11.0.0-255.sme
+- Fix missing $c parameter in phone validation in SrvMngr.pm [SME: 13712]
+
 * Sat Sep 05 2026 Brian Read <brianr@koozali.org> 11.0.0-254.sme
 - Change phone validation to be Lowest Common Denominator of formats [SME: 13712]
 - Re-factor navigation2-conf before adding in the .po and .mo options for translating menus [SME: 13720]

@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '253.el8.sme'; 
+our $VERSION = '254.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -1431,7 +1431,9 @@ sub validate_Phone {
     #The function returns 'OK' for valid numbers and 'PHONE VALIDATIO 'for invalid ones, 
     #properly handling various international formatting conventions including spaces, dashes, and parentheses.
     #
-    my $number = shift;
+    my $c           = shift;
+    my $number      = shift;
+ 
     
     return 0 unless defined $number && $number ne '';
     
