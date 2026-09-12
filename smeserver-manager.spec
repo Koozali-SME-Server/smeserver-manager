@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 256
+%define release 257
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Sep 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-257.sme
+- phone validation [SME: 13712]
+
 * Wed Sep 09 2026 Brian Read <brianr@koozali.org> 11.0.0-256.sme
 - Revert re-factor to navigation2-conf [SME: 13720]
 

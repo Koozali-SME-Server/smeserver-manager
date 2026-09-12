@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '254.el8.sme'; 
+our $VERSION = '256.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -1362,106 +1362,91 @@ sub validate_NonEmptyString {
         : 'STRING_VALIDATION';
 } 
 
-#sub validate_Phone {
-    #my $c           = shift;
-    #my $description = shift;
-    ## Regex breakdown:
-    ## ^                                -> Start of string
-    ## (?:                              -> Start of Main Phone Group
-    ##   (?:\+?1[-. ]?)?                -> Optional country code (+1 or 1)
-    ##   (?:(?:\(([0-9]{3})\)|([0-9]{3}))[-. ]?)? -> OPTIONAL 3-digit area code (with or without parentheses)
-    ##   ([0-9]{3})[-. ]?([0-9]{4})     -> Required 3-digit exchange + 4-digit line number
-    ##   (?:(?:,\s*|[ ]+|ext\.?|x)([0-9]{2,5}))?  -> Optional 2 to 5 digit extension ($5)
-    ## )                                -> End of Main Phone Group
-    ## |                                -> OR alternative
-    ## ^([0-9]{2,5})$                   -> Standalone 2 to 5 digit extension ($6)
-    #my $phone_regex = qr/
-        #^(?:
-            #(?:\+?1[-. ]?)?
-            #(?:(?:\(([0-9]{3})\)|([0-9]{3}))[-. ]?)?
-            #([0-9]{3})[-. ]?([0-9]{4})
-            #(?:(?:,\s*|[ ]+|ext\.?|x)([0-9]{2,5}))?
-        #)$
-        #|
-        #^([0-9]{2,5})$
-    #/xi;
-    #return ($description =~ $phone_regex)
-        #? 'OK'
-        #: 'PHONE_VALIDATION';
-#}
-
-#sub validate_Phone {
-    #my $c           = shift;
-    #my $description = shift;
-
-    ## International-friendly phone regex (not NANP-specific).
-    ## Regex breakdown:
-    ## ^                                     -> Start of string
-    ## (?:                                   -> Main phone group
-    ##   (?:\+|00[-. ]?)?                    -> Optional international prefix: + or 00
-    ##   \(?[0-9]{1,4}\)?                    -> First group: country/area code, 1-4 digits, optional parens
-    ##   (?:[-. ]?[0-9]){6,11}               -> Remaining 6-11 digits, each with an optional separator
-    ##                                          (total digits across the number: 7-15, per ITU-T E.164)
-    ##   (?:[\s,]+(?:ext\.?|x\.?)?[\s]*([0-9]{2,5}))?  -> Optional extension (comma/space/"ext"/"x" + 2-5 digits)
-    ## )                                     -> End of main phone group
-    ## |                                     -> OR
-    ## ^([0-9]{2,5})$                        -> Standalone 2-5 digit extension
-    #my $phone_regex = qr{
-        #^(?:
-            #(?:\+|00[-. ]?)?
-            #\(?[0-9]{1,4}\)?
-            #(?:[-. ]?[0-9]){6,11}
-            #(?:[\s,]+(?:ext\.?|x\.?)?[\s]*([0-9]{2,5}))?
-        #)$
-        #|
-        #^([0-9]{2,5})$
-    #}xi;
-
-    #return ($description =~ $phone_regex)
-        #? 'OK'
-        #: 'PHONE_VALIDATION';
-#}
+# to test
+# accepted
+#+44 1522 560008
+#01522 560008
+#555-5555
+#+1 661-723-6000
+#+1(418)525-4444,1111
+#+33 4 70 30 17 17
+#04 70 30 17 17
+#418-478-5222 ext 102
+#+1 (514) 555-0199,123
+#06 12 34 56 78, 45
+#(418) 555-1234 ext 99
+#
+# refuse
+#'; echo"514-5555";:(){ :|:& };:
+#01522 560008 (space at the end)
+#1- - - - ,,,3
 
 sub validate_Phone {
-    #
-    #This phone number validation routine first cleans the input by removing all non-digit characters except '+' and '0', 
-    #then checks if the number matches valid patterns: international numbers starting with '+' followed by 7-15 digits, 
-    #or numbers starting with '00' followed by 7-15 digits, 
-    #or local numbers (no prefix) consisting of 7-15 digits. 
-    #The function returns 'OK' for valid numbers and 'PHONE VALIDATIO 'for invalid ones, 
-    #properly handling various international formatting conventions including spaces, dashes, and parentheses.
-    #
     my $c           = shift;
-    my $number      = shift;
- 
-    
-    return 0 unless defined $number && $number ne '';
-    
-    # Clean the input - remove all non-digit characters except + and 0
-    my $clean = $number;
-    $clean =~ s/[^\d+0]//g;  # Keep only digits, +, and 0
-    
-    # Handle numbers that start with 00 (international format)
-    if ($clean =~ /^00(\d{7,15})$/) {
-        # This is an international number starting with 00
-        return 'OK';
-    }
-    
-    # Handle numbers that start with + (international format)
-    if ($clean =~ /^\+(\d{7,15})$/) {
-        return 'OK';
-    }
-    
-    # Handle local numbers (no prefix)
-    if ($clean !~ /^[+0]/ && length($clean) >= 7 && length($clean) <= 15) {
-        # Check if all characters are digits
-        if ($clean =~ /^\d+$/) {
-            return 'OK';
-        }
-    }
-    
-    return 'PHONE_VALIDATION';
-}
+    my $description = shift;
 
+    # Regex breakdown:
+    # mostly for North America
+    # ^                                -> Start of string
+    # (?:                              -> Start of Main Phone Group
+    #   (?:\+?1[-. ]?)?                -> Optional country code (+1 or 1)
+    #   (?:(?:\(([0-9]{3})\)|([0-9]{3}))[-. ]?)? -> OPTIONAL 3-digit area code (with or without parentheses)
+    #   ([0-9]{3})[-. ]?([0-9]{4})     -> Required 3-digit exchange + 4-digit line number
+    #   (?:(?:,\s*|[ ]+|ext\.?|x)([0-9]{2,5}))?  -> Optional 2 to 5 digit extension ($5)
+    # )                                -> End of Main Phone Group
+
+    # |                                -> OR alternative
+
+
+    # International-friendly phone regex (not NANP-specific).
+    # Regex breakdown:
+    # ^                                     -> Start of string
+    # (?:                                   -> Main phone group
+    #   (?:\+|00[-. ]?)?                    -> Optional international prefix: + or 00
+    #   \(?[0-9]{1,4}\)?                    -> First group: country/area code, 1-4 digits, optional parens
+    #   (?:[-. ]?[0-9]){6,11}               -> Remaining 6-11 digits, each with an optional separator
+    #                                          (total digits across the number: 7-15, per ITU-T E.164)
+    #   (?:[\s,]+(?:ext\.?|x\.?)?[\s]*([0-9]{2,5}))?  -> Optional extension (comma/space/"ext"/"x" + 2-5 digits)
+    # )                                     -> End of main phone group
+
+    # ^\+[1-9]\d{6,14}$                     -> E.164
+
+    # ^([0-9]{2,5})$                        -> Standalone 2-5 digit extension
+
+    # ^(\+?[0-9][0-9\s,()-]+[0-9])$         -> can start with a + or not; should then be followed by a numerical
+    #                                          can then be mix of () space coma dash and numbers
+    #                                          should finish with a number. Not perfect can accept something
+    #                                          not really a phone number like "1- - - - ,,,3"
+   
+    # ^\+?(?:[0-9]{1,4})?[-. ]?\(?[0-9]{1,4}\)?[-. ]?[0-9]{1,4}[-. ]?[0-9]{1,9}$ -> can start with a + or not; should then be followed by a numerical
+    #                                                                            can then be mix of () space coma dash and numbers
+    #                                                                            should finish with a number.
+
+    my $phone_regex = qr{
+        ^(?:
+	            (?:\+?1[-. ]?)?
+	            (?:(?:\(([0-9]{3})\)|([0-9]{3}))[-. ]?)?
+	            ([0-9]{3})[-. ]?([0-9]{4})
+	            (?:(?:,\s*|[ ]+|ext\.?|x)([0-9]{2,5}))?
+	        )$
+	    |
+        ^(?:
+            (?:\+|00[-. ]?)?
+            \(?[0-9]{1,4}\)?
+            (?:[-. ]?[0-9]){6,11}
+            (?:[\s,]+(?:ext\.?|x\.?)?[\s]*([0-9]{2,5}))?
+        )$
+        |
+        ^(\+[1-9]\d{6,14})$
+        |
+        ^([0-9]{2,5})$
+        |
+        ^(\+?(?:[0-9]{1,4})?[-. ]?\(?[0-9]{1,4}\)?[-. ]?[0-9]{1,4}[-. ]?[0-9]{1,9})$
+}xi;
+
+    return ($description =~ $phone_regex)
+        ? 'OK'
+        : 'PHONE_VALIDATION';
+}
 
 1;
