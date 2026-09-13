@@ -176,6 +176,8 @@ sub login {
     # so this alone does not turn on IP-pinning - see the 'ignore_ip'
     # evidence note in the patch write-up.
     my $ip_addr = $c->tx->remote_address;
+    # as tkt httpd mod is not as good to get the real ip , we need to keep it undef
+    $ip_addr = undef;
     my $debug    = $c->config('debug');
     $debug = 3 if $debug;
     my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();

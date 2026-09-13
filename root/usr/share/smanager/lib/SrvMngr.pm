@@ -161,6 +161,8 @@ sub _handle_tkt {
   # separate, coordinated change (it also lives in e-smith-manager's Apache
   # config, TKTAuthIgnoreIP).
   my $ip_addr = $c->tx->remote_address;
+  # as tkt httpd mod is not as good to get the real ip , we need to keep it undef
+  $ip_addr = undef;
   my $debug    = $c->config('debug');
   $debug = 3 if $debug;
   my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();
