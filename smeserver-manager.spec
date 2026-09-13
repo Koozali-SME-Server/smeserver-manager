@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 258
+%define release 259
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Sep 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-259.sme
+- adding City is non empty for updating user [SME: 13702]
+- separate system / user validation [SME: 13728]
+
 * Sat Sep 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-258.sme
 - restore tkt without ip [SME: 13714]
 

@@ -237,11 +237,6 @@ sub do_update {
         my $first = $c->param('FirstName');
         my $last  = $c->param('LastName');
         my $mail  = $c->param('ForwardAddress');
-        my $dept  = $c->param('Dept');
-        my $Phone = $c->param('Phone');
-        my $Company = $c->param('Company');
-        my $City  = $c->param('City');
-        my $Street  = $c->param('Street');
 
 		# Validation: stop at the first failure.
 		for my $check (
@@ -253,6 +248,27 @@ sub do_update {
 				return $c->l('FM_NONBLANK') unless $last;
 				return 'OK';
 			},
+			sub { $c->pseudonym_clash($first) },
+			$mail ? (sub { $c->emailforward($mail) }) : (),
+		) {
+			$res = $check->();
+
+			if ($res ne 'OK') {
+				$result = $res;
+				last;
+			}
+		}
+
+    if ($trt eq 'UPD' ) {
+
+        my $dept  = $c->param('Dept');
+        my $Phone = $c->param('Phone');
+        my $Company = $c->param('Company');
+        my $City  = $c->param('City');
+        my $Street  = $c->param('Street');
+
+        # Validation: stop at the first failure.
+        for my $check (
             sub {
                 my $res= ($c->validate_NonEmptyString($dept) eq 'OK')? 'OK' : $c->l('usr_DEPARTMENT') .": " .$c->l('STRING_VALIDATION');
                 return $res;
@@ -269,21 +285,21 @@ sub do_update {
                 my $res= ($c->validate_Phone($Phone) eq 'OK')? 'OK' : $c->l('usr_PHONE_NUMBER').": ".$c->l('PHONE_VALIDATION');
                 return $res;
             },
+            sub {
+                my $res= ($c->validate_City($City) eq 'OK')? 'OK' : $c->l('usr_CITY').": ".$c->l('CITY_VALIDATION');
+                return $res;
+            },
+            sub { $c->pseudonym_clash($first) },
+            $mail ? (sub { $c->emailforward($mail) }) : (),
+        ) {
+            $res = $check->();
 
-			# sub {
-			#     return $c->l('FM_NONBLANK') unless $mail;
-			#     return 'OK';
-			# },
-			sub { $c->pseudonym_clash($first) },
-			$mail ? (sub { $c->emailforward($mail) }) : (),
-		) {
-			$res = $check->();
-
-			if ($res ne 'OK') {
-				$result = $res;
-				last;
-			}
-		}
+            if ($res ne 'OK') {
+                $result = $res;
+                last;
+            }
+        }
+        }
 
 		if (!$result) {
 			if ($trt eq 'UPS') {
