@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 259
+%define release 260
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sun Sep 13 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-260.sme
+- fix smanager service stop when httpd-e-smith or ldap stop  [SME: 12667]
+
 * Sat Sep 12 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-259.sme
 - adding City is non empty for updating user [SME: 13702]
 - separate system / user validation [SME: 13728]
