@@ -286,7 +286,7 @@ sub do_update {
                 return $res;
             },
             sub {
-                my $res= ($c->validate_City($City) eq 'OK')? 'OK' : $c->l('usr_CITY').": ".$c->l('CITY_VALIDATION');
+                my $res= ($c->validate_NonEmptyString($City) eq 'OK')? 'OK' : $c->l('usr_CITY').": " .$c->l('STRING_VALIDATION');
                 return $res;
             },
             sub { $c->pseudonym_clash($first) },
@@ -789,6 +789,8 @@ sub modify_user {
 
     if ($acctType eq "user") {
         $adb->remove_user_auto_pseudonyms($acctName);
+        # If ForwardAddress is blank, then drop EmailForward back to "local"
+		my $EmailForward = (trim($c->param('ForwardAddress')) eq '') ? "local" : $c->param('EmailForward');
         my %newProperties = (
             'FirstName'       => $c->param('FirstName'),
             'LastName'        => $c->param('LastName'),
@@ -797,7 +799,7 @@ sub modify_user {
             'Dept'            => $c->param('Dept'),
             'City'            => $c->param('City'),
             'Street'          => $c->param('Street'),
-            'EmailForward'    => $c->param('EmailForward'),
+            'EmailForward'    => $EmailForward,
             'ForwardAddress'  => $c->param('ForwardAddress'),
             'VPNClientAccess' => $c->param('VPNClientAccess'),
         );
@@ -867,10 +869,12 @@ sub set_groups {
 sub modify_admin {
     my ($c)           = @_;
     my $acct          = $adb->get('admin');
+    # If ForwardAddress is blank, then drop EmailForward back to "local"
+	my $EmailForward = (trim($c->param('ForwardAddress')) eq '') ? "local" : $c->param('EmailForward');
     my %newProperties = (
         'FirstName'       => $c->param('FirstName'),
         'LastName'        => $c->param('LastName'),
-        'EmailForward'    => $c->param('EmailForward'),
+        'EmailForward'    => $EmailForward,
         'ForwardAddress'  => $c->param('ForwardAddress'),
         'VPNClientAccess' => $c->param('VPNClientAccess'),
     );
@@ -941,4 +945,11 @@ sub system_change_password {
         return $c->l("Error occurred while modifying password for admin.");
     }
 } ## end sub system_change_password
+
+sub trim {
+    my $string = shift;
+    return unless defined $string;
+    $string =~ s/^\s+|\s+$//g;
+    return $string;
+}
 1
