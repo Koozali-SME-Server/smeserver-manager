@@ -48,12 +48,12 @@ sub main {
     # ?From=https://evil.example/... link (see SrvMngr.pm for details) and
     # also covers the old bare 'login' => home_page fallback, since 'login'
     # (no leading slash) fails the same-path check.
-    my $from = $c->sanitize_from($c->param('From'));
-    $c->stash(From => $from);   # used by login.html.ep's hidden 'From' field
+    $c->stash->{From} //= $c->sanitize_from($c->param('From'));
+    my $from = $c->stash('From');
     my $debug    = $c->config('debug');
     # ticket might have changed since smanager has started.
     $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.cfg");
-    $c->log->debug($c->req->headers->to_string) if $debug;
+
     #  in Mojo request cookies are automatically parsed according to RFC 6265
     # done because = created by base64 encoding, and Mojo may interpret them as part of the structure rather than the data.
     #  it is standard practice to URL-encode special characters in cookie values, where = becomes %3D
@@ -93,7 +93,7 @@ sub main {
     } else {
         $c->log->debug("no auth_tkt found ???") if $debug;
         if ($c->session('username')) {
-						$c->log->debug("no valid ticket but user already logged in, redirect to  $from") if $debug;
+            $c->log->debug("no valid ticket but user already logged in, redirect to  $from") if $debug;
             # we might want to logout the user here...
             #return $c->redirect_to("/logout");
             # or we might generate a new ticket ?

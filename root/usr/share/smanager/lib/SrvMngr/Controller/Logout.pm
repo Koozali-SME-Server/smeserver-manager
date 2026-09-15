@@ -21,6 +21,16 @@ my $at = Apache::AuthTkt->new(conf => "/etc/e-smith/web/common/cgi-bin/AuthTKT.c
 sub logout {
     my $c = shift;
     $c->app->log->info($c->log_req);
+    my $referer = $c->req->headers->referer;
+    my $target_path = '/';
+    if ($referer) {
+        my $url = Mojo::URL->new($referer);
+        $target_path = $url->path_query;
+        $target_path =~ s{^/?smanager}{};
+        $target_path =$c->sanitize_from($target_path);
+    }
+    $c->log->debug("Disconnect from : " . $target_path);
+
     $c->session(expires => 1);
     $c->flash(success => 'Goodbye');
     my $server_name = $c->req->headers->header('X-Forwarded-Host');
@@ -35,10 +45,9 @@ sub logout {
             expires => '-1h',
             @auth_domain,
      });
-    $c->log->debug($c->req->headers->to_string);
     # Send the user straight back to the login panel rather than the
     # (now inaccessible) home panel - avoids the extra home->redirected->
     # login bounce that just re-shows the same 'please log in' state.
-    $c->redirect_to('login');
+    $c->redirect_to($c->url_for('login')->query(From => $target_path));
 } ## end sub logout
 1;

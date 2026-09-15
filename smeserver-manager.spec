@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 261
+%define release 262
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,8 +129,13 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Mon Sep 14 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-262.sme
+- fix redirection to last page [SME: 13714]
+  works on timeout, manual logout, tkt reconnect and disconnect
+- disconnect user when tkt is missing
+
 * Mon Sep 14 2026 Brian Read <brianr@koozali.org> 11.0.0-261.sme
-- Fix wrong call to validate City field [SME: 13734
+- Fix wrong call to validate City field [SME: 13734]
 - Add check for blank forwarded email and force to local if necessary [SME: 13735]
 
 * Sun Sep 13 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-260.sme

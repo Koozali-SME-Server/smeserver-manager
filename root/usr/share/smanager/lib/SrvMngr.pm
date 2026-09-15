@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '256.el8.sme'; 
+our $VERSION = '261.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -166,15 +166,18 @@ sub _handle_tkt {
   my $debug    = $c->config('debug');
   $debug = 3 if $debug;
   my @expires = $at->cookie_expires ? ( -expires => sprintf("+%ss", $at->cookie_expires) ) :  ();
+  # if we have a tkt
   if ($ticket) {
     $c->log->debug("auth_tkt: $ticket") if $debug;
     # Check if the user is already "logged in" in the Mojo session
     my $valid_ticket = $at->validate_ticket($ticket, ip_addr =>'',ignore_ip => 1);
+    # if tkt is valid and user logged in
     if ( (defined $valid_ticket) && ($c->session('username')) ) {
         $c->log->debug("TKT cookie age: ".(time()-$valid_ticket->{'ts'}). " and TKT cookie timeout: ".$at->timeout()) if $debug;
+        # if tkt is valid and user logged in
+        # and TKT expired; redirect to login page
         if ((time()-$valid_ticket->{'ts'}) > $at->timeout() ) {
           $c->log->debug("TKT expired, removing") if $debug;
-          #TODO logout and destroy cookie
           $c->app->log->info($c->log_req);
           $c->session(expires => 1);
           $c->flash(success => 'Goodbye');
@@ -186,7 +189,9 @@ sub _handle_tkt {
                   expires => '-1h',
                   @auth_domain,
                   });
-          $c->redirect_to($c->home_page);
+          $c->redirect_to($c->url_for('login')->query(From => $c->target_path));
+        # if tkt is valid and user logged in
+        # and TKT has done half its time; renew it
         } elsif ((time()-$valid_ticket->{'ts'}) > $at->timeout()/2) {
            #TODO use the TKT setting instead of arbitrary /2
            $c->log->debug("TKT needs refresh") if $debug;
@@ -201,11 +206,16 @@ sub _handle_tkt {
                   @expires,
                   @auth_domain,
                   });
+        # if tkt is valid and user logged in
+        # it has then less than half its timeout, keep going
         } else {
              $c->log->debug("TKT active") if $debug;
         }
+    # if tkt is defined but we are not logged in
     } elsif ( (defined $valid_ticket) && ( ! $c->session('username')) ) {
         $c->log->debug("TKT but not logged in") if $debug;
+        # if ticket is valid but also not too old
+        # then log in user based on ticket user
         if ((time()-$valid_ticket->{'ts'}) < $at->timeout() ) {
             my $name =  $valid_ticket->{uid};
             $c->session(logged_in => 1);        # set the logged_in flag
@@ -222,6 +232,7 @@ sub _handle_tkt {
             $c->flash(success => "Welcome back! Redirecting you now.");
             $c->log->debug("Valid ticket so we log in the user, redirect to  $from") if $debug;
             return $c->redirect_to($from);
+        # if tkt is too old delete it and disconnect.
         } else {
             # delete TKT
             $c->log->debug("TKT expired, removing") if $debug;
@@ -233,8 +244,48 @@ sub _handle_tkt {
                     expires => '-1h',
                     @auth_domain,
                   });
+            return $c->redirect_to($c->url_for('login')->query(From => $c->target_path));
         }
+    } else {
+        # if tkt is invalid, logged or not, we should
+        # reauth just ot be sure,
+        # so we need to disconnect
+        if ($c->session('username')){
+        $c->log->debug("TKT missing, disconnect") if $debug;
+        $c->cookie(auth_tkt => '', {
+                name => $at->cookie_name,
+                value => "",
+                path   => '/',
+                secure => $at->require_ssl,
+                expires => '-1h',
+                @auth_domain,
+         });
+         $c->session(expires => 1);
+         $c->flash(success => 'Goodbye');
+         $c->redirect_to($c->url_for('login')->query(From => $c->target_path));
+         }
+
     }
+
+  } else {
+    # if tkt missing but we are logged in
+    # most probably user has disconnected from elsewhere
+    # so we need to disconnect here too
+    if ($c->session('username')){
+    $c->log->debug("TKT missing, disconnect") if $debug;
+    $c->cookie(auth_tkt => '', {
+            name => $at->cookie_name,
+            value => "",
+            path   => '/',
+            secure => $at->require_ssl,
+            expires => '-1h',
+            @auth_domain,
+     });
+     $c->session(expires => 1);
+     $c->flash(success => 'Goodbye');
+     $c->redirect_to($c->url_for('login')->query(From => $c->target_path));
+     }
+
   }
 }
 
@@ -346,7 +397,9 @@ sub setup_helpers {
         $self->flash( error => $message );
         my $target = $self->target_path;
         if ($target eq $self->home_page) {
-            $self->redirect_to( $self->home_page, status => 403 );
+            # this ether a real home_page redirect or a timeout,
+            #  anyway we want to offer opportunity for a quick login
+            $self->redirect_to( "/login", status => 403 );
         } else {
             # Preserve the panel the user was trying to reach across the
             # login round-trip via ?From=..., the same mechanism
