@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 262
+%define release 263
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Sep 15 2026 Brian Read <brianr@koozali.org> 11.0.0-263.sme
+- Fix typo in css [SME: 13449]
+
 * Mon Sep 14 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-262.sme
 - fix redirection to last page [SME: 13714]
   works on timeout, manual logout, tkt reconnect and disconnect
