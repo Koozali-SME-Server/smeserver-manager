@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 263
+%define release 264
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Sep 15 2026 Brian Read <brianr@koozali.org> 11.0.0-264.sme
+- Add CSP hash for menu toggle to avoid CSP failure in firefox [SME: 13449]
+
 * Tue Sep 15 2026 Brian Read <brianr@koozali.org> 11.0.0-263.sme
 - Fix typo in css [SME: 13449]
 
