@@ -130,7 +130,7 @@ true
 
 %changelog
 * Wed Sep 16 2026 Brian Read <brianr@koozali.org> 11.1.0-1.sme
-- Update password checker zvcvbn to new version (written in ts and comiled to js offline)  [SME: ]
+- Update password checker zvcvbn to new version (written in ts and comiled to js offline)  [SME: 13740]
 
 * Tue Sep 15 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-265.sme
 - set min-width: 242px for smanager inputs [SME: 13449]
