@@ -478,7 +478,7 @@ table.incolumn {
 .partial p > span.data > select{
   width:auto;
   max-width: 50%;
-/*  min-width: 35%;        */
+  min-width: 242px;
   box-sizing: border-box;
 }
 
