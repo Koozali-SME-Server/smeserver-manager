@@ -104,20 +104,27 @@ $(document).ready(function () {
       .addClass('strength-s' + score);
   }
 
-  function buildHint(result) {
-    if (result.score >= 4) return "";
+function buildHint(result) {
+  // 1. High score: no hint needed
+  if (result.score >= 4) return "";
 
-    var pwd = result.password || "";
-    if (pwd.length < 10) return "Make it longer.";
+  // 2. Custom length check
+  if (result.password && result.password.length < 10) return "Make it longer.";
 
-    if (result.sequence && result.sequence.some(function (m) {
-      return m.pattern === 'dictionary' || m.pattern === 'repeat' || m.pattern === 'sequence';
-    })) {
-      return "Avoid common words and predictable patterns. Add more words (use a passphrase).";
-    }
+  // 3. Retrieve feedback from zxcvbn (nested under 'feedback')
+  var feedback = result.feedback || {};
+  var warning = feedback.warning || "";
+  var suggestions = feedback.suggestions || [];
 
-    return "Use a mix of upper/lowercase, numbers, and symbols. Add more words (use a passphrase).";
+  // 4. Combine warning and suggestions into a single string
+  if (warning || suggestions.length > 0) {
+    var suggestionText = suggestions.join(" ");
+    return warning + (suggestionText ? " " + suggestionText : "");
   }
+
+  // 5. Fallback hint
+  return "Use a mix of upper/lowercase, numbers, and symbols. Add more words (use a passphrase).";
+}
 
 
   // ----------------------------------------
