@@ -15,7 +15,6 @@
     %# $c->app->log->info("refresh url:".$src);
     %# $c->app->log->info("refresh log_data:".$log_datas->{Filename});
     
-    %= csrf_field
     %= submit_button 'Refresh', class => 'btn btn-refresh no-disable'
   % end
 
