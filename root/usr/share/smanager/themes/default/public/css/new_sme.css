@@ -174,18 +174,7 @@
     margin-top:0px;
 }
 
-.fallback-box {
-    display: inline-block;
-    border: 2px solid gray;
-    padding: 7px;
-    border-radius: 5px;
-    font-size: 12px;
-    margin-top: -2px;
-    margin-left: -32px;
-    text-align: center;
-}
-
- table.sme-border {
+table.sme-border {
      border-collapse: collapse;
      border: 2px solid #cccccc;
      empty-cells: show;
@@ -469,3 +458,25 @@ background-color: #3e8e41;
 outline: 3px solid rgba(66,133,244,0.25);
 outline-offset: 2px;
 }
+
+.fallback-box {
+    display: inline-block;
+    border: thin solid black;
+    padding: 2px 4px; /* Add some space around the fallback text */
+    border-radius: 5px;
+    font-size: 15px;
+    min-width: 30px; /* Ensure consistent width for fallback text */
+    text-align: center; /* Center the text */
+    box-sizing: border-box;
+    /* Prevent text from wrapping in unexpected ways */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* If you want to style the fallback text differently */
+/*
+.fallback-box::before {
+    content: "🌐 "; /* Optional: add a globe icon or other indicator */
+}
+*/
