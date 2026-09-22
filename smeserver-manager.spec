@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.1.0
-%define release 1
+%define release 2
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Sep 22 2026 Brian Read <brianr@koozali.org> 11.1.0-2.sme
+- Re-factor header bar to be properly responsive  [SME: 13749]
+
 * Wed Sep 16 2026 Brian Read <brianr@koozali.org> 11.1.0-1.sme
 - Update password checker zvcvbn to new version (written in ts and comiled to js offline)  [SME: 13740]
 
