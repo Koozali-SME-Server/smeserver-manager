@@ -99,15 +99,14 @@ foreach my $lang (@langs) {
     #my @files = ('Quota.pm');  #TEMP FOR TESTING
     foreach my $file (@files) {
 		# Go through all the controller files, getting Module name and menu entry (description)
+		# Skip if is a directory
         next if (-d SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file");
-        #next if ($file =~ m/^.*custom.*$/i);
-        #next if ($file =~ m/^.*Logout.*$/i);
-        #next if ($file =~ m/^.*Legacypanel.*$/i);
+        # or is not a *.pm file
         next unless ($file =~ m/[A-Z].*\.pm$/);
-        #next if ($file eq "Quota.pm"); #Quota was failing
         my $file2 = lc($file);
         $file2 =~ s/\.pm$//;
         my $namespace = ucfirst($file2);
+        # Skip of not po directory for this module
         next if (!-d SMNGR_LIB.'/'.I18NPO."/".ucfirst($file2));
 
 
