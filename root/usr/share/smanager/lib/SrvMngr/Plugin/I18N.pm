@@ -5,6 +5,8 @@ use Mojo::URL;
 use I18N::LangTags;
 use I18N::LangTags::Detect;
 
+use constant DEBUG         => 0;
+
 our $VERSION = '1.14';
 
 	# Directory tree of compiled .mo files, checked in preference to the
@@ -15,6 +17,7 @@ our $VERSION = '1.14';
 	# (which referenced $conf before it existed in this scope) is removed.
 
 #export MOJO_LOG_LEVEL='debug';
+
 
 # "Can we have Bender burgers again?
 #  No, the cat shelter’s onto me."
@@ -238,24 +241,34 @@ use constant DEBUG => $ENV{MOJO_I18N_DEBUG} || 0;
 
 # "Robot 1-X, save my friends! And Zoidberg!"
 sub i18namespace {
-	my $self = shift;
-
-	my ($namespace, $language) = @_;
-	return $self->{namespace} unless $namespace && $language;
-
-	$language =~ s/-/_/g if $language;
-	$language = $self->{language} unless $language;
-
-	# Load Lang Module
-	$self->_load_module($namespace => $language);
-
-	if (my $handle = $namespace->get_handle($language)) {
-		$handle->fail_with(sub { $_[1] });
-		$self->{handle}   = $handle;
-		$self->{language} = $handle->language_tag;
-		$self->{namespace} = $namespace;
-	}
-	return $self;
+    my $self = shift;
+    my ($namespace, $language) = @_;
+    return $self->{namespace} unless $namespace && $language;
+    
+    # Build full namespace path for I18N system
+    my $full_namespace;
+    if ($namespace =~ /^SrvMngr/) {
+        # Already has full path
+        $full_namespace = $namespace;
+    } else {
+        # Construct full I18N namespace
+        $full_namespace = "SrvMngr::I18N::Modules::$namespace";
+    }
+    
+    $language =~ s/-/_/g if $language;
+    $language = $self->{language} unless $language;
+    
+    # Load Lang Module
+    $self->_load_module($full_namespace => $language);
+    
+    if (my $handle = $full_namespace->get_handle($language)) {
+        $handle->fail_with(sub { $_[1] });
+        $self->{handle}   = $handle;
+        $self->{language} = $handle->language_tag;
+        $self->{namespace} = $full_namespace;
+    }
+    
+    return $self;
 }
 
 sub languages {

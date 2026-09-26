@@ -17,6 +17,27 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 #----------------------------------------------------------------------
+# ============================================================================
+# 1. Set library path IMMEDIATELY after shebang
+# ============================================================================
+use lib '/usr/share/smanager/lib';
+
+# ============================================================================
+# 2. Initialize namespace as Locale::Maketext subclass BEFORE loading plugin
+# ============================================================================
+use Locale::Maketext;
+eval {
+    package SrvMngr::Plugin::I18N;
+    use base 'Locale::Maketext';
+    our %Lexicon = (_AUTO => 1);  # Initialize empty lexicon
+    1;
+} or die "Failed to setup SrvMngr::Plugin::I18N: $@";
+
+# ============================================================================
+# 3. Load the plugin (now safe because namespace is pre-configured)
+# ============================================================================
+require SrvMngr::Plugin::I18N;
+
 package esmith;
 use strict;
 use constant SMNGR_LIB     => '/usr/share/smanager/lib';
@@ -25,21 +46,47 @@ use constant WEBFUNCTIONS  => 'SrvMngr/Controller';
 use constant NAVDIR        => '/home/e-smith/db';
 use constant NAVIGATIONDIR => 'navigation2';
 use constant DEBUG         => 0;
+
 use esmith::NavigationDB;
 use esmith::I18N;
 use Data::Dumper;    # activate if DEBUG
+
 binmode(STDOUT, ":encoding(UTF-8)");
+
 my $navigation_ignore = "(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm(-.*)?)";
-my $i18n              = new esmith::I18N;
+
+
+my $i18n_db    = new esmith::I18N;
+our $i18n_plugin = SrvMngr::Plugin::I18N::_Handler->new();
+
+# These are the attributes Mojolicious normally sets during register()
+$i18n_plugin->{namespace} = 'SrvMngr::Plugin::I18N';
+$i18n_plugin->{default}   = 'en';
+#$i18n_plugin->{mo_root}   = '/usr/share/smanager/lib/SrvMngr/I18N/po';
+
+# Verify class
+warn "Handler class: " . ref($i18n_plugin) . "\n" if DEBUG;
+warn "Has i18namespace: " . ($i18n_plugin->can('i18namespace') ? 'yes' : 'NO') . "\n" if DEBUG;
+
+
+# ============================================================================
+# 6. Verify setup (Optional debug)
+# ============================================================================
+eval {
+    $i18n_plugin->i18namespace(undef, 'en');
+    print STDERR "I18N initialized successfully for EN\n" if DEBUG;
+};
+print STDERR "I18N init failed: $@" if $@;
+
 my %navdbs;
 opendir FUNCTIONS, SMNGR_LIB . '/' . WEBFUNCTIONS
     or die "Couldn't open ", SMNGR_LIB . '/' . WEBFUNCTIONS, "\n";
 my @files = grep (!/^${navigation_ignore}$/, readdir(FUNCTIONS));
 closedir FUNCTIONS;
-my @langs = $i18n->availableLanguages();
 
-#my @langs = ('tr');  #Temp override
+my @langs = $i18n_db->availableLanguages();  # ('fr') TEMP FOR TESTING
 foreach my $lang (@langs) {
+	# Step through each language 
     my $long_lex = SMNGR_LIB . '/' . I18NMODULES . "/General/general_$lang.lex";
     next unless (-e $long_lex);
     open(LEX, '<:encoding(UTF-8)', $long_lex)
@@ -47,14 +94,17 @@ foreach my $lang (@langs) {
     my @gen_lex = <LEX>;
     close LEX;
 
-    #my @files = ('Portforwarding.pm');  #Temp override
+    #my @files = ('Quota.pm');  #TEMP FOR TESTING
     foreach my $file (@files) {
+		# Go through all the controller files, getting Module name and menu entry (description)
         next if (-d SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file");
-
-        #        next unless ( $file =~ m/D.*\.pm$/ );
+        next if ($file =~ m/\-[C|c]ustom/);
         next unless ($file =~ m/[A-Z].*\.pm$/);
+        #next if ($file eq "Quota.pm"); #Quota was failing
+
         my $file2 = lc($file);
         $file2 =~ s/\.pm$//;
+        my $namespace = ucfirst($file2);
 
         #--------------------------------------------------
         # extract heading, description and weight information
@@ -92,11 +142,12 @@ foreach my $lang (@langs) {
         my $navdb   = $navdbs{$lang};
         my $navinfo = NAVDIR . '/' . NAVIGATIONDIR . "/navigation.$lang";
         $navdb ||= esmith::NavigationDB->open($navinfo);
-        $navdb ||= esmith::NavigationDB->create($navinfo)
-            or die "Couldn't create $navinfo\n";
+        $navdb ||= esmith::NavigationDB->create($navinfo) or die "Couldn't create $navinfo\n";
         $navdbs{$lang} ||= $navdb;
         my $rec = $navdb->get($file2)
             || $navdb->new_record($file2, { type => 'panel' });
+            
+        #Extract prefix from lex file (this needs some thought - no po and no lex files!!!)
         my @panel_lex = ();
         $long_lex = SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_$lang.lex";
 
@@ -113,6 +164,7 @@ foreach my $lang (@langs) {
         my $found  = 0;                    # Flag to check if the prefix was found
         my $prefix = "xx_";                # Probably never match!!
 
+		#Look for the prefix in the lex file
         while ($i < @keys) {               # Loop until we run out of entries
             my $extracted_value = $keys[$i] || "";    # The current entry
                                                       #print("Extracted val: ".$extracted_value."\n");
@@ -132,77 +184,82 @@ foreach my $lang (@langs) {
         } ## end while ($i < @keys)
 
         if (!$found) {
-            #print(STDERR "No valid prefix found in any entries: " . $file2 . " (" . $lang . ")\n");    # if DEBUG;
+            print(STDERR "No valid prefix found in any entries: " . $file2 . " (" . $lang . ")\n") if DEBUG;
             $prefix = "xx_";    # Probably never match!!
         }
 
-        #print("Prefix: ".$prefix." ".$file2." (".$lang.")\n");
-        my %Lexicon = ();
-        push(@panel_lex, @gen_lex);
-        my $top_error = 0;
-        chomp @panel_lex;
-	for (@panel_lex) {
-	    next unless $_;     # first one empty
-	    
-	    # Remove comments and trailing whitespace first
-	    $_ =~ s/\s*#.*$//;
-	    $_ =~ s/\s+$//;
+        print("Prefix: ".$prefix." ".$file2." (".$lang.")\n") if DEBUG;
+        
+        #my %Lexicon = ();
+        ##Load up the general lexical entries
+        #push(@panel_lex, @gen_lex);
+        #my $top_error = 0;
+        #chomp @panel_lex;
+        ## And load up the other lexical entries from the .lex file
+		#for (@panel_lex) {
+			#next unless $_;     # first one empty
+			
+			## Remove comments and trailing whitespace first
+			#$_ =~ s/\s*#.*$//;
+			#$_ =~ s/\s+$//;
 
-	    # Split on => but be careful about quoted strings
-	    my ($k, $v);
-	    my @parts = split / => /, $_, 2;  # Limit to 2 parts
-	    if (@parts == 2) {
-	        ($k, $v) = @parts;
-	        
-	        # Parse key and value with comprehensive quote handling
-	        ($k) = parse_advanced_quoted_string($k);
-	        ($v) = parse_advanced_quoted_string($v);
-	        
-	        $v =~ s/,$//;  # Remove trailing comma
-	        
-	        # Additional safety check for empty values
-	        if ($k && $v) {
-		  $Lexicon{ lc($k) } = $v;
-	        } else {
-		  print STDERR "Error for $lang $file2 on key='$k', value='$v' \n" if DEBUG;
-		  $top_error++;
-	        }
-	    } else {
-	        # If we don't have exactly 2 parts, it's a malformed line
-	        print STDERR "Error for $lang $file2 on malformed line: $_ \n" if DEBUG;
-	        $top_error++;
-	    }
-	}
-        if ($top_error > 0) {
-            if (DEBUG) {
-                print STDERR "$top_error errors for $lang $file2\n";
+			## Split on => but be careful about quoted strings
+			#my ($k, $v);
+			#my @parts = split / => /, $_, 2;  # Limit to 2 parts
+			#if (@parts == 2) {
+				#($k, $v) = @parts;
+				
+				## Parse key and value with comprehensive quote handling
+				#($k) = parse_advanced_quoted_string($k);
+				#($v) = parse_advanced_quoted_string($v);
+				
+				#$v =~ s/,$//;  # Remove trailing comma
+				
+				## Additional safety check for empty values
+				#if ($k && $v) {
+			  #$Lexicon{ lc($k) } = $v;
+				#} else {
+			  #print STDERR "Error for $lang $file2 on key='$k', value='$v' \n" if DEBUG;
+			  #$top_error++;
+				#}
+			#} else {
+				## If we don't have exactly 2 parts, it's a malformed line
+				#print STDERR "Error for $lang $file2 on malformed line: $_ \n" if DEBUG;
+				#$top_error++;
+			#}
+		#}
+        #if ($top_error > 0) {
+            #if (DEBUG) {
+                #print STDERR "$top_error errors for $lang $file2\n";
 
-                #		print Dumper(\@panel_lex);
-                #		print Dumper(\%Lexicon);
-                #		exit 1;
-            } ## end if (DEBUG)
-        } ## end if ($top_error > 0)
+                ##		print Dumper(\@panel_lex);
+                ##		print Dumper(\%Lexicon);
+                ##		exit 1;
+            #} ## end if (DEBUG)
+        #} ## end if ($top_error > 0)
+
         $heading     = "" unless defined $heading;
         $description = "" unless defined $description;
 
         # Get the base language code from $lang
         my $base_lang       = (split('-', $lang))[0];
-        my $loc_heading     = process_localization(\%Lexicon, $heading,     $lang, $prefix);
-        my $loc_description = process_localization(\%Lexicon, $description, $lang, $prefix);
+        my $loc_heading     = process_localization($namespace,$heading,     $lang, $prefix);
+        my $loc_description = process_localization($namespace,$description, $lang, $prefix);
+        print "Translated: $description into: $loc_description\n" if DEBUG;
         $loc_heading     =~ s/^\s*(\w.*?)\s*$/$1/;
         $loc_description =~ s/^\s*(\w.*?)\s*$/$1/;
         $rec->merge_props(
             Heading           => $loc_heading,
             Description       => $loc_description,
-            HeadingWeight     => localise(\%Lexicon, $heading_weight),
-            DescriptionWeight => localise(\%Lexicon, $description_weight),
+            HeadingWeight     => $heading_weight,
+            DescriptionWeight => $description_weight,
             MenuCat           => (defined $menucat ? $menucat : 'A')
         );
     } ## end foreach my $file (@files)
 
-    #warn "trying to close for lang $lang\n";
+    warn "trying to close for lang $lang\n" if DEBUG;
     my $navdb = $navdbs{$lang};
-    $navdb->close();
+    $navdb->close() if $navdb;
 } ## end foreach my $lang (@langs)
 
 
@@ -242,42 +299,96 @@ sub parse_advanced_quoted_string {
     return $content;
 }
 
+
+
+#1. localise
+#
+# Replaces the manual lc() hash lookup with the Handler's localization logic.
 sub localise {
-    my ($lexicon, $string) = @_;
+    my ($string) = @_;
+    $string //= '';
 
-    #print("Looking up:".$string."\n");
-    $string = "" unless defined $string;
-    my $lc_string = lc($string);
-    my $res       = $lexicon->{$lc_string} || $string;
 
-    #print("Returning:".$res."\n");
-    return $res;
-} ## end sub localise
+    # Call the handler's localization method.
+    # The underlying Locale::Maketext::Lexicon fallbacks automatically (returning $key if not found),
+    # which mirrors the old behavior ($lexicon->{key} ||  $key).
+    return $i18n_plugin->localize($string);
+}
 
-# Subroutine to process localization
-# Tries the raw heading first, and if no hit, then adds the prefix and tries again.
+# 2. process_localization
+# Replaces manual conditional logic with the I18N system's native lookup.
 sub process_localization {
-    my ($lexicon_ref, $heading, $lang, $prefix) = @_;
+    my ($namespace, $heading, $lang, $prefix) = @_;
+    print "Heading:$heading Language:$lang Prefix:$prefix\n" if DEBUG;
+  
+    # 1. Normalize language code (remove region part if exists)
+    my $base_lang = $lang ? (split('-', $lang))[0] : 'en';
+    print "Base lang:$base_lang\n" if DEBUG;
+    # 2. Set language in the handler
+    $i18n_plugin->languages($base_lang);
 
-    # Localized heading based on original heading
-    my $loc_heading = localise($lexicon_ref, $heading);
+    # Get the current active language tag from the handler
+    #my $lang = $i18n_plugin->languages;
 
-    # Get the base language code from $lang
-    my $base_lang = (split('-', $lang))[0];
+    # Ensure the handler is configured for this specific language/namespace
+    $i18n_plugin->i18namespace($namespace, $base_lang);
 
-    # Check the condition
-    if ($loc_heading eq $heading && $base_lang ne 'en') {
 
-        # Construct the new key by combining the prefix and the original heading
+    # 3. Try the raw heading first
+    my $loc_heading = localise($heading);
+    print "Raw:$loc_heading\n" if DEBUG;
+
+    # 4. Fallback logic if heading wasn't translated and target language is not English
+    if ($loc_heading eq $heading && $base_lang ne 'en' && defined $prefix) {
+        # 5. Try prefix + heading (standard I18N namespace/key pattern)
         my $key = $prefix . $heading;
+        my $tr = localise($key);
+        print "Try prefix:$key giving: $tr\n" if DEBUG;
 
-        # Localize using the constructed key
-        $loc_heading = localise($lexicon_ref, $key);
+        # If the prefix key also failed (returned exactly the key), revert to original heading
+        $loc_heading = $heading if $tr eq $key;
+    }
 
-        # See if it got a hit
-        if ($loc_heading eq $key) {
-            $loc_heading = $heading;
-        }
-    } ## end if ($loc_heading eq $heading...)
-    return $loc_heading;    # Optionally return the localized heading
-} ## end sub process_localization
+    return $loc_heading;
+}
+
+
+#sub localise {
+    #my ($lexicon, $string) = @_;
+
+    ##print("Looking up:".$string."\n");
+    #$string = "" unless defined $string;
+    #my $lc_string = lc($string);
+    #my $res       = $lexicon->{$lc_string} || $string;
+
+    ##print("Returning:".$res."\n");
+    #return $res;
+#} ## end sub localise
+
+## Subroutine to process localization
+## Tries the raw heading first, and if no hit, then adds the prefix and tries again.
+#sub process_localization {
+    #my ($lexicon_ref, $heading, $lang, $prefix) = @_;
+
+    ## Localized heading based on original heading
+    #my $loc_heading = localise($lexicon_ref, $heading);
+
+    ## Get the base language code from $lang
+    #my $base_lang = (split('-', $lang))[0];
+
+    ## Check the condition
+    #if ($loc_heading eq $heading && $base_lang ne 'en') {
+
+        ## Construct the new key by combining the prefix and the original heading
+        #my $key = $prefix . $heading;
+
+        ## Localize using the constructed key
+        #$loc_heading = localise($lexicon_ref, $key);
+
+        ## See if it got a hit
+        #if ($loc_heading eq $key) {
+            #$loc_heading = $heading;
+        #}
+    #} ## end if ($loc_heading eq $heading...)
+    #return $loc_heading;    # Optionally return the localized heading
+#} ## end sub process_localization

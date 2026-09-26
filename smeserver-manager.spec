@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.1.0
-%define release 2
+%define release 3
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Sat Sep 26 2026 Brian Read <brianr@koozali.org> 11.1.0-3.sme
+- Re-code menu DB creation to use the .mo or .po flags [SME: 13720]
+
 * Tue Sep 22 2026 Brian Read <brianr@koozali.org> 11.1.0-2.sme
 - Re-factor header bar to be properly responsive  [SME: 13749]
 
