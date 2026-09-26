@@ -42,9 +42,11 @@ package esmith;
 use strict;
 use constant SMNGR_LIB     => '/usr/share/smanager/lib';
 use constant I18NMODULES   => 'SrvMngr/I18N/Modules';
+use constant I18NPO        => 'SrvMngr/I18N/po';
 use constant WEBFUNCTIONS  => 'SrvMngr/Controller';
 use constant NAVDIR        => '/home/e-smith/db';
 use constant NAVIGATIONDIR => 'navigation2';
+use constant TEMPLATEDIR   => '/usr/share/smanager/themes/default/templates/';
 use constant DEBUG         => 0;
 
 use esmith::NavigationDB;
@@ -98,13 +100,16 @@ foreach my $lang (@langs) {
     foreach my $file (@files) {
 		# Go through all the controller files, getting Module name and menu entry (description)
         next if (-d SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file");
-        next if ($file =~ m/\-[C|c]ustom/);
+        #next if ($file =~ m/^.*custom.*$/i);
+        #next if ($file =~ m/^.*Logout.*$/i);
+        #next if ($file =~ m/^.*Legacypanel.*$/i);
         next unless ($file =~ m/[A-Z].*\.pm$/);
         #next if ($file eq "Quota.pm"); #Quota was failing
-
         my $file2 = lc($file);
         $file2 =~ s/\.pm$//;
         my $namespace = ucfirst($file2);
+        next if (!-d SMNGR_LIB.'/'.I18NPO."/".ucfirst($file2));
+
 
         #--------------------------------------------------
         # extract heading, description and weight information
@@ -147,97 +152,34 @@ foreach my $lang (@langs) {
         my $rec = $navdb->get($file2)
             || $navdb->new_record($file2, { type => 'panel' });
             
-        #Extract prefix from lex file (this needs some thought - no po and no lex files!!!)
-        my @panel_lex = ();
-        $long_lex = SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_$lang.lex";
+		my $prefix;
+		my $lexfile = SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_en.lex";
+		if (-f $lexfile) {
+			$prefix = Find_prefix_from_lex_file($lexfile);
+		} else {
+			warn "No lex file: $lexfile found" if DEBUG;
+		}
 
-        if (-e $long_lex) {
-            open(LEX, '<:encoding(UTF-8)', $long_lex)
-                or die "Couldn't open ", $long_lex, " for reading.\n";
-            @panel_lex = <LEX>;
-            close LEX;
-        } ## end if (-e $long_lex)
+		my $pofile = SMNGR_LIB . '/' . I18NPO . '/' . ucfirst($file2) . "/en.po";
+		if (!defined $prefix && -f $pofile) {
+			$prefix = Find_prefix_from_po_file($pofile);
+		} else {
+			warn "No po file: $pofile found" if !defined $prefix && DEBUG
+		}
 
-        #Extract the prefix for this module
-        my @keys   = values @panel_lex;    # Get all values from the array
-        my $i      = 0;                    # Initialize the index
-        my $found  = 0;                    # Flag to check if the prefix was found
-        my $prefix = "xx_";                # Probably never match!!
+		my $templatefile = TEMPLATEDIR . "/" . ${file2} . ".html.ep";
+		if (!defined $prefix && -f $templatefile) {
+			$prefix = Find_prefix_from_template_file($templatefile);  # Fixed: was $pofile
+		} else {
+			warn "No template file: $templatefile found" if !defined $prefix && DEBUG;
+		}
 
-		#Look for the prefix in the lex file
-        while ($i < @keys) {               # Loop until we run out of entries
-            my $extracted_value = $keys[$i] || "";    # The current entry
-                                                      #print("Extracted val: ".$extracted_value."\n");
-
-            # Extract prefix from the second value (up to and including the first underscore)
-            #my ($prefix) = $second_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
-            ($prefix) = $extracted_value =~ /^'(.*?_)/;    # Match everything up to and including the first underscore
-
-            if (defined $prefix) {
-                $found = 1;                                # Set found flag to true
-                last;                                      # Exit the loop if prefix is found
-            } else {
-
-                #print("Extracted Val: " . $extracted_value . "\n");
-            }
-            $i++;                                          # Increment the index to check the next entry
-        } ## end while ($i < @keys)
-
-        if (!$found) {
-            print(STDERR "No valid prefix found in any entries: " . $file2 . " (" . $lang . ")\n") if DEBUG;
-            $prefix = "xx_";    # Probably never match!!
-        }
-
-        print("Prefix: ".$prefix." ".$file2." (".$lang.")\n") if DEBUG;
+		if ($prefix) {
+			print("Prefix: ".$prefix." ".$file2." (".$lang.")\n")  if DEBUG;
+		} else {
+			warn "No prefix found in $lexfile, $pofile or $templatefile"
+		}
         
-        #my %Lexicon = ();
-        ##Load up the general lexical entries
-        #push(@panel_lex, @gen_lex);
-        #my $top_error = 0;
-        #chomp @panel_lex;
-        ## And load up the other lexical entries from the .lex file
-		#for (@panel_lex) {
-			#next unless $_;     # first one empty
-			
-			## Remove comments and trailing whitespace first
-			#$_ =~ s/\s*#.*$//;
-			#$_ =~ s/\s+$//;
-
-			## Split on => but be careful about quoted strings
-			#my ($k, $v);
-			#my @parts = split / => /, $_, 2;  # Limit to 2 parts
-			#if (@parts == 2) {
-				#($k, $v) = @parts;
-				
-				## Parse key and value with comprehensive quote handling
-				#($k) = parse_advanced_quoted_string($k);
-				#($v) = parse_advanced_quoted_string($v);
-				
-				#$v =~ s/,$//;  # Remove trailing comma
-				
-				## Additional safety check for empty values
-				#if ($k && $v) {
-			  #$Lexicon{ lc($k) } = $v;
-				#} else {
-			  #print STDERR "Error for $lang $file2 on key='$k', value='$v' \n" if DEBUG;
-			  #$top_error++;
-				#}
-			#} else {
-				## If we don't have exactly 2 parts, it's a malformed line
-				#print STDERR "Error for $lang $file2 on malformed line: $_ \n" if DEBUG;
-				#$top_error++;
-			#}
-		#}
-        #if ($top_error > 0) {
-            #if (DEBUG) {
-                #print STDERR "$top_error errors for $lang $file2\n";
-
-                ##		print Dumper(\@panel_lex);
-                ##		print Dumper(\%Lexicon);
-                ##		exit 1;
-            #} ## end if (DEBUG)
-        #} ## end if ($top_error > 0)
-
         $heading     = "" unless defined $heading;
         $description = "" unless defined $description;
 
@@ -262,6 +204,61 @@ foreach my $lang (@langs) {
     $navdb->close() if $navdb;
 } ## end foreach my $lang (@langs)
 
+sub Find_prefix_from_po_file{
+	my $pofile = shift;
+    return undef;
+}
+
+sub Find_prefix_from_template_file{
+	my $templatefile = shift;
+	return undef;
+}
+
+sub Find_prefix_from_lex_file {
+    my ($lexfile) = @_;
+    my $lang = 'en'; #only need one lex file to do it.
+    # Extract prefix from lex file 
+    my $long_lex = $lexfile;
+
+    my @panel_lex;
+    if (-e $long_lex) {
+        open(my $LEX, '<:encoding(UTF-8)', $long_lex)
+            or die "Couldn't open ", $long_lex, " for reading.\n";
+        @panel_lex = <$LEX>;
+        close $LEX;
+    }
+
+    # Extract the prefix for this module
+    my @keys   = values @panel_lex;    # Get all values from the array
+    my $i      = 0;                    # Initialize the index
+    my $found  = 0;                    # Flag to check if the prefix was found
+    my $prefix;                
+
+    # Look for the prefix in the lex file
+    while ($i < @keys) {               # Loop until we run out of entries
+        my $extracted_value = $keys[$i] || "";    # The current entry
+        #print("Extracted val: ".$extracted_value."\n");
+
+        # Extract prefix from the second value (up to and including the first underscore)
+        #my ($prefix) = $second_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
+        ($prefix) = $extracted_value =~ /^'(.*?_)/;    # Match everything up to and including the first underscore
+
+        if (defined $prefix) {
+            $found = 1;                                # Set found flag to true
+            last;                                      # Exit the loop if prefix is found
+        } else {
+            #print("Extracted Val: " . $extracted_value . "\n");
+        }
+        $i++;                                          # Increment the index to check the next entry
+    } ## end while ($i < @keys)
+
+    if (!$found) {
+        print(STDERR "No valid prefix found in any entries: " . $lexfile . " (" . $lang . ")\n") if DEBUG;
+        $prefix = undef;    # Probably never match!!
+    }
+    
+    return $prefix;
+}
 
 # Enhanced helper function for advanced quote handling
 sub parse_advanced_quoted_string {
