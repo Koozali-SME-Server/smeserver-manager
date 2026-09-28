@@ -46,12 +46,14 @@ use constant I18NPO        => 'SrvMngr/I18N/po';
 use constant WEBFUNCTIONS  => 'SrvMngr/Controller';
 use constant NAVDIR        => '/home/e-smith/db';
 use constant NAVIGATIONDIR => 'navigation2';
-use constant TEMPLATEDIR   => '/usr/share/smanager/themes/default/templates/';
+use constant TEMPLATEDIR   => '/usr/share/smanager/themes/default/templates';
 use constant DEBUG         => 0;
 
 use esmith::NavigationDB;
 use esmith::I18N;
 use Data::Dumper;    # activate if DEBUG
+use File::Temp qw(tempfile);
+use Locale::Maketext::Extract;
 
 binmode(STDOUT, ":encoding(UTF-8)");
 
@@ -106,9 +108,9 @@ foreach my $lang (@langs) {
         my $file2 = lc($file);
         $file2 =~ s/\.pm$//;
         my $namespace = ucfirst($file2);
-        # Skip of not po directory for this module
-        next if (!-d SMNGR_LIB.'/'.I18NPO."/".ucfirst($file2));
-
+        # Skip if no po or module directory for this module
+        next if (!-d SMNGR_LIB.'/'.I18NPO."/".ucfirst($file2) && !-d SMNGR_LIB.'/'.I18NMODULES."/".ucfirst($file2) );
+        warn "File2:$file2" if DEBUG;
 
         #--------------------------------------------------
         # extract heading, description and weight information
@@ -151,34 +153,31 @@ foreach my $lang (@langs) {
         my $rec = $navdb->get($file2)
             || $navdb->new_record($file2, { type => 'panel' });
             
-		my $prefix;
-		my $lexfile = SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_en.lex";
-		if (-f $lexfile) {
-			$prefix = Find_prefix_from_lex_file($lexfile);
-		} else {
-			warn "No lex file: $lexfile found" if DEBUG;
-		}
+        # Find prefix from one of the file types
+        my $prefix;
+		my @check_files = (
+			{ type => 'template', file => TEMPLATEDIR . "/" . ${file2} . ".html.ep",                          func => \&Find_prefix_from_mojolicious_file },
+			{ type => 'controller', file => SMNGR_LIB . "/SrvMngr/Controller/" . ucfirst($file2) . ".pm",              func => \&Find_prefix_from_mojolicious_file },
+			{ type => 'po',     file => SMNGR_LIB . '/' . I18NPO . '/' . ucfirst($file2) . "/en.po",                func => \&Find_prefix_from_po_file },
+			{ type => 'lex',    file => SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_en.lex",    func => \&Find_prefix_from_lex_file },
+		);
 
-		my $pofile = SMNGR_LIB . '/' . I18NPO . '/' . ucfirst($file2) . "/en.po";
-		if (!defined $prefix && -f $pofile) {
-			$prefix = Find_prefix_from_po_file($pofile);
-		} else {
-			warn "No po file: $pofile found" if !defined $prefix && DEBUG
-		}
-
-		my $templatefile = TEMPLATEDIR . "/" . ${file2} . ".html.ep";
-		if (!defined $prefix && -f $templatefile) {
-			$prefix = Find_prefix_from_template_file($templatefile);  # Fixed: was $pofile
-		} else {
-			warn "No template file: $templatefile found" if !defined $prefix && DEBUG;
+		for my $check (@check_files) {
+			warn "file:".$check->{file} if DEBUG;
+			if (-f $check->{file}) {
+				$prefix = $check->{func}->($check->{file});
+				last if defined $prefix;
+			} else {
+				warn "No " . $check->{type} . " file: $check->{file} found" if DEBUG;
+			}
 		}
 
 		if ($prefix) {
-			print("Prefix: ".$prefix." ".$file2." (".$lang.")\n")  if DEBUG;
+			print("Prefix: $prefix $file2 ($lang)\n") if DEBUG;
 		} else {
-			warn "No prefix found in $lexfile, $pofile or $templatefile"
+			warn "No prefix found in any of the checked files for $file2 ()";
 		}
-        
+                   
         $heading     = "" unless defined $heading;
         $description = "" unless defined $description;
 
@@ -203,14 +202,151 @@ foreach my $lang (@langs) {
     $navdb->close() if $navdb;
 } ## end foreach my $lang (@langs)
 
-sub Find_prefix_from_po_file{
-	my $pofile = shift;
-    return undef;
+sub Find_prefix_from_po_file {
+    my $pofile = shift;
+    
+    # Open the PO file for reading
+    open(my $fh, '<', $pofile) or return undef;
+    
+    my $prefix = undef;
+    
+    while (my $line = <$fh>) {
+        chomp $line;
+        
+        # Skip comment lines (starting with #)
+        next if $line =~ /^\s*#/;
+        
+        # Skip empty lines
+        next if $line =~ /^\s*$/;
+        
+        # Look for msgid lines
+        if ($line =~ /^msgid\s+"([^"]*)"/) {
+            my $msgid = $1;
+            
+            # Skip if msgid is empty
+            next if $msgid eq '';
+            
+            # Check if msgid has the prefix format <letters_or_numbers>_<the_rest>
+            if ($msgid =~ /^([a-zA-Z0-9]+)_(.*)$/) {
+                $prefix = $1;
+                last;  # Found first valid prefix, exit loop
+            }
+        }
+    }
+    
+    close($fh);
+    return $prefix;
 }
 
-sub Find_prefix_from_template_file{
-	my $templatefile = shift;
-	return undef;
+# ---------------------------------------------------------------------------
+# Reduce a Mojolicious .ep template to just its embedded Perl, blanking out
+# everything else but keeping every newline so extracted line numbers still
+# point at the right spot in the original .ep file. Tested against real
+# smeserver-manager templates, including the two comment conventions that
+# must NOT leak a key: a whole Perl-comment line ('%# ...') and the
+# '<%#= ... %>' idiom for temporarily disabling what used to be an output
+# tag -- both are genuine Mojolicious comments, never evaluated or rendered.
+# ---------------------------------------------------------------------------
+sub strip_to_perl {
+    my ($text) = @_;
+    my @lines = split /\n/, $text, -1;
+    my @out;
+
+    for my $line (@lines) {
+        if ( $line =~ /^\s*%\s*#/ ) {
+            push @out, '';
+            next;
+        }
+        if ( $line =~ /^\s*%(?!%)(.*)$/ ) {
+            push @out, $1;
+            next;
+        }
+        ( my $no_comments = $line ) =~ s/<%#.*?%>//gs;
+        my $kept = '';
+        while ( $no_comments =~ /<%={0,2}\s*(.*?)\s*%>/gs ) {
+            $kept .= $1 . ';';
+        }
+        push @out, $kept;
+    }
+    return join( "\n", @out );
+}
+
+sub Find_prefix_from_mojolicious_file {
+	# Subroutine: Find_prefix_from_mojolicious_file
+    # Returns the most frequent valid prefix found in the file
+    my $mojoliciousfile = shift;
+
+    return undef unless -f $mojoliciousfile;
+
+    # Initialize extractor (matching working snippet)
+    my $Ext = Locale::Maketext::Extract->new(
+        warnings => 0,
+        verbose  => 0,
+    );
+
+    # Extract msgid's from file
+	if ( $mojoliciousfile =~ /\.ep$/ ) {
+		#Mojolicious template file
+		open my $fh, '<:encoding(UTF-8)', $mojoliciousfile or die "Cannot open $mojoliciousfile: $!";
+		local $/;
+		my $raw = <$fh>;
+		close $fh;
+		$Ext->extract( $mojoliciousfile => strip_to_perl($raw) );
+	}
+	else {
+		#Mojolicious mojolicious file
+		$Ext->extract_file($mojoliciousfile);
+	}
+
+    $Ext->extract_file($mojoliciousfile) or return undef;
+
+    # Compile and write to temp PO file (required for this module version)
+    $Ext->compile;
+
+    my ($tfh, $tpath) = tempfile();
+    close($tfh);
+
+    $Ext->write_po($tpath); #Returns false even if works, but can't find all the plugins
+
+    my %prefix_counts;
+
+    open(my $rfh, '<:encoding(UTF-8)', $tpath) or do {
+        unlink $tpath;
+        return undef;
+    };
+
+    while (my $line = <$rfh>) {
+        # Match msgid lines
+        if ($line =~ /^msgid "((?:[^"\\]|\\.)*)"/) {
+            my $key = $1;
+            next if $key eq '';
+
+            # Unescape standard PO escapes
+            $key =~ s/\\"/"/g;
+            $key =~ s/\\\\/\\/g;
+
+            # Check if key has valid prefix format
+            if ($key =~ /^([a-zA-Z0-9]+)_(.*)$/) {
+                $prefix_counts{$1}++;
+            }
+        }
+    }
+
+    close($rfh);
+    unlink $tpath;
+
+    return undef unless %prefix_counts;
+
+    # Find prefix with the highest count
+    my ($best_prefix, $best_count) = (undef, 0);
+    while (my ($prefix, $count) = each %prefix_counts) {
+        if ($count > $best_count) {
+            $best_prefix = $prefix;
+            $best_count = $count;
+        }
+    }
+
+    return $best_prefix;
 }
 
 sub Find_prefix_from_lex_file {
