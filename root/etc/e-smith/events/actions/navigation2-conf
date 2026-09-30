@@ -91,12 +91,6 @@ closedir FUNCTIONS;
 my @langs = $i18n_db->availableLanguages();  # ('fr') TEMP FOR TESTING
 foreach my $lang (@langs) {
 	# Step through each language 
-    my $long_lex = SMNGR_LIB . '/' . I18NMODULES . "/General/general_$lang.lex";
-    next unless (-e $long_lex);
-    open(LEX, '<:encoding(UTF-8)', $long_lex)
-        or die "Couldn't open ", $long_lex, " for reading.\n";
-    my @gen_lex = <LEX>;
-    close LEX;
 
     #my @files = ('Quota.pm');  #TEMP FOR TESTING
     foreach my $file (@files) {
@@ -167,6 +161,7 @@ foreach my $lang (@langs) {
 			warn "file:".$check->{file} if DEBUG;
 			if (-f $check->{file}) {
 				$prefix = $check->{func}->($check->{file});
+				warn "Module:$file2 Prefix: $prefix found from:".$check->{type} if defined $prefix && DEBUG;
 				last if defined $prefix;
 			} else {
 				warn "No " . $check->{type} . " file: $check->{file} found" if DEBUG;
@@ -176,7 +171,8 @@ foreach my $lang (@langs) {
 		if ($prefix) {
 			print("Prefix: $prefix $file2 ($lang)\n") if DEBUG;
 		} else {
-			warn "No prefix found in any of the checked files for $file2 ()";
+			#warn "No prefix found in any of the checked files for $file2 ()";
+			$prefix = 'xxx'; #not found
 		}
                    
         $heading     = "" unless defined $heading;
