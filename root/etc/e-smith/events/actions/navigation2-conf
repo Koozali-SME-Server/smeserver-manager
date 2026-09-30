@@ -100,17 +100,18 @@ foreach my $lang (@langs) {
 
     #my @files = ('Quota.pm');  #TEMP FOR TESTING
     foreach my $file (@files) {
+		#warn "file:$file";
 		# Go through all the controller files, getting Module name and menu entry (description)
 		# Skip if is a directory
-        next if (-d SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file");
+        next if (-d SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file" );
         # or is not a *.pm file
         next unless ($file =~ m/[A-Z].*\.pm$/);
         my $file2 = lc($file);
         $file2 =~ s/\.pm$//;
         my $namespace = ucfirst($file2);
         # Skip if no po or module directory for this module
-        next if (!-d SMNGR_LIB.'/'.I18NPO."/".ucfirst($file2) && !-d SMNGR_LIB.'/'.I18NMODULES."/".ucfirst($file2) );
-        warn "File2:$file2" if DEBUG;
+        next if (!-d SMNGR_LIB.'/'.I18NPO."/".ucfirst($file2) && !-d SMNGR_LIB.'/'.I18NMODULES."/".ucfirst($file2) && $file !~ /Logout/);
+        #warn "File2:$file2" if DEBUG;
 
         #--------------------------------------------------
         # extract heading, description and weight information

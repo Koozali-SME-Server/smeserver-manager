@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '261.el8.sme'; 
+our $VERSION = '3.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -930,7 +930,7 @@ sub getNavigation {
     # Determine the directory where the functions are kept
     #----------------------------------------------------- 
 	my $navigation_ctlr_ignore = 
-	"(\.\.?|.*\-Custom\.pm|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm|Legacypanel\.pm(-.*)?)";
+	"(\.\.?|.*Custom.*\.pm|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm|Legacypanel\.pm(-.*)?)";
 #	"(\.\.?|Initial\.pm|.*Manual\.pm|Swttheme\.pm|Request\.pm|Modules\.pm(-.*)?)";
 	my $navigation_cgi_ignore = 
 	"(\.\.?|navigation|noframes|online-manual|(internal|pleasewait)(-.*)?)";
