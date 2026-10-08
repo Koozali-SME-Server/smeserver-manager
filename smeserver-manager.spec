@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 266
+%define release 267
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,10 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Oct 07 2026 Brian Read <brianr@koozali.org> 11.0.0-267.sme
+- Fix viewlog panel possible vulnerability to cross directory exploit CVE: DGI-SWISS-00036 [SME: 13721]
+- Also covers domain panel vulnerability CVE:DGI-SWISS-00035 which was fixed in 11.0.0-228 [SME: 13721]
+
 * Fri Sep 18 2026 Brian Read <brianr@koozali.org> 11.0.0-266.sme
 - Delete left over CSRF field from viewlogs refresh form [SME: 11708]
 
