@@ -109,11 +109,13 @@
     <div class="pkg-picker <%= $pkg_count ? '' : 'is-hidden' %>" id="pkg-picker-packages">
       <div class="pkg-picker-head">
         <span class="dnf-label label"><%= l('Packages') %></span>
-        <span class="data">
-          <input id = "pkg-search1" class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
-          <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
-          <div class="pkg-filter-msg" aria-live="polite"></div>
-        </span>
+		 <span class="data">
+		  <div class="input-container">
+			<input id="pkg-search1" class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
+			<button type="button" class="pkg-clear" aria-label="Clear filter"></button>
+		  </div>
+		  <div class="pkg-filter-msg" aria-live="polite"></div>
+		</span>
       </div>
 
       <select class="pkg-list" id="SelectedPackages" name="SelectedPackages" multiple size="14">
@@ -127,9 +129,13 @@
     <div class="pkg-picker <%= $grp_count ? '' : 'is-hidden' %>" id="pkg-picker-groups">
       <div class="pkg-picker-head">
         <span class="label"><%= l('Groups') %></span>
-        <input id = "pkg-search2" class="pkg-search" type="text" placeholder="Filter groups (text or /regex/flags)">
-        <button type="button" class="pkg-clear" aria-label="Clear filter">Clear</button>
-        <div class="pkg-filter-msg" aria-live="polite"></div>
+		<span class="data">
+		  <div class="input-container">
+			<input id="pkg-search1" class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
+			<button type="button" class="pkg-clear" aria-label="Clear filter"></button>
+		  </div>
+		  <div class="pkg-filter-msg" aria-live="polite"></div>
+		</span>
       </div>
 
       <select class="pkg-list" id="SelectedGroups" name="SelectedGroups" multiple size="14">

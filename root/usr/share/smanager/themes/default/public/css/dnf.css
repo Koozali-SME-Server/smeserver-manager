@@ -2,6 +2,7 @@
   width: 98%;           /* or 100% if you want it to fill span.data */
 }
 
+/*
 .pkg-search{
   width: 100%;
   box-sizing: border-box;
@@ -9,6 +10,7 @@
   padding: 6px 10px;
   margin-bottom: 6px;
 }
+*/
 
 .pkg-list{
   width: 100%;
@@ -25,40 +27,56 @@
   margin-bottom: 6px;
 }
 
-.pkg-clear{
+/* Container for input and clear button */
+.input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Input field styling */
+.pkg-search {
+  width: 100%;
+  padding-right: 0px; /* Make space for the clear button */
+}
+
+/* Clear button styling */
+.pkg-clear {
   position: absolute;
-  right: 10px;
+  right: 1px; /* Position at the far right of the input */
   top: 50%;
   transform: translateY(-50%);
-
-  /* remove the circle */
+  width: 16px;
+  height: 16px;
+  background-color: transparent;
   border: none;
-  background: transparent;
-  border-radius: 0;
-
-  /* look/feel */
-  padding: 0;
-  margin: 0;
-  width: 18px;
-  height: 18px;
-  line-height: 18px;
-  font-size: 18px;
-  font-weight: normal;
-  color: #666;
   cursor: pointer;
-
-  display: none; /* shown only when input has text */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 2;
+  font-size: 16px; /* Match the size of the cross */
+  font-weight: bold;
+  color: #999;
+  transition: color 0.2s;
 }
 
-.pkg-clear:hover{
-  color: #000;
+/* Cross symbol using HTML entity &#215; */
+.pkg-clear::before {
+  content: "×";
 }
 
-.pkg-search{
-  padding-right: 32px;  /* room for the X */
+/* Hover effect */
+.pkg-clear:hover {
+  color: #333;
 }
 
-.pkg-clear{ top: 48%; }   /* or 49% */
+/* Focus styling for accessibility */
+.pkg-clear:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
 
 .pkg-filter-msg{
   display: none;           /* no space when hidden */
@@ -71,18 +89,6 @@
   display: block;          /* takes space only when error exists */
 }
 
-#dnf-frame {
-  width: 100%;
-  height: 70vh;
-  border: 0;
-}
-
-.dnf-pickers {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 10px;
-}
 
 .pkg-picker-head {
   display: grid;
@@ -100,6 +106,18 @@
  
 .pkg-filter-msg.show {
   display: block;
+}
+#dnf-frame {
+  width: 100%;
+  height: 70vh;
+  border: 0;
+}
+
+.dnf-pickers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 .dnf-stream-panel { padding: 10px; }
