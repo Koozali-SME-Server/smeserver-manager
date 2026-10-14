@@ -133,8 +133,8 @@ true
 - Fix postion of the clear button in dnf software install panel - and make it a cross [SME: 13789]
 
 * Wed Oct 07 2026 Brian Read <brianr@koozali.org> 11.0.0-267.sme
-- Fix viewlog panel possible vulnerability to cross directory exploit CVE: DGI-SWISS-00036 [SME: 13721]
-- Also covers domain panel vulnerability CVE:DGI-SWISS-00035 which was fixed in 11.0.0-228 [SME: 13721]
+- Fix viewlog panel possible vulnerability to cross directory exploit CVE: CVE-2026-108120 reported by Brian Mariani@digialcanion [SME: 13721]
+- Also covers domain panel vulnerability CVE:CVE-2026-108121 which was fixed in 11.0.0-228 reported by Brian Mariani@digialcanion [SME: 13721]
 
 * Fri Sep 18 2026 Brian Read <brianr@koozali.org> 11.0.0-266.sme
 - Delete left over CSRF field from viewlogs refresh form [SME: 11708]
