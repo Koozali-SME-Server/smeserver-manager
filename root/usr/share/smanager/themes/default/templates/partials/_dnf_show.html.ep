@@ -111,8 +111,8 @@
         <span class="dnf-label label"><%= l('Packages') %></span>
 		 <span class="data">
 		  <div class="input-container">
-			<input id="pkg-search1" class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
-			<button type="button" class="pkg-clear" aria-label="Clear filter"></button>
+			<input id="pkg-search1" class="pkg-search" type="search" placeholder="Filter packages (text or /regex/flags)">
+			<!--<button type="button" class="pkg-clear" aria-label="Clear filter"></button>-->
 		  </div>
 		  <div class="pkg-filter-msg" aria-live="polite"></div>
 		</span>
@@ -131,8 +131,8 @@
         <span class="label"><%= l('Groups') %></span>
 		<span class="data">
 		  <div class="input-container">
-			<input id="pkg-search1" class="pkg-search" type="text" placeholder="Filter packages (text or /regex/flags)">
-			<button type="button" class="pkg-clear" aria-label="Clear filter"></button>
+			<input id="pkg-search1" class="pkg-search" type="search" placeholder="Filter packages (text or /regex/flags)">
+			<!--<button type="button" class="pkg-clear" aria-label="Clear filter"></button>-->
 		  </div>
 		  <div class="pkg-filter-msg" aria-live="polite"></div>
 		</span>

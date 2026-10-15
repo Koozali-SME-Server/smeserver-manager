@@ -35,15 +35,16 @@
 }
 
 /* Input field styling */
-.pkg-search {
+.pkg-search { 
   width: 100%;
   padding-right: 0px; /* Make space for the clear button */
 }
 
 /* Clear button styling */
+/*
 .pkg-clear {
   position: absolute;
-  right: 1px; /* Position at the far right of the input */
+  right: 1px;
   top: 50%;
   transform: translateY(-50%);
   width: 16px;
@@ -56,27 +57,34 @@
   justify-content: center;
   padding: 0;
   z-index: 2;
-  font-size: 16px; /* Match the size of the cross */
+  font-size: 16px; 
   font-weight: bold;
   color: #999;
   transition: color 0.2s;
 }
+*/
 
 /* Cross symbol using HTML entity &#215; */
+/*
 .pkg-clear::before {
   content: "×";
 }
+*/
 
 /* Hover effect */
+/*
 .pkg-clear:hover {
   color: #333;
 }
+*/
 
 /* Focus styling for accessibility */
+/*
 .pkg-clear:focus {
   outline: 2px solid #007bff;
   outline-offset: 2px;
 }
+*/
 
 .pkg-filter-msg{
   display: none;           /* no space when hidden */

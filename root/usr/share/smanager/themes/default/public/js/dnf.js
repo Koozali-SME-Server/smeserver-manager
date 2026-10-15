@@ -13,7 +13,7 @@
 
   function initPkgPicker(picker) {
     const input  = picker.querySelector('.pkg-search');
-    const clear  = picker.querySelector('.pkg-clear');
+    /*const clear  = picker.querySelector('.pkg-clear');*/
     const msg    = picker.querySelector('.pkg-filter-msg');
     const select = picker.querySelector('.pkg-list');
     if (!input || !select) return;
@@ -39,7 +39,7 @@
       const qraw = input.value || '';
       const parsed = parseQuery(qraw);
 
-      if (clear) clear.style.display = qraw.trim() ? 'block' : 'none';
+      /*if (clear) clear.style.display = qraw.trim() ? 'block' : 'none';*/
       if (parsed.type === 'invalid') { setError(`Invalid regex: ${parsed.error}`); return; }
       setError('');
 
@@ -54,7 +54,7 @@
 
     if (!picker.dataset.pkgPickerBound) {
       input.addEventListener('input', applyFilter);
-      if (clear) {
+      /*if (clear) {
         clear.addEventListener('click', () => {
           input.value = '';
           input.focus();
@@ -63,12 +63,13 @@
           clear.style.display = 'none';
         });
       }
+      */
       picker.dataset.pkgPickerBound = '1';
     }
 
     setError('');
     showAll();
-    if (clear) clear.style.display = 'none';
+    /*if (clear) clear.style.display = 'none';*/
   }
 
   function initAllPkgPickers(root = document) {

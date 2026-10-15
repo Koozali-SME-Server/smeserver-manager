@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 268
+%define release 269
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,6 +129,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Oct 15 2026 Brian Read <brianr@koozali.org> 11.0.0-269.sme
+- dnf panel: drop back to setting type on input controls to search [SME: 13789]
+
 * Tue Oct 13 2026 Brian Read <brianr@koozali.org> 11.0.0-268.sme
 - Fix postion of the clear button in dnf software install panel - and make it a cross [SME: 13789]
 
