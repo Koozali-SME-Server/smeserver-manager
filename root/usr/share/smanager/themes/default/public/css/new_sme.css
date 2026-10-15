@@ -8,7 +8,7 @@
 /* Make room for the icon inside the input */
 .input-container input.sme-password{
   padding-right: 3px;     /* space for the eye */
-  margin-left: 3px;
+  /*margin-left: 0;*/
 }
 
 /* Icon sits inside the input area at the far right */
@@ -20,6 +20,10 @@
   width: 22px;
   height: 22px;
   cursor: pointer;
+}
+
+span.data.email-del-password.input-container {
+  flex: 0;
 }
 
 /* Strength bar can sit to the right of the CONTROL (outside input) */

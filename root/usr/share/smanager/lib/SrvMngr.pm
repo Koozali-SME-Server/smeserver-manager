@@ -44,14 +44,14 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '3.el8.sme'; 
+our $VERSION = '11.1-5.el8.sme'; 
 #Extract the release value
-if ($VERSION =~ /^(\d+)/) {
-    $VERSION = $1;  # $1 contains the matched numeric digits
+if ($VERSION =~ /^(\d+).(\d+)-(\d+)/) {
+    $VERSION = eval "($1)*1000+$2*100+$3";  # $1,$2, and $3 contains the matched numeric digits
 } else {
-    $VERSION = '999' #No leading numeric digits found
+    $VERSION = '99999' #No leading numeric digits found
 }
-$VERSION = eval $VERSION;
+#$VERSION = eval $VERSION;
 
 use Exporter 'import';
 our @EXPORT_OK = qw( 

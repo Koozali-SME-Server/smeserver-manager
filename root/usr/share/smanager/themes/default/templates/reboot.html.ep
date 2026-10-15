@@ -19,7 +19,8 @@
   %= form_for 'reboot' => ( method => 'POST' ) => begin
 
     <p>
-      %= $c->render_to_string( inline => $c->l('rbo_DESCRIPTION') )
+      %#= $c->render_to_string( inline => $c->l('rbo_DESCRIPTION') )
+      <%= $c->l('rbo_DESCRIPTION') %>
       <br><br>
 
       <span class=label>

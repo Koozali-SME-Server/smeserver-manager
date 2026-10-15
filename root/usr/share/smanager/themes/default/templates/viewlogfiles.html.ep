@@ -1,4 +1,4 @@
-% layout 'default', title => "Sme server 2 - viewlogfiles";
+% layout 'default';
 
 % content_for 'module' => begin
   <div id='module' class='module viewlogfiles-panel partial'>
@@ -7,9 +7,9 @@
         (DBG)route: <%= $c->current_route %><br>
       </p>
     % }
-  <h1><%= $title %></h1>
+  <h1><%= $c->render_to_string(inline => stash 'title') %></h1>
   <br>
-  <%= $notif %>
+  <%= $c->render_to_string(inline => stash 'notif')  %>
   <% my $btn = l('NEXT'); %>
 
 %= form_for 'viewlogfilesd' => ( method => 'POST', id => 'viewlogfiles_form' ) => begin

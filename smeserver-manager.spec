@@ -1,8 +1,8 @@
 Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
-%define version 11.1.0
-%define release 3
+%define version 11.1
+%define release 7
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -52,8 +52,8 @@ Provides: perl(SrvMngr::Controller::EmailsettingsCustomUI)
 BuildRequires:  perl(ExtUtils::Manifest)
 BuildRequires:  perl(inc::Module::Install)
 BuildRequires:  perl(ExtUtils::MakeMaker)
+Obsoletes: smeserver-manager < %{version}-%{release}
 AutoReqProv: yes
-
 %define dir_mngr /usr/share/smanager
 
 %description
@@ -65,7 +65,7 @@ This RPM contributes the navigation bars for the smeserver-manager. New Mojolici
 %build
 
 #extract the release number and drop it in to the version for SM2 footer.
-sed -i "s/our \$VERSION = '[^']*'/our \$VERSION = '%{release}'/g" root/usr/share/smanager/lib/SrvMngr.pm
+sed -i "s/our \$VERSION = '[^']*'/our \$VERSION = '%{version}-%{release}'/g" root/usr/share/smanager/lib/SrvMngr.pm
 year=`date +%Y`
 sed -i "s/___YEAR___/$year/g" root/usr/share/smanager/lib/SrvMngr/Controller/Datetime.pm
 
@@ -129,6 +129,20 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Oct 14 2026 Brian Read <brianr@koozali.org> 11.1-7.sme
+- Fix postion of the clear button in dnf software install panel - and make it a cross [SME: 13789]
+- dnf panel: drop back to setting type on input controls to search [SME: 13789]
+
+* Wed Oct 07 2026 Brian Read <brianr@koozali.org> 11.0.0-267.sme
+- Fix viewlog panel possible vulnerability to cross directory exploit CVE: CVE-2026-108120 reported by Brian Mariani@digialcanion [SME: 13721]
+- Also covers domain panel vulnerability CVE:CVE-2026-108121 which was fixed in 11.0.0-228 reported by Brian Mariani@digialcanion [SME: 13721]
+
+* Tue Oct 06 2026 Brian Read <brianr@koozali.org> 11.1-5.sme
+- Alter release and version naming to take out redundant 3rd level [SME: 13785]
+
+* Mon Oct 05 2026 Brian Read <brianr@koozali.org> 11.1.0-4.sme
+- Sort alignment of mail server password on email delivery settings panel [SME: 13722]
+
 * Sat Sep 26 2026 Brian Read <brianr@koozali.org> 11.1.0-3.sme
 - Re-code menu DB creation to use the .mo or .po flags [SME: 13720]
 

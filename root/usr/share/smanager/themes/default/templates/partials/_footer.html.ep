@@ -1,7 +1,7 @@
 <footer id="footer" class="module footer">
   <span class="sme-copyright footer-text">
     % if ( $c->is_logged_in && $c->is_admin) {
-      SME Server <%= session 'releaseVersion' %>-<%= $c->app->VERSION %> Manager II
+      SME Server <%= session 'releaseVersion' %> Manager II-v<%= $c->app->VERSION %> 
       % my $mode;
       % if ( config->{mode} eq 'development' ) { $mode = '-dev'; } else { $mode = ''; }
       (Mojo:<%= Mojolicious->VERSION %><%= $mode %>)

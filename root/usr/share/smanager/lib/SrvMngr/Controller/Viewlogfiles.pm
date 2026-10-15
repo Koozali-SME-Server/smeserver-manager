@@ -45,33 +45,118 @@ sub main {
     $c->render(template => 'viewlogfiles');
 } ## end sub main
 
+#sub do_action {
+    #my $c = shift;
+    #$c->app->log->info($c->log_req);
+    ##my $fred = 1/0;
+    #my $title     = $c->l('log_FORM_TITLE');
+    #my $notif     = '';
+    #my $result    = "";
+    #my %log_datas = ();
+    #$log_datas{filename}         = $c->param('Filename') || 'messages' ;
+    #$log_datas{matchpattern}     = $c->param('Matchpattern') || '';
+    #$log_datas{highlightpattern} = $c->param('Highlightpattern') || '';
+    #$log_datas{operation}        = $c->param('Operation') || 'view';
+
+    #if ($log_datas{operation} eq 'download') {
+        #$log_datas{'trt'} = "DOWN";
+    #} else {
+        #$log_datas{'trt'} = "SHOW";
+    #}
+
+    #if ($log_datas{filename} =~ /^([\S\s]+)$/) {
+        #$log_datas{filename} = $1;
+    #} elsif ($log_datas{filename} =~ /^$/) {
+        #$log_datas{filename} = "messages";
+    #} else {
+        #$result .= $c->l("log_FILENAME_ERROR", $log_datas{filename}) . " ";
+    #}
+
+    #if ($log_datas{matchpattern} =~ /^(\S+)$/) {
+        #$log_datas{matchpattern} = $1;
+    #} else {
+        #$log_datas{matchpattern} = ".";
+    #}
+
+    #if ($log_datas{highlightpattern} =~ /^(\S+)$/) {
+        #$log_datas{highlightpattern} = $1;
+    #} else {
+        #$log_datas{highlightpattern} = '';
+    #}
+    #my $fullpath = "/var/log/$log_datas{filename}";
+
+    #if (-z $fullpath) {
+        #$result .= $c->l("log_LOG_FILE_EMPTY", "$log_datas{filename}");
+    #}
+
+    #if ($log_datas{trt} eq "SHOW") {
+       ## $c->app->log->info("Show");
+        ##if (!$result) {
+        ##    $result = $c->render_to_string(inline => showlogFile($c, %log_datas));
+        ##}
+
+        ##if ($result) {
+            #$c->stash(title => $title, modul => $result, log_datas => \%log_datas);
+            #return $c->live_page();
+        ##}
+    #} ## end if ($log_datas{trt} eq...)
+
+    #if ($log_datas{trt} eq 'DOWN') {
+        ##$c->app->log->info("Down");
+        #my $modul = 'Log file download';
+        #$notif = download_logFile($c, %log_datas);
+        #return undef unless defined $notif;
+    #} ## end if ($log_datas{trt} eq...)
+    #$c->stash(title => $title, notif => $notif, log_datas => \%log_datas);
+    #return $c->render(template => 'viewlogfiles');
+#} ## end sub do_action
+
 sub do_action {
     my $c = shift;
     $c->app->log->info($c->log_req);
-    #my $fred = 1/0;
+    
     my $title     = $c->l('log_FORM_TITLE');
     my $notif     = '';
     my $result    = "";
     my %log_datas = ();
-    $log_datas{filename}         = $c->param('Filename') || 'messages' ;
+    
+    # Get the list of valid log files
+    my $valid_log_files_ref = findlogFiles($c);
+    
+    # Get user input
+    $log_datas{filename}         = $c->param('Filename') || 'messages';
     $log_datas{matchpattern}     = $c->param('Matchpattern') || '';
     $log_datas{highlightpattern} = $c->param('Highlightpattern') || '';
     $log_datas{operation}        = $c->param('Operation') || 'view';
 
+    # Set operation type
     if ($log_datas{operation} eq 'download') {
         $log_datas{'trt'} = "DOWN";
     } else {
         $log_datas{'trt'} = "SHOW";
     }
 
-    if ($log_datas{filename} =~ /^([\S\s]+)$/) {
-        $log_datas{filename} = $1;
-    } elsif ($log_datas{filename} =~ /^$/) {
-        $log_datas{filename} = "messages";
-    } else {
-        $result .= $c->l("log_FILENAME_ERROR", $log_datas{filename}) . " ";
+    # Validate filename against known log files
+    my $filename_valid = 0;
+    
+    # Check if the requested filename is in our valid list
+	#$c->app->log->info("log file :$log_datas{filename}");
+    foreach my $valid_file (@$valid_log_files_ref) {
+		#$c->app->log->info("log file comparison:".$valid_file->[0]." ".$valid_file->[1]);
+        if ($log_datas{filename} eq $valid_file->[1]) {
+            $filename_valid = 1;
+            last;
+        }
+    }
+    
+    # If filename is not valid, set error and return
+    if (!$filename_valid) {
+		$c->app->log->info("log file error:$log_datas{filename}");
+        $c->stash(title => $title, notif => $c->l("log_FILENAME_ERROR", $log_datas{filename}),log_datas => \%log_datas);
+        return $c->render(template => 'viewlogfiles');
     }
 
+    # Continue with normal processing
     if ($log_datas{matchpattern} =~ /^(\S+)$/) {
         $log_datas{matchpattern} = $1;
     } else {
@@ -83,6 +168,7 @@ sub do_action {
     } else {
         $log_datas{highlightpattern} = '';
     }
+    
     my $fullpath = "/var/log/$log_datas{filename}";
 
     if (-z $fullpath) {
@@ -90,26 +176,19 @@ sub do_action {
     }
 
     if ($log_datas{trt} eq "SHOW") {
-       # $c->app->log->info("Show");
-        #if (!$result) {
-        #    $result = $c->render_to_string(inline => showlogFile($c, %log_datas));
-        #}
-
-        #if ($result) {
-            $c->stash(title => $title, modul => $result, log_datas => \%log_datas);
-            return $c->live_page();
-        #}
-    } ## end if ($log_datas{trt} eq...)
+        $c->stash(title => $title, modul => $result, notif => $notif, log_datas => \%log_datas);
+        return $c->live_page();
+    }
 
     if ($log_datas{trt} eq 'DOWN') {
-        #$c->app->log->info("Down");
         my $modul = 'Log file download';
         $notif = download_logFile($c, %log_datas);
         return undef unless defined $notif;
-    } ## end if ($log_datas{trt} eq...)
+    }
+    
     $c->stash(title => $title, notif => $notif, log_datas => \%log_datas);
     return $c->render(template => 'viewlogfiles');
-} ## end sub do_action
+}
 
 sub timestamp2local {
     $_ = shift;
