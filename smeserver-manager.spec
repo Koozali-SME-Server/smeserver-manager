@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 269
+%define release 270
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -129,11 +129,14 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Nov 04 2026 Brian Read <brianr@koozali.org> 11.0.0-270.sme
+- Arrange that contribs without any other language translation files fallback to english rather than show the lexical id [SME: 13806]
+
 * Thu Oct 15 2026 Brian Read <brianr@koozali.org> 11.0.0-269.sme
 - dnf panel: drop back to setting type on input controls to search [SME: 13789]
 
 * Tue Oct 13 2026 Brian Read <brianr@koozali.org> 11.0.0-268.sme
-- Fix postion of the clear button in dnf software install panel - and make it a cross [SME: 13789]
+- Fix position of the clear button in dnf software install panel - and make it a cross [SME: 13789]
 
 * Wed Oct 07 2026 Brian Read <brianr@koozali.org> 11.0.0-267.sme
 - Fix viewlog panel possible vulnerability to cross directory exploit CVE: CVE-2026-108120 reported by Brian Mariani@digialcanion [SME: 13721]
