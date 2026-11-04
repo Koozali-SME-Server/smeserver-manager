@@ -130,7 +130,7 @@ true
 
 %changelog
 * Wed Nov 04 2026 Brian Read <brianr@koozali.org> 11.1-8.sme
-- Arrange that contribs without any other language translation files fallback to english rather than show the le3xical id.[SME: ]
+- Arrange that contribs without any other language translation files fallback to english rather than show the lexical id.[SME: 13806]
 
 * Wed Oct 14 2026 Brian Read <brianr@koozali.org> 11.1-7.sme
 - Fix postion of the clear button in dnf software install panel - and make it a cross [SME: 13789]

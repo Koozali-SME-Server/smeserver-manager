@@ -40,6 +40,6 @@
 %        # For 6 digits: XX-X-XXX
 %        return substr($number, 0, 2) . "." . substr($number, 2, 1) . "-" . substr($number, 3, 3);
 %    } else {
-%        return "Number must be 5 or 6 digits";
+%        return "$number";
 %    }
 % }
