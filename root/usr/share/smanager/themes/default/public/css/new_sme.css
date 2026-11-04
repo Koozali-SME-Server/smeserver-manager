@@ -8,7 +8,7 @@
 /* Make room for the icon inside the input */
 .input-container input.sme-password{
   padding-right: 3px;     /* space for the eye */
-  /*margin-left: 0;*/
+  margin-left: 3px;
 }
 
 /* Icon sits inside the input area at the far right */

@@ -1,7 +1,8 @@
 <footer id="footer" class="module footer">
   <span class="sme-copyright footer-text">
     % if ( $c->is_logged_in && $c->is_admin) {
-      SME Server <%= session 'releaseVersion' %> Manager II-v<%= $c->app->VERSION %> 
+      % my $SM2VERSION = split_version($c->app->VERSION);
+      SME Server <%= session 'releaseVersion' %> Manager II v<%= $SM2VERSION %> 
       % my $mode;
       % if ( config->{mode} eq 'development' ) { $mode = '-dev'; } else { $mode = ''; }
       (Mojo:<%= Mojolicious->VERSION %><%= $mode %>)
@@ -29,3 +30,16 @@
     % }
   </div>
 </footer>
+% sub split_version {
+%    my $number = shift;
+%    
+%    if (length($number) == 5) {
+%        # For 5 digits: XX-X-XX
+%        return substr($number, 0, 2) . "." . substr($number, 2, 1) . "-" . substr($number, 3, 2);
+%    } elsif (length($number) == 6) {
+%        # For 6 digits: XX-X-XXX
+%        return substr($number, 0, 2) . "." . substr($number, 2, 1) . "-" . substr($number, 3, 3);
+%    } else {
+%        return "Number must be 5 or 6 digits";
+%    }
+% }
