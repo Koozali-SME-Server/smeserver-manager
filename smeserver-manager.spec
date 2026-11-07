@@ -131,6 +131,7 @@ true
 %changelog
 * Sat Nov 07 2026 Brian Read <brianr@koozali.org> 11.0.0-271.sme
 - Regression -login button moved [SME: 13816]
+- Re-factor header bar to be properly responsive  [SME: 13749]
 
 * Wed Nov 04 2026 Brian Read <brianr@koozali.org> 11.0.0-270.sme
 - Arrange that contribs without any other language translation files fallback to english rather than show the lexical id [SME: 13806]
