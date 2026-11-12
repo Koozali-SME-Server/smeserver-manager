@@ -1,152 +1,523 @@
-/* SME Server Manager workstation job windows: viewport bounded, internal scrolling. */
-.workstation-job-page { box-sizing:border-box; width:100%; max-width:100%; min-width:0; }
-.workstation-job-window, .workstation-job-window * { box-sizing:border-box; }
-.workstation-job-window {
-  display:flex; flex-direction:column; width:100%; max-width:100%;
-  height:calc(100vh - 245px); max-height:650px; min-height:260px;
-  margin:0 0 1em; border:1px solid #aeb7c2; border-radius:5px;
-  background:#fff; overflow:hidden;
+/* SME Server Manager workstation job windows: viewport bounded, internal scrolling. */ .workstation-job-page  {
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  min-width:0;
 }
-.workstation-job-main {
-  display:flex; flex:1 1 0; flex-direction:column; min-width:0; min-height:0;
-  height:0; gap:7px; padding:10px; overflow:hidden;
+
+.workstation-job-window, .workstation-job-window *  {
+  box-sizing:border-box;
 }
-.workstation-job-heading, .job-output-heading {
-  display:flex; flex:0 0 auto; align-items:center; justify-content:space-between; gap:.75em;
+
+.workstation-job-window  {
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  max-width:100%;
+  height:calc(100vh - 245px);
+  max-height:650px;
+  min-height:260px;
+  margin:0 0 1em;
+  border:1px solid #aeb7c2;
+  border-radius:5px;
+  background:#fff;
+  overflow:hidden;
 }
-.workstation-job-heading h3, .job-output-heading h3, .job-output-section h3 { margin:0; }
-.workstation-job-heading p, .job-progress-text, .job-current-activity {
-  margin:.2em 0; overflow-wrap:anywhere;
+
+.workstation-job-main  {
+  display:flex;
+  flex:1 1 0;
+  flex-direction:column;
+  min-width:0;
+  min-height:0;
+  height:0;
+  gap:7px;
+  padding:10px;
+  overflow:hidden;
 }
-.job-live-label, .job-output-heading span { flex:0 0 auto; color:#4b5563; font-size:.82em; }
-.job-state { font-weight:600; overflow-wrap:anywhere; }
-.job-progress-track {
-  position:relative; display:block; flex:0 0 18px; width:100%; height:18px; min-height:18px;
-  border:1px solid #9ca3af; border-radius:4px; background:#edf0f3; overflow:hidden;
+
+.workstation-job-heading, .job-output-heading  {
+  display:flex;
+  flex:0 0 auto;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75em;
 }
-.job-progress-fill {
-  display:flex; align-items:center; justify-content:center; height:100%; min-height:16px;
-  width:0; padding:0 8px; background:#2f855a; color:#fff; font-size:.82em;
-  line-height:16px; text-align:center; white-space:nowrap; overflow:hidden;
+
+.workstation-job-heading h3, .job-output-heading h3, .job-output-section h3  {
+  margin:0;
+}
+
+.workstation-job-heading p, .job-progress-text, .job-current-activity  {
+  margin:.2em 0;
+  overflow-wrap:anywhere;
+}
+
+.job-live-label, .job-output-heading span  {
+  flex:0 0 auto;
+  color:#4b5563;
+  font-size:.82em;
+}
+
+.job-state  {
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+
+.job-progress-track  {
+  position:relative;
+  display:block;
+  flex:0 0 18px;
+  width:100%;
+  height:18px;
+  min-height:18px;
+  border:1px solid #9ca3af;
+  border-radius:4px;
+  background:#edf0f3;
+  overflow:hidden;
+}
+
+.job-progress-fill  {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+  min-height:16px;
+  width:0;
+  padding:0 8px;
+  background:#2f855a;
+  color:#fff;
+  font-size:.82em;
+  line-height:16px;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
   transition:width .25s ease;
 }
-.job-progress-fill-indeterminate { width:38%; min-width:90px; animation:job-progress-slide 1.6s ease-in-out infinite alternate; }
-.job-progress-indeterminate .job-progress-fill { width:38%; min-width:90px; animation:job-progress-slide 1.6s ease-in-out infinite alternate; }
-.job-progress-complete .job-progress-fill { width:100% !important; min-width:0; animation:none; }
-.job-progress-failed .job-progress-fill { width:100% !important; min-width:0; animation:none; background:#a83232; }
-@keyframes job-progress-slide { from { transform:translateX(0); } to { transform:translateX(160%); } }
-.job-progress-text { flex:0 0 auto; }
-.job-completion-status { flex:0 0 auto; min-height:1.1em; font-weight:600; overflow-wrap:anywhere; }
-.job-current-activity { flex:0 0 auto; }
-.job-message-panel {
-  flex:0 0 auto; min-height:0; max-height:92px; padding:6px 8px;
-  border:1px solid #c7cdd4; border-radius:4px; background:#f5f6f7;
-  overflow:auto; overflow-wrap:anywhere;
-}
-.job-message-panel h3 { margin:0 0 .2em; font-size:1em; }
-.job-output-section {
-  display:flex; flex:0 0 auto; flex-direction:column; min-width:0; min-height:0; gap:4px; overflow:hidden;
-}
-.job-output-section-grow { flex:1 1 0; height:0; min-height:0; }
-.job-output {
-  display:block; flex:0 1 auto; width:100%; max-width:100%; height:90px; min-height:42px; max-height:110px;
-  margin:0; padding:7px; border:1px solid #aeb7c2; border-radius:3px;
-  background:#f5f6f7; color:#202a35; font-family:monospace; font-size:.8em; line-height:1.3;
-  white-space:pre-wrap; overflow-wrap:anywhere; overflow-x:hidden; overflow-y:auto;
-}
-.job-output-grow { flex:1 1 0; height:0; min-height:0; max-height:none; }
-.job-output-archives { flex:0 1 auto; height:58px; min-height:42px; max-height:76px; }
-.workstation-job-footer {
-  display:flex; flex:0 0 auto; align-items:center; justify-content:space-between; gap:1em;
-  min-height:54px; padding:7px 10px; border-top:1px solid #aeb7c2; background:#f0f2f4;
-}
-.restore-job-footer p { flex:1 1 auto; min-width:0; margin:0; font-size:.88em; font-weight:600; overflow-wrap:anywhere; }
-.restore-job-footer input[type="submit"], .restore-job-footer button { flex:0 0 auto; min-width:105px; max-width:100%; }
-.restore-job-footer input[type="submit"]:disabled, .restore-job-footer button:disabled { cursor:not-allowed; opacity:.55; }
-@media (max-height:700px) {
-  .workstation-job-window { height:calc(100vh - 205px); min-height:230px; }
-  .workstation-job-main { gap:5px; padding:7px; }
-  .job-message-panel { max-height:68px; }
-  .job-output-archives { height:46px; min-height:36px; max-height:55px; }
-}
-@media (max-width:600px) {
-  .workstation-job-window { height:calc(100vh - 180px); min-height:260px; }
-  .workstation-job-footer { align-items:stretch; flex-direction:column; gap:.45em; }
-  .restore-job-footer input[type="submit"], .restore-job-footer button { width:100%; }
-}
-/* Explicit overrides: keep long DAR/status text inside the allocated flex panel. */
-.workstation-job-window .workstation-job-main { min-height:0 !important; overflow:hidden !important; }
-.workstation-job-window .job-output-section-grow { flex:1 1 0 !important; height:0 !important; min-height:0 !important; overflow:hidden !important; }
-.workstation-job-window pre.job-output { max-width:100% !important; overflow-x:hidden !important; overflow-y:auto !important; }
-.workstation-job-window pre.job-output-grow { flex:1 1 0 !important; height:0 !important; min-height:0 !important; max-height:none !important; overflow-y:auto !important; }
 
-/* R8.3: button appearance for CSP-safe Return to Backup links. */
-.workstation-job-footer a.return-backup-button {
-  display:inline-block; padding:4px 10px;
-  background:#8be28b; border:1px solid #299b29; border-radius:6px;
-  color:#003d00 !important; text-decoration:none !important; font-weight:600;
-  line-height:1.35; cursor:pointer;
-}
-.workstation-job-footer a.return-backup-button:hover { background:#70d670; }
-.workstation-job-footer a.return-backup-button:focus-visible {
-  outline:2px solid #155e15; outline-offset:2px;
+.job-progress-fill-indeterminate  {
+  width:38%;
+  min-width:90px;
+  animation:job-progress-slide 1.6s ease-in-out infinite alternate;
 }
 
-/* R8.5 collapsible completion summaries */
-.job-summary-panel { border: 1px solid #9acb83; padding: .65rem .8rem; background: #f7fbf3; }
-.job-summary-panel > summary { cursor: pointer; display: flex; gap: .5rem; align-items: baseline; }
-.job-summary-panel > summary strong { color: #245b20; }
-.job-summary-content { padding-top: .65rem; overflow-x: auto; }
-.job-summary-content table { border-collapse: collapse; width: 100%; }
-.job-summary-content th, .job-summary-content td { padding: .25rem .5rem; border-bottom: 1px solid #d8e6d0; text-align: left; }
-.job-summary-content th { width: 65%; font-weight: 600; }
-
-/* R8.6 verification layout: compact, two-pair summary grid; activity gets the remaining space. */
-.verify-job-page .job-summary-panel { flex:0 0 auto; max-height: none; }
-.verify-job-page .job-summary-panel:not([open]) { margin-bottom:0; }
-.verify-job-page .job-summary-content { padding-top:.4rem; }
-.verify-job-page .job-summary-grid { width:100%; table-layout:fixed; }
-.verify-job-page .job-summary-grid th { width:23%; }
-.verify-job-page .job-summary-grid td { width:27%; overflow-wrap:anywhere; }
-.verify-job-page .job-summary-grid th:nth-child(3) { border-left:1px solid #d8e6d0; padding-left:.75rem; }
-.verify-job-page .job-summary-grid td:nth-child(4) { padding-right:.5rem; }
-.verify-job-page .job-summary-grid .job-summary-empty { border:0; }
-.verify-job-page .job-output-section-grow { flex:1 1 50% !important; min-height:50% !important; }
-.verify-job-page pre.job-output-grow { min-height:0 !important; }
-@media (max-width:700px) {
-  .verify-job-page .job-summary-grid th { width:30%; }
-  .verify-job-page .job-summary-grid td { width:20%; }
-  .verify-job-page .job-summary-grid th:nth-child(3) { padding-left:.4rem; }
+.job-progress-indeterminate .job-progress-fill  {
+  width:38%;
+  min-width:90px;
+  animation:job-progress-slide 1.6s ease-in-out infinite alternate;
 }
 
-/* R8.7: matching compact two-pair summary layout for restore. */
-.restore-job-page .job-summary-panel { flex:0 0 auto; max-height:none; }
-.restore-job-page .job-summary-panel:not([open]) { margin-bottom:0; }
-.restore-job-page .job-summary-content { padding-top:.4rem; }
-.restore-job-page .job-summary-grid { width:100%; table-layout:fixed; }
-.restore-job-page .job-summary-grid th { width:23%; }
-.restore-job-page .job-summary-grid td { width:27%; overflow-wrap:anywhere; }
-.restore-job-page .job-summary-grid th:nth-child(3) { border-left:1px solid #d8e6d0; padding-left:.75rem; }
-.restore-job-page .job-summary-grid td:nth-child(4) { padding-right:.5rem; }
-.restore-job-page .job-summary-grid .job-summary-empty { border:0; }
-.restore-job-page #restore-output-container { flex:1 1 50% !important; min-height:50% !important; }
-.restore-job-page pre.job-output-grow { min-height:0 !important; }
-@media (max-width:700px) {
-  .restore-job-page .job-summary-grid th { width:30%; }
-  .restore-job-page .job-summary-grid td { width:20%; }
-  .restore-job-page .job-summary-grid th:nth-child(3) { padding-left:.4rem; }
+.job-progress-complete .job-progress-fill  {
+  width:100% !important;
+  min-width:0;
+  animation:none;
 }
 
-/* R8.7 UI refinement: explicit disclosure arrow for the verification summary. */
-#verify-summary-panel > summary {
+.job-progress-failed .job-progress-fill  {
+  width:100% !important;
+  min-width:0;
+  animation:none;
+  background:#a83232;
+}
+
+@keyframes job-progress-slide  {
+  from  {
+    transform:translateX(0);
+  }
+
+  to  {
+    transform:translateX(160%);
+  }
+
+}
+
+.job-progress-text  {
+  flex:0 0 auto;
+}
+
+.job-completion-status  {
+  flex:0 0 auto;
+  min-height:1.1em;
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+
+.job-current-activity  {
+  flex:0 0 auto;
+}
+
+.job-message-panel  {
+  flex:0 0 auto;
+  min-height:0;
+  max-height:92px;
+  padding:6px 8px;
+  border:1px solid #c7cdd4;
+  border-radius:4px;
+  background:#f5f6f7;
+  overflow:auto;
+  overflow-wrap:anywhere;
+}
+
+.job-message-panel h3  {
+  margin:0 0 .2em;
+  font-size:1em;
+}
+
+.job-output-section  {
+  display:flex;
+  flex:0 0 auto;
+  flex-direction:column;
+  min-width:0;
+  min-height:0;
+  gap:4px;
+  overflow:hidden;
+}
+
+.job-output-section-grow  {
+  flex:1 1 0;
+  height:0;
+  min-height:0;
+}
+
+.job-output  {
+  display:block;
+  flex:0 1 auto;
+  width:100%;
+  max-width:100%;
+  height:90px;
+  min-height:42px;
+  max-height:110px;
+  margin:0;
+  padding:7px;
+  border:1px solid #aeb7c2;
+  border-radius:3px;
+  background:#f5f6f7;
+  color:#202a35;
+  font-family:monospace;
+  font-size:.8em;
+  line-height:1.3;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+
+.job-output-grow  {
+  flex:1 1 0;
+  height:0;
+  min-height:0;
+  max-height:none;
+}
+
+.job-output-archives  {
+  flex:0 1 auto;
+  height:58px;
+  min-height:42px;
+  max-height:76px;
+}
+
+.workstation-job-footer  {
+  display:flex;
+  flex:0 0 auto;
+  align-items:center;
+  justify-content:space-between;
+  gap:1em;
+  min-height:54px;
+  padding:7px 10px;
+  border-top:1px solid #aeb7c2;
+  background:#f0f2f4;
+}
+
+.restore-job-footer p  {
+  flex:1 1 auto;
+  min-width:0;
+  margin:0;
+  font-size:.88em;
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+
+.restore-job-footer input[type="submit"], .restore-job-footer button  {
+  flex:0 0 auto;
+  min-width:105px;
+  max-width:100%;
+}
+
+.restore-job-footer input[type="submit"]:disabled, .restore-job-footer button:disabled  {
+  cursor:not-allowed;
+  opacity:.55;
+}
+
+@media (max-height:700px)  {
+  .workstation-job-window  {
+    height:calc(100vh - 205px);
+    min-height:230px;
+  }
+
+  .workstation-job-main  {
+    gap:5px;
+    padding:7px;
+  }
+
+  .job-message-panel  {
+    max-height:68px;
+  }
+
+  .job-output-archives  {
+    height:46px;
+    min-height:36px;
+    max-height:55px;
+  }
+
+}
+
+@media (max-width:600px)  {
+  .workstation-job-window  {
+    height:calc(100vh - 180px);
+    min-height:260px;
+  }
+
+  .workstation-job-footer  {
+    align-items:stretch;
+    flex-direction:column;
+    gap:.45em;
+  }
+
+  .restore-job-footer input[type="submit"], .restore-job-footer button  {
+    width:100%;
+  }
+
+}
+
+/* Explicit overrides: keep long DAR/status text inside the allocated flex panel. */ .workstation-job-window .workstation-job-main  {
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+
+.workstation-job-window .job-output-section-grow  {
+  flex:1 1 0 !important;
+  height:0 !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+
+.workstation-job-window pre.job-output  {
+  max-width:100% !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+}
+
+.workstation-job-window pre.job-output-grow  {
+  flex:1 1 0 !important;
+  height:0 !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow-y:auto !important;
+}
+
+/* R8.3: button appearance for CSP-safe Return to Backup links. */ .workstation-job-footer a.return-backup-button  {
+    margin-left: 0;
+    background-color: #bee6a2;
+    color: darkgreen;
+    border-radius: 8px;
+    border: 2px solid #4CAF50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-block: 1px;
+    padding-inline: 6px;
+    text-decoration:none;
+}
+
+.workstation-job-footer a.return-backup-button:hover  {
+  background:#70d670;
+}
+
+.workstation-job-footer a.return-backup-button:focus-visible  {
+  outline:2px solid #155e15;
+  outline-offset:2px;
+}
+
+/* R8.5 collapsible completion summaries */ .job-summary-panel  {
+  border: 1px solid #9acb83;
+  padding: .65rem .8rem;
+  background: #f7fbf3;
+}
+
+.job-summary-panel > summary  {
+  cursor: pointer;
+  display: flex;
+  gap: .5rem;
+  align-items: baseline;
+}
+
+.job-summary-panel > summary strong  {
+  color: #245b20;
+}
+
+.job-summary-content  {
+  padding-top: .65rem;
+  overflow-x: auto;
+}
+
+.job-summary-content table  {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.job-summary-content th, .job-summary-content td  {
+  padding: .25rem .5rem;
+  border-bottom: 1px solid #d8e6d0;
+  text-align: left;
+}
+
+.job-summary-content th  {
+  width: 65%;
+  font-weight: 600;
+}
+
+/* R8.6 verification layout: compact, two-pair summary grid;
+activity gets the remaining space. */ .verify-job-page .job-summary-panel  {
+  flex:0 0 auto;
+  max-height: none;
+}
+
+.verify-job-page .job-summary-panel:not([open])  {
+  margin-bottom:0;
+}
+
+.verify-job-page .job-summary-content  {
+  padding-top:.4rem;
+}
+
+.verify-job-page .job-summary-grid  {
+  width:100%;
+  table-layout:fixed;
+}
+
+.verify-job-page .job-summary-grid th  {
+  width:23%;
+}
+
+.verify-job-page .job-summary-grid td  {
+  width:27%;
+  overflow-wrap:anywhere;
+}
+
+.verify-job-page .job-summary-grid th:nth-child(3)  {
+  border-left:1px solid #d8e6d0;
+  padding-left:.75rem;
+}
+
+.verify-job-page .job-summary-grid td:nth-child(4)  {
+  padding-right:.5rem;
+}
+
+.verify-job-page .job-summary-grid .job-summary-empty  {
+  border:0;
+}
+
+.verify-job-page .job-output-section-grow  {
+  flex:1 1 50% !important;
+  min-height:50% !important;
+}
+
+.verify-job-page pre.job-output-grow  {
+  min-height:0 !important;
+}
+
+@media (max-width:700px)  {
+  .verify-job-page .job-summary-grid th  {
+    width:30%;
+  }
+
+  .verify-job-page .job-summary-grid td  {
+    width:20%;
+  }
+
+  .verify-job-page .job-summary-grid th:nth-child(3)  {
+    padding-left:.4rem;
+  }
+
+}
+
+/* R8.7: matching compact two-pair summary layout for restore. */ .restore-job-page .job-summary-panel  {
+  flex:0 0 auto;
+  max-height:none;
+}
+
+.restore-job-page .job-summary-panel:not([open])  {
+  margin-bottom:0;
+}
+
+.restore-job-page .job-summary-content  {
+  padding-top:.4rem;
+}
+
+.restore-job-page .job-summary-grid  {
+  width:100%;
+  table-layout:fixed;
+}
+
+.restore-job-page .job-summary-grid th  {
+  width:23%;
+}
+
+.restore-job-page .job-summary-grid td  {
+  width:27%;
+  overflow-wrap:anywhere;
+}
+
+.restore-job-page .job-summary-grid th:nth-child(3)  {
+  border-left:1px solid #d8e6d0;
+  padding-left:.75rem;
+}
+
+.restore-job-page .job-summary-grid td:nth-child(4)  {
+  padding-right:.5rem;
+}
+
+.restore-job-page .job-summary-grid .job-summary-empty  {
+  border:0;
+}
+
+.restore-job-page #restore-output-container  {
+  flex:1 1 50% !important;
+  min-height:50% !important;
+}
+
+.restore-job-page pre.job-output-grow  {
+  min-height:0 !important;
+}
+
+@media (max-width:700px)  {
+  .restore-job-page .job-summary-grid th  {
+    width:30%;
+  }
+
+  .restore-job-page .job-summary-grid td  {
+    width:20%;
+  }
+
+  .restore-job-page .job-summary-grid th:nth-child(3)  {
+    padding-left:.4rem;
+  }
+
+}
+
+/* R8.7 UI refinement: explicit disclosure arrow for the verification summary. */ #verify-summary-panel > summary  {
   display:flex;
   align-items:center;
   gap:.45rem;
   cursor:pointer;
   list-style:none;
 }
-#verify-summary-panel > summary::-webkit-details-marker { display:none; }
-#verify-summary-panel > summary::before {
+
+#verify-summary-panel > summary::-webkit-details-marker  {
+  display:none;
+}
+
+#verify-summary-panel > summary::before  {
   content:"▸";
   display:inline-block;
   width:1em;
@@ -157,21 +528,25 @@
   line-height:1;
   transform:none;
 }
-#verify-summary-panel[open] > summary::before {
+
+#verify-summary-panel[open] > summary::before  {
   content:"▾";
   transform:none;
 }
 
-/* Apply the same disclosure arrow to the restore summary. */
-#restore-summary-panel > summary {
+/* Apply the same disclosure arrow to the restore summary. */ #restore-summary-panel > summary  {
   display:flex;
   align-items:center;
   gap:.45rem;
   cursor:pointer;
   list-style:none;
 }
-#restore-summary-panel > summary::-webkit-details-marker { display:none; }
-#restore-summary-panel > summary::before {
+
+#restore-summary-panel > summary::-webkit-details-marker  {
+  display:none;
+}
+
+#restore-summary-panel > summary::before  {
   content:"▸";
   display:inline-block;
   width:1em;
@@ -182,7 +557,8 @@
   line-height:1;
   transform:none;
 }
-#restore-summary-panel[open] > summary::before {
+
+#restore-summary-panel[open] > summary::before  {
   content:"▾";
   transform:none;
 }
