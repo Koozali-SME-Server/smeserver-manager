@@ -1,0 +1,3 @@
+# Workstation backup verification worker.
+# The worker validates its job ID and accepts no arbitrary command or path.
+root ALL=(root) NOPASSWD: /usr/local/sbin/smanager-backup-verify-worker

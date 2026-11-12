@@ -14,6 +14,8 @@ package SrvMngr::Controller::Backup;
 #    $if_admin->post('/backupd')->to('backup#do_update')->name('backupu');
 use strict;
 use warnings;
+use JSON::PP ();
+use Fcntl qw(LOCK_EX LOCK_NB O_WRONLY O_CREAT O_EXCL);
 use Mojo::Base 'Mojolicious::Controller';
 use utf8;
 use Locale::gettext;
@@ -258,7 +260,13 @@ sub do_display {
         $res = '';
 
         if (!$result) {
-            $bac_datas{function} = $function;
+            my ($job_id, $start_error) = $c->startWorkstnVerify();
+            if ($start_error) {
+                $result = $start_error;
+            } else {
+                $c->stash(verify_job_id => $job_id);
+                $bac_datas{function} = $function;
+            }
         }
     } ## end if ($function eq 'workstn_verify1')
 
@@ -431,42 +439,43 @@ sub do_update {
     } ## end if ($function eq 'workstn_verify1')
 
     if ($function eq 'workstn_restore') {
-        ##$result .= ' ** Blocked for testing ** !';
         $res = 'NOK';
 
-        if (!$result) {
-            $res = $c->workstnRestore();
+        if (!$result && length($c->param('Backupset') // '')) {
+            my ($job_id, $start_error) = $c->startWorkstnRestore();
 
-            if (($result = $res) =~ s|^#OK#||) {
-                $bac_datas{restore_log} = $result;
-                $res = 'OK';
+            if ($start_error) {
+                $result = $start_error;
+                $c->stash(error => $start_error);
+                $res = 'NOK';
             } else {
-                $c->stash(error => $result);
+                $bac_datas{restore_job_id} = $job_id;
+                $bac_datas{activity_limit} = _workstn_activity_limit($c->param('ActivityLimit'));
+                $bac_datas{function} = 'workstn_restore1';
+                $res = 'NEXT';
             }
-            $bac_datas{function} = 'workstn_restore1';
-            $res = 'NEXT';
-        } ## end if (!$result)
+        }
     } ## end if ($function eq 'workstn_restore')
 
     if ($function eq 'workstn_restore1') {
-        my $state = 'unknown';
-        my $rec   = $rdb->get('restore');
-
-        if ($rec) {
-            $state = $rec->prop('state') || 'unknown';
+        my $job_id = $c->param('restore_job_id') // '';
+        my $job = $c->readWorkstnRestoreStatus($job_id);
+        $rdb->reload;
+        my $rec = $rdb->get('restore');
+        my $record_job_id = $rec ? ($rec->prop('job_id') || '') : '';
+        my $record_state = $rec ? ($rec->prop('state') || '') : '';
+        my $confirmed = $job && ($job->{job_id} || '') eq $job_id
+            && ($job->{state} || '') eq 'complete'
+            && $record_job_id eq $job_id && $record_state eq 'complete';
+        unless ($confirmed) {
+            $result .= 'Restore job is not confirmed successful; reboot is disabled.';
         }
-        $result .= "Restore state unexpected: $state" if ($state ne 'complete');
         $res = 'NOK';
-
         if (!$result) {
             $res = $c->performReboot();
-
-            if (($result = $res) =~ s|^#OK#||) {
-                $res = 'OK';
-            } else {
-                $c->stash(error => $result);
-            }
-        } ## end if (!$result)
+            if (($result = $res) =~ s|^#OK#||) { $res = 'OK'; }
+            else { $c->stash(error => $result); }
+        }
     } ## end if ($function eq 'workstn_restore1')
 
     if ($function eq 'workstn_sel_restore') {
@@ -773,6 +782,411 @@ sub workstnBackupConfig {
     return $out;
 } ## end sub workstnBackupConfig
 
+sub _workstn_activity_limit {
+    my ($value) = @_;
+    return 'all' if defined $value && $value eq 'all';
+    return 1800 unless defined $value && $value =~ /\A[0-9]{1,6}\z/;
+    return ($value >= 1800 && $value <= 100000) ? 0 + $value : 1800;
+}
+
+sub startWorkstnVerify {
+    my ($c) = @_;
+    my $rec = $cdb->get('backupwk');
+    return (undef, 'Workstation backup is not configured.') unless $rec;
+
+    my $mount = $rec->prop('Mount') || '/mnt/smb';
+    my $share = $rec->prop('SmbShare') || '';
+    my $vfstype = $rec->prop('VFSType') || 'cifs';
+    my $id = $rec->prop('Id')
+        || $cdb->get('SystemName')->value . '.' . $cdb->get('DomainName')->value;
+    $mount = "/$share" if $vfstype eq 'usb';
+    return (undef, 'Invalid backup host directory configuration.')
+        unless $id =~ /\A[-+@\w.]+\z/;
+    my $hostdir = "$mount/$id";
+    my $selected = $c->param('Backupset') // '';
+    my $prefix = "$hostdir/";
+    return (undef, 'Please select a backup archive.')
+        unless length $selected && index($selected, $prefix) == 0;
+    my $relative = substr($selected, length($prefix));
+    return (undef, 'Invalid backup archive path.')
+        unless $relative =~ /\A[-+@\w\s.\/]+\z/
+            && $relative !~ m{(?:\A|/)\.\.?(?:/|\z)}
+            && $relative !~ m{//}
+            && $relative !~ m{/\z};
+
+    my $jobdir = '/var/lib/smanager/backup-verify';
+    return (undef, 'Verification job directory is missing or not writable.')
+        unless -d $jobdir && -w $jobdir;
+    return (undef, 'The privileged verification worker is not installed.')
+        unless -x '/usr/local/sbin/smanager-backup-verify-worker';
+    return (undef, 'Cannot start the privileged verification worker. Check /etc/sudoers.d/smanager-backup-verify.')
+        unless system('/usr/bin/sudo', '-n', '/usr/local/sbin/smanager-backup-verify-worker', '--check') == 0;
+
+    my $job_id = time() . '-' . $$ . '-' . sprintf('%08x', int(rand(0xffffffff)));
+    my $activity_limit = _workstn_activity_limit($c->param('ActivityLimit'));
+    my $request = {
+        archive => $relative,
+        fullverify => (($c->param('Verifyall') // '') eq 'on') ? 1 : 0,
+        activity_limit => $activity_limit,
+    };
+    my $json = JSON::PP->new->utf8->canonical;
+    my $reqpath = "$jobdir/$job_id.request";
+    my $statuspath = "$jobdir/$job_id.status";
+    my $rfh;
+    return (undef, 'Could not create verification request.')
+        unless sysopen($rfh, $reqpath, O_WRONLY | O_CREAT | O_EXCL, 0600);
+    my $written = print {$rfh} $json->encode($request);
+    my $closed = close $rfh;
+    unless ($written && $closed) {
+        unlink $reqpath;
+        return (undef, 'Could not save verification request.');
+    }
+
+    my $sfh;
+    unless (sysopen($sfh, $statuspath, O_WRONLY | O_CREAT | O_EXCL, 0600)) {
+        unlink $reqpath;
+        return (undef, 'Could not create verification status.');
+    }
+    my $initial = {
+        job_id => $job_id, state => 'queued',
+        message => 'Verification queued; waiting for the worker.',
+        current => '', completed => 0, archives => [], archive_status => {},
+        output => [], activity_limit => $activity_limit, started => time(),
+    };
+    $written = print {$sfh} $json->encode($initial);
+    $closed = close $sfh;
+    unless ($written && $closed) {
+        unlink $reqpath;
+        unlink $statuspath;
+        return (undef, 'Could not initialise verification status.');
+    }
+
+    eval {
+        esmith::util::backgroundCommand(
+            0, '/usr/bin/sudo', '-n',
+            '/usr/local/sbin/smanager-backup-verify-worker', $job_id
+        );
+        1;
+    } or do {
+        my $error = $@ || 'could not start background worker';
+        unlink $reqpath;
+        unlink $statuspath;
+        return (undef, "Could not start verification worker: $error");
+    };
+    return ($job_id, undef);
+}
+
+# Status endpoint is protected by the existing admin-only route group.
+
+sub verify_status {
+    my ($c) = @_;
+    my $job_id = $c->stash('job_id') // $c->param('job_id') // '';
+    return $c->render(json => { error => 'Invalid job ID' }, status => 400)
+        unless $job_id =~ /\A[0-9]{10,}-[0-9]{1,8}-[a-f0-9]{8}\z/;
+    my $path = "/var/lib/smanager/backup-verify/$job_id.status";
+    return $c->render(json => { error => 'Verification job not found' }, status => 404)
+        unless -f $path && !-l $path;
+    open my $fh, '<', $path
+        or return $c->render(json => { error => 'Could not read verification status' }, status => 500);
+    my $data = eval { JSON::PP->new->utf8->decode(do { local $/; <$fh> }) };
+    close $fh;
+    return $c->render(json => { error => 'Invalid verification status data' }, status => 500)
+        unless ref($data) eq 'HASH';
+    $c->res->headers->header('Cache-Control' => 'no-store, no-cache, must-revalidate');
+    return $c->render(json => $data);
+}
+
+sub startWorkstnRestore {
+    my ($c) = @_;
+    my $restoreref = $c->param('Backupset') // '';
+    return (undef, 'Missing backup selection.')
+        unless length $restoreref;
+    my $activity_limit = _workstn_activity_limit($c->param('ActivityLimit'));
+
+    my $jobdir = '/var/lib/smanager/workstation-restore';
+    return (undef, 'Restore status directory is missing or not writable.')
+        unless -d $jobdir && -w $jobdir;
+
+    # Hold this admission lock from before the shared restore record is changed
+    # until the background child exits. The child inherits the descriptor; the
+    # parent closes its copy immediately after fork. A second request is refused.
+    my $admission_path = "$jobdir/active.lock";
+    open my $admission_fh, '>>', $admission_path
+        or return (undef, 'Could not open the restore admission lock.');
+    unless (flock($admission_fh, LOCK_EX | LOCK_NB)) {
+        close $admission_fh;
+        return (undef, 'A workstation restore is already queued or running.');
+    }
+
+    my $job_id = time() . '-' . $$ . '-' . sprintf('%08x', int(rand(0xffffffff)));
+    # Create a private output log for this restore job.
+    my $output_path = "$jobdir/$job_id.log";
+    sysopen(my $output_fh, $output_path, O_WRONLY | O_CREAT | O_EXCL, 0600)
+        or do {
+            close $admission_fh;
+            return (undef, 'Could not create the restore output log.');
+        };
+    close $output_fh
+        or do {
+            unlink $output_path;
+            close $admission_fh;
+            return (undef, 'Could not close the restore output log.');
+        };
+
+    my $initial = {
+        job_id => $job_id,
+        state => 'queued',
+        message => 'Restore queued; preparing the workstation restore.',
+        activity_limit => $activity_limit,
+        started => time(),
+        finished => undef,
+    };
+    eval { $c->writeWorkstnRestoreStatus($job_id, $initial); 1 }
+        or do { close $admission_fh; return (undef, 'Could not initialise restore status.'); };
+
+    my $rec = $rdb->get('restore');
+    unless ($rec) {
+        unlink "$jobdir/$job_id.status";
+        close $admission_fh;
+        return (undef, 'The SME restore status record is missing.');
+    }
+    my $record_init_ok = eval {
+        $rec->set_prop('job_id', $job_id);
+        $rec->set_prop('state', 'queued');
+        $rec->set_prop('start', time());
+        1;
+    };
+    unless ($record_init_ok) {
+        my $why = $@ || 'Could not initialise the SME restore record.';
+        close $admission_fh;
+        unlink "$jobdir/$job_id.status";
+        return (undef, "Could not initialise the SME restore record: $why");
+    }
+
+    my $pid = fork();
+    unless (defined $pid) {
+        close $admission_fh;
+        $rec->set_prop('state', 'failed');
+        $rec->set_prop('finish', time());
+        $c->writeWorkstnRestoreStatus($job_id, {
+            %{$initial}, state => 'failed',
+            message => "Could not start background restore: $!",
+            finished => time(),
+        });
+        return (undef, "Could not start background restore: $!");
+    }
+
+    # Parent returns immediately and drops its copy. The child keeps the flock
+    # for the full restore lifetime, preventing job-ID replacement races.
+    if ($pid) {
+        close $admission_fh;
+        return ($job_id, undef);
+    }
+
+    # Detach the child from the browser request and keep diagnostics off the
+    # inherited HTTP/server streams. The parent's connection is unaffected.
+    open STDIN, '<', '/dev/null';
+    open STDOUT, '>', '/dev/null';
+    open STDERR, '>>', '/var/log/smanager-workstation-restore.log'
+        or open STDERR, '>', '/dev/null';
+    eval { $c->tx->connection->close; 1 };
+
+    my $final_state = 'failed';
+    my $final_message = 'Restore failed before completion.';
+    eval {
+        $c->writeWorkstnRestoreStatus($job_id, {
+            %{$initial}, state => 'running',
+            message => 'Workstation restore is running. Do not reboot or close the server.',
+        });
+        my $restore_result = $c->workstnRestore($restoreref, $job_id);
+        if (defined $restore_result && $restore_result =~ s/^#OK#//) {
+            $rdb->reload;
+            my $current = $rdb->get('restore');
+            my $current_id = $current ? ($current->prop('job_id') || '') : '';
+            my $current_state = $current ? ($current->prop('state') || '') : '';
+            if ($current_id eq $job_id && $current_state eq 'complete') {
+                $final_state = 'complete';
+                $final_message = 'Workstation restore completed successfully. A REBOOT IS REQUIRED to complete the restore. Use the Reboot button now.';
+            } else {
+                $final_message = 'Restore did not reach the required complete state; reboot remains disabled.';
+            }
+        } else {
+            $restore_result = 'No details were returned by the restore routine.'
+                unless defined $restore_result && length $restore_result;
+            $final_message = "Workstation restore failed: $restore_result";
+        }
+        1;
+    } or do {
+        my $exception = $@ || 'unknown background restore error';
+        $final_state = 'failed';
+        $final_message = "Workstation restore failed: $exception";
+    };
+
+    eval {
+        $rdb->reload;
+        my $current = $rdb->get('restore');
+        die 'Restore record is missing or belongs to another job.'
+            unless $current && ($current->prop('job_id') || '') eq $job_id;
+        $current->set_prop('state', $final_state eq 'complete' ? 'complete' : 'failed');
+        $current->set_prop('finish', time());
+        1;
+    } or do {
+        my $finalise_error = $@ || 'Could not finalise restore record';
+        $final_state = 'failed';
+        $final_message = "Workstation restore failed during final status update: $finalise_error";
+    };
+    eval {
+        $c->writeWorkstnRestoreStatus($job_id, {
+            job_id => $job_id,
+            state => $final_state,
+            message => $final_message,
+            started => $initial->{started},
+            finished => time(),
+        });
+        1;
+    } or do {
+        warn "Could not publish final workstation restore status: $@";
+        # Do not change the DB record to complete on a publication error. The
+        # browser and reboot gate both fail closed if status cannot be confirmed.
+        if ($final_state eq 'complete') {
+            eval {
+                $rdb->reload;
+                my $current = $rdb->get('restore');
+                if ($current && ($current->prop('job_id') || '') eq $job_id) {
+                    $current->set_prop('state', 'failed');
+                    $current->set_prop('finish', time());
+                }
+            };
+        }
+    };
+    exit 0;
+}
+
+sub writeWorkstnRestoreStatus {
+    my ($c, $job_id, $data) = @_;
+    die 'Invalid restore job ID' unless $job_id =~ /\A[0-9]{10,}-[0-9]{1,8}-[a-f0-9]{8}\z/;
+    my $path = "/var/lib/smanager/workstation-restore/$job_id.status";
+    my $tmp = "$path.tmp.$$";
+    open my $fh, '>', $tmp or die "Cannot write restore status: $!";
+    print {$fh} JSON::PP->new->utf8->canonical->encode($data)
+        or die "Cannot save restore status: $!";
+    close $fh or die "Cannot close restore status: $!";
+    chmod 0600, $tmp or die "Cannot secure restore status: $!";
+    rename $tmp, $path or die "Cannot publish restore status: $!";
+    return 1;
+}
+
+sub readWorkstnRestoreStatus {
+    my ($c, $job_id) = @_;
+    return undef unless defined $job_id
+        && $job_id =~ /\A[0-9]{10,}-[0-9]{1,8}-[a-f0-9]{8}\z/;
+    my $path = "/var/lib/smanager/workstation-restore/$job_id.status";
+    return undef unless -f $path && !-l $path;
+    open my $fh, '<', $path or return undef;
+    my $data = eval { JSON::PP->new->utf8->decode(do { local $/; <$fh> }) };
+    close $fh;
+    return undef unless ref($data) eq 'HASH' && ($data->{job_id} || '') eq $job_id;
+    return $data;
+}
+
+sub restore_status {
+    my ($c) = @_;
+    my $job_id = $c->stash('job_id') // $c->param('job_id') // '';
+    my $data = $c->readWorkstnRestoreStatus($job_id);
+    return $c->render(json => { error => 'Restore job not found' }, status => 404)
+        unless $data;
+
+    # RESTORE_STATUS_INCREMENTAL_OUTPUT
+    # Return at most 32 KB of new plain-text DAR output for this job.
+    my $offset = $c->param('offset') // 0;
+    return $c->render(
+        json => { error => 'Invalid output offset' },
+        status => 400
+    ) unless $offset =~ /\A[0-9]{1,12}\z/;
+    $offset = 0 + $offset;
+
+    my $output = '';
+    my $next_offset = $offset;
+    my $more_output = 0;
+    my $output_path = "/var/lib/smanager/workstation-restore/$job_id.log";
+    if (-f $output_path && !-l $output_path) {
+        if (open my $output_fh, '<', $output_path) {
+            binmode $output_fh;
+            my $file_size = -s $output_fh;
+            if (defined $file_size && $offset <= $file_size) {
+                unless (seek($output_fh, $offset, 0)) {
+                    close $output_fh;
+                    return $c->render(
+                        json => { error => 'Could not seek restore output log' },
+                        status => 500
+                    );
+                }
+                my $read_length = $file_size - $offset;
+                $read_length = 32768 if $read_length > 32768;
+                my $bytes_read = read($output_fh, $output, $read_length);
+                unless (defined $bytes_read) {
+                    close $output_fh;
+                    return $c->render(
+                        json => { error => 'Could not read restore output log' },
+                        status => 500
+                    );
+                }
+                $output = '' unless $bytes_read;
+                $next_offset = $offset + $bytes_read;
+                # RESTORE_STATUS_MORE_OUTPUT_FLAG
+                # Check the current size after reading, so growth during this
+                # request is also picked up by the next browser poll.
+                my $current_size = -s $output_fh;
+                $more_output = 1
+                    if defined $current_size && $next_offset < $current_size;
+            } else {
+                # Do not allow a client to seek beyond the current log end.
+                $next_offset = $file_size if defined $file_size;
+            }
+            close $output_fh;
+        } else {
+            # RESTORE_STATUS_MISSING_LOG_FAIL_CLOSED: do not report an empty successful drain.
+            return $c->render(
+                json => { error => 'Could not open restore output log' },
+                status => 500
+            );
+        }
+    } else {
+        # Missing, non-regular, or symlink output logs are retrieval failures.
+        return $c->render(
+            json => { error => 'Restore output log is missing or is not a regular file' },
+            status => 500
+        );
+    }
+    $data->{output} = $output;
+    $data->{next_offset} = $next_offset;
+    $data->{more_output} = $more_output ? 1 : 0;
+
+    # Do not tell the browser that restore succeeded unless the shared SME
+    # restore record confirms the same job ID and complete state as the status file.
+        if (($data->{state} || '') eq 'complete') {
+        my $restore_db = esmith::ConfigDB::UTF8->open('/etc/e-smith/restore')
+            or return $c->render(
+                json => {
+                    job_id => $job_id,
+                    state => 'unknown',
+                    message => 'Could not open the SME restore status database.'
+                }
+            );
+
+        my $rec = $restore_db->get('restore');
+        my $record_job_id = $rec ? ($rec->prop('job_id') || '') : '';
+        my $record_state = $rec ? ($rec->prop('state') || '') : '';
+        unless ($record_job_id eq $job_id && $record_state eq 'complete') {
+            $data->{state} = 'unknown';
+            $data->{message} = 'Restore success could not be confirmed by the SME restore record.';
+        }
+    }
+    $c->res->headers->header('Cache-Control' => 'no-store, no-cache, must-revalidate');
+    return $c->render(json => $data);
+}
+
+
 sub workstnVerify {
     my ($c) = @_;
     my $out;
@@ -934,259 +1348,372 @@ sub workstnVerify {
     return $out;
 } ## end sub workstnVerify
 
-sub workstnRestore {
-    my ($c) = @_;
+sub workstnRestore { # SME11_RESTORE_CLEANUP_TEST_HELPER
+    my ($c, $restoreref, $job_id) = @_;
     my $out = '';
-    my $restoreref = $c->param('Backupset');
-    my $set        = $restoreref;
-    $set =~ s/\/[^\/]*$//;
-    my %backupsetfiles = ();
+    return $c->l('bac_RESTORE_CANNOT_PROCEED') . ' Missing backup selection.'
+        unless defined $restoreref && length $restoreref;
+
+    my $set = $restoreref;
+    $set =~ s{/[^/]*$}{};
+    my %backupsetfiles;
     my @restorefiles;
     my $backupsetlist = sub {
-
-        if ($_ =~ /\.dar/) {
+        if ($_ =~ /\.dar\z/) {
             my $backupref = $File::Find::name;
-            $backupref =~ s/\.[0-9]+\.dar//;
-            $_ =~ s/\..*\.dar//;
+            $backupref =~ s/\.[0-9]+\.dar\z//;
+            $_ =~ s/\..*\.dar\z//;
             $_ =~ s/.*-//;
             $backupsetfiles{$_} = $backupref;
-        } ## end if ($_ =~ /\.dar/)
+        }
     };
-    my $lock_file   = "/var/lock/subsys/e-smith-restore";
+
+    my $lock_file = '/var/lock/subsys/e-smith-restore';
     my $file_handle = &esmith::lockfile::LockFileOrReturn($lock_file);
+    return $c->l('bac_RESTORE_CANNOT_PROCEED') . ' <br> (' . $c->l('bac_ANOTHER_RESTORE_IN_PROGRESS') . ')'
+        unless $file_handle;
 
-    unless ($file_handle) {
-        return "$c->l('bac_RESTORE_CANNOT_PROCEED') <br> ($c->l('bac_ANOTHER_RESTORE_IN_PROGRESS')";
+    # Initialize cleanup state before reading configuration so even a config
+    # lookup exception can release the restore lock through finish_failure.
+    my ($backupwkrec, $id, $smbhost, $smbshare, $mntbkdir);
+    my $mntdir = '/mnt/smb';
+    my $VFSType = 'cifs';
+    my $mounted = 0;
+    my $unmount_attempted = 0;
+    my $unmount_error;
+    my $lock_release_attempted = 0;
+
+    # This is the only place that calls bunmount. Both normal completion and
+    # failure cleanup use it; a failed unmount is never retried implicitly.
+    my $unmount_backup = sub {
+        return undef unless $mounted;
+        return $unmount_error if $unmount_attempted;
+        $unmount_attempted = 1;
+
+        my ($unmount_result, $unmount_exception);
+        my $unmount_call_ok = eval {
+            $unmount_result = $c->bunmount($mntdir, $VFSType);
+            1;
+        };
+        $unmount_exception = $@ unless $unmount_call_ok;
+        if (!$unmount_call_ok) {
+            $unmount_error = "Unmount raised an exception: $unmount_exception";
+        } elsif (defined $unmount_result && length $unmount_result) {
+            $unmount_error = "Unmount failed: $unmount_result";
+        } else {
+            $mounted = 0;
+        }
+        return $unmount_error;
+    };
+
+    # UnlockFile() in SME's esmith::lockfile does not return a success value.
+    # Treat a non-throwing call as success; never infer failure from undef.
+    # Attempt at most once, because a second call may close an already-closed FH.
+    my $release_restore_lock = sub {
+        return undef unless $file_handle;
+        return 'Restore lock release was already attempted.' if $lock_release_attempted;
+        $lock_release_attempted = 1;
+        my $unlock_ok = eval { &esmith::lockfile::UnlockFile($file_handle); 1; };
+        my $unlock_exception = $@ unless $unlock_ok;
+        $file_handle = undef;
+        return $unlock_ok ? undef : "Could not release restore lock: $unlock_exception";
+    };
+
+    # All post-lock failures pass through this cleanup path. A failed unmount
+    # is itself a restore failure and therefore can never produce #OK#.
+    my $finish_failure = sub {
+        my ($reason) = @_;
+        my @cleanup_errors;
+
+        if ($mounted && !$unmount_attempted) {
+            my $unmount_problem = $unmount_backup->();
+            push @cleanup_errors, $unmount_problem if defined $unmount_problem && length $unmount_problem;
+        }
+
+        if ($file_handle) {
+            my $unlock_problem = $release_restore_lock->();
+            push @cleanup_errors, $unlock_problem if defined $unlock_problem && length $unlock_problem;
+        }
+
+        my $message = defined $reason && length $reason ? $reason : 'Restore failed.';
+        $message .= ' ' . join(' ', @cleanup_errors) if @cleanup_errors;
+        eval {
+            my $restore_rec = $rdb->get('restore');
+            if ($restore_rec) {
+                $restore_rec->set_prop('state', 'failed');
+                $restore_rec->set_prop('finish', time);
+            }
+            1;
+        } or warn "Could not record failed workstation restore state: $@";
+        return $message;
+    };
+
+    my $config_ok = eval {
+        $backupwkrec = $cdb->get('backupwk');
+        die "backupwk configuration record is missing\n" unless $backupwkrec;
+        $id = $backupwkrec->prop('Id')
+            || $cdb->get('SystemName')->value . '.' . $cdb->get('DomainName')->value;
+        $mntdir = $backupwkrec->prop('Mount') || '/mnt/smb';
+        $VFSType = $backupwkrec->prop('VFSType') || 'cifs';
+        $smbhost = $backupwkrec->prop('SmbHost');
+        $smbshare = $backupwkrec->prop('SmbShare');
+        $mntdir = "/$smbshare" if $VFSType eq 'usb';
+        $mntbkdir = "$mntdir/$id";
+        1;
+    };
+    unless ($config_ok) {
+        return $finish_failure->("Could not read workstation backup configuration: $@");
     }
-    my $backupwkrec = $cdb->get('backupwk');
-    my $id          = $backupwkrec->prop('Id')
-        || $cdb->get('SystemName')->value . "." . $cdb->get('DomainName')->value;
-    my $mntdir  = $backupwkrec->prop('Mount')   || '/mnt/smb';
-    my $VFSType = $backupwkrec->prop('VFSType') || 'cifs';
-    my $smbhost = $backupwkrec->prop('SmbHost');
-    my $smbshare = $backupwkrec->prop('SmbShare');
-    $mntdir = "/$smbshare" if ($VFSType eq 'usb');
-    my $err;
-    my $error_message;
 
-    # Mounting backup shared folder
-    $error_message = $c->bmount($mntdir, $smbhost, $smbshare, $VFSType);
-
-    if ($error_message) {
-        return "$c->l('bac_RESTORE_CANNOT_PROCEED') $error_message : $id";
+    # Mount the configured backup source. If bmount throws, it may have
+    # partially mounted the source, so route that case through unmount cleanup.
+    my ($error_message, $mount_call_ok);
+    $mount_call_ok = eval {
+        $error_message = $c->bmount($mntdir, $smbhost, $smbshare, $VFSType);
+        1;
+    };
+    unless ($mount_call_ok) {
+        # bmount may have partially mounted before throwing. Determine the
+        # actual mount state instead of assuming either mounted or unmounted.
+        if ($VFSType ne 'mnt') {
+            my $mount_check_ok = eval { $mounted = $c->checkMount($mntdir) ? 0 : 1; 1; };
+            $mounted = 0 unless $mount_check_ok;
+        }
+        return $finish_failure->("Mount operation raised an exception: $@");
     }
-
-    # Test if backup subdirectory for our server
-    my $mntbkdir = $mntdir . "/$id";
+    if (defined $error_message && length $error_message) {
+        if ($VFSType ne 'mnt') {
+            my $mount_check_ok = eval { $mounted = $c->checkMount($mntdir) ? 0 : 1; 1; };
+            $mounted = 0 unless $mount_check_ok;
+        }
+        return $finish_failure->($c->l('bac_RESTORE_CANNOT_PROCEED') . " $error_message : $id");
+    }
+    $mounted = ($VFSType eq 'mnt') ? 0 : 1;
 
     unless (-d $mntbkdir) {
-        $error_message = $c->l('bac_ERR_NO_HOST_DIR') . "\n";
-        $error_message .= $c->bunmount($mntdir, $VFSType);
-        return "$c->l('bac_RESTORE_CANNOT_PROCEED') $error_message : $id";
-    } ## end unless (-d $mntbkdir)
+        return $finish_failure->(
+            $c->l('bac_RESTORE_CANNOT_PROCEED') . ' '
+            . $c->l('bac_ERR_NO_HOST_DIR') . " : $id"
+        );
+    }
 
-    # finding list of available backups
-    # and verifying all needed backup files are available
-    find { wanted => \&$backupsetlist, untaint => 1, untaint_pattern => qr|^([-+@\w\s./]+)$| }, $set;
-    my $key;
+    # Find the selected backup set and verify its full/incremental sequence.
+    my $find_ok = eval {
+        find {
+            wanted => $backupsetlist,
+            untaint => 1,
+            untaint_pattern => qr|^([-+@\w\s./]+)$|,
+        }, $set;
+        1;
+    };
+    unless ($find_ok) {
+        return $finish_failure->("Could not enumerate backup set: $@");
+    }
+
     my $num = 0;
-
-    foreach $key (sort keys %backupsetfiles) {
+    my $selected_found = 0;
+    for my $key (sort keys %backupsetfiles) {
         push @restorefiles, $backupsetfiles{$key};
-
         if ($num == 0) {
-            unless ($backupsetfiles{$key} =~ /\/full-/) {
-                return "$c->l('bac_RESTORE_CANNOT_PROCEED') $c->l('bac_ERR_NO_FULL_BACKUP')";
+            unless ($backupsetfiles{$key} =~ m{/full-}) {
+                return $finish_failure->(
+                    $c->l('bac_RESTORE_CANNOT_PROCEED') . ' ' . $c->l('bac_ERR_NO_FULL_BACKUP')
+                );
             }
         } else {
-            my $numf = sprintf("%03d", $num);
-
-            unless ($backupsetfiles{$key} =~ /\/inc-$numf-/) {
-                return "$c->l('bac_RESTORE_CANNOT_PROCEED') $c->l('bac_ERR_NO_INC_BACKUP') . $numf";
+            my $numf = sprintf('%03d', $num);
+            unless ($backupsetfiles{$key} =~ m{/inc-\Q$numf\E-}) {
+                return $finish_failure->(
+                    $c->l('bac_RESTORE_CANNOT_PROCEED') . ' '
+                    . $c->l('bac_ERR_NO_INC_BACKUP') . " $numf"
+                );
             }
-        } ## end else [ if ($num == 0) ]
+        }
         $num++;
-        last if ($backupsetfiles{$key} eq $restoreref);
-    } ## end foreach $key (sort keys %backupsetfiles)
-
-    # backup is online, restoring now
-    my $rec = $rdb->get('restore');
-    $rec->set_prop('state', 'running');
-    $rec->set_prop('start', time);
-    $cdb->get('bootstrap-console')->set_prop('Run', 'yes');
-
-    unless (system("/sbin/e-smith/signal-event", "pre-restore") == 0) {
-        return "$c->l('bac_OPERATION_STATUS_REPORT') $c->l('bac_ERR_PRE_RESTORE')";
+        if ($backupsetfiles{$key} eq $restoreref) {
+            $selected_found = 1;
+            last;
+        }
     }
+
+    unless (@restorefiles && $selected_found) {
+        return $finish_failure->($c->l('bac_RESTORE_CANNOT_PROCEED') . ' Selected backup was not found or the set is empty.');
+    }
+
+    my ($rec, $status_init_ok);
+    $status_init_ok = eval {
+        $rec = $rdb->get('restore');
+        die "restore status record is missing\n" unless $rec;
+        $rec->set_prop('state', 'running');
+        $rec->set_prop('start', time);
+        my $bootstrap = $cdb->get('bootstrap-console');
+        die "bootstrap-console configuration record is missing\n" unless $bootstrap;
+        $bootstrap->set_prop('Run', 'yes');
+        1;
+    };
+    unless ($status_init_ok) {
+        return $finish_failure->("Could not initialize restore status: $@");
+    }
+
+    unless (system('/sbin/e-smith/signal-event', 'pre-restore') == 0) {
+        my $status = $?;
+        my $detail = $status == -1 ? "could not execute pre-restore: $!"
+            : ($status & 127) ? sprintf('pre-restore died from signal %d', $status & 127)
+            : 'pre-restore exited with status ' . ($status >> 8);
+        return $finish_failure->($c->l('bac_OPERATION_STATUS_REPORT') . ' ' . $c->l('bac_ERR_PRE_RESTORE') . " ($detail)");
+    }
+
     $| = 1;
     my $RD;
+    my $pid = open($RD, '-|');
 
-    if (open(RD, "-|")) {
+    # Important: open(..., '-|') returns undef on fork/pipe failure, zero in
+    # the child, and the child PID in the parent. Only a defined zero means
+    # we are in the child; an undef must never enter the DAR branch.
+    unless (defined $pid) {
+        my $open_error = $! || 'unknown pipe/fork error';
+        return $finish_failure->("Could not start DAR restore child: $open_error");
+    }
 
-        #-----------------------------------------------------
-        # restore system from uploaded workstation backup file
-        #-----------------------------------------------------
-        $out .= $c->l('bac_FILES_HAVE_BEEN_RESTORED') . "\n";
-        $out .= '<UL>';
-        my $complete = 0;
-
-        while (<RD>) {
-            $complete++ if /etc\/samba\/smbpasswd$/;
-            $out .= "<li>$_</li>\n";
-        }
-        $out .= '</UL>';
-        my $message;
-
-        if (!close RD) {
-            $message = $c->l('bac_RESTORE_FAILED_MSG');
+    if ($pid) {
+        # Parent: consume output and wait for the child. close() on a pipe
+        # reports the child status; capture $? immediately after close.
+        # Append plain DAR output to the private log created for this job.
+        my $output_path = '/var/lib/smanager/workstation-restore/' . $job_id . '.log';
+        my $output_fh;
+        my $output_error;
+        if (!defined $job_id || $job_id !~ /\A[0-9]{10,}-[0-9]{1,8}-[a-f0-9]{8}\z/) {
+            $output_error = 'Invalid restore job ID for output log.';
         } else {
-
-            #-----------------------------------------------------
-            # if restore completed, regenerate configuration files
-            #-----------------------------------------------------
-            if ($complete) {
-                $out .= $c->l('bac_RESTORE_COMPLETE');
-                system("/usr/sbin/groupmod", "-g", "$www_gid", "www") == 0
-                    or warn($c->l('bac_ERR_RESTORING_GID') . "\n");
-                system("/usr/sbin/usermod", "-g", "$www_gid", "www") == 0
-                    or warn($c->l('bac_ERR_RESTORING_INITIAL_GRP') . "\n");
-                esmith::util::backgroundCommand(0, "/sbin/e-smith/signal-event", "post-upgrade");
-
-                	#system("/sbin/e-smith/signal-event", "post-upgrade") == 0 
-                	#    or die ($c->l('bac_ERROR_UPDATING_CONFIGURATION')."\n");
-            } else {
-                $message = $c->l('bac_RESTORE_FAILED');
+            require Fcntl;
+            if (!sysopen($output_fh, $output_path, O_WRONLY | Fcntl::O_APPEND())) {
+                $output_error = "Could not open restore output log: $!";
             }
-        } ## end else [ if (!close RD) ]
-        return $message if $message;
-        $rec->set_prop('state',  'complete');
-        $rec->set_prop('finish', time);
-        &esmith::lockfile::UnlockFile($file_handle);
-    } else {
-        select(STDOUT);
-        $| = 1;
-        my $file;
-
-        foreach $file (@restorefiles) {
-            if ($file =~ /^(.*)$/) {
-                $file = $1;
-            } else {
-                $error_message = "Unsecure data :  $file\n";
-                $error_message .= $c->bunmount($mntdir, $VFSType);
-                die($error_message);
+            else {
+                # RESTORE_OUTPUT_LOG_AUTOFLUSH: make each DAR line visible to status polling.
+                require IO::Handle;
+                $output_fh->autoflush(1);
             }
-            system("/usr/bin/dar", "-Q", "-x", "$file", "-v", "-N", "-R", "/", "-wa");
-        } ## end foreach $file (@restorefiles)
-        $error_message = $c->bunmount($mntdir, $VFSType);
-        die($error_message) if $error_message;
-        exit(0);
-    } ## end else [ if (open(RD, "-|")) ]
-    
-	#my $RD;
+        }
+        $out .= $c->l('bac_FILES_HAVE_BEEN_RESTORED') . "\n<UL>";
+        my $complete = 0;
+        my $pipe_read_error;
+        while (1) {
+            # Clear errno before each read so only an errno from this read is
+            # interpreted as a pipe read failure rather than stale $! at EOF.
+            $! = 0;
+            my $line = <$RD>;
+            if (defined $line) {
+                $complete++ if $line =~ m{etc/samba/smbpasswd\s*\z};
+                $out .= '<li>' . $line . "</li>\n";
+                if ($output_fh) {
+                    print {$output_fh} $line
+                        or $output_error ||= "Could not write restore output log: $!";
+                }
+                next;
+            }
+            $pipe_read_error = "$!" if $!;
+            last;
+        }
 
-	## Fork-safe open with explicit error handling
-	#unless (open($RD, "-|")) {
-		## Child process
-		#local $SIG{__DIE__} = sub { exit 255 };
-		#$| = 1;  # Autoflush
+        # Always close/reap the child even when a read error was observed.
+        my $pipe_closed = close($RD);
+        my $child_status = $?;  # capture immediately; close() waits for child
+        my $pipe_close_error = "$!" unless $pipe_closed;
+        $out .= '</UL>';
 
-		#eval {
-			#foreach my $file (@restorefiles) {
-				## Security: strict filename validation
-				#unless ($file =~ m{^[\w\/.-]+$}) {
-					#die "Invalid filename: $file";
-				#}
-				
-				## Check file existence
-				#unless (-e $file) {
-					#die "Backup file $file does not exist";
-				#}
+        if ($output_fh) {
+            close($output_fh)
+                or $output_error ||= "Could not close restore output log: $!";
+        }
+        if ($output_error) {
+            return $finish_failure->($output_error);
+        }
 
-				## Execute dar with error checking
-				#system("/usr/bin/dar", "-Q", "-x", $file, "-v", "-N", "-R", "/", "-wa");
-				#if ($? == -1) {
-					#die "Failed to execute dar: $!";
-				#} elsif ($? & 127) {
-					#die sprintf("dar died with signal %d, %s coredump",
-						#($? & 127), ($? & 128) ? 'with' : 'without');
-				#} elsif ($? >> 8 != 0) {
-					#die "dar exited with error code " . ($? >> 8);
-				#}
-			#}
+        if ($pipe_read_error) {
+            return $finish_failure->("Could not read DAR output pipe: $pipe_read_error");
+        }
+        unless ($pipe_closed) {
+            return $finish_failure->("Could not close DAR output pipe: " . ($pipe_close_error || 'unknown error'))
+                if $child_status == 0;
+        }
+        unless ($pipe_closed && $child_status == 0) {
+            my $detail = $child_status == -1 ? "could not obtain child status: $!"
+                : ($child_status & 127) ? sprintf('DAR restore child died from signal %d', $child_status & 127)
+                : 'DAR restore child exited with status ' . ($child_status >> 8);
+            return $finish_failure->($c->l('bac_RESTORE_FAILED_MSG') . " ($detail)");
+        }
+        unless ($complete) {
+            return $finish_failure->($c->l('bac_RESTORE_FAILED') . ' Restore completion marker was not found in DAR output.');
+        }
 
-			## Unmount with error checking
-			#if (my $unmount_err = $c->bunmount($mntdir, $VFSType)) {
-				#die "Unmount failed: $unmount_err";
-			#}
-		#};
+        # The parent owns cleanup. Completion requires the one central unmount
+        # operation to succeed; a failed attempt is not repeated by cleanup.
+        # SME11_SUCCESS_UNMOUNT_GATE: completion is not possible before this succeeds.
+        my $unmount_problem = $unmount_backup->();
+        if (defined $unmount_problem && length $unmount_problem) {
+            return $finish_failure->($unmount_problem);
+        }
 
-		#if (my $child_err = $@) {
-			#print STDERR "CHILD ERROR: $child_err";
-			#exit 254;
-		#}
-		#exit 0;
-	#} 
-	#else {
-		## Parent process
-		#eval {
-			## Verify fork succeeded
-			#unless (defined $RD) {
-				#die "Fork failed: $!";
-			#}
+        # Preserve the existing post-restore behavior; this helper's changes
+        # are limited to restore failure cleanup, DAR status, and unmount order.
+        my $post_setup_ok = eval {
+            system('/usr/sbin/groupmod', '-g', "$www_gid", 'www') == 0
+                or warn($c->l('bac_ERR_RESTORING_GID') . "\n");
+            system('/usr/sbin/usermod', '-g', "$www_gid", 'www') == 0
+                or warn($c->l('bac_ERR_RESTORING_INITIAL_GRP') . "\n");
+            esmith::util::backgroundCommand(0, '/sbin/e-smith/signal-event', 'post-upgrade');
+            1;
+        };
+        unless ($post_setup_ok) {
+            return $finish_failure->("Post-restore configuration setup raised an exception: $@");
+        }
 
-			#$out .= $c->l('bac_FILES_HAVE_BEEN_RESTORED') . "\n<UL>";
-			#my $complete = 0;
+        my $unlock_problem = $release_restore_lock->();
+        return $finish_failure->($unlock_problem)
+            if defined $unlock_problem && length $unlock_problem;
 
-			## Read from child process
-			#while (<$RD>) {
-				#$complete++ if /etc\/samba\/smbpasswd$/;
-				#$out .= "<li>$_</li>\n";
-			#}
-			#$out .= "</UL>";
+        # Publish complete only after DAR succeeded, the completion marker was
+        # observed, the backup source unmounted, and the lock was released.
+        my $status_ok = eval {
+            $rec->set_prop('state', 'complete');
+            $rec->set_prop('finish', time);
+            1;
+        };
+        unless ($status_ok) {
+            return $finish_failure->('Could not record restore completion: ' . ($@ || 'unknown error'));
+        }
+        return '#OK#' . $out . $c->l('bac_RESTORE_COMPLETE');
+    }
 
-			## Close pipe and check status
-			#unless (close $RD) {
-				#die "Pipe close failed: $!";
-			#}
-
-			#my $child_status = $?;
-			#if ($child_status != 0) {
-				#die "Child process failed with status " . ($child_status >> 8);
-			#}
-
-			## Post-restore actions
-			#if ($complete) {
-				#system("/usr/sbin/groupmod", "-g", $www_gid, "www");
-				#if ($? != 0) {
-					#die $c->l('bac_ERR_RESTORING_GID') . ": $! (status $?)";
-				#}
-
-				#system("/usr/sbin/usermod", "-g", $www_gid, "www");
-				#if ($? != 0) {
-					#die $c->l('bac_ERR_RESTORING_INITIAL_GRP') . ": $! (status $?)";
-				#}
-
-				#my $bg_result = esmith::util::backgroundCommand(0, "/sbin/e-smith/signal-event", "post-upgrade");
-				#unless ($bg_result) {
-					#die "Failed to schedule post-upgrade event";
-				#}
-			#} else {
-				#die $c->l('bac_RESTORE_FAILED');
-			#}
-		#};
-
-		## Error handling
-		#if (my $err = $@) {
-			#$rec->set_prop('state', 'failed');
-			#$rec->set_prop('error', "$err");
-			#esmith::lockfile::UnlockFile($file_handle);
-			#return $c->l('bac_RESTORE_FAILED_MSG') . ": $err";
-		#}
-	#}       
-	$rdb->reload;
-	$error_message .= $c->bunmount($mntdir, $VFSType);
-	return '#OK#' . $out;
-} ## end sub workstnRestore
+    # Child: perform DAR only. Never unmount or unlock here; the parent owns
+    # cleanup and will use this exit code to decide whether completion is safe.
+    select(STDOUT);
+    $| = 1;
+    for my $file (@restorefiles) {
+        # Preserve the existing source's untainting behavior; archive names may
+        # include whitespace allowed by the existing File::Find pattern.
+        if (defined $file && $file =~ /^(.*)$/) {
+            $file = $1;
+        } else {
+            print STDERR "Unsecure data in backup archive name\n";
+            exit 2;
+        }
+        system('/usr/bin/dar', '-Q', '-x', $file, '-v', '-N', '-R', '/', '-wa');
+        my $dar_status = $?;
+        if ($dar_status == -1) {
+            print STDERR "Failed to execute DAR for $file: $!\n";
+            exit 3;
+        } elsif ($dar_status & 127) {
+            print STDERR sprintf("DAR for %s died from signal %d\n", $file, $dar_status & 127);
+            exit 4;
+        } elsif (($dar_status >> 8) != 0) {
+            print STDERR sprintf("DAR for %s exited with status %d\n", $file, $dar_status >> 8);
+            exit($dar_status >> 8 || 5);
+        }
+    }
+    exit 0;
+}
 
 sub workstnSelRestore() {
     my $c           = shift;

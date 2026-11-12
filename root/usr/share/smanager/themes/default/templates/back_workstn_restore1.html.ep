@@ -1,59 +1,66 @@
 % layout 'default', title => "Sme server 2 - restore";
-%= stylesheet '/css/backup.css'
+% content_for 'head_contrib' => begin
+    %= stylesheet '/css/backup-workstation-jobs.css'
+% end
+% my $job_id = $bac_datas->{restore_job_id} || '';
+% my $status_url = $job_id ? url_for('backuprestore_status', job_id => $job_id)->to_string : '';
 % content_for 'module' => begin
-  <div id='module' class='module back_workstn_restore1-panel'>
-    %= javascript '/js/backup_workstation_restore.js'
+  <div id='module' class='module workstation-job-page restore-job-page'>
+    %= javascript 'js/backup_workstation_restore.js'
     % if (config->{debug} == 1) {
       <p>
         %= dumper $c->current_route
         %= dumper $bac_datas
       </p>
     % }
-
-  % if ( stash 'error' ) {
-    <br><div class=sme-error>
-      %= $c->render_to_string( inline => stash 'error' )
-    </div>
-  % }
-
-  <h1><%= $title %></h1>
-
-  %= form_for '/backupd' => ( method => 'POST' ) => begin
-
-    <h2>
-      %= l 'bac_WORKSTN_RESTORE'
-    </h2>
-
-    <fieldset>
-      <div id="status-container">
-        <div><strong>Stage:</strong> <span id="stage">-</span></div>
-        <div id="progress-bar" aria-label="progress bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-          <div id="progress-bar-inner">0%</div>
-        </div>
-
-        <div id="message-log-container">
-          <h3>Console Output:</h3>
-          <div id="message-log"></div>
-        </div>
-
-        <div id="completion-status"></div>
+    % if ( stash 'error' ) {
+      <div class=sme-error>
+        %= $c->render_to_string( inline => stash 'error' )
       </div>
-    </fieldset>
+    % }
+    <h1><%= $title %></h1>
+    <h2><%= l 'bac_WORKSTN_RESTORE' %></h2>
+    %= form_for '/backupd' => ( method => 'POST' ) => begin
+      <section class="workstation-job-window restore-job-window" aria-label="Workstation restore">
+        <div id="status-container" class="workstation-job-main" data-status-url="<%= $status_url %>" data-job-id="<%= $job_id %>" data-output-limit="<%= $bac_datas->{activity_limit} || 1800 %>">
+          <div class="workstation-job-heading">
+            <div>
+              <h3>Restore progress</h3>
+              <p><strong>Restore status:</strong> <span id="stage" class="job-state">Waiting for restore status</span></p>
+            </div>
+            <span class="job-live-label">Live status</span>
+          </div>
+          <div id="progress-bar" class="job-progress-track" aria-label="restore status" role="progressbar" aria-valuemin="0" aria-valuetext="Waiting for restore to start">
+            <div id="progress-bar-inner" class="job-progress-fill job-progress-fill-indeterminate"><span id="restore-progress-label">Waiting…</span></div>
+          </div>
+          <div id="completion-status" class="job-completion-status" role="status" aria-live="polite"></div>
+          <p class="job-current-activity"><strong>Current restore activity:</strong> <span id="restore-current-file">Waiting for DAR output…</span></p>
 
-    <!--
-    <p>
-      <fieldset>
-        %= $c->render_to_string( inline => $bac_datas->{restore_log} )
-      </fieldset>
-    </p>
-    -->
+          <details id="restore-summary-panel" class="job-output-section job-summary-panel">
+            <summary><strong>Restore Summary</strong> <span id="restore-summary-state">Waiting for completion</span></summary>
+            <div id="restore-summary" class="job-summary-content">Restore results will appear here when the job finishes.</div>
+          </details>
 
-    <p>
-      %= l 'bac_YOU_MUST_REBOOT'
-    </p>
-    %= hidden_field 'Function' => $bac_datas->{'function'}
-    %= submit_button $c->l('bac_REBOOT'), class => 'action'
-  % end
-</div>
+          <div id="message-log-container" class="job-message-panel">
+            <h3>Restore message</h3>
+            <div id="message-log">The reboot button will remain disabled until this restore is confirmed successful.</div>
+          </div>
 
+          <div id="restore-output-container" class="job-output-section job-output-section-grow">
+            <div class="job-output-heading">
+              <h3>Files being restored</h3>
+              <span>Newest activity first</span>
+            </div>
+            <pre id="restore-output" class="job-output job-output-grow" role="log" aria-live="off" aria-label="Live restore output">Waiting for restore output…</pre>
+          </div>
+        </div>
+        <div class="workstation-job-footer restore-job-footer">
+          <p id="reboot-required-notice" role="status">Do not reboot while the restore is running. A reboot will be required after successful completion.</p>
+          %= hidden_field 'Function' => $bac_datas->{'function'}
+          %= hidden_field 'restore_job_id' => $job_id
+          %= submit_button 'Please wait…', id => 'restore-reboot-button', class => 'action', disabled => 'disabled'
+        </div>
+      </section>
+    % end
+  </div>
 % end

@@ -1,35 +1,64 @@
-% layout 'default', title => "Sme server 2 - backup - verify";
+% layout 'default', title => "SME Server - workstation backup verification";
+% content_for 'head_contrib' => begin
+    %= stylesheet '/css/backup-workstation-jobs.css'
+% end
 % content_for 'module' => begin
+% my $job_id = stash 'verify_job_id';
+% my $status_url = $job_id ? url_for('backupverify_status', job_id => $job_id)->to_string : '';
+  <div id="module" class="module workstation-job-page verify-job-page">
+    <h1><%= $title %></h1>
+    <h2><%= l 'bac_VERIFY_WORKSTN_BACKUP_FILE' %></h2>
 
-  <div id='module' class='module back_workstn_verify1-panel'>
-    % if (config->{debug} == 1) {
-      <p>
-        %= dumper $c->current_route
-        %= dumper $bac_datas->{function}
-        <!--  dumper $bac_datas->{'files_list'} -->
-      </p>
+    % if (stash 'error') {
+      <div class="sme-error"><%= stash 'error' %></div>
     % }
 
-  % if ( stash 'error' ) {
-    <br><div class=sme-error>
-      %= $c->render_to_string( inline => stash 'error' )
-    </div>
-  % }
+    % if ($job_id) {
+      <section class="workstation-job-window" aria-label="Workstation backup verification">
+        <div class="workstation-job-main">
+          <div class="workstation-job-heading">
+            <div>
+              <h3>Verification progress</h3>
+              <p id="verify-state" data-status-url="<%= $status_url %>" class="job-state">Verification has been queued.</p>
+            </div>
+            <span class="job-live-label">Live status</span>
+          </div>
+          <div id="verify-progress-bar" class="job-progress-track job-progress-indeterminate" role="progressbar" aria-label="Backup verification progress" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Waiting for verification to start">
+            <div id="verify-progress-fill" class="job-progress-fill"><span id="verify-progress-label">Waiting…</span></div>
+          </div>
+          <p id="verify-progress" class="job-progress-text">Waiting for the verification worker...</p>
+          <p id="verify-current" class="job-current-activity" aria-live="polite"></p>
 
-  <h1><%= $title %></h1>
+          <details id="verify-summary-panel" class="job-output-section job-summary-panel">
+            <summary><strong>Verification Summary</strong> <span id="verify-summary-state">Waiting for completion</span></summary>
+            <div id="verify-summary" class="job-summary-content">Verification results will appear here when the job finishes.</div>
+          </details>
 
-  <h2><%= l 'bac_VERIFY_WORKSTN_BACKUP_FILE' %></h2>
+          <div class="job-output-section">
+            <div class="job-output-heading">
+              <h3>Archive results</h3>
+              <span>Newest first</span>
+            </div>
+            <pre id="verify-archives" class="job-output job-output-archives" aria-live="off"></pre>
+          </div>
 
-  <br>
-  %= $c->render_to_string( inline => $c->workstnVerify() )
-  <br>
-
-  %= form_for '/backupd' => ( method => 'POST' ) => begin
-
-    %= hidden_field 'Function' => $bac_datas->{'function'}
-
-    %= submit_button $c->l('NEXT'), class => 'action'
-
-  % end
-</div>
+          <div class="job-output-section job-output-section-grow">
+            <div class="job-output-heading">
+              <h3>Verification activity</h3>
+              <span>Newest first</span>
+            </div>
+            <pre id="verify-output" class="job-output job-output-grow" aria-live="off"></pre>
+          </div>
+        </div>
+        <div class="workstation-job-footer">
+          %= link_to 'Return to Backup' => url_for('backup'), class => 'action return-backup-button'
+        </div>
+      </section>
+      %= javascript '/js/backup_verify.js'
+    % } else {
+      <p>Verification could not be started. Correct the error above and try again.</p>
+      <br>
+      %= link_to 'Return to Backup' => url_for('backup'), class => 'action return-backup-button'
+    % }
+  </div>
 % end

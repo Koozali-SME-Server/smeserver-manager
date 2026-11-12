@@ -1,0 +1,102 @@
+
+/* Selective workstation restore: keep the file chooser scrollable within
+   the available browser viewport while leaving the date and Perform controls visible. */
+.back_workstn_sel_restore1-panel {
+  display:flex;
+  flex-direction:column;
+  height:calc(100vh - 115px);
+  max-height:none;
+  min-height:220px;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.back_workstn_sel_restore1-panel > h1,
+.back_workstn_sel_restore1-panel > h2,
+.back_workstn_sel_restore1-panel > .sel-restore-instructions {
+  flex:0 0 auto;
+}
+.back_workstn_sel_restore1-panel form {
+  display:flex;
+  flex:1 1 auto;
+  flex-direction:column;
+  min-height:0;
+  overflow:hidden;
+}
+.back_workstn_sel_restore1-panel .sel-restore-list-section {
+  display:flex;
+  flex:1 1 0;
+  flex-direction:column;
+  min-height:0;
+  overflow:hidden;
+}
+.back_workstn_sel_restore1-panel .sel-restore-list-section > label {
+  display:block;
+  flex:0 0 auto;
+  margin:.35em 0;
+}
+.back_workstn_sel_restore1-panel select.sel-restore-file-list {
+  display:block;
+  flex:1 1 0;
+  width:100%;
+  height:0;
+  min-height:80px;
+  max-height:none;
+  box-sizing:border-box;
+  overflow-y:auto;
+  overflow-x:auto;
+}
+.back_workstn_sel_restore1-panel .sel-restore-controls {
+  display:flex;
+  flex:0 0 auto;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:.55em;
+  padding-top:.65em;
+}
+.back_workstn_sel_restore1-panel .sel-restore-date-row {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:.5em;
+}
+.back_workstn_sel_restore1-panel .sel-restore-date-row .label,
+.back_workstn_sel_restore1-panel .sel-restore-date-row .data {
+  display:inline-block;
+}
+.back_workstn_sel_restore1-panel .sel-restore-controls input[type="submit"],
+.back_workstn_sel_restore1-panel .sel-restore-controls button {
+  flex:0 0 auto;
+}
+@media (max-height:520px) {
+  .back_workstn_sel_restore1-panel {
+    height:calc(100vh - 70px);
+    min-height:170px;
+  }
+  .back_workstn_sel_restore1-panel .sel-restore-file-list {
+    min-height:55px;
+  }
+}
+
+
+/* Follow-up fix: explicitly request a vertical scrollbar on the native
+   multiple-select control. Keep the existing viewport/flex sizing rules. */
+.back_workstn_sel_restore1-panel select.sel-restore-file-list {
+  overflow-y: scroll !important;
+  overflow-x: auto !important;
+  scrollbar-width: auto;
+  scrollbar-gutter: stable;
+  height: 0 !important;
+  min-height: 80px !important;
+  max-height: none !important;
+}
+
+
+/* Selective restore list: reduce the previously installed 70vh height by 15%. */
+.back_workstn_sel_restore1-panel select.sel-restore-file-list {
+  flex: 0 0 59.5vh !important;
+  height: 59.5vh !important;
+  max-height: 59.5vh !important;
+  min-height: 80px !important;
+  overflow-y: scroll !important;
+  overflow-x: auto !important;
+}

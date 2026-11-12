@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '261.el8.sme'; 
+our $VERSION = '271.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -597,6 +597,8 @@ sub setup_routing {
     $if_admin->post('/backup')->to('backup#do_display')->name('backupd');
     $if_admin->get('/backupd')->to('backup#do_display')->name('backupc'); # corrections #
     $if_admin->post('/backupd')->to('backup#do_update')->name('backupu');
+    $if_admin->get('/backuprestore/status/:job_id')->to('backup#restore_status')->name('backuprestore_status');
+    $if_admin->get('/backupverify/status/:job_id')->to('backup#verify_status')->name('backupverify_status');
 
     $if_admin->get('/bugreport')->to('bugreport#main')->name('bugreport');
     $if_admin->post('/bugreport')->to('bugreport#do_report')->name('bugreport2');

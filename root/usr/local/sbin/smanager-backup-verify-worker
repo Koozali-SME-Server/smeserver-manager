@@ -1,0 +1,270 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use JSON::PP ();
+use File::Path qw(make_path);
+use File::Basename qw(dirname basename);
+use File::Find;
+$File::Find::dont_use_nlink = 1;
+use Cwd qw(abs_path);
+use POSIX qw(WIFEXITED WEXITSTATUS WIFSIGNALED WTERMSIG);
+use esmith::ConfigDB::UTF8;
+use esmith::BlockDevices;
+
+my $ROOT = '/var/lib/smanager/backup-verify';
+if (@ARGV == 1 && $ARGV[0] eq '--check') {
+    exit($> == 0 ? 0 : 1);
+}
+die "Invalid job id\n" unless @ARGV == 1;
+my $job = shift;
+die "Invalid job id\n" unless $job =~ /\A[0-9]{10,}-[0-9]{1,8}-[a-f0-9]{8}\z/;
+my $reqfile = "$ROOT/$job.request";
+my $statusfile = "$ROOT/$job.status";
+my $json = JSON::PP->new->utf8->canonical;
+my $OUTPUT_LIMIT = 1800;
+umask 0027;
+
+sub save_status {
+    my ($data) = @_;
+    $data->{updated} = time;
+    my $tmp = "$statusfile.tmp.$$";
+    open my $fh, '>', $tmp or die "Cannot write status: $!";
+    print {$fh} $json->encode($data);
+    close $fh or die "Cannot close status: $!";
+    chmod 0640, $tmp;
+    my $gid = getgrnam('admin');
+    chown 0, $gid, $tmp if defined $gid;
+    rename $tmp, $statusfile or die "Cannot publish status: $!";
+}
+sub mounted_at {
+    my ($path) = @_;
+    return system('/bin/findmnt', '-rn', '--mountpoint', $path) == 0;
+}
+sub append_output {
+    my ($st, $line) = @_;
+    $line =~ s/[\r\n]+\z//;
+    $st->{smbpasswd_found} = 1 if $line =~ /etc\/samba\/smbpasswd\z/;
+    push @{$st->{output}}, $line if length $line;
+    # 'All' is represented internally by zero and retains every activity line.
+    if ($OUTPUT_LIMIT > 0 && @{$st->{output}} > $OUTPUT_LIMIT) {
+        splice @{$st->{output}}, 0, @{$st->{output}} - $OUTPUT_LIMIT;
+    }
+}
+sub run_dar {
+    my ($st, $mode, $archive, $label) = @_;
+    $st->{current} = $archive;
+    $st->{message} = "$mode: $archive";
+    $st->{archive_status}{$archive} = 'running';
+    save_status($st);
+    pipe(my $reader, my $writer) or die "pipe failed: $!";
+    my $pid = fork();
+    die "fork failed: $!" unless defined $pid;
+    if (!$pid) {
+        close $reader;
+        open STDOUT, '>&', $writer or exit 126;
+        open STDERR, '>&', $writer or exit 126;
+        close $writer;
+        my @cmd = ('/usr/bin/dar', '-Q', "--$mode", $archive, '--noconf');
+        exec @cmd or do {
+            print STDERR "Could not execute DAR: $!\n";
+            exit 127;
+        };
+    }
+    close $writer;
+    my $last_save = time;
+    while (my $line = <$reader>) {
+        append_output($st, $line);
+        if (time - $last_save >= 2) {
+            save_status($st);
+            $last_save = time;
+        }
+    }
+    close $reader;
+    waitpid($pid, 0);
+    my $raw = $?;
+    my $rc = WIFEXITED($raw) ? WEXITSTATUS($raw) : (WIFSIGNALED($raw) ? 128 + WTERMSIG($raw) : 255);
+    $st->{archive_status}{$archive} = $rc == 0 ? 'passed' : "failed (exit $rc)";
+    push @{$st->{archives}}, { archive => $archive, mode => $mode, exit_code => $rc };
+    $st->{completed} = scalar @{$st->{archives}};
+    $st->{message} = $rc == 0 ? "$label completed successfully" : "$label failed (DAR exit $rc)";
+    save_status($st);
+    return $rc;
+}
+
+my $st = {
+    job_id => $job, state => 'running', message => 'Starting verification',
+    current => '', completed => 0, archives => [], archive_status => {},
+    output => [], started => time,
+};
+my $mounted_by_us = 0;
+my $mountdir = '';
+my $vfstype = '';
+my $fatal = '';
+my $unmount_error = '';
+
+eval {
+   my $request;
+{
+    open my $rf, '<', $reqfile
+        or die "Cannot read job request: $!";
+    my $raw;
+    {
+        local $/;
+        $raw = <$rf>;
+    }
+    $request = $json->decode($raw);
+    close $rf;
+}
+    die "Invalid job request\n" unless ref($request) eq 'HASH';
+    my $requested_limit = $request->{activity_limit};
+    if (defined($requested_limit) && $requested_limit eq 'all') {
+        $OUTPUT_LIMIT = 0;
+    } elsif (defined($requested_limit) && $requested_limit =~ /\A(?:2000|10000|100000)\z/) {
+        $OUTPUT_LIMIT = 0 + $requested_limit;
+    } else {
+        $OUTPUT_LIMIT = 2000;
+    }
+    $st->{activity_limit} = $OUTPUT_LIMIT;
+    my $selected = $request->{archive} // '';
+    my $fullverify = $request->{fullverify} ? 1 : 0;
+    die "Invalid relative archive path\n"
+        unless $selected =~ /\A[-+@\w\s.\/]+\z/ && $selected !~ m{(?:\A|/)\.\.?(?:/|\z)} && $selected !~ m{//};
+
+    my $cfg = esmith::ConfigDB::UTF8->open_ro or die "Cannot open SME configuration database";
+    my $rec = $cfg->get('backupwk') or die "Workstation backup is not configured";
+    my $host = $rec->prop('SmbHost') // '';
+    my $share = $rec->prop('SmbShare') // '';
+    $mountdir = $rec->prop('Mount') || '/mnt/smb';
+    $vfstype = $rec->prop('VFSType') || 'cifs';
+    my $id = $rec->prop('Id') || $cfg->get('SystemName')->value . '.' . $cfg->get('DomainName')->value;
+    die "Invalid configured host directory\n" unless $id =~ /\A[-+@\w.]+\z/;
+    $mountdir = "/$share" if $vfstype eq 'usb';
+    die "Unsupported backup filesystem type: $vfstype\n"
+        unless $vfstype =~ /\A(?:cifs|nfs|usb|mnt)\z/;
+    die "Unsafe configured mount path\n"
+        unless $mountdir =~ m{\A/[A-Za-z0-9_+./-]+\z} && $mountdir !~ m{(?:\A|/)\.\.(?:/|\z)} && $mountdir ne '/';
+    die "Backup host/share configuration is incomplete\n"
+        if ($vfstype eq 'cifs' || $vfstype eq 'nfs') && (!$host || !$share);
+
+    die "Mount point is a symbolic link\n" if -l $mountdir;
+    if ($vfstype eq 'mnt') {
+        # Mounted-disk mode uses the administrator's existing mount. Never
+        # mount or unmount it here; require an exact active mount point.
+        die "Configured mounted-disk path is not an active mount point: $mountdir\n"
+            unless mounted_at($mountdir);
+    } else {
+        make_path($mountdir) unless -d $mountdir;
+        die "Backup mount point is already mounted; refusing to disturb an existing mount\n"
+            if mounted_at($mountdir);
+
+        if ($vfstype eq 'cifs') {
+            die "CIFS credentials file is missing\n" unless -r '/etc/dar/CIFScredentials';
+            system('/bin/mount', '-t', 'cifs', "//$host/$share", $mountdir, '-o', 'credentials=/etc/dar/CIFScredentials,nounix');
+        } elsif ($vfstype eq 'nfs') {
+            system('/bin/mount', '-t', 'nfs', '-o', 'nolock', "$host:/$share", $mountdir);
+        } else {
+            my $devices = esmith::BlockDevices->new('allowmount' => 'disabled');
+            my ($valid, $invalid) = $devices->checkBackupDrives(0);
+            my $device = '';
+            if ($valid && ref($valid) eq 'ARRAY') {
+                for my $dev (@{$valid}) {
+                    my $label = $devices->label($dev);
+                    $device = "/dev/$dev" if $share eq "media/$label";
+                }
+            }
+            $devices->destroy if $devices;
+            die "No matching USB backup device found for $share\n" unless $device;
+            system('/bin/mount', $device, $mountdir);
+        }
+        my $mount_rc = $?;
+        if (mounted_at($mountdir)) {
+            $mounted_by_us = 1;
+        } else {
+            die "Could not mount backup share (mount exit " . ($mount_rc >> 8) . ")\n";
+        }
+    }
+
+    my $hostdir = "$mountdir/$id";
+    die "Backup directory not found: $hostdir\n" unless -d $hostdir;
+    my $base = abs_path($hostdir) or die "Cannot resolve backup directory\n";
+    my $target = "$hostdir/$selected";
+    my $target_dir = dirname($target);
+    my $resolved_dir = abs_path($target_dir) or die "Selected backup directory does not exist\n";
+    die "Selected backup is outside the configured host directory\n"
+        unless $resolved_dir eq $base || index($resolved_dir, "$base/") == 0;
+    my $target_base = "$resolved_dir/" . basename($target);
+    my @slices = glob("$target_base.[0-9]*.dar");
+    @slices = grep { /\.[0-9]+\.dar\z/ && -f $_ } @slices;
+    die "Selected archive has no DAR slices: $selected\n" unless @slices;
+
+    if (!$fullverify) {
+        my $rc = run_dar($st, 'list', $target_base, 'Archive listing');
+        die "DAR could not read the selected archive (exit $rc)\n" if $rc != 0;
+        my $complete = $st->{smbpasswd_found} ? 1 : 0;
+        die "DAR listed the archive, but the expected Samba password file was not found; check the backup contents\n"
+            unless $complete;
+    } else {
+        my %by_key;
+        find({
+            wanted => sub {
+                return unless /\.([0-9]+)\.dar\z/ && -f $_;
+                my $path = $File::Find::name;
+                $path =~ s/\.[0-9]+\.dar\z//;
+                my $name = basename($path);
+                my $key = $name;
+                $key =~ s/.*-//;
+                $by_key{$key} = $path;
+            },
+            no_chdir => 0,
+        }, $resolved_dir);
+        my @keys = sort keys %by_key;
+        my @chain;
+        my $found = 0;
+        for my $key (@keys) {
+            push @chain, $by_key{$key};
+            $found = 1 if $by_key{$key} eq $target_base;
+            last if $found;
+        }
+        die "Selected archive was not found in the backup chain\n" unless $found;
+        die "No full backup was found at the start of the restore chain\n"
+            unless @chain && $chain[0] =~ /\/full-/;
+        for my $i (1 .. $#chain) {
+            my $n = sprintf('%03d', $i);
+            die "Expected incremental backup inc-$n was not found: $chain[$i]\n"
+                unless $chain[$i] =~ /\/inc-\Q$n\E-/;
+        }
+        $st->{total} = scalar @chain;
+        save_status($st);
+        for my $archive (@chain) {
+            my $rc = run_dar($st, 'test', $archive, 'Integrity test');
+            die "Integrity test failed for $archive (DAR exit $rc)\n" if $rc != 0;
+        }
+    }
+    1;
+} or do {
+    $fatal = $@ || 'Unknown verification failure';
+    $fatal =~ s/\s+\z//;
+};
+
+if ($mounted_by_us && mounted_at($mountdir)) {
+    if (system('/bin/umount', $mountdir) != 0) {
+        my $first = $? >> 8;
+        if (system('/bin/umount', '-f', $mountdir) != 0) {
+            $unmount_error = "Unmount failed (normal exit $first; forced exit " . ($? >> 8) . ")";
+        }
+    }
+}
+unlink $reqfile;
+if ($unmount_error) {
+    $fatal .= "; $unmount_error";
+}
+if ($fatal) {
+    $st->{state} = 'failed';
+    $st->{message} = $fatal;
+} else {
+    $st->{state} = 'succeeded';
+    $st->{message} = 'Verification completed successfully';
+}
+$st->{finished} = time;
+eval { save_status($st); 1 } or warn "Could not save final status: $@";
+exit($fatal ? 1 : 0);
