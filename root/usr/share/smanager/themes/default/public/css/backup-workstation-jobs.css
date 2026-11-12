@@ -327,6 +327,7 @@
     padding-block: 1px;
     padding-inline: 6px;
     text-decoration:none;
+    max-width:100px;
 }
 
 .workstation-job-footer a.return-backup-button:hover  {

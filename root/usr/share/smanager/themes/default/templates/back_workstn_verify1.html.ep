@@ -14,7 +14,7 @@
     % }
 
     % if ($job_id) {
-      <section class="workstation-job-window" aria-label="Workstation backup verification">
+		<section class="workstation-job-window" aria-label="Workstation backup verification">
         <div class="workstation-job-main">
           <div class="workstation-job-heading">
             <div>
@@ -53,12 +53,16 @@
         <div class="workstation-job-footer">
           %= link_to 'Return to Backup' => url_for('backup'), class => 'action return-backup-button'
         </div>
-      </section>
       %= javascript '/js/backup_verify.js'
+	  </section>
     % } else {
-      <p>Verification could not be started. Correct the error above and try again.</p>
-      <br>
-      %= link_to 'Return to Backup' => url_for('backup'), class => 'action return-backup-button'
+        <div class="workstation-job-footer">
+		<p>
+		  Verification could not be started. Correct the error above and try again
+		  <br><br>
+  		  %= link_to 'Return to Backup' => url_for('backup'), class => 'action return-backup-button'
+  		</p>
+        </div>
     % }
-  </div>
+   </div>
 % end

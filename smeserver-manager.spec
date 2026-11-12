@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 271
+%define release 272
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -89,6 +89,7 @@ rm -f %{name}-%{version}-%{release}-filelist
 --file %{dir_mngr}/script/daily.sh 'attr(0770,root,root)' \
 --file %{dir_mngr}/script/routes.pl 'attr(0770,root,root)' \
 --file %{dir_mngr}/script/secrets.pl 'attr(0770,root,root)' \
+--ignoredir /etc/sudoers.d \
 > %{name}-%{version}-%{release}-filelist
 
 echo "%doc COPYING f2b/*" >> %{name}-%{version}-%{release}-filelist
@@ -129,6 +130,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Nov 12 2026 Brian Read <brianr@koozali.org> 11.0.0-272.sme
+- Re-coded backup to enhance feedback for verify and restore - thanks to @Terry [SME: 13824]
+
 * Sat Nov 07 2026 Brian Read <brianr@koozali.org> 11.0.0-271.sme
 - Regression -login button moved [SME: 13816]
 - Re-factor header bar to be properly responsive  [SME: 13749]
