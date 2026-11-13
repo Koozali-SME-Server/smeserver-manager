@@ -132,6 +132,8 @@ true
 %changelog
 * Thu Nov 12 2026 Brian Read <brianr@koozali.org> 11.0.0-272.sme
 - Re-coded backup to enhance feedback for verify and restore - thanks to @Terry [SME: 13824]
+- Bring back to backup links into line with other buttons in system [SME: 13824]
+- Re-format CSS file to conform to others in system [SME: 13824]
 
 * Sat Nov 07 2026 Brian Read <brianr@koozali.org> 11.0.0-271.sme
 - Regression -login button moved [SME: 13816]
