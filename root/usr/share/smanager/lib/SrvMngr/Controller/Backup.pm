@@ -785,8 +785,9 @@ sub workstnBackupConfig {
 sub _workstn_activity_limit {
     my ($value) = @_;
     return 'all' if defined $value && $value eq 'all';
-    return 1800 unless defined $value && $value =~ /\A[0-9]{1,6}\z/;
-    return ($value >= 1800 && $value <= 100000) ? 0 + $value : 1800;
+    return 0 + $value
+        if defined $value && $value =~ /\A(?:2000|10000|100000)\z/;
+    return 'all';
 }
 
 sub startWorkstnVerify {

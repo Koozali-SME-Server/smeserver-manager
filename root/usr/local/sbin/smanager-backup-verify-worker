@@ -21,7 +21,7 @@ die "Invalid job id\n" unless $job =~ /\A[0-9]{10,}-[0-9]{1,8}-[a-f0-9]{8}\z/;
 my $reqfile = "$ROOT/$job.request";
 my $statusfile = "$ROOT/$job.status";
 my $json = JSON::PP->new->utf8->canonical;
-my $OUTPUT_LIMIT = 1800;
+my $OUTPUT_LIMIT = 0;
 umask 0027;
 
 sub save_status {
@@ -122,7 +122,7 @@ eval {
     } elsif (defined($requested_limit) && $requested_limit =~ /\A(?:2000|10000|100000)\z/) {
         $OUTPUT_LIMIT = 0 + $requested_limit;
     } else {
-        $OUTPUT_LIMIT = 2000;
+        $OUTPUT_LIMIT = 0;
     }
     $st->{activity_limit} = $OUTPUT_LIMIT;
     my $selected = $request->{archive} // '';

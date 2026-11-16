@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 272
+%define release 273
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -130,10 +130,17 @@ true
 %defattr(-,root,root)
 
 %changelog
-* Thu Nov 12 2026 Brian Read <brianr@koozali.org> 11.0.0-272.sme
-- Re-coded backup to enhance feedback for verify and restore - thanks to @Terry [SME: 13824]
+* Mon Nov 16 2026 Brian Read <brianr@koozali.org> 11.0.0-273.sme
+- Consolidate workstation verification and restore R8.8 updates [SME: 13824]
+- Create persistent workstation job directories on clean installs and upgrades [SME: 13824]
+- Set established root:admin ownership and permissions for job directories [SME: 13824]
+- Retain --ignoredir /etc/sudoers.d while keeping the sudoers file in the payload [SME: 13824]
+- Replace activity selectors with All, 2,000, 10,000 and 100,000 [SME: 13824]
 - Bring back to backup links into line with other buttons in system [SME: 13824]
 - Re-format CSS file to conform to others in system [SME: 13824]
+
+* Thu Nov 12 2026 Brian Read <brianr@koozali.org> 11.0.0-272.sme
+- Re-coded backup to enhance feedback for verify and restore - thanks to @Terry [SME: 13824]
 
 * Sat Nov 07 2026 Brian Read <brianr@koozali.org> 11.0.0-271.sme
 - Regression -login button moved [SME: 13816]
