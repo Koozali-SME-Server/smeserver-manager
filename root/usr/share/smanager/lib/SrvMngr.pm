@@ -44,7 +44,7 @@ use Mojo::Util 'url_unescape';
 use SrvMngr_Auth qw(check_admin_access);
 
 #this is overwritten with the "release" by the spec file - release can be "99.el8.sme"
-our $VERSION = '271.el8.sme'; 
+our $VERSION = '273.el8.sme'; 
 #Extract the release value
 if ($VERSION =~ /^(\d+)/) {
     $VERSION = $1;  # $1 contains the matched numeric digits
@@ -494,8 +494,22 @@ sub setup_helpers {
                     push ( @{$options[0]} ,[ ucfirst( $selected), $selected, 'selected', 'selected'] ) if ($count <1);
                     return @options;
     });
-
-}
+    
+	$self->helper(split_version => sub {
+        my $self = shift;
+		my $number = shift;
+		
+		if (length($number) == 5) {
+			# For 5 digits: XX-X-XX
+			return substr($number, 0, 2) . "." . substr($number, 2, 1) . "-" . substr($number, 3, 2);
+		} elsif (length($number) == 6) {
+			# For 6 digits: XX-X-XXX
+			return substr($number, 0, 2) . "." . substr($number, 2, 1) . "-" . substr($number, 3, 3);
+		} else {
+			return "$number";
+		}
+	});
+	}
 
 
 sub setup_plugins {

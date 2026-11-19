@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 273
+%define release 274
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -130,6 +130,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Thu Nov 19 2026 Brian Read <brianr@koozali.org> 11.0.0-274.sme
+- Move split_version routine from footer template to helper in SrvMngr.pm [SME: 13843]
+
 * Mon Nov 16 2026 Brian Read <brianr@koozali.org> 11.0.0-273.sme
 - Consolidate workstation verification and restore R8.8 updates [SME: 13824]
 - Create persistent workstation job directories on clean installs and upgrades [SME: 13824]
