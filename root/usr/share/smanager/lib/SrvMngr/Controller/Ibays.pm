@@ -119,7 +119,7 @@ sub do_update {
     my $title     = $c->l('iba_FORM_TITLE');
     $iba_datas{'trt'} = $trt;
     my $result = '';
-    my $res;
+    my $res = ''; 
     $adb = esmith::AccountsDB::UTF8->open || die "Couldn't open accounts db";
     $cdb = esmith::ConfigDB::UTF8->open() || die "Couldn't open config db";
 
@@ -184,7 +184,7 @@ sub do_update {
     if ($trt eq 'DEL') {
         my $ibay = $c->param('ibay');
 
-        if ($ibay =~ /^([a-z][a-z0-9]*)$/) {
+        if ($ibay =~ /^([a-z][\_\.\-a-z0-9]*)$/) {
             $ibay = $1;
         } else {
             $result .= $c->l('iba_ERR_INTERNAL_FAILURE') . ':' . $ibay;
@@ -336,7 +336,7 @@ sub remove_ibay {
             }
 
             # Untaint $name before use in system()
-            $name =~ /([\w\p{L}.-]+)/;
+            $name =~ /^([a-z][\_\.\-a-z0-9]*)$/;
             $name = $1;
 
             if (system("/sbin/e-smith/signal-event", "ibay-delete", $name) == 0) {
@@ -363,7 +363,7 @@ sub reset_password {
         $acct->set_prop('PasswordSet', 'yes');
 
         # Untaint $name before use in system()
-        $name =~ /([\w\p{L}.-]+)/;
+        $name =~ /^([a-z][\_\.\-a-z0-9]*)$/;
         $name = $1;
 
         if (system("/sbin/e-smith/signal-event", "password-modify", $name) == 0) {

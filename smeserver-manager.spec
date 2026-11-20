@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 274
+%define release 275
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -130,6 +130,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Nov 20 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-275.sme
+- fix ibay with dash can not be deleted [SME: 13849]
+
 * Thu Nov 19 2026 Brian Read <brianr@koozali.org> 11.0.0-274.sme
 - Move split_version routine from footer template to helper in SrvMngr.pm [SME: 13843]
 
