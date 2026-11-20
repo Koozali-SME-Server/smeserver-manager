@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 275
+%define release 276
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -130,6 +130,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Fri Nov 20 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-276.sme
+- improve pseudonyms security and validation [SME: 13855]
+
 * Fri Nov 20 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-275.sme
 - fix ibay with dash can not be deleted [SME: 13849]
 

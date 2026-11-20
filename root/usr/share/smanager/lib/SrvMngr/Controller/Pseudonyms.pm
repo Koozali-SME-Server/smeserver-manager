@@ -118,7 +118,8 @@ sub do_update {
             ) or $result .= "Error occurred while creating pseudonym in database.";
 
             # Untaint $pseudonym before use in system()
-            ($pseudonym) = ($pseudonym =~ /([\w\p{L}.-]+)/);
+            $pseudonym = untaint_pseudonym($pseudonym);
+            return "Error occurred untainting pseudonym." unless $pseudonym;
             system("/sbin/e-smith/signal-event", "pseudonym-create", "$pseudonym",) == 0
                 or $result .= 'pse_CREATE_ERROR.';
         } ## end if (!$result)
@@ -152,7 +153,8 @@ sub do_update {
                 or $result .= "Error occurred while modifying pseudonym in database.";
 
             # Untaint $pseudonym before use in system()
-            ($pseudonym) = ($pseudonym =~ /([\w\p{L}.-]+)/);
+            $pseudonym = untaint_pseudonym($pseudonym);
+            return "Error occurred untainting pseudonym." unless $pseudonym;
             system("/sbin/e-smith/signal-event", "pseudonym-modify", "$pseudonym",) == 0
                 or $result .= "Error occurred while modifying pseudonym.";
         } ## end if (!$result)
@@ -212,13 +214,11 @@ sub delete_pseudonym {
                 or $msg .= "Error occurred while changing pseudonym type.";
         }
     } ## end foreach my $p_rec (@pseudonyms)
+    return $msg if $msg;
+
     $adb->get($pseudonym)->set_prop('type', 'pseudonym-deleted')
         or $msg .= "Error occurred while changing pseudonym type.";
-
-    # Untaint $pseudonym before use in system()
-    ($pseudonym) = ($pseudonym =~ /([\w\p{L}.-]+)/);
-    system("/sbin/e-smith/signal-event", "pseudonym-delete", "$pseudonym") == 0
-        or $msg .= "Error occurred while removing pseudonym.";
+    return $msg if $msg;
 
     #TODO: is it ->delete or get()->delete
     foreach my $p_rec (@pseudonyms) {
@@ -228,9 +228,27 @@ sub delete_pseudonym {
                 or $msg .= "Error occurred while deleting pseudonym from database.";
         }
     } ## end foreach my $p_rec (@pseudonyms)
+    return $msg if $msg;
+
+
+    # Untaint $pseudonym before use in system()
+    $pseudonym = untaint_pseudonym($pseudonym);
+    return "Error occurred untainting pseudonym." unless $pseudonym;
+    system("/sbin/e-smith/signal-event", "pseudonym-delete", "$pseudonym") == 0
+        or $msg .= "Error occurred while removing pseudonym.";
+    return $msg if $msg;
+
     $adb->get($pseudonym)->delete()
         or $msg .= "Error occurred while deleting pseudonym from database.";
-    return $msg unless $msg;
+    return $msg if $msg;
+
+    # Untaint $pseudonym before use in system()
+    $pseudonym = untaint_pseudonym($pseudonym);
+    return "Error occurred untainting pseudonym." unless $pseudonym;
+    system("/sbin/e-smith/signal-event", "pseudonym-delete", "$pseudonym") == 0
+        or $msg .= "Error occurred while removing pseudonym.";
+
+    return $msg if $msg;
     return 'OK';
 } ## end sub delete_pseudonym
 
@@ -319,22 +337,47 @@ Returns "NAME_IN_USE" if this pseudonym is taken.
 sub validate_new_pseudonym_name {
     my ($c, $pseudonym, $account) = @_;
     my $acct = $adb->get($pseudonym);
+    # safe regex 
+    # ?, $, ^, &, `, %, /, *, #, + are authorized for emails, but dangerous in cli.
+    # prior SME11 those were accepted ? $ ^ & ` % / * # +
+    my $valid_local_re = qr/^(?!.*\.\.)([a-z0-9](?:[a-z0-9._!~-]{0,62}[a-z0-9-])?)$/;
 
     if (defined $acct) {
         return ($c->l('pse_NAME_IN_USE'));
     } elsif ($pseudonym =~ /@/) {
+        my ($lhs, $rhs, $extra) = split /@/, $pseudonym, 3;
+        return ($c->l('pse_VALID_PSEUDONYM_NAMES')) if (defined $extra || !defined $rhs);
+
+        return ($c->l('pse_VALID_PSEUDONYM_NAMES')) if ($lhs ne '' && $lhs !~ $valid_local_re);
+
         my $ddb = esmith::DomainsDB::UTF8->open_ro
             or die "Couldn't open DomainsDB\n";
-        my ($lhs, $rhs) = split /@/, $pseudonym;
         return ($c->l('pse_PSEUDONYM_INVALID_DOMAIN')) unless ($ddb->get($rhs));
         return ($c->l('pse_PSEUDONYM_INVALID_SAMEACCT')) if ($lhs eq $account);
-        return ('OK');    # p:' . $pseudonym . ' a:' . $account);
-    } elsif ($pseudonym !~ /^([a-z0-9][a-z0-9\.\-_!#\?~\$\^\+&`%\/\*]*)$/) {
+        return ('OK'); 
+     } elsif ($pseudonym !~ $valid_local_re) {
         return ($c->l('pse_VALID_PSEUDONYM_NAMES'));
     } else {
         return ('OK');
     }
 } ## end sub validate_new_pseudonym_name
+
+=head2 untaint_pseudonym fm PSEUDONYM
+
+Returns untainted pseudonym to use if possible
+Returns undef otherwise
+
+=cut
+
+sub untaint_pseudonym {
+    my $pseudonym = shift;
+    return undef unless defined $pseudonym;
+
+    if ($pseudonym =~ /^((?!.*\.\.)(?:[a-z0-9](?:[a-z0-9._!~-]{0,62}[a-z0-9!~-])?(?:\@(?!.*\.\.)[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?)?|\@(?!.*\.\.)[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?))$/) {
+        return $1; # Valeur untainted prête pour la CLI ou la DB
+    }
+    return undef;
+} ## end sub  untaint_pseudonym
 
 =head2 validate_is_pseudonym FM NAME
 
