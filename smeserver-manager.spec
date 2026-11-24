@@ -132,6 +132,8 @@ true
 %changelog
 * Tue Nov 24 2026 Brian Read <brianr@koozali.org> 11.0.0-277.sme
 - Rework navigation2-conf to use the I18N plugin (.mo/.po) instead of parsing .lex files directly: fix get_handle crash (full module namespace), cache per-module prefix and memoize localization by base language (runtime ~23s -> ~9s), and summarize suppressed .mo-missing warnings. Remove the separate new-navigation2-conf script. [SME: 13720]
+- Treat "(en) ..." fallbacks as untranslated in the menu navigation and retry with the prefix+string key and a case-insensitive lexicon match, so a menu label such as "E-Mail" resolves to a case-variant translated key (E-mail -> Courriel) instead of showing the "(en) E-Mail" fallback. [SME: 13720]
+- Resolve case-insensitive navigation lookups through the I18N handler's maketext() rather than returning raw %Lexicon values, so coderef/scalarref entries do not leak into the navigation db as CODE(0x...)/SCALAR(0x...) in Description. [SME: 13720]
 
 * Fri Nov 20 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-276.sme
 - improve pseudonyms security and validation [SME: 13855]

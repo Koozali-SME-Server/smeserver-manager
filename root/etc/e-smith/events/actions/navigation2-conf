@@ -216,9 +216,9 @@ foreach my $lang (@langs) {
             $i18n_plugin->i18namespace($namespace, $base_lang);
         }
         my $loc_heading     = $loc_cache{"$ns_key|heading|$heading"}
-            //= localize_for_nav($heading, $base_lang, $prefix);
+            //= localize_for_nav($heading, $base_lang, $prefix, $namespace);
         my $loc_description = $loc_cache{"$ns_key|desc|$description"}
-            //= localize_for_nav($description, $base_lang, $prefix);
+            //= localize_for_nav($description, $base_lang, $prefix, $namespace);
         print "Translated: $description into: $loc_description\n" if DEBUG;
         $loc_heading     =~ s/^\s*(\w.*?)\s*$/$1/;
         $loc_description =~ s/^\s*(\w.*?)\s*$/$1/;
@@ -492,25 +492,99 @@ sub localise {
 # The handler's namespace/language must already be set (via a prior
 # i18namespace call) before the first invocation.
 sub localize_for_nav {
-    my ($string, $base_lang, $prefix) = @_;
+    my ($string, $base_lang, $prefix, $namespace) = @_;
     print "String:$string Language:$base_lang Prefix:$prefix\n" if DEBUG;
 
     # 1. Try the raw string first
     my $loc = localise($string);
     print "Raw:$loc\n" if DEBUG;
 
-    # 2. Fallback logic if string wasn't translated and target language is not English
-    if ($loc eq $string && $base_lang ne 'en' && defined $prefix) {
-        # 3. Try prefix + string (standard I18N namespace/key pattern)
+    # A result counts as a REAL translation only if it differs from the key
+    # and is not one of lex-to-po.pl's untranslated "(en) ..." fallbacks.
+    # If the exact lookup didn't produce a real translation (and we're not
+    # in English), keep trying: prefix+string, then a case-insensitive match,
+    # so e.g. a menu label "E-Mail" can still resolve to a translated key
+    # written with different casing (such as the legacy "E-mail").
+
+    # 2. If we got a real translation (or we're in English), we're done.
+    if (!_is_untranslated($loc, $string) || $base_lang eq 'en') {
+        return $loc;
+    }
+
+    # 3. Fallback: try prefix + string (standard I18N namespace/key pattern)
+    if (defined $prefix) {
         my $key = $prefix . $string;
         my $tr = localise($key);
         print "Try prefix:$key giving: $tr\n" if DEBUG;
-
-        # If the prefix key also failed (returned exactly the key), revert to original string
-        $loc = $string if $tr eq $key;
+        if (!_is_untranslated($tr, $key)) {
+            return $tr;
+        }
     }
 
-    return $loc;
+    # 4. Fallback: case-insensitive match against the loaded lexicon(s)
+    if (my $ci = _case_insensitive_lookup($namespace, $string, $base_lang)) {
+        return $ci;
+    }
+
+    # 5. Nothing better found -- return the original string, never a raw
+    # "(en)" fallback.
+    return $string;
+}
+
+# True if $result is not a genuine translation: either it is identical to the
+# requested $key (Locale::Maketext returns the key for a missing entry) or it
+# is one of lex-to-po.pl's untranslated "(en) ..." fallbacks.
+sub _is_untranslated {
+    my ($result, $key) = @_;
+    $result //= '';
+    return 1 if $result eq $key;
+    return 1 if $result =~ /^\s*\(en\)/;
+    return 0;
+}
+
+# Derive the sibling "General" namespace for a module namespace, or undef.
+# Mirrors SrvMngr::Plugin::I18N::_Handler::_general_namespace.
+sub _general_sibling {
+    my ($namespace) = @_;
+    return undef unless $namespace =~ /^(.*)::([^:]+)\z/;
+    my ($prefix, $leaf) = ($1, $2);
+    return undef if $leaf eq 'General';
+    return "${prefix}::General";
+}
+
+# Scan the already-loaded lexicon(s) for the module (and, when derivable,
+# for General) for a key that matches $string ignoring case. Returns the
+# translated value of the first genuinely-translated match, or undef if every
+# matching key is itself untranslated/missing.
+sub _case_insensitive_lookup {
+    my ($namespace, $string, $lang) = @_;
+    (my $norm = lc $lang) =~ s/-/_/g;
+    my $target = lc $string;
+
+    my @classes = ( "${namespace}::${norm}" );
+    if (my $gen = _general_sibling($namespace)) {
+        push @classes, "${gen}::${norm}";
+    }
+
+    no strict 'refs';
+    for my $class (@classes) {
+        next unless $class->can('new');
+        my $lex = \%{"${class}::Lexicon"};
+        for my $key (keys %$lex) {
+            next if $key =~ /^_/;
+            next unless lc($key) eq $target;
+            # Resolve through the handler's own maketext() lookup (with the
+            # exact matched key) rather than returning the raw %Lexicon value.
+            # Lexicon values are often coderefs (interpolated keys, plural
+            # forms, etc.); returning one raw would stringify as
+            # CODE(0x...) / SCALAR(0x...) in the navigation db. maketext()
+            # dispatches those correctly and returns a plain string.
+            my $val = $i18n_plugin->localize($key);
+            next if _is_untranslated($val, $key);
+            return $val;
+        }
+    }
+    return undef;
 }
 
 
