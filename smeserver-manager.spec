@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 276
+%define release 277
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -130,6 +130,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Tue Nov 24 2026 Brian Read <brianr@koozali.org> 11.0.0-277.sme
+- Rework navigation2-conf to use the I18N plugin (.mo/.po) instead of parsing .lex files directly: fix get_handle crash (full module namespace), cache per-module prefix and memoize localization by base language (runtime ~23s -> ~9s), and summarize suppressed .mo-missing warnings. Remove the separate new-navigation2-conf script. [SME: 13720]
+
 * Fri Nov 20 2026 Jean-Philippe Pialasse <jpp@koozali.org> 11.0.0-276.sme
 - improve pseudonyms security and validation [SME: 13855]
 
