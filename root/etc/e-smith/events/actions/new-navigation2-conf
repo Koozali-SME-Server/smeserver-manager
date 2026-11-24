@@ -82,15 +82,21 @@ eval {
 };
 print STDERR "I18N init failed: $@" if $@;
 
-# Dedupe repetitive warnings (e.g. the plugin's ".mo missing, falling back
-# to .po" notices fire once per language and flood the output). Each distinct
-# message is shown once; duplicates are counted and summarized at the end.
-my %warn_seen;
-my $warn_dup = 0;
+# The plugin warns on every .mo missing / fallback-to-.po notice, once per
+# language, flooding the output (e.g. Fail2ban). Suppress all of those
+# entirely and report a single count, plus the distinct modules affected,
+# at the end instead. All other warnings are still printed.
+my $warn_mo_missing = 0;
+my %warn_mo_modules;
 $SIG{__WARN__} = sub {
     my $msg = shift;
-    if ($warn_seen{$msg}++) {
-        $warn_dup++;
+    # .mo missing / UNCOMPILED .po fallback notices from the plugin,
+    # e.g. "Loaded UNCOMPILED .po lexicon for SrvMngr::I18N::Modules:Fail2ban (en) ..."
+    if ($msg =~ /(uncompiled .* \.po lexicon|\.mo missing or failed)/i) {
+        $warn_mo_missing++;
+        if ($msg =~ /Modules::([A-Za-z0-9_]+)/) {
+            $warn_mo_modules{$1} = 1;
+        }
         return;
     }
     print STDERR $msg;
@@ -98,6 +104,8 @@ $SIG{__WARN__} = sub {
 
 my %navdbs;
 my %prefix_cache;
+my %ns_setup;
+my %loc_cache;
 opendir FUNCTIONS, SMNGR_LIB . '/' . WEBFUNCTIONS
     or die "Couldn't open ", SMNGR_LIB . '/' . WEBFUNCTIONS, "\n";
 my @files = grep (!/^${navigation_ignore}$/, readdir(FUNCTIONS));
@@ -198,12 +206,19 @@ foreach my $lang (@langs) {
 
         # Get the base language code from $lang
         my $base_lang = (split('-', $lang))[0];
-        # Set up the I18N handler ONCE for this (module, language) pair,
-        # then localize both heading and description against it (instead of
-        # re-running the full, expensive i18namespace setup twice).
-        $i18n_plugin->i18namespace($namespace, $base_lang);
-        my $loc_heading     = localize_for_nav($heading,     $base_lang, $prefix);
-        my $loc_description = localize_for_nav($description, $base_lang, $prefix);
+        # Memoize the i18namespace setup and localized strings per (module,
+        # base_lang). Many of the languages availableLanguages() returns are
+        # region variants (es-mx, fr-fr, de-at, ...) whose translations are
+        # identical to their base language; they would otherwise re-run the
+        # expensive i18namespace lexicon setup for the same base language.
+        my $ns_key = "$namespace|$base_lang";
+        unless ($ns_setup{$ns_key}++) {
+            $i18n_plugin->i18namespace($namespace, $base_lang);
+        }
+        my $loc_heading     = $loc_cache{"$ns_key|heading|$heading"}
+            //= localize_for_nav($heading, $base_lang, $prefix);
+        my $loc_description = $loc_cache{"$ns_key|desc|$description"}
+            //= localize_for_nav($description, $base_lang, $prefix);
         print "Translated: $description into: $loc_description\n" if DEBUG;
         $loc_heading     =~ s/^\s*(\w.*?)\s*$/$1/;
         $loc_description =~ s/^\s*(\w.*?)\s*$/$1/;
@@ -221,7 +236,11 @@ foreach my $lang (@langs) {
     $navdb->close() if $navdb;
 } ## end foreach my $lang (@langs)
 
-warn "Suppressed $warn_dup duplicate warning lines\n" if $warn_dup;
+if ($warn_mo_missing) {
+    my $modules = join(', ', sort keys %warn_mo_modules);
+    warn "Suppressed $warn_mo_missing \".mo missing\" / .po-fallback warning lines"
+        . " (modules: $modules)\n";
+}
 
 sub Find_prefix_from_po_file {
     my $pofile = shift;
