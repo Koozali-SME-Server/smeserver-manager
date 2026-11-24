@@ -354,22 +354,22 @@ The source code is authoritative; this document is a navigation aid and set of w
 
 ## 11. Translation and Menu Structure
 
-The SrvMngr application uses a specific mechanism for managing menu item translations through the S80navigation2-conf script located at root/etc/e-smith/events/smanager-refresh/S80navigation2-conf. This script creates DB type structures for menu items in all supported languages by extracting translation strings from .lex files.
+The SrvMngr application uses a specific mechanism for managing menu item translations through the navigation2-conf script located at root/etc/e-smith/events/actions/navigation2-conf. This script creates DB type structures for menu items in all supported languages, run from the smanager-refresh, smeserver-manager-update, and bootstrap-console-save events (wired by createlinks).
 
 The process works as follows:
 1. The script reads controller files (e.g., Portforwarding.pm) to extract metadata like heading, description, and navigation weights using comments
-2. For each language, it loads the General/general_$lang.lex file (containing general terms) and module-specific lexicon files 
-3. It parses .lex files to create a key-value mapping of translation strings
+2. For each language, it uses the SrvMngr::Plugin::I18N handler to localize the heading and description (loading compiled .mo, then .po, then .pm lexicons, with the shared General lexicon merged in)
+3. It determines each module's translation prefix (from template, controller, .po, or .lex files) and applies it as a fallback key
 4. The script then uses these translations to populate menu entries in the navigation database
 
 Key files involved:
-- S80navigation2-conf: Main script that processes all controllers and creates navigation DB entries
+- navigation2-conf: Main script that processes all controllers and creates navigation DB entries (uses the I18N plugin; no longer lex-only)
 - Controller files (e.g., Portforwarding.pm): Contain metadata comments for headings/descriptions
-- .lex files (e.g., portforwarding_en.lex, general_en.lex): Translation key-value pairs for UI strings
+- .mo/.po files: Compiled/source translation catalogs used by the I18N plugin (see locations below)
+- .lex files (e.g., portforwarding_en.lex, general_en.lex): Legacy translation key-value pairs, still read for prefix detection
 - General/general_$lang.lex: Contains base translations used across modules
-- Module-specific $module_$lang.lex files: Module-specific translations
 
-The translation mechanism uses a prefix-based lookup approach to find localized strings. The script processes all controllers, extracts their metadata, and combines it with translation data from .lex files to build the navigation database entries.
+The translation mechanism uses a prefix-based lookup approach to find localized strings. The script processes all controllers, extracts their metadata, and combines it with translation data from the I18N plugin to build the navigation database entries.
 
 Note on .mo/.po file locations:
 - .po files are located at root/usr/share/smanager/lib/SrvMngr/I18N/po/<module>/<lang>.po
