@@ -1,0 +1,536 @@
+#!/usr/bin/perl -w
+#----------------------------------------------------------------------
+# copyright (C) 1999-2006 Mitel Networks Corporation
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#
+#----------------------------------------------------------------------
+# ============================================================================
+# 1. Set library path IMMEDIATELY after shebang
+# ============================================================================
+use lib '/usr/share/smanager/lib';
+
+# ============================================================================
+# 2. Initialize namespace as Locale::Maketext subclass BEFORE loading plugin
+# ============================================================================
+use Locale::Maketext;
+eval {
+    package SrvMngr::Plugin::I18N;
+    use base 'Locale::Maketext';
+    our %Lexicon = (_AUTO => 1);  # Initialize empty lexicon
+    1;
+} or die "Failed to setup SrvMngr::Plugin::I18N: $@";
+
+# ============================================================================
+# 3. Load the plugin (now safe because namespace is pre-configured)
+# ============================================================================
+require SrvMngr::Plugin::I18N;
+
+package esmith;
+use strict;
+use constant SMNGR_LIB     => '/usr/share/smanager/lib';
+use constant I18NMODULES   => 'SrvMngr/I18N/Modules';
+use constant I18NPO        => 'SrvMngr/I18N/po';
+use constant WEBFUNCTIONS  => 'SrvMngr/Controller';
+use constant NAVDIR        => '/home/e-smith/db';
+use constant NAVIGATIONDIR => 'navigation2';
+use constant TEMPLATEDIR   => '/usr/share/smanager/themes/default/templates';
+use constant DEBUG         => 0;
+
+use esmith::NavigationDB;
+use esmith::I18N;
+use Data::Dumper;    # activate if DEBUG
+use File::Temp qw(tempfile);
+use Locale::Maketext::Extract;
+
+binmode(STDOUT, ":encoding(UTF-8)");
+
+my $navigation_ignore = "(\.\.?|Swttheme\.pm|Login\.pm|Request\.pm|Modules\.pm(-.*)?)";
+
+
+my $i18n_db    = new esmith::I18N;
+our $i18n_plugin = SrvMngr::Plugin::I18N::_Handler->new();
+
+# These are the attributes Mojolicious normally sets during register()
+$i18n_plugin->{namespace} = 'SrvMngr::Plugin::I18N';
+$i18n_plugin->{default}   = 'en';
+#$i18n_plugin->{mo_root}   = '/usr/share/smanager/lib/SrvMngr/I18N/po';
+
+# Verify class
+warn "Handler class: " . ref($i18n_plugin) . "\n" if DEBUG;
+warn "Has i18namespace: " . ($i18n_plugin->can('i18namespace') ? 'yes' : 'NO') . "\n" if DEBUG;
+
+
+# ============================================================================
+# 6. Verify setup (Optional debug)
+# ============================================================================
+eval {
+    $i18n_plugin->i18namespace(undef, 'en');
+    print STDERR "I18N initialized successfully for EN\n" if DEBUG;
+};
+print STDERR "I18N init failed: $@" if $@;
+
+# Dedupe repetitive warnings (e.g. the plugin's ".mo missing, falling back
+# to .po" notices fire once per language and flood the output). Each distinct
+# message is shown once; duplicates are counted and summarized at the end.
+my %warn_seen;
+my $warn_dup = 0;
+$SIG{__WARN__} = sub {
+    my $msg = shift;
+    if ($warn_seen{$msg}++) {
+        $warn_dup++;
+        return;
+    }
+    print STDERR $msg;
+};
+
+my %navdbs;
+my %prefix_cache;
+opendir FUNCTIONS, SMNGR_LIB . '/' . WEBFUNCTIONS
+    or die "Couldn't open ", SMNGR_LIB . '/' . WEBFUNCTIONS, "\n";
+my @files = grep (!/^${navigation_ignore}$/, readdir(FUNCTIONS));
+closedir FUNCTIONS;
+
+my @langs = $i18n_db->availableLanguages();  # ('fr') TEMP FOR TESTING
+foreach my $lang (@langs) {
+	# Step through each language 
+
+    #my @files = ('Quota.pm');  #TEMP FOR TESTING
+    foreach my $file (@files) {
+		#warn "file:$file";
+		# Go through all the controller files, getting Module name and menu entry (description)
+		# Skip if is a directory
+        next if (-d SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file" );
+        # or is not a *.pm file
+        next unless ($file =~ m/[A-Z].*\.pm$/);
+        my $file2 = lc($file);
+        $file2 =~ s/\.pm$//;
+        my $namespace = "SrvMngr::I18N::Modules::" . ucfirst($file2);
+        # Skip if no po or module directory for this module
+        next if (!-d SMNGR_LIB.'/'.I18NPO."/".ucfirst($file2) && !-d SMNGR_LIB.'/'.I18NMODULES."/".ucfirst($file2) && $file !~ /Logout/);
+        #warn "File2:$file2" if DEBUG;
+
+        #--------------------------------------------------
+        # extract heading, description and weight information
+        # from Mojo controller
+        #--------------------------------------------------
+        open(SCRIPT, SMNGR_LIB . '/' . WEBFUNCTIONS . "/$file");
+        my $heading            = undef;
+        my $description        = undef;
+        my $heading_weight     = undef;
+        my $description_weight = undef;
+        my $menucat            = undef;
+        my $routes             = undef;
+
+        while (<SCRIPT>) {
+            $heading     = $1 if (/^\s*#\s*heading\s*:\s*(.+?)\s*$/);
+            $description = $1
+                if (/^\s*#\s*description\s*:\s*(.+?)\s*$/);
+            ($heading_weight, $description_weight) = ($1, $2)
+                if (/^\s*#\s*navigation\s*:\s*(\d+?)\s+(\d+?)\s*$/);
+            $menucat = $1
+                if (/^\s*#\s*menu\s*:\s*(.+?)\s*$/);
+            last
+                if (defined $heading
+                and defined $description
+                and defined $heading_weight
+                and defined $description_weight
+                and defined $menucat);
+
+            # routes : end  (stop before eof if 'menu' is not here before 'routes'!!!
+            $routes = $1 if (/^\s*#\s*routes\s*:\s*(.+?)\s*$/);
+            last         if (defined $routes and $routes eq 'end');
+        } ## end while (<SCRIPT>)
+        close SCRIPT;
+        print "updating script $file for lang $lang\n" if DEBUG;
+        my $navdb   = $navdbs{$lang};
+        my $navinfo = NAVDIR . '/' . NAVIGATIONDIR . "/navigation.$lang";
+        $navdb ||= esmith::NavigationDB->open($navinfo);
+        $navdb ||= esmith::NavigationDB->create($navinfo) or die "Couldn't create $navinfo\n";
+        $navdbs{$lang} ||= $navdb;
+        my $rec = $navdb->get($file2)
+            || $navdb->new_record($file2, { type => 'panel' });
+            
+        # Find prefix from one of the file types
+        my $prefix = $prefix_cache{$file2};
+        if (!defined $prefix) {
+		my @check_files = (
+			{ type => 'template', file => TEMPLATEDIR . "/" . ${file2} . ".html.ep",                          func => \&Find_prefix_from_mojolicious_file },
+			{ type => 'controller', file => SMNGR_LIB . "/SrvMngr/Controller/" . ucfirst($file2) . ".pm",              func => \&Find_prefix_from_mojolicious_file },
+			{ type => 'po',     file => SMNGR_LIB . '/' . I18NPO . '/' . ucfirst($file2) . "/en.po",                func => \&Find_prefix_from_po_file },
+			{ type => 'lex',    file => SMNGR_LIB . '/' . I18NMODULES . '/' . ucfirst($file2) . "/${file2}_en.lex",    func => \&Find_prefix_from_lex_file },
+		);
+
+		for my $check (@check_files) {
+			warn "file:".$check->{file} if DEBUG;
+			if (-f $check->{file}) {
+				$prefix = $check->{func}->($check->{file});
+				warn "Module:$file2 Prefix: $prefix found from:".$check->{type} if defined $prefix && DEBUG;
+				last if defined $prefix;
+			} else {
+				warn "No " . $check->{type} . " file: $check->{file} found" if DEBUG;
+			}
+		}
+
+		if ($prefix) {
+			print("Prefix: $prefix $file2 ($lang)\n") if DEBUG;
+		} else {
+			#warn "No prefix found in any of the checked files for $file2 ()";
+			$prefix = 'xxx'; #not found
+		}
+        $prefix_cache{$file2} = $prefix;
+        }
+                   
+        $heading     = "" unless defined $heading;
+        $description = "" unless defined $description;
+
+        # Get the base language code from $lang
+        my $base_lang = (split('-', $lang))[0];
+        # Set up the I18N handler ONCE for this (module, language) pair,
+        # then localize both heading and description against it (instead of
+        # re-running the full, expensive i18namespace setup twice).
+        $i18n_plugin->i18namespace($namespace, $base_lang);
+        my $loc_heading     = localize_for_nav($heading,     $base_lang, $prefix);
+        my $loc_description = localize_for_nav($description, $base_lang, $prefix);
+        print "Translated: $description into: $loc_description\n" if DEBUG;
+        $loc_heading     =~ s/^\s*(\w.*?)\s*$/$1/;
+        $loc_description =~ s/^\s*(\w.*?)\s*$/$1/;
+        $rec->merge_props(
+            Heading           => $loc_heading,
+            Description       => $loc_description,
+            HeadingWeight     => $heading_weight,
+            DescriptionWeight => $description_weight,
+            MenuCat           => (defined $menucat ? $menucat : 'A')
+        );
+    } ## end foreach my $file (@files)
+
+    warn "trying to close for lang $lang\n" if DEBUG;
+    my $navdb = $navdbs{$lang};
+    $navdb->close() if $navdb;
+} ## end foreach my $lang (@langs)
+
+warn "Suppressed $warn_dup duplicate warning lines\n" if $warn_dup;
+
+sub Find_prefix_from_po_file {
+    my $pofile = shift;
+    
+    # Open the PO file for reading
+    open(my $fh, '<', $pofile) or return undef;
+    
+    my $prefix = undef;
+    
+    while (my $line = <$fh>) {
+        chomp $line;
+        
+        # Skip comment lines (starting with #)
+        next if $line =~ /^\s*#/;
+        
+        # Skip empty lines
+        next if $line =~ /^\s*$/;
+        
+        # Look for msgid lines
+        if ($line =~ /^msgid\s+"([^"]*)"/) {
+            my $msgid = $1;
+            
+            # Skip if msgid is empty
+            next if $msgid eq '';
+            
+            # Check if msgid has the prefix format <letters_or_numbers>_<the_rest>
+            if ($msgid =~ /^([a-zA-Z0-9]+)_(.*)$/) {
+                $prefix = $1;
+                last;  # Found first valid prefix, exit loop
+            }
+        }
+    }
+    
+    close($fh);
+    return $prefix;
+}
+
+# ---------------------------------------------------------------------------
+# Reduce a Mojolicious .ep template to just its embedded Perl, blanking out
+# everything else but keeping every newline so extracted line numbers still
+# point at the right spot in the original .ep file. Tested against real
+# smeserver-manager templates, including the two comment conventions that
+# must NOT leak a key: a whole Perl-comment line ('%# ...') and the
+# '<%#= ... %>' idiom for temporarily disabling what used to be an output
+# tag -- both are genuine Mojolicious comments, never evaluated or rendered.
+# ---------------------------------------------------------------------------
+sub strip_to_perl {
+    my ($text) = @_;
+    my @lines = split /\n/, $text, -1;
+    my @out;
+
+    for my $line (@lines) {
+        if ( $line =~ /^\s*%\s*#/ ) {
+            push @out, '';
+            next;
+        }
+        if ( $line =~ /^\s*%(?!%)(.*)$/ ) {
+            push @out, $1;
+            next;
+        }
+        ( my $no_comments = $line ) =~ s/<%#.*?%>//gs;
+        my $kept = '';
+        while ( $no_comments =~ /<%={0,2}\s*(.*?)\s*%>/gs ) {
+            $kept .= $1 . ';';
+        }
+        push @out, $kept;
+    }
+    return join( "\n", @out );
+}
+
+sub Find_prefix_from_mojolicious_file {
+	# Subroutine: Find_prefix_from_mojolicious_file
+    # Returns the most frequent valid prefix found in the file
+    my $mojoliciousfile = shift;
+
+    return undef unless -f $mojoliciousfile;
+
+    # Initialize extractor (matching working snippet)
+    my $Ext = Locale::Maketext::Extract->new(
+        warnings => 0,
+        verbose  => 0,
+    );
+
+    # Extract msgid's from file
+	if ( $mojoliciousfile =~ /\.ep$/ ) {
+		#Mojolicious template file
+		open my $fh, '<:encoding(UTF-8)', $mojoliciousfile or die "Cannot open $mojoliciousfile: $!";
+		local $/;
+		my $raw = <$fh>;
+		close $fh;
+		$Ext->extract( $mojoliciousfile => strip_to_perl($raw) );
+	}
+	else {
+		#Mojolicious mojolicious file
+		$Ext->extract_file($mojoliciousfile);
+	}
+
+    $Ext->extract_file($mojoliciousfile) or return undef;
+
+    # Compile and write to temp PO file (required for this module version)
+    $Ext->compile;
+
+    my ($tfh, $tpath) = tempfile();
+    close($tfh);
+
+    $Ext->write_po($tpath); #Returns false even if works, but can't find all the plugins
+
+    my %prefix_counts;
+
+    open(my $rfh, '<:encoding(UTF-8)', $tpath) or do {
+        unlink $tpath;
+        return undef;
+    };
+
+    while (my $line = <$rfh>) {
+        # Match msgid lines
+        if ($line =~ /^msgid "((?:[^"\\]|\\.)*)"/) {
+            my $key = $1;
+            next if $key eq '';
+
+            # Unescape standard PO escapes
+            $key =~ s/\\"/"/g;
+            $key =~ s/\\\\/\\/g;
+
+            # Check if key has valid prefix format
+            if ($key =~ /^([a-zA-Z0-9]+)_(.*)$/) {
+                $prefix_counts{$1}++;
+            }
+        }
+    }
+
+    close($rfh);
+    unlink $tpath;
+
+    return undef unless %prefix_counts;
+
+    # Find prefix with the highest count
+    my ($best_prefix, $best_count) = (undef, 0);
+    while (my ($prefix, $count) = each %prefix_counts) {
+        if ($count > $best_count) {
+            $best_prefix = $prefix;
+            $best_count = $count;
+        }
+    }
+
+    return $best_prefix;
+}
+
+sub Find_prefix_from_lex_file {
+    my ($lexfile) = @_;
+    my $lang = 'en'; #only need one lex file to do it.
+    # Extract prefix from lex file 
+    my $long_lex = $lexfile;
+
+    my @panel_lex;
+    if (-e $long_lex) {
+        open(my $LEX, '<:encoding(UTF-8)', $long_lex)
+            or die "Couldn't open ", $long_lex, " for reading.\n";
+        @panel_lex = <$LEX>;
+        close $LEX;
+    }
+
+    # Extract the prefix for this module
+    my @keys   = values @panel_lex;    # Get all values from the array
+    my $i      = 0;                    # Initialize the index
+    my $found  = 0;                    # Flag to check if the prefix was found
+    my $prefix;                
+
+    # Look for the prefix in the lex file
+    while ($i < @keys) {               # Loop until we run out of entries
+        my $extracted_value = $keys[$i] || "";    # The current entry
+        #print("Extracted val: ".$extracted_value."\n");
+
+        # Extract prefix from the second value (up to and including the first underscore)
+        #my ($prefix) = $second_value =~ /^'(.*?_)/;  # Match everything up to and including the first underscore
+        ($prefix) = $extracted_value =~ /^'(.*?_)/;    # Match everything up to and including the first underscore
+
+        if (defined $prefix) {
+            $found = 1;                                # Set found flag to true
+            last;                                      # Exit the loop if prefix is found
+        } else {
+            #print("Extracted Val: " . $extracted_value . "\n");
+        }
+        $i++;                                          # Increment the index to check the next entry
+    } ## end while ($i < @keys)
+
+    if (!$found) {
+        print(STDERR "No valid prefix found in any entries: " . $lexfile . " (" . $lang . ")\n") if DEBUG;
+        $prefix = undef;    # Probably never match!!
+    }
+    
+    return $prefix;
+}
+
+# Enhanced helper function for advanced quote handling
+sub parse_advanced_quoted_string {
+    my ($str) = @_;
+    
+    # Remove leading/trailing whitespace
+    $str =~ s/^\s+|\s+$//g;
+    
+    # Handle empty string case
+    return "" if !$str || $str eq "";
+    
+    # Check what type of quotes are used (single or double)
+    my $quote_char = substr($str, 0, 1);
+    
+    # If first character is not a quote, return as-is
+    return $str unless ($quote_char eq "'" || $quote_char eq '"');
+    
+    # Check if string starts and ends with the same quote type
+    my $last_quote_pos = rindex($str, $quote_char);
+    return $str if $last_quote_pos <= 0;  # No closing quote
+    
+    # Extract content between quotes
+    my $content = substr($str, 1, $last_quote_pos - 1);
+    
+    # Handle escaped quotes within the string (more sophisticated approach)
+    # This handles cases like: 'He said \'Hello\' to me'
+    if ($quote_char eq "'") {
+        # Remove backslash-escaped quotes
+        $content =~ s/\\(['"])/$1/g;
+    } elsif ($quote_char eq '"') {
+        # Remove backslash-escaped quotes  
+        $content =~ s/\\(['"])/$1/g;
+    }
+    
+    return $content;
+}
+
+
+
+#1. localise
+#
+# Replaces the manual lc() hash lookup with the Handler's localization logic.
+sub localise {
+    my ($string) = @_;
+    $string //= '';
+
+
+    # Call the handler's localization method.
+    # The underlying Locale::Maketext::Lexicon fallbacks automatically (returning $key if not found),
+    # which mirrors the old behavior ($lexicon->{key} ||  $key).
+    return $i18n_plugin->localize($string);
+}
+
+# 2. localize_for_nav
+# Looks up a single string against the already-configured I18N handler.
+# The handler's namespace/language must already be set (via a prior
+# i18namespace call) before the first invocation.
+sub localize_for_nav {
+    my ($string, $base_lang, $prefix) = @_;
+    print "String:$string Language:$base_lang Prefix:$prefix\n" if DEBUG;
+
+    # 1. Try the raw string first
+    my $loc = localise($string);
+    print "Raw:$loc\n" if DEBUG;
+
+    # 2. Fallback logic if string wasn't translated and target language is not English
+    if ($loc eq $string && $base_lang ne 'en' && defined $prefix) {
+        # 3. Try prefix + string (standard I18N namespace/key pattern)
+        my $key = $prefix . $string;
+        my $tr = localise($key);
+        print "Try prefix:$key giving: $tr\n" if DEBUG;
+
+        # If the prefix key also failed (returned exactly the key), revert to original string
+        $loc = $string if $tr eq $key;
+    }
+
+    return $loc;
+}
+
+
+#sub localise {
+    #my ($lexicon, $string) = @_;
+
+    ##print("Looking up:".$string."\n");
+    #$string = "" unless defined $string;
+    #my $lc_string = lc($string);
+    #my $res       = $lexicon->{$lc_string} || $string;
+
+    ##print("Returning:".$res."\n");
+    #return $res;
+#} ## end sub localise
+
+## Subroutine to process localization
+## Tries the raw heading first, and if no hit, then adds the prefix and tries again.
+#sub process_localization {
+    #my ($lexicon_ref, $heading, $lang, $prefix) = @_;
+
+    ## Localized heading based on original heading
+    #my $loc_heading = localise($lexicon_ref, $heading);
+
+    ## Get the base language code from $lang
+    #my $base_lang = (split('-', $lang))[0];
+
+    ## Check the condition
+    #if ($loc_heading eq $heading && $base_lang ne 'en') {
+
+        ## Construct the new key by combining the prefix and the original heading
+        #my $key = $prefix . $heading;
+
+        ## Localize using the constructed key
+        #$loc_heading = localise($lexicon_ref, $key);
+
+        ## See if it got a hit
+        #if ($loc_heading eq $key) {
+            #$loc_heading = $heading;
+        #}
+    #} ## end if ($loc_heading eq $heading...)
+    #return $loc_heading;    # Optionally return the localized heading
+#} ## end sub process_localization
