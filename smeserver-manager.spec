@@ -2,7 +2,7 @@ Summary: Sme Server Configuration : Manager 2
 %define name smeserver-manager
 Name: %{name}
 %define version 11.0.0
-%define release 277
+%define release 278
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL2.0
@@ -130,6 +130,9 @@ true
 %defattr(-,root,root)
 
 %changelog
+* Wed Nov 25 2026 Brian Read <brianr@koozali.org> 11.0.0-278.sme
+- Stop EmailsettingsCustomUI.pm (the companion helper to Emailsettings-Custom.pm) from being picked up by the runtime menu generator and shown as a bare panel under "Legacy" — extend getNavigation's controller-ignore pattern to skip *CustomUI.pm files. [SME: 13865]
+
 * Tue Nov 24 2026 Brian Read <brianr@koozali.org> 11.0.0-277.sme
 - Rework navigation2-conf to use the I18N plugin (.mo/.po) instead of parsing .lex files directly: fix get_handle crash (full module namespace), cache per-module prefix and memoize localization by base language (runtime ~23s -> ~9s), and summarize suppressed .mo-missing warnings. Remove the separate new-navigation2-conf script. [SME: 13720]
 - Treat "(en) ..." fallbacks as untranslated in the menu navigation and retry with the prefix+string key and a case-insensitive lexicon match, so a menu label such as "E-Mail" resolves to a case-variant translated key (E-mail -> Courriel) instead of showing the "(en) E-Mail" fallback. [SME: 13720]
